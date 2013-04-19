@@ -1,0 +1,5 @@
+- Add ANT build script
+- Add compiled examples of all Examples application in /Binaries folder
+- Use applicationContext instead of ActivityContext for BroadCastReceivers
+- Fix module() method of all YFunction
+- Publish library to GitHub

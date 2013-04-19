@@ -1,0 +1,21 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+    <fragment
+        android:id="@+id/live_view"
+        android:name="com.yoctopuce.examples.yocto_meteo.LiveViewFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:layout="@layout/live_view" />
+      <fragment
+        android:id="@+id/agrap_fragement"
+        android:name="com.yoctopuce.examples.yocto_meteo.AGraphViewFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        tools:layout="@layout/agraph_view" />
+ </LinearLayout>
+ 

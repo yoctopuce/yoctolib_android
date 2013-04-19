@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">Yocto-Meteo</string>
+    <string name="title_activity_main">Yocto-Meteo</string>
+    <string name="unplugged">Unplugged!</string>
+    <string name="tempunit">°C</string>
+    <string name="humunit">Rh</string>
+    <string name="presunit">Pas</string>
+
+</resources>
