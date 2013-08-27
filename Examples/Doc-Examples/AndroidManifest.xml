@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yoctopuce.doc_examples"
-    android:versionCode="4"
-    android:versionName="1.0.4" >
+    android:versionCode="5"
+    android:versionName="1.0.5" >
 
     <uses-feature android:name="android.hardware.usb.host" />
     <uses-sdk
@@ -27,6 +27,15 @@
                 android:resource="@xml/device_filter" />
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_LatchedRelay start -->
+        <activity
+            android:name=".GettingStarted_Yocto_LatchedRelay"
+            android:label="GettingStarted Yocto LatchedRelay" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_LatchedRelay stop -->   
         <!-- generated GettingStarted_Yocto_MaxiCoupler start -->
         <activity
             android:name=".GettingStarted_Yocto_MaxiCoupler"

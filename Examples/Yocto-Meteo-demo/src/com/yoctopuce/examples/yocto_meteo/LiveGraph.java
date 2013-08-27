@@ -62,7 +62,7 @@ public class LiveGraph
 		// mRenderer.setZoomButtonsVisible(true);
 		mRenderer.setZoomEnabled(true, false);
 		mRenderer.setPanEnabled(true, false);
-		mRenderer.setXTitle("Time");
+		mRenderer.setXTitle(name);
 		mRenderer.setYTitle(unit);
 
 		// Add single renderer to multiple renderer

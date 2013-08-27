@@ -81,6 +81,8 @@ public class ModuleControl extends Activity implements OnItemSelectedListener
             Switch sw = (Switch) findViewById(R.id.beaconswitch);
             Log.d("switch", "beacon" + module.get_beacon());
             sw.setChecked(module.getBeacon() == YModule.BEACON_ON);
+            field = (TextView) findViewById(R.id.logs);
+            field.setText(module.get_lastLogs());
 
         } catch (YAPI_Exception e) {
             e.printStackTrace();

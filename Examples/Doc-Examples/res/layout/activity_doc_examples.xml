@@ -10,6 +10,15 @@
         android:orientation="vertical" >
 
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_LatchedRelay start -->
+        <Button
+        android:id="@+id/button_GettingStarted_Yocto_LatchedRelay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="sendMessage"
+        android:text="GettingStarted Yocto LatchedRelay"
+        tools:ignore="HardcodedText" />
+        <!-- generated GettingStarted_Yocto_LatchedRelay stop -->   
         <!-- generated GettingStarted_Yocto_MaxiCoupler start -->
         <Button
         android:id="@+id/button_GettingStarted_Yocto_MaxiCoupler"

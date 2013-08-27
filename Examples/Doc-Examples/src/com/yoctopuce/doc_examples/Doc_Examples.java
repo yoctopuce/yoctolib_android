@@ -30,6 +30,11 @@ public class Doc_Examples extends Activity
         Intent intent = null;
         switch (view.getId()) {
         /** generated start */
+        /** generated GettingStarted_Yocto_LatchedRelay start */
+        case R.id.button_GettingStarted_Yocto_LatchedRelay:
+           intent = new Intent(this, GettingStarted_Yocto_LatchedRelay.class);
+           break;
+        /** generated GettingStarted_Yocto_LatchedRelay stop */   
         /** generated GettingStarted_Yocto_MaxiCoupler start */
         case R.id.button_GettingStarted_Yocto_MaxiCoupler:
            intent = new Intent(this, GettingStarted_Yocto_MaxiCoupler.class);
@@ -155,6 +160,7 @@ public class Doc_Examples extends Activity
         default:
             Log.e("Doc_Example", "no handler for button " + view.toString());
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

@@ -87,8 +87,8 @@
             android:id="@+id/beaconswitch"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="left" 
-            android:onClick="toggleBeacon"/>
+            android:layout_gravity="left"
+            android:onClick="toggleBeacon" />
     </TableRow>
 
     <TableRow
@@ -107,6 +107,7 @@
             android:layout_height="wrap_content"
             tools:ignore="HardcodedText" />
     </TableRow>
+
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
@@ -128,15 +129,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
-        <Button
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Refresh:"
-            android:onClick="refreshInfo"
-            tools:ignore="HardcodedText" 
-            />
+            android:text="Logs:"
+            tools:ignore="HardcodedText" />
+
+        <TextView
+            android:id="@+id/logs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+           />
     </TableRow>
-    
-    
-    
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="refreshInfo"
+        android:text="Refresh:"
+        tools:ignore="HardcodedText" />
+
 </TableLayout>
