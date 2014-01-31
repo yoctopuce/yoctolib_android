@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDevice.java 12427 2013-08-20 16:00:19Z seb $
+ * $Id: YDevice.java 14540 2014-01-17 00:52:50Z seb $
  *
  * Internal YDevice class
  *
@@ -66,8 +66,9 @@ public class YDevice {
     private WPEntry _wpRec;
     private long _cache_expiration;
     private String _cache_json;
-    private HashMap<Integer, String> _functions_funcid;
-    private HashMap<Integer, String> _functions_name;
+    private HashMap<Integer, YPEntry> _ypRecs;
+    private double _deviceTime;
+    private YPEntry _moduleYPEntry;
 
     // Device constructor. Automatically call the YAPI functin to reindex device
      YDevice(YGenericHub hub, WPEntry wpRec, HashMap<String, ArrayList<YPEntry>> ypRecs) throws YAPI_Exception
@@ -77,17 +78,14 @@ public class YDevice {
         _wpRec =wpRec;
         _cache_expiration = 0;
         _cache_json = "";
-        _functions_funcid = new HashMap<Integer, String>();
-        _functions_name = new HashMap<Integer, String>();
-
-        
-
+        _moduleYPEntry = new YPEntry(wpRec.getSerialNumber(),"module");
+        _moduleYPEntry.setLogicalName(wpRec.getLogicalName());
+        _ypRecs = new HashMap<Integer, YPEntry>();
         for (String categ : ypRecs.keySet()) {
             for (YPEntry rec : ypRecs.get(categ)) {
                 if (rec.getSerial().equals(wpRec.getSerialNumber())) {
                     int funydx = rec.getIndex();
-                    _functions_funcid.put(funydx, rec.getFuncId());
-                    _functions_name.put(funydx, rec.getLogicalName());
+                    _ypRecs.put(funydx, rec);
                 }
             }
         }
@@ -171,6 +169,7 @@ public class YDevice {
                     JSONObject module = loadval.getJSONObject("module");
                     if (!_wpRec.getLogicalName().equals(module.getString("logicalName"))) {
                         _wpRec.setLogicalName(module.getString("logicalName"));
+                        _moduleYPEntry.setLogicalName(_wpRec.getLogicalName());
                         reindex = true;
                     }
                     _wpRec.setBeacon(module.getInt("beacon"));
@@ -186,10 +185,10 @@ public class YDevice {
                         String pubval = func.getString("advertisedValue");
                         YAPI.setFunctionValue(_wpRec.getSerialNumber(), pubval);
                     }
-                    for (int f = 0; f < _functions_funcid.size(); f++) {
-                        if (_functions_funcid.get(f).equals(key)) {
-                            if (!_functions_name.get(f).equals(name)) {
-                                _functions_name.put(f, name);
+                    for (int f = 0; f < _ypRecs.size(); f++) {
+                        if (_ypRecs.get(f).getFuncId().equals(key)) {
+                            if (!_ypRecs.get(f).getLogicalName().equals(name)) {
+                                _ypRecs.get(f).setLogicalName(name);
                                 reindex = true;
                             }
                             break;
@@ -216,35 +215,19 @@ public class YDevice {
     // Retrieve the number of functions (beside "module") in the device
     protected int functionCount()
     {
-        return _functions_funcid.size();
+        return _ypRecs.size();
     }
 
-    // Retrieve the Id of the nth function (beside "module") in the device
-    protected String functionId(int idx)
+
+
+    public YPEntry getYPEntry(int idx)
     {
-        if (idx < _functions_funcid.size()) {
-            return _functions_funcid.get(idx);
+        if (idx < _ypRecs.size()) {
+            return _ypRecs.get(idx);
         }
-        return "";
+        return null;
     }
 
-    // Retrieve the logical name of the nth function (beside "module") in the device
-    protected String functionName(int idx)
-    {
-        if (idx < _functions_name.size()) {
-            return _functions_name.get(idx);
-        }
-        return "";
-    }
-
-    // Retrieve the advertised value of the nth function (beside "module") in the device
-    protected String functionValue(int idx)
-    {
-        if (idx < _functions_funcid.size()) {
-            return YAPI.getFunctionValue(_wpRec.getSerialNumber() + "." + _functions_funcid.get(idx));
-        }
-        return "";
-    }
 
     byte[] requestHTTP(String request,byte[] rest_of_request, boolean async) throws YAPI_Exception
     {
@@ -259,5 +242,19 @@ public class YDevice {
         }
         String shortRequest = String.format("%s %s%s\r\n", words[0],_wpRec.getNetworkUrl(),relativeUrl);
         return _hub.devRequest(this,shortRequest,rest_of_request, async);
+    }
+
+    public double getDeviceTime() {
+        return _deviceTime;
+    }
+
+    public void setDeviceTime(Integer[] data) {
+        double time = data[0] + 0x100 * data[1] + 0x10000 * data[2] + 0x1000000 * data[3];
+        _deviceTime = time + data[4] / 250.0;
+    }
+
+    public YPEntry getModuleYPEntry()
+    {
+        return _moduleYPEntry;
     }
 }

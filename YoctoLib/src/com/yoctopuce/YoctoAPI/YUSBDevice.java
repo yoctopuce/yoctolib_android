@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBDevice.java 12427 2013-08-20 16:00:19Z seb $
+ * $Id: YUSBDevice.java 14565 2014-01-17 11:27:03Z seb $
  *
  * YUSBDevice Class: 
  *
@@ -39,6 +39,7 @@
 package com.yoctopuce.YoctoAPI;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -50,15 +51,14 @@ import java.util.HashMap;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 
-import com.yoctopuce.YoctoAPI.YUSBPkt.StreamHead;
-import com.yoctopuce.YoctoAPI.YUSBRawDevice.PKTHandler;
-
-public class YUSBDevice implements PKTHandler
+public class YUSBDevice
 {
 
+    private static final long META_UTC_DELAY = 1800000;
     // USB communication data
     private int _lastpktno;
     private YUSBRawDevice _rawDev;
+    private long _lastMetaUTC = -1;
 
     // internal whites pages updated form notifications
     private final HashMap<String, WPEntry> _usbWP = new HashMap<String, WPEntry>();
@@ -70,7 +70,7 @@ public class YUSBDevice implements PKTHandler
     private State _state = State.Detected;
 
     private enum State {
-        Detected, ResetOk, ConfStarted, TCPSetuped, TCPWaiting, NotWorking
+        Detected, ResetReceived, StartReceived, StreamReadyReceived,  NotWorking
     }
 
     private enum TCP_State {
@@ -80,7 +80,6 @@ public class YUSBDevice implements PKTHandler
     private TCP_State _tcp_state = TCP_State.Closed;
     private final ByteArrayOutputStream _req_result = new ByteArrayOutputStream(1024);
     private byte[] _currentRequest;
-    //private ByteBuffer _currentRequest;
     private long _currentRequestTimeout;
 
     // mapping for ydx<serial> of potential subdevice for this USB device
@@ -91,28 +90,38 @@ public class YUSBDevice implements PKTHandler
         return _usbIdx2Serial.get(ydx);
     }
 
-    int getYdxFormSerial(String serial)
-    {
-        return _usbIdx2Serial.indexOf(serial);
-    }
-
     private HashMap<String, String> _usbIdx2Funcid = new HashMap<String, String>();
 
     public String getFuncidFromYdx(String serial, int i)
     {
-        String res = _usbIdx2Funcid.get(serial + i);
-        return res;
+        return  _usbIdx2Funcid.get(serial + i);
     }
 
-    private YPEntry getYPEntryForNotification(YUSBPkt.NotificationDecoder not) throws YAPI_Exception
+    private YPEntry getYPEntryFromNotification(YPktStreamHead.NotificationStreams not) throws YAPI_Exception
     {
         YPEntry yp;
         synchronized (_usbYP) {
-            if (!_usbYP.containsKey(not.getLongFunctionID())) {
-                yp = new YPEntry(not.getSerial(), not.getShortFunctionID());
-                _usbYP.put(not.getLongFunctionID(), yp);
+            if (!_usbYP.containsKey(not.getHardwareId())) {
+                yp = new YPEntry(not.getSerial(), not.getFunctionId());
+                _usbYP.put(not.getHardwareId(), yp);
             } else {
-                yp = _usbYP.get(not.getLongFunctionID());
+                yp = _usbYP.get(not.getHardwareId());
+            }
+        }
+        return yp;
+    }
+
+    private YPEntry getYPEntryFromYdx(String serial, int funIdx) throws YAPI_Exception
+    {
+        YPEntry yp;
+        String functionId = getFuncidFromYdx(serial,funIdx);
+        String hwid = serial+"."+ functionId;
+        synchronized (_usbYP) {
+            if (!_usbYP.containsKey(hwid)) {
+                yp = new YPEntry(serial, functionId);
+                _usbYP.put(hwid, yp);
+            } else {
+                yp = _usbYP.get(hwid);
             }
         }
         return yp;
@@ -121,9 +130,8 @@ public class YUSBDevice implements PKTHandler
     /*
      * Notification handler
      */
-    private void handleNotifcation(StreamHead s) throws YAPI_Exception
+    private void handleNotifcation(YPktStreamHead.NotificationStreams not) throws YAPI_Exception
     {
-        YUSBPkt.NotificationDecoder not = new YUSBPkt.NotificationDecoder(s, this);
         // YAPI.Log(not.dump());
         WPEntry wp;
         YPEntry yp;
@@ -144,17 +152,18 @@ public class YUSBDevice implements PKTHandler
             wp.setProductId(not.getDeviceid());
             break;
         case FUNCNAME:
-            yp = getYPEntryForNotification(not);
+            yp = getYPEntryFromNotification(not);
             yp.setLogicalName(not.getFuncname());
             break;
         case FUNCNAMEYDX:
-            _usbIdx2Funcid.put(not.getSerial() + not.getFunydx(), not.getShortFunctionID());
-            yp = getYPEntryForNotification(not);
+            _usbIdx2Funcid.put(not.getSerial() + not.getFunydx(), not.getFunctionId());
+            yp = getYPEntryFromNotification(not);
             yp.setLogicalName(not.getFuncname());
             yp.setIndex(not.getFunydx());
+            yp.setBaseclass(not.getFunclass());
             break;
         case FUNCVAL:
-            yp = getYPEntryForNotification(not);
+            yp = getYPEntryFromNotification(not);
             yp.setAdvertisedValue(not.getFuncval());
             break;
         case LOG:
@@ -170,8 +179,8 @@ public class YUSBDevice implements PKTHandler
             wp.validate();
             if (getSerial().equals(not.getSerial())) {
                 synchronized (_stateLock) {
-                    if (_state == State.ConfStarted) {
-                        _state = State.TCPSetuped;
+                    if (_state == State.StartReceived) {
+                        _state = State.StreamReadyReceived;
                         _stateLock.notify();
                     } else {
                         YAPI.Log("Streamready to early! :" + _state);
@@ -182,73 +191,133 @@ public class YUSBDevice implements PKTHandler
         }
     }
 
+    public void handleTimedNotification(byte[] data) throws YAPI_Exception {
+        int pos = 0;
+        String serial = getSerial();
+        YDevice ydev = YAPI.getDevice(serial);
+        if (ydev==null) {
+            // device has not been registered;
+            return;
+        }
+        while (pos < data.length){
+            int funYdx = data[pos] & 0xf;
+            int len = 1 + ((data[pos]>>4) & 0x7);
+            if (funYdx == 0xf) {
+                Integer[] intData = new Integer[data.length];
+                for (int i = 0; i < data.length; i++) {
+                    intData[i] = data[i] & 0xff;
+                }
+                ydev.setDeviceTime(intData);
+            }else {
+                YPEntry yp = getYPEntryFromYdx(getSerial(),funYdx);
+                boolean isAvg = (data[pos] & 0x80)!=0;
+                ArrayList<Integer> report =  new ArrayList<Integer>(len+1);
+                report.add( isAvg ? 1 : 0);
+                for (int i = 1 ; i < len + 1; i++) {
+                    int b = data[i];
+                    report.add(b);
+                }
+                YAPI.setTimedReport(yp.getHardwareId(), ydev.getDeviceTime(), report);
+            }
+            pos += 1 + len;
+        }
+    }
+
+
+
+
+
     /*
      * new packet handler
      */
-    public void newPKT(ByteBuffer rawpkt)
-    {
+    public void newPKT(ByteBuffer android_raw_pkt)  {
         try {
-            YUSBPkt pkt = new YUSBPkt();
-            pkt.parse(rawpkt);
-            if (pkt.isConfPkt()) {
-                if (pkt.isConfPktReset()) {
-                    YUSBPkt.ConfPktResetDecoder reset = pkt.getConfPktReset();
-                    YUSBPkt.isCompatibe(reset.api, _rawDev.getSerial());
-                    setNewState(State.ResetOk);
-                } else if (pkt.isConfPktStart()) {
-                    synchronized (_stateLock) {
-                        if (_state == State.ResetOk) {
-                            _lastpktno = pkt.getPktno();
-                            _state = State.ConfStarted;
-                            _stateLock.notify();
-                        } else {
-                            YAPI.Log("Drop late confpkt:" + pkt.dumpToString());
-                        }
+            YUSBPktIn newpkt = YUSBPktIn.Decode(this, android_raw_pkt);
+            if (newpkt.isConfPktReset()) {
+                YUSBPkt.ConfPktReset reset = newpkt.getConfPktReset();
+                YUSBPkt.isCompatibe(reset.getApi(), _rawDev.getSerial());
+                setNewState(State.ResetReceived);
+            } else if (newpkt.isConfPktStart()) {
+                synchronized (_stateLock) {
+                    if (_state == State.ResetReceived) {
+                        _lastpktno = newpkt.getPktno();
+                        _state = State.StartReceived;
+                        _stateLock.notify();
+                    } else {
+                        YAPI.Log("Drop late confpkt:" + newpkt.toString());
                     }
-                } else {
-                    YAPI.Log("Unknown configuration packet received:" + pkt.dumpToString());
-                    return;
                 }
             } else {
+
                 int expectedPktno = (_lastpktno + 1) & 7;
-                if (pkt.getPktno() != expectedPktno) {
-                    YAPI.Log("Missing packet (look of pkt " + expectedPktno + " but get " + pkt.getPktno() + ")\n");
+                if (newpkt.getPktno() != expectedPktno) {
+                    YAPI.Log("Missing packet (look of pkt " + expectedPktno + " but get " + newpkt.getPktno() + ")\n");
                 }
-                _lastpktno = pkt.getPktno();
-                int nbstreams = pkt.getNbStreams();
-                for (int i = 0; i < nbstreams; i++) {
-                    StreamHead s = pkt.getStream(i);
+                _lastpktno = newpkt.getPktno();
+                ArrayList<YPktStreamHead> streams = newpkt.getStreams();
+                for (YPktStreamHead s :streams) {
                     switch (s.getStreamType()) {
-                    case YUSBPkt.YSTREAM_NOTICE:
-                        handleNotifcation(s);
+                    case YPktStreamHead.YSTREAM_NOTICE:
+                        try {
+                            YPktStreamHead.NotificationStreams not = s.decodeAsNotification(this);
+                            handleNotifcation(not);
+                        }catch (YAPI_Exception ignore){}
                         break;
-                    case YUSBPkt.YSTREAM_TCP:
-                        synchronized (_req_result) {
-                            _req_result.write(s.getDataAsByteArray());
+                    case YPktStreamHead.YSTREAM_TCP:
+                        if (checkDeviceState(false, newpkt)){
+                            synchronized (_req_result) {
+                                _req_result.write(s.getDataAsByteArray());
+                            }
                         }
-                        // _currentRequest.append(s.getDataAsString());
                         break;
-                    case YUSBPkt.YSTREAM_TCP_CLOSE:
-                        synchronized (_req_result) {
-                            _req_result.write(s.getDataAsByteArray());
+                    case YPktStreamHead.YSTREAM_TCP_CLOSE:
+                        if (checkDeviceState(false, newpkt)){
+                            synchronized (_req_result) {
+                                _req_result.write(s.getDataAsByteArray());
+                            }
+                            remoteClose();
                         }
-                        // _currentRequest.append(s.getDataAsString());
-                        remoteClose();
                         break;
-                    case YUSBPkt.YSTREAM_EMPTY:
+                    case YPktStreamHead.YSTREAM_EMPTY:
+                        break;
+                    case YPktStreamHead.YSTREAM_REPORT:
+                        if (checkDeviceState(true, newpkt)){
+                            handleTimedNotification(s.getDataAsByteArray());
+                        }
+                        break;
+                    default:
+                        YAPI.Log("drop unknown ystream:" + s.toString());
                         break;
                     }
                 }
             }
         } catch (YAPI_Exception e) {
-            YAPI.Log("Invalid packet received:" + e.getStackTraceToString());
-        } catch (Exception e) {
+            ioError(e.toString());
+        } catch (IOException e) {
             Writer writer = new StringWriter();
             PrintWriter printWriter = new PrintWriter(writer);
             e.printStackTrace(printWriter);
-            YAPI.Log("Invalid packet received:" + e.getLocalizedMessage());
+            YAPI.Log("Io error during packet decoding:" + e.toString());
             YAPI.Log(writer.toString());
+            ioError(e.toString());
         }
+    }
+
+    private boolean checkDeviceState(boolean isNotification, YUSBPktIn newpkt) {
+        synchronized (_stateLock) {
+            if (isNotification){
+                if (_state != State.StreamReadyReceived && _state != State.StartReceived) {
+                    YAPI.Log("Drop early notification packet:" + newpkt.toString());
+                    return false;
+                }
+            }else{
+                if (_state != State.StreamReadyReceived) {
+                    YAPI.Log("Drop early tcp packet:" + newpkt.toString());
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     YUSBDevice(UsbDevice device, UsbManager manager)
@@ -281,7 +350,7 @@ public class YUSBDevice implements PKTHandler
                 break;
             case Close_by_dev:
             case Closed:
-                YAPI.Log("Drop unexepected close from device\n");
+                YAPI.Log("Drop unexpected close from device\n");
                 break;
             case Opened:
                 _tcp_state = TCP_State.Close_by_dev;
@@ -291,7 +360,6 @@ public class YUSBDevice implements PKTHandler
       
         }
     }
-    
 
     private void waitForState(State wanted, State next, long mswait, String message) throws YAPI_Exception
     {
@@ -323,29 +391,30 @@ public class YUSBDevice implements PKTHandler
         // ensure that the device is started
         _rawDev.start();
         // send reset packet
-        YUSBPkt ypkt = new YUSBPkt();
-        ypkt.formatResetPkt();
-        _rawDev.sendPkt(ypkt);
+        YUSBPktOut ypkt_reset = YUSBPktOut.ResetPkt(this);
+        _rawDev.sendPkt(ypkt_reset);
         // wait ack
-        waitForState(State.ResetOk, null, 5000, " did not respond to reset pkt");
+        waitForState(State.ResetReceived, null, 5000, " did not respond to reset pkt");
         // send start pkt
-        ypkt.clear();
-        ypkt.formatStartPkt();
-        _rawDev.sendPkt(ypkt);
+        YUSBPktOut ypkt_start = YUSBPktOut.StartPkt(this);
+        _rawDev.sendPkt(ypkt_start);
         // wait ack
-        waitForState(State.ConfStarted, null, 5000, "unable to start connection to device");
+        waitForState(State.StartReceived, null, 5000, "unable to start connection to device");
         // wait notification for devices ok
-        waitForState(State.TCPSetuped, null, 5000, "unable to start device");
+        waitForState(State.StreamReadyReceived, null, 5000, "unable to start device");
+        // send Meta UTC to update device clock
+        checkMetaUTC();
     }
 
     private void finishLastRequest(boolean andOpenNewRequest) throws YAPI_Exception
     {
-        YUSBPkt ypkt;
+        YUSBPktOut ypkt;
         synchronized (_stateLock) {
             if (_tcp_state == TCP_State.Closed) {
                 // nothing to do
-                if(andOpenNewRequest)
+                if(andOpenNewRequest) {
                     _tcp_state = TCP_State.Opened;
+                }
                 return;
             }
             while (_tcp_state == TCP_State.Opened && _currentRequestTimeout > YAPI.GetTickCount()) {
@@ -356,15 +425,11 @@ public class YUSBDevice implements PKTHandler
                 }
             }
             // send API close
-            ypkt = new YUSBPkt();
+            ypkt = new YUSBPktOut(this);
             ypkt.pushTCPClose();
             _rawDev.sendPkt(ypkt);
             if (_tcp_state == TCP_State.Close_by_dev) {
-                if(andOpenNewRequest)
-                    _tcp_state = TCP_State.Opened;
-                else
-                    _tcp_state = TCP_State.Closed;
-                return;
+                _tcp_state = TCP_State.Closed;
             } else {
                 _tcp_state = TCP_State.Close_by_API;
                 long timeout = YAPI.GetTickCount() + 100;
@@ -380,8 +445,9 @@ public class YUSBDevice implements PKTHandler
                     _tcp_state = TCP_State.Closed;
                 }
             }
-            if(andOpenNewRequest)
+            if(andOpenNewRequest) {
                 _tcp_state = TCP_State.Opened;
+            }
         }
     }
 
@@ -389,13 +455,13 @@ public class YUSBDevice implements PKTHandler
     {
         byte[] result;
         // first enssure that last request has finished
-        waitForState(State.TCPSetuped, null, 10, "Device not ready");
+        waitForState(State.StreamReadyReceived, null, 10, "Device not ready");
         finishLastRequest(true);
         synchronized (_req_result) {
             _req_result.reset();
         }
-        
-        
+
+
         if (rest_of_request == null) {
             _currentRequest =(firstLine+"\r\n\r\n").getBytes();
         } else {
@@ -406,13 +472,14 @@ public class YUSBDevice implements PKTHandler
             System.arraycopy(rest_of_request, 0, _currentRequest,firstLine.length(), rest_of_request.length);
         }
         _currentRequestTimeout = YAPI.GetTickCount() + 10000;// 10 sec
+
         int pos =0;
-        YUSBPkt ypkt = new YUSBPkt();
         while (pos < _currentRequest.length) {
+            YUSBPktOut ypkt = new YUSBPktOut(this);
             pos += ypkt.pushTCP(_currentRequest, pos, _currentRequest.length -pos);
             _rawDev.sendPkt(ypkt);
-            ypkt.clear();
         }
+        checkMetaUTC();
         if (!async) {
             finishLastRequest(false);
             synchronized (_req_result) {
@@ -431,6 +498,15 @@ public class YUSBDevice implements PKTHandler
     public String getSerial()
     {
         return _rawDev.getSerial();
+    }
+
+    public void checkMetaUTC() throws YAPI_Exception {
+        if (_lastMetaUTC + META_UTC_DELAY < YAPI.GetTickCount()){
+            YUSBPktOut ypkt = new YUSBPktOut(this);
+            ypkt.pushMetaUTC();
+            _rawDev.sendPkt(ypkt);
+            _lastMetaUTC = YAPI.GetTickCount();
+        }
     }
 
     public void updateWhitesPages(ArrayList<WPEntry> publicWP)
@@ -454,7 +530,7 @@ public class YUSBDevice implements PKTHandler
         }
     }
 
-    public void ioError()
+    public void ioError(String errorMessage)
     {
         setNewState(State.NotWorking);
     }

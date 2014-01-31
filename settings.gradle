@@ -1,0 +1,4 @@
+include ':Examples:Yocto-Relay'
+include ':Examples:Yocto-Meteo-demo'
+include ':YoctoLib'
+include ':Examples:Doc-Examples'

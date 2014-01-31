@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPEntry.java 12427 2013-08-20 16:00:19Z seb $
+ * $Id: YPEntry.java 14540 2014-01-17 00:52:50Z seb $
  *
  * Yellow page implementation
  *
@@ -44,11 +44,32 @@ import org.json.JSONObject;
 
 
 class YPEntry {
+
+
+
+    enum BaseClass {
+        Function(0),
+        Sensor(1);
+
+        private int _intval =0;
+
+        BaseClass(int intval){
+            _intval = intval;
+        }
+
+        public static BaseClass forByte(byte bval) {
+            return values()[bval];
+        }
+
+    }
+
+    private String _classname;
     private String _serial="";
     private String _funcId="";
     private String _logicalName="";
     private String _advertisedValue="";
     private int    _index=-1;
+    private BaseClass _baseclass = BaseClass.Function;
     private String _categ="";
 
     public YPEntry(JSONObject json) throws JSONException
@@ -57,6 +78,7 @@ class YPEntry {
         int pos = hardwareId.indexOf('.');
         _serial = hardwareId.substring(0, pos);
         _funcId = hardwareId.substring(pos+1);
+        _classname = YAPI.functionClass(_funcId);
         _categ = YAPI.functionClass(_funcId);
         _logicalName = json.getString("logicalName");
         _advertisedValue = json.getString("advertisedValue");
@@ -65,45 +87,42 @@ class YPEntry {
         } catch (JSONException ex){
             _index =0;
         }
+
+        if (json.has("baseType")){
+            _baseclass=BaseClass.values()[json.getInt("baseType")];
+        }
     }
 
-    
-    
-    
-    public YPEntry(String serial, String shortFunctionID)
-	{
+    public YPEntry(String serial, String functionID)
+    {
     	_serial =serial;
-    	_funcId = shortFunctionID;
+    	_funcId = functionID;
+        _classname = YAPI.functionClass(_funcId);
         _categ = YAPI.functionClass(_funcId);
-	}
-
+    }
 
     @Override
-	public String toString()
-	{
-		return "YPEntry [_categ=" + _categ + ", _index=" + _index + ", _serial=" + _serial + ", _funcId=" + _funcId + ", _logicalName=" + _logicalName + ", _advertisedValue=" + _advertisedValue + "]";
-	}
+    public String toString()
+    {
+        return "YPEntry [_categ=" + _categ + ", _index=" + _index + ", _serial=" + _serial + ", _funcId=" + _funcId + ", _logicalName=" + _logicalName + ", _advertisedValue=" + _advertisedValue + "]";
+    }
 
-
-
-
-	public String getCateg()
+    public String getCateg()
     {
     	return _categ;
     }
-    
-	public String getAdvertisedValue()
+
+    public String getAdvertisedValue()
     {
         return _advertisedValue;
     }
-    
-	public void setAdvertisedValue(String _advertisedValue)
+
+    public void setAdvertisedValue(String _advertisedValue)
     {
         this._advertisedValue = _advertisedValue;
         YAPI.setFunctionValue(_serial+"."+_funcId, _advertisedValue);
     }
 
-    
     public String getHardwareId()
     {
         return  _serial+"."+_funcId;
@@ -123,9 +142,20 @@ class YPEntry {
     {
         return _index;
     }
+
     public void setIndex(int index)
     {
         _index= index;
+    }
+
+    public BaseClass getBaseclass()
+    {
+        return _baseclass;
+    }
+
+    public void setBaseclass(BaseClass bclass)
+    {
+        _baseclass = bclass;
     }
 
     public String getLogicalName()
@@ -133,10 +163,39 @@ class YPEntry {
         return _logicalName;
     }
 
-
     public void setLogicalName(String _logicalName)
     {
         this._logicalName = _logicalName;
     }
+
+    public String getClassname()
+    {
+        return _classname;
+    }
+
+
+
+    // Find the exact Hardware Id of the specified function, if currently connected
+    // If device is not known as connected, return a clean error
+    // This function will not cause any network access
+    public String getFriendlyName() throws YAPI_Exception
+    {
+        if (_classname.equals("Module")) {
+            if (_logicalName.equals(""))
+                return _serial+".module";
+            else
+                return  _logicalName+".module";
+        } else {
+            YPEntry moduleYP = YAPI.resolveFunction("Module", _serial);
+            String module = moduleYP.getFriendlyName();
+            int pos = module.indexOf(".");
+            module = module.substring(0, pos);
+            if (_logicalName.equals(""))
+                return  module + "." + _funcId;
+            else
+                return  module + "." + _logicalName;
+        }
+    }
+
 
 }

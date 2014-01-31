@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataLogger.java 12427 2013-08-20 16:00:19Z seb $
+ * $Id: YDataLogger.java 14615 2014-01-19 00:16:40Z mvuilleu $
  *
  * Implements yFindDataLogger(), the high-level API for DataLogger functions
  *
@@ -40,30 +40,86 @@
 package com.yoctopuce.YoctoAPI; //test
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.json.JSONTokener;
 
+//--- (generated code: YDataLogger class start)
 /**
  * YDataLogger Class: DataLogger function interface
- *
- * Yoctopuce sensors include a non-volatile memory capable of storing ongoing
- * measured data automatically, without requiring a permanent connection to a
- * computer. The Yoctopuce application programming interface includes functions
- * to control how this internal data logger works. Beacause the sensors do not
- * include a battery, they do not have an absolute time reference. Therefore,
- * measures are simply indexed by the absolute run number and time relative to
- * the start of the run. Every new power up starts a new run. It is however
- * possible to setup an absolute UTC time by software at a given time, so that
- * the data logger keeps track of it until it is powered off next.
+ * 
+ * Yoctopuce sensors include a non-volatile memory capable of storing ongoing measured
+ * data automatically, without requiring a permanent connection to a computer.
+ * The DataLogger function controls the global parameters of the internal data
+ * logger.
  */
-public class YDataLogger extends YFunction {
+public class YDataLogger extends YFunction
+{
+//--- (end of generated code: YDataLogger class start)
+    //--- (generated code: YDataLogger definitions)
+    /**
+     * invalid currentRunIndex value
+     */
+    public static final int CURRENTRUNINDEX_INVALID = YAPI.INVALID_UINT;
+    /**
+     * invalid timeUTC value
+     */
+    public static final long TIMEUTC_INVALID = YAPI.INVALID_LONG;
+    /**
+     * invalid recording value
+     */
+    public static final int RECORDING_OFF = 0;
+    public static final int RECORDING_ON = 1;
+    public static final int RECORDING_INVALID = -1;
+
+    /**
+     * invalid autoStart value
+     */
+    public static final int AUTOSTART_OFF = 0;
+    public static final int AUTOSTART_ON = 1;
+    public static final int AUTOSTART_INVALID = -1;
+
+    /**
+     * invalid clearHistory value
+     */
+    public static final int CLEARHISTORY_FALSE = 0;
+    public static final int CLEARHISTORY_TRUE = 1;
+    public static final int CLEARHISTORY_INVALID = -1;
+
+    protected int _currentRunIndex = CURRENTRUNINDEX_INVALID;
+    protected long _timeUTC = TIMEUTC_INVALID;
+    protected int _recording = RECORDING_INVALID;
+    protected int _autoStart = AUTOSTART_INVALID;
+    protected int _clearHistory = CLEARHISTORY_INVALID;
+    protected UpdateCallback _valueCallbackDataLogger = null;
+
+    /**
+     * Deprecated UpdateCallback for DataLogger
+     */
+    public interface UpdateCallback {
+        /**
+         * 
+         * @param function      : the function object of which the value has changed
+         * @param functionValue : the character string describing the new advertised value
+         */
+        void yNewValue(YDataLogger function, String functionValue);
+    }
+
+    /**
+     * TimedReportCallback for DataLogger
+     */
+    public interface TimedReportCallback {
+        /**
+         * 
+         * @param function : the function object of which the value has changed
+         * @param measure  : measure
+         */
+        void timedReportCallback(YDataLogger  function, YMeasure measure);
+    }
+    //--- (end of generated code: YDataLogger definitions)
 
     protected String _dataLoggerURL;
-    protected ArrayList<String> _measureNames;
-    protected HashMap<Integer, YDataRun> _dataRuns;
-    protected long _liveRun;
 
     /**
      * Internal function to retrieve datalogger memory
@@ -96,113 +152,29 @@ public class YDataLogger extends YFunction {
         return loadval;
     }
 
+
     /**
-     * Internal function to preload the list of all runs, for high-level
-     * functions
+     * @param func : functionid
      */
-    public int loadRuns() throws YAPI_Exception
+    protected YDataLogger(String func)
     {
-        _measureNames = new ArrayList<String>();
-
-        _dataRuns = new HashMap<Integer, YDataRun>();
-        _liveRun = this.get_currentRunIndex();
-
-        // preload stream list
-        ArrayList<YDataStream> streams = new ArrayList<YDataStream>();
-        this.get_dataStreams(streams);
-
-        // sort streams into runs
-        for (YDataStream stream : streams) {
-            int runIdx = stream.get_runIndex();
-            if (!_dataRuns.containsKey(runIdx)) {
-                YDataRun drun = new YDataRun(this, runIdx);
-                _dataRuns.put(runIdx, drun);
-            }
-            _dataRuns.get(runIdx).addStream(stream);
-        }
-
-        // finalize computation of data in each run
-        YDataStream stream = streams.get(0);
-        String[] names = stream.get_columnNames();
-
-        for (String name : names) {
-            if (name.charAt(name.length() - 4) != '_') {
-                _measureNames.add(name);
-            } else if (name.substring(name.length() - 4).equals("_min")) {
-                _measureNames.add(name.substring(name.length() - 4));
-            }
-        }
-        for (YDataRun run : _dataRuns.values()) {
-            run.yfinalize();
-        }
-        return YAPI.SUCCESS;
+        super(func);
+        _className = "DataLogger";
+        //--- (generated code: YDataLogger attributes initialization)
+        //--- (end of generated code: YDataLogger attributes initialization)
     }
+
 
     /**
-     * Clears the data logger memory and discards all recorded data streams.
-     * This method also resets the current run index to zero.
-     * 
-     * @return YAPI.SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int forgetAllDataStreams() throws YAPI_Exception
-    {
-        return set_clearHistory(CLEARHISTORY_TRUE);
-    }
-
-    /**
-     * Returns the names of the measures recorded by the data logger.
-     * In most case, the measure names match the hardware identifier
-     * of the sensor that produced the data.
-     * 
-     * @return a list of strings (the measure names)
-     * 
-     * @throws YAPI_Exception
-     */
-    public ArrayList<String> get_measureNames()
-    {
-        return _measureNames;
-    }
-
-    public ArrayList<String> getMeasureNames()
-    {
-        return _measureNames;
-    }
-
-    /**
-     * Returns a data run object holding all measured data for a given
-     * period during which the module was turned on (a run). This object can then
-     * be used to retrieve measures (min, average and max) at a desired data rate.
-     * 
-     * @param runIdx : the index of the desired run
-     * 
-     * @return an YDataRun object
-     * 
-     * @throws YAPI_Exception
-     */
-    public YDataRun get_dataRun(int runIdx) throws YAPI_Exception
-    {
-        if (_dataRuns == null || runIdx > _liveRun) {
-            loadRuns();
-        }
-        if (!_dataRuns.containsKey(runIdx)) {
-            return null;
-        }
-        return _dataRuns.get(runIdx);
-
-    }
-
-    public YDataRun getDataRun(int runIdx) throws YAPI_Exception
-    {
-        return get_dataRun(runIdx);
-    }
-
-    /**
-     * Builds a list of all data streams hold by the data logger.
+     * Builds a list of all data streams hold by the data logger (legacy method).
      * The caller must pass by reference an empty array to hold YDataStream
      * objects, and the function fills it with objects describing available
      * data sequences.
+     * 
+     * This is the old way to retrieve data from the DataLogger.
+     * For new applications, you should rather use get_dataSets()
+     * method, or call directly get_recordedData() on the
+     * sensor object.
      * 
      * @param v : an array of YDataStream objects to be filled in
      * 
@@ -216,11 +188,26 @@ public class YDataLogger extends YFunction {
         JSONTokener loadval = this.getData(null, null);
         try {
             JSONArray jsonAllStreams = new JSONArray(loadval);
-            for (int i = 0; i < jsonAllStreams.length(); i++) {
-                JSONArray jsonStream = jsonAllStreams.getJSONArray(i);
-                //            $v[] = new YDataStream($this,$arr[0],$arr[1],$arr[2],$arr[3]);
-                YDataStream stream = new YDataStream(this, jsonStream);
-                v.add(stream);
+            if(jsonAllStreams.length()== 0 )
+                return YAPI.SUCCESS;
+            if(jsonAllStreams.get(0).getClass() == JSONArray.class) {
+                for (int i = 0; i < jsonAllStreams.length(); i++) {
+                    // old datalogger format: [runIdx, timerel, utc, interval]
+                    JSONArray arr = jsonAllStreams.getJSONArray(i);
+                    YOldDataStream stream = new YOldDataStream(this, arr.getInt(0), arr.getInt(1), arr.getLong(2), arr.getInt(3));
+                    v.add(stream);
+                }
+            } else {
+                // new datalogger format: {"id":"...","unit":"...","streams":["...",...]}
+                ArrayList<YDataSet> sets = this.parse_dataSets(jsonAllStreams.toString().getBytes());
+                for (int j = 0; j < sets.size(); j++) {
+                    ArrayList<YDataStream> ds = sets.get(j).get_privateDataStreams();
+                    for (int si=0; si < ds.size(); si++) {
+
+                        v.add(ds.get(si));
+                    }
+                }
+                return YAPI.SUCCESS;
             }
         } catch (JSONException ex) {
             throw new YAPI_Exception(YAPI.IO_ERROR, ex.getLocalizedMessage());
@@ -234,165 +221,28 @@ public class YDataLogger extends YFunction {
     {
         return this.get_dataStreams(v);
     }
-    //--- (generated code: definitions)
-    private YDataLogger.UpdateCallback _valueCallbackDataLogger;
-    /**
-     * invalid logicalName value
-     */
-    public static final String LOGICALNAME_INVALID = YAPI.INVALID_STRING;
-    /**
-     * invalid advertisedValue value
-     */
-    public static final String ADVERTISEDVALUE_INVALID = YAPI.INVALID_STRING;
-    /**
-     * invalid oldestRunIndex value
-     */
-    public static final int OLDESTRUNINDEX_INVALID = YAPI.INVALID_UNSIGNED;
-    /**
-     * invalid currentRunIndex value
-     */
-    public static final int CURRENTRUNINDEX_INVALID = YAPI.INVALID_UNSIGNED;
-    /**
-     * invalid samplingInterval value
-     */
-    public static final int SAMPLINGINTERVAL_INVALID = YAPI.INVALID_UNSIGNED;
-    /**
-     * invalid timeUTC value
-     */
-    public static final long TIMEUTC_INVALID = YAPI.INVALID_LONG;
-    /**
-     * invalid recording value
-     */
-    public static final int RECORDING_OFF = 0;
-    public static final int RECORDING_ON = 1;
-    public static final int RECORDING_INVALID = -1;
 
-    /**
-     * invalid autoStart value
-     */
-    public static final int AUTOSTART_OFF = 0;
-    public static final int AUTOSTART_ON = 1;
-    public static final int AUTOSTART_INVALID = -1;
-
-    /**
-     * invalid clearHistory value
-     */
-    public static final int CLEARHISTORY_FALSE = 0;
-    public static final int CLEARHISTORY_TRUE = 1;
-    public static final int CLEARHISTORY_INVALID = -1;
-
-    //--- (end of generated code: definitions)
     //--- (generated code: YDataLogger implementation)
-
-    /**
-     * Returns the logical name of the data logger.
-     * 
-     * @return a string corresponding to the logical name of the data logger
-     * 
-     * @throws YAPI_Exception
-     */
-    public String get_logicalName()  throws YAPI_Exception
+    @Override
+    protected void  _parseAttr(JSONObject json_val) throws JSONException
     {
-        String json_val = (String) _getAttr("logicalName");
-        return json_val;
+        if (json_val.has("currentRunIndex")) {
+            _currentRunIndex =  json_val.getInt("currentRunIndex");
+        }
+        if (json_val.has("timeUTC")) {
+            _timeUTC =  json_val.getLong("timeUTC");
+        }
+        if (json_val.has("recording")) {
+            _recording =  json_val.getInt("recording")>0?1:0;
+        }
+        if (json_val.has("autoStart")) {
+            _autoStart =  json_val.getInt("autoStart")>0?1:0;
+        }
+        if (json_val.has("clearHistory")) {
+            _clearHistory =  json_val.getInt("clearHistory")>0?1:0;
+        }
+        super._parseAttr(json_val);
     }
-
-    /**
-     * Returns the logical name of the data logger.
-     * 
-     * @return a string corresponding to the logical name of the data logger
-     * 
-     * @throws YAPI_Exception
-     */
-    public String getLogicalName() throws YAPI_Exception
-
-    { return get_logicalName(); }
-
-    /**
-     * Changes the logical name of the data logger. You can use yCheckLogicalName()
-     * prior to this call to make sure that your parameter is valid.
-     * Remember to call the saveToFlash() method of the module if the
-     * modification must be kept.
-     * 
-     * @param newval : a string corresponding to the logical name of the data logger
-     * 
-     * @return YAPI.SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int set_logicalName( String  newval)  throws YAPI_Exception
-    {
-        String rest_val;
-        rest_val = newval;
-        _setAttr("logicalName",rest_val);
-        return YAPI.SUCCESS;
-    }
-
-    /**
-     * Changes the logical name of the data logger. You can use yCheckLogicalName()
-     * prior to this call to make sure that your parameter is valid.
-     * Remember to call the saveToFlash() method of the module if the
-     * modification must be kept.
-     * 
-     * @param newval : a string corresponding to the logical name of the data logger
-     * 
-     * @return YAPI_SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int setLogicalName( String newval)  throws YAPI_Exception
-
-    { return set_logicalName(newval); }
-
-    /**
-     * Returns the current value of the data logger (no more than 6 characters).
-     * 
-     * @return a string corresponding to the current value of the data logger (no more than 6 characters)
-     * 
-     * @throws YAPI_Exception
-     */
-    public String get_advertisedValue()  throws YAPI_Exception
-    {
-        String json_val = (String) _getAttr("advertisedValue");
-        return json_val;
-    }
-
-    /**
-     * Returns the current value of the data logger (no more than 6 characters).
-     * 
-     * @return a string corresponding to the current value of the data logger (no more than 6 characters)
-     * 
-     * @throws YAPI_Exception
-     */
-    public String getAdvertisedValue() throws YAPI_Exception
-
-    { return get_advertisedValue(); }
-
-    /**
-     * Returns the index of the oldest run for which the non-volatile memory still holds recorded data.
-     * 
-     * @return an integer corresponding to the index of the oldest run for which the non-volatile memory
-     * still holds recorded data
-     * 
-     * @throws YAPI_Exception
-     */
-    public int get_oldestRunIndex()  throws YAPI_Exception
-    {
-        String json_val = (String) _getAttr("oldestRunIndex");
-        return Integer.parseInt(json_val);
-    }
-
-    /**
-     * Returns the index of the oldest run for which the non-volatile memory still holds recorded data.
-     * 
-     * @return an integer corresponding to the index of the oldest run for which the non-volatile memory
-     * still holds recorded data
-     * 
-     * @throws YAPI_Exception
-     */
-    public int getOldestRunIndex() throws YAPI_Exception
-
-    { return get_oldestRunIndex(); }
 
     /**
      * Returns the current run number, corresponding to the number of times the module was
@@ -405,8 +255,12 @@ public class YDataLogger extends YFunction {
      */
     public int get_currentRunIndex()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("currentRunIndex");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return CURRENTRUNINDEX_INVALID;
+            }
+        }
+        return _currentRunIndex;
     }
 
     /**
@@ -422,28 +276,6 @@ public class YDataLogger extends YFunction {
 
     { return get_currentRunIndex(); }
 
-    public int get_samplingInterval()  throws YAPI_Exception
-    {
-        String json_val = (String) _getAttr("samplingInterval");
-        return Integer.parseInt(json_val);
-    }
-
-    public int getSamplingInterval() throws YAPI_Exception
-
-    { return get_samplingInterval(); }
-
-    public int set_samplingInterval( int  newval)  throws YAPI_Exception
-    {
-        String rest_val;
-        rest_val = Long.toString(newval);
-        _setAttr("samplingInterval",rest_val);
-        return YAPI.SUCCESS;
-    }
-
-    public int setSamplingInterval( int newval)  throws YAPI_Exception
-
-    { return set_samplingInterval(newval); }
-
     /**
      * Returns the Unix timestamp for current UTC time, if known.
      * 
@@ -453,8 +285,12 @@ public class YDataLogger extends YFunction {
      */
     public long get_timeUTC()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("timeUTC");
-        return Long.parseLong(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return TIMEUTC_INVALID;
+            }
+        }
+        return _timeUTC;
     }
 
     /**
@@ -477,7 +313,7 @@ public class YDataLogger extends YFunction {
      * 
      * @throws YAPI_Exception
      */
-    public int set_timeUTC( long  newval)  throws YAPI_Exception
+    public int set_timeUTC(long  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = Long.toString(newval);
@@ -494,7 +330,7 @@ public class YDataLogger extends YFunction {
      * 
      * @throws YAPI_Exception
      */
-    public int setTimeUTC( long newval)  throws YAPI_Exception
+    public int setTimeUTC(long newval)  throws YAPI_Exception
 
     { return set_timeUTC(newval); }
 
@@ -508,8 +344,12 @@ public class YDataLogger extends YFunction {
      */
     public int get_recording()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("recording");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return RECORDING_INVALID;
+            }
+        }
+        return _recording;
     }
 
     /**
@@ -533,7 +373,7 @@ public class YDataLogger extends YFunction {
      * 
      * @throws YAPI_Exception
      */
-    public int set_recording( int  newval)  throws YAPI_Exception
+    public int set_recording(int  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = (newval > 0 ? "1" : "0");
@@ -551,7 +391,7 @@ public class YDataLogger extends YFunction {
      * 
      * @throws YAPI_Exception
      */
-    public int setRecording( int newval)  throws YAPI_Exception
+    public int setRecording(int newval)  throws YAPI_Exception
 
     { return set_recording(newval); }
 
@@ -565,8 +405,12 @@ public class YDataLogger extends YFunction {
      */
     public int get_autoStart()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("autoStart");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return AUTOSTART_INVALID;
+            }
+        }
+        return _autoStart;
     }
 
     /**
@@ -593,7 +437,7 @@ public class YDataLogger extends YFunction {
      * 
      * @throws YAPI_Exception
      */
-    public int set_autoStart( int  newval)  throws YAPI_Exception
+    public int set_autoStart(int  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = (newval > 0 ? "1" : "0");
@@ -613,21 +457,31 @@ public class YDataLogger extends YFunction {
      * 
      * @throws YAPI_Exception
      */
-    public int setAutoStart( int newval)  throws YAPI_Exception
+    public int setAutoStart(int newval)  throws YAPI_Exception
 
     { return set_autoStart(newval); }
 
+    /**
+     * @throws YAPI_Exception
+     */
     public int get_clearHistory()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("clearHistory");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return CLEARHISTORY_INVALID;
+            }
+        }
+        return _clearHistory;
     }
 
+    /**
+     * @throws YAPI_Exception
+     */
     public int getClearHistory() throws YAPI_Exception
 
     { return get_clearHistory(); }
 
-    public int set_clearHistory( int  newval)  throws YAPI_Exception
+    public int set_clearHistory(int  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = (newval > 0 ? "1" : "0");
@@ -635,23 +489,9 @@ public class YDataLogger extends YFunction {
         return YAPI.SUCCESS;
     }
 
-    public int setClearHistory( int newval)  throws YAPI_Exception
+    public int setClearHistory(int newval)  throws YAPI_Exception
 
     { return set_clearHistory(newval); }
-
-    /**
-     * Continues the enumeration of data loggers started using yFirstDataLogger().
-     * 
-     * @return a pointer to a YDataLogger object, corresponding to
-     *         a data logger currently online, or a null pointer
-     *         if there are no more data loggers to enumerate.
-     */
-    public  YDataLogger nextDataLogger()
-    {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
-        if(next_hwid == null) return null;
-        return FindDataLogger(next_hwid);
-    }
 
     /**
      * Retrieves a data logger for a given identifier.
@@ -677,11 +517,114 @@ public class YDataLogger extends YFunction {
      * @return a YDataLogger object allowing you to drive the data logger.
      */
     public static YDataLogger FindDataLogger(String func)
-    {   YFunction yfunc = YAPI.getFunction("DataLogger", func);
-        if (yfunc != null) {
-            return (YDataLogger) yfunc;
+    {
+        YDataLogger obj;
+        obj = (YDataLogger) YFunction._FindFromCache("DataLogger", func);
+        if (obj == null) {
+            obj = new YDataLogger(func);
+            YFunction._AddToCache("DataLogger", func, obj);
         }
-        return new YDataLogger(func);
+        return obj;
+    }
+
+    /**
+     * Registers the callback function that is invoked on every change of advertised value.
+     * The callback is invoked only during the execution of ySleep or yHandleEvents.
+     * This provides control over the time when the callback is triggered. For good responsiveness, remember to call
+     * one of these two functions periodically. To unregister a callback, pass a null pointer as argument.
+     * 
+     * @param callback : the callback function to call, or a null pointer. The callback function should take two
+     *         arguments: the function object of which the value has changed, and the character string describing
+     *         the new advertised value.
+     * @noreturn
+     */
+    public int registerValueCallback(UpdateCallback callback)
+    {
+        String val;
+        
+        if (callback != null) {
+            YFunction._UpdateValueCallbackList(this, true);
+        } else {
+            YFunction._UpdateValueCallbackList(this, false);
+        }
+        _valueCallbackDataLogger = callback;
+        
+        // Immediately invoke value callback with current value
+        if (callback != null && isOnline()) {
+            val = _advertisedValue;
+            if (!(val.equals(""))) {
+                _invokeValueCallback(val);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int _invokeValueCallback(String value)
+    {
+        if (_valueCallbackDataLogger != null) {
+            _valueCallbackDataLogger.yNewValue(this, value);
+        } else {
+            super._invokeValueCallback(value);
+        }
+        return 0;
+    }
+
+    /**
+     * Clears the data logger memory and discards all recorded data streams.
+     * This method also resets the current run index to zero.
+     * 
+     * @return YAPI.SUCCESS if the call succeeds.
+     * 
+     * @throws YAPI_Exception
+     */
+    public int forgetAllDataStreams()  throws YAPI_Exception
+    {
+        return set_clearHistory(CLEARHISTORY_TRUE);
+    }
+
+    /**
+     * Returns a list of YDataSet objects that can be used to retrieve
+     * all measures stored by the data logger.
+     * 
+     * This function only works if the device uses a recent firmware,
+     * as YDataSet objects are not supported by firmwares older than
+     * version 13000.
+     * 
+     * @return a list of YDataSet object.
+     * 
+     * @throws YAPI_Exception
+     */
+    public ArrayList<YDataSet> get_dataSets()  throws YAPI_Exception
+    {
+        return parse_dataSets(_download("logger.json"));
+    }
+
+    public ArrayList<YDataSet> parse_dataSets(byte[] json)  throws YAPI_Exception
+    {
+        ArrayList<String> dslist = new ArrayList<String>();
+        ArrayList<YDataSet> res = new ArrayList<YDataSet>();
+        // may throw an exception
+        dslist = _json_get_array(json);
+        res.clear();
+        for (String ii:dslist) {
+            res.add(new YDataSet(this, ii));
+        }
+        return res;
+    }
+
+    /**
+     * Continues the enumeration of data loggers started using yFirstDataLogger().
+     * 
+     * @return a pointer to a YDataLogger object, corresponding to
+     *         a data logger currently online, or a null pointer
+     *         if there are no more data loggers to enumerate.
+     */
+    public  YDataLogger nextDataLogger()
+    {
+        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        if(next_hwid == null) return null;
+        return FindDataLogger(next_hwid);
     }
 
     /**
@@ -700,60 +643,5 @@ public class YDataLogger extends YFunction {
         return FindDataLogger(next_hwid);
     }
 
-    /**
-     * 
-     * @param func : functionid
-     */
-    private YDataLogger(String func)
-    {
-        super("DataLogger", func);
-    }
-
-    @Override
-    void advertiseValue(String newvalue)
-    {
-        super.advertiseValue(newvalue);
-        if (_valueCallbackDataLogger != null) {
-            _valueCallbackDataLogger.yNewValue(this, newvalue);
-        }
-    }
-
-    /**
-     * Internal: check if we have a callback interface registered
-     * 
-     * @return yes if the user has registered a interface
-     */
-    @Override
-     protected boolean hasCallbackRegistered()
-    {
-        return super.hasCallbackRegistered() || (_valueCallbackDataLogger!=null);
-    }
-
-    /**
-     * Registers the callback function that is invoked on every change of advertised value.
-     * The callback is invoked only during the execution of ySleep or yHandleEvents.
-     * This provides control over the time when the callback is triggered. For good responsiveness, remember to call
-     * one of these two functions periodically. To unregister a callback, pass a null pointer as argument.
-     * 
-     * @param callback : the callback function to call, or a null pointer. The callback function should take two
-     *         arguments: the function object of which the value has changed, and the character string describing
-     *         the new advertised value.
-     * @noreturn
-     */
-    public void registerValueCallback(YDataLogger.UpdateCallback callback)
-    {
-         _valueCallbackDataLogger =  callback;
-         if (callback != null && isOnline()) {
-             String newval;
-             try {
-                 newval = get_advertisedValue();
-                 if (!newval.equals("") && !newval.equals("!INVALDI!")) {
-                     callback.yNewValue(this, newval);
-                 }
-             } catch (YAPI_Exception ex) {
-             }
-         }
-    }
-
     //--- (end of generated code: YDataLogger implementation)
-};
+}

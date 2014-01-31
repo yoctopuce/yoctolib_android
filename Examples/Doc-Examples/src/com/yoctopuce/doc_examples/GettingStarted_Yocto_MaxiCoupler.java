@@ -22,7 +22,7 @@ public class GettingStarted_Yocto_MaxiCoupler extends Activity implements OnItem
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gettingstarted_yocto_maxirelay);
+        setContentView(R.layout.gettingstarted_yocto_maxicoupler);
         Spinner my_spin = (Spinner) findViewById(R.id.spinner1);
         my_spin.setOnItemSelectedListener(this);
         aa = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);

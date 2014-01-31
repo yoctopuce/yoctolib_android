@@ -64,12 +64,12 @@ public class YoctoService extends Service implements DeviceArrivalCallback, Devi
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        YAPI.InitAPI(0);
-        YAPI.RegisterDeviceArrivalCallback(this);
-        YAPI.RegisterDeviceRemovalCallback(this);
-        mHubHostName = PreferenceManager.getDefaultSharedPreferences(this).getString(RelayListStorage.PREF_HUB_HOSTNAME, "usb");
         try {
-            YAPI.PreregisterHub(mHubHostName);
+        	YAPI.InitAPI(0);
+        	YAPI.RegisterDeviceArrivalCallback(this);
+        	YAPI.RegisterDeviceRemovalCallback(this);
+        	mHubHostName = PreferenceManager.getDefaultSharedPreferences(this).getString(RelayListStorage.PREF_HUB_HOSTNAME, "usb");
+           YAPI.PreregisterHub(mHubHostName);
         } catch (YAPI_Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

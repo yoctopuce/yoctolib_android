@@ -1,7 +1,2 @@
-- clarify license agreement
-- fix YAPI.RegisterHub and YAPI.PreregisterHub that was failing for the second IP hub.
-- add get_lastLogs() method to YModule class
-- minor fixes 
-- do not start a second instance of the same activity for Doc-Examples
-- add YoctoRelay example
-- fix label in Yocto-Meteo example
+- add YAPI.RegisterHubDiscoveryCallback and YAPI.TriggerHubDiscovery
+- minor bug fixes

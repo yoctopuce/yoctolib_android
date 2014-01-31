@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YColorLed.java 12324 2013-08-13 15:10:31Z mvuilleu $
+ * $Id: YColorLed.java 14408 2014-01-14 15:16:28Z seb $
  *
  * Implements yFindColorLed(), the high-level API for ColorLed functions
  *
@@ -38,9 +38,12 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-//--- (globals)
-//--- (end of globals)
+    //--- (YColorLed return codes)
+    //--- (end of YColorLed return codes)
+//--- (YColorLed class start)
 /**
  * YColorLed Class: ColorLed function interface
  * 
@@ -53,55 +56,114 @@ package com.yoctopuce.YoctoAPI;
  */
 public class YColorLed extends YFunction
 {
-    //--- (definitions)
-    private YColorLed.UpdateCallback _valueCallbackColorLed;
+//--- (end of YColorLed class start)
+//--- (YColorLed definitions)
     public static class YMove
     {
-        public long target = YAPI.INVALID_LONG;
-        public long ms = YAPI.INVALID_LONG;
-        public long moving = YAPI.INVALID_LONG;
-        public YMove(String attr){}
+        public int target = YAPI.INVALID_INT;
+        public int ms = YAPI.INVALID_INT;
+        public int moving = YAPI.INVALID_UINT;
+        public YMove(){}
     }
 
     /**
-     * invalid logicalName value
-     */
-    public static final String LOGICALNAME_INVALID = YAPI.INVALID_STRING;
-    /**
-     * invalid advertisedValue value
-     */
-    public static final String ADVERTISEDVALUE_INVALID = YAPI.INVALID_STRING;
-    /**
      * invalid rgbColor value
      */
-    public static final long RGBCOLOR_INVALID = YAPI.INVALID_LONG;
+    public static final int RGBCOLOR_INVALID = YAPI.INVALID_UINT;
     /**
      * invalid hslColor value
      */
-    public static final long HSLCOLOR_INVALID = YAPI.INVALID_LONG;
+    public static final int HSLCOLOR_INVALID = YAPI.INVALID_UINT;
     /**
      * invalid rgbColorAtPowerOn value
      */
-    public static final long RGBCOLORATPOWERON_INVALID = YAPI.INVALID_LONG;
-    public static final YMove RGBMOVE_INVALID = new YMove("");
-    public static final YMove HSLMOVE_INVALID = new YMove("");
-    //--- (end of definitions)
+    public static final int RGBCOLORATPOWERON_INVALID = YAPI.INVALID_UINT;
+    public static final YMove RGBMOVE_INVALID = null;
+    public static final YMove HSLMOVE_INVALID = null;
+    protected int _rgbColor = RGBCOLOR_INVALID;
+    protected int _hslColor = HSLCOLOR_INVALID;
+    protected YMove _rgbMove = new YMove();
+    protected YMove _hslMove = new YMove();
+    protected int _rgbColorAtPowerOn = RGBCOLORATPOWERON_INVALID;
+    protected UpdateCallback _valueCallbackColorLed = null;
 
     /**
-     * UdateCallback for ColorLed
+     * Deprecated UpdateCallback for ColorLed
      */
     public interface UpdateCallback {
         /**
          * 
-         * @param function : the function object of which the value has changed
-         * @param functionValue :the character string describing the new advertised value
+         * @param function      : the function object of which the value has changed
+         * @param functionValue : the character string describing the new advertised value
          */
         void yNewValue(YColorLed function, String functionValue);
     }
 
+    /**
+     * TimedReportCallback for ColorLed
+     */
+    public interface TimedReportCallback {
+        /**
+         * 
+         * @param function : the function object of which the value has changed
+         * @param measure  : measure
+         */
+        void timedReportCallback(YColorLed  function, YMeasure measure);
+    }
+    //--- (end of YColorLed definitions)
 
+
+    /**
+     * 
+     * @param func : functionid
+     */
+    protected YColorLed(String func)
+    {
+        super(func);
+        _className = "ColorLed";
+        //--- (YColorLed attributes initialization)
+        //--- (end of YColorLed attributes initialization)
+    }
 
     //--- (YColorLed implementation)
+    @Override
+    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    {
+        if (json_val.has("rgbColor")) {
+            _rgbColor =  json_val.getInt("rgbColor");
+        }
+        if (json_val.has("hslColor")) {
+            _hslColor =  json_val.getInt("hslColor");
+        }
+        if (json_val.has("rgbMove")) {
+            JSONObject subjson = json_val.getJSONObject("rgbMove");
+            if (subjson.has("moving")) {
+                _rgbMove.moving = subjson.getInt("moving");
+            }
+            if (subjson.has("target")) {
+                _rgbMove.moving = subjson.getInt("target");
+            }
+            if (subjson.has("ms")) {
+                _rgbMove.moving = subjson.getInt("ms");
+            }
+        }
+        if (json_val.has("hslMove")) {
+            JSONObject subjson = json_val.getJSONObject("hslMove");
+            if (subjson.has("moving")) {
+                _hslMove.moving = subjson.getInt("moving");
+            }
+            if (subjson.has("target")) {
+                _hslMove.moving = subjson.getInt("target");
+            }
+            if (subjson.has("ms")) {
+                _hslMove.moving = subjson.getInt("ms");
+            }
+        }
+        if (json_val.has("rgbColorAtPowerOn")) {
+            _rgbColorAtPowerOn =  json_val.getInt("rgbColorAtPowerOn");
+        }
+        super._parseAttr(json_val);
+    }
 
     /**
      * invalid rgbMove
@@ -110,100 +172,20 @@ public class YColorLed extends YFunction
      * invalid hslMove
      */
     /**
-     * Returns the logical name of the RGB led.
-     * 
-     * @return a string corresponding to the logical name of the RGB led
-     * 
-     * @throws YAPI_Exception
-     */
-    public String get_logicalName()  throws YAPI_Exception
-    {
-        String json_val = (String) _getAttr("logicalName");
-        return json_val;
-    }
-
-    /**
-     * Returns the logical name of the RGB led.
-     * 
-     * @return a string corresponding to the logical name of the RGB led
-     * 
-     * @throws YAPI_Exception
-     */
-    public String getLogicalName() throws YAPI_Exception
-
-    { return get_logicalName(); }
-
-    /**
-     * Changes the logical name of the RGB led. You can use yCheckLogicalName()
-     * prior to this call to make sure that your parameter is valid.
-     * Remember to call the saveToFlash() method of the module if the
-     * modification must be kept.
-     * 
-     * @param newval : a string corresponding to the logical name of the RGB led
-     * 
-     * @return YAPI.SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int set_logicalName( String  newval)  throws YAPI_Exception
-    {
-        String rest_val;
-        rest_val = newval;
-        _setAttr("logicalName",rest_val);
-        return YAPI.SUCCESS;
-    }
-
-    /**
-     * Changes the logical name of the RGB led. You can use yCheckLogicalName()
-     * prior to this call to make sure that your parameter is valid.
-     * Remember to call the saveToFlash() method of the module if the
-     * modification must be kept.
-     * 
-     * @param newval : a string corresponding to the logical name of the RGB led
-     * 
-     * @return YAPI_SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int setLogicalName( String newval)  throws YAPI_Exception
-
-    { return set_logicalName(newval); }
-
-    /**
-     * Returns the current value of the RGB led (no more than 6 characters).
-     * 
-     * @return a string corresponding to the current value of the RGB led (no more than 6 characters)
-     * 
-     * @throws YAPI_Exception
-     */
-    public String get_advertisedValue()  throws YAPI_Exception
-    {
-        String json_val = (String) _getAttr("advertisedValue");
-        return json_val;
-    }
-
-    /**
-     * Returns the current value of the RGB led (no more than 6 characters).
-     * 
-     * @return a string corresponding to the current value of the RGB led (no more than 6 characters)
-     * 
-     * @throws YAPI_Exception
-     */
-    public String getAdvertisedValue() throws YAPI_Exception
-
-    { return get_advertisedValue(); }
-
-    /**
      * Returns the current RGB color of the led.
      * 
      * @return an integer corresponding to the current RGB color of the led
      * 
      * @throws YAPI_Exception
      */
-    public long get_rgbColor()  throws YAPI_Exception
+    public int get_rgbColor()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("rgbColor");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return RGBCOLOR_INVALID;
+            }
+        }
+        return _rgbColor;
     }
 
     /**
@@ -213,7 +195,7 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public long getRgbColor() throws YAPI_Exception
+    public int getRgbColor() throws YAPI_Exception
 
     { return get_rgbColor(); }
 
@@ -226,7 +208,7 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int set_rgbColor( long  newval)  throws YAPI_Exception
+    public int set_rgbColor(int  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = String.format("0x%06x",newval);
@@ -243,7 +225,7 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int setRgbColor( long newval)  throws YAPI_Exception
+    public int setRgbColor(int newval)  throws YAPI_Exception
 
     { return set_rgbColor(newval); }
 
@@ -254,10 +236,14 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public long get_hslColor()  throws YAPI_Exception
+    public int get_hslColor()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("hslColor");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return HSLCOLOR_INVALID;
+            }
+        }
+        return _hslColor;
     }
 
     /**
@@ -267,7 +253,7 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public long getHslColor() throws YAPI_Exception
+    public int getHslColor() throws YAPI_Exception
 
     { return get_hslColor(); }
 
@@ -280,7 +266,7 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int set_hslColor( long  newval)  throws YAPI_Exception
+    public int set_hslColor(int  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = String.format("0x%06x",newval);
@@ -297,21 +283,31 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int setHslColor( long newval)  throws YAPI_Exception
+    public int setHslColor(int newval)  throws YAPI_Exception
 
     { return set_hslColor(newval); }
 
+    /**
+     * @throws YAPI_Exception
+     */
     public YMove get_rgbMove()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("rgbMove");
-        return new YMove(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return RGBMOVE_INVALID;
+            }
+        }
+        return _rgbMove;
     }
 
+    /**
+     * @throws YAPI_Exception
+     */
     public YMove getRgbMove() throws YAPI_Exception
 
     { return get_rgbMove(); }
 
-    public int set_rgbMove( YMove  newval)  throws YAPI_Exception
+    public int set_rgbMove(YMove  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = String.format("%d:%d",newval.target,newval.ms);
@@ -319,7 +315,7 @@ public class YColorLed extends YFunction
         return YAPI.SUCCESS;
     }
 
-    public int setRgbMove( YMove newval)  throws YAPI_Exception
+    public int setRgbMove(YMove newval)  throws YAPI_Exception
 
     { return set_rgbMove(newval); }
 
@@ -341,17 +337,27 @@ public class YColorLed extends YFunction
         return YAPI.SUCCESS;
     }
 
+    /**
+     * @throws YAPI_Exception
+     */
     public YMove get_hslMove()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("hslMove");
-        return new YMove(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return HSLMOVE_INVALID;
+            }
+        }
+        return _hslMove;
     }
 
+    /**
+     * @throws YAPI_Exception
+     */
     public YMove getHslMove() throws YAPI_Exception
 
     { return get_hslMove(); }
 
-    public int set_hslMove( YMove  newval)  throws YAPI_Exception
+    public int set_hslMove(YMove  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = String.format("%d:%d",newval.target,newval.ms);
@@ -359,7 +365,7 @@ public class YColorLed extends YFunction
         return YAPI.SUCCESS;
     }
 
-    public int setHslMove( YMove newval)  throws YAPI_Exception
+    public int setHslMove(YMove newval)  throws YAPI_Exception
 
     { return set_hslMove(newval); }
 
@@ -388,10 +394,14 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public long get_rgbColorAtPowerOn()  throws YAPI_Exception
+    public int get_rgbColorAtPowerOn()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("rgbColorAtPowerOn");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return RGBCOLORATPOWERON_INVALID;
+            }
+        }
+        return _rgbColorAtPowerOn;
     }
 
     /**
@@ -401,7 +411,7 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public long getRgbColorAtPowerOn() throws YAPI_Exception
+    public int getRgbColorAtPowerOn() throws YAPI_Exception
 
     { return get_rgbColorAtPowerOn(); }
 
@@ -418,7 +428,7 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int set_rgbColorAtPowerOn( long  newval)  throws YAPI_Exception
+    public int set_rgbColorAtPowerOn(int  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = String.format("0x%06x",newval);
@@ -439,23 +449,9 @@ public class YColorLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int setRgbColorAtPowerOn( long newval)  throws YAPI_Exception
+    public int setRgbColorAtPowerOn(int newval)  throws YAPI_Exception
 
     { return set_rgbColorAtPowerOn(newval); }
-
-    /**
-     * Continues the enumeration of RGB leds started using yFirstColorLed().
-     * 
-     * @return a pointer to a YColorLed object, corresponding to
-     *         an RGB led currently online, or a null pointer
-     *         if there are no more RGB leds to enumerate.
-     */
-    public  YColorLed nextColorLed()
-    {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
-        if(next_hwid == null) return null;
-        return FindColorLed(next_hwid);
-    }
 
     /**
      * Retrieves an RGB led for a given identifier.
@@ -481,11 +477,71 @@ public class YColorLed extends YFunction
      * @return a YColorLed object allowing you to drive the RGB led.
      */
     public static YColorLed FindColorLed(String func)
-    {   YFunction yfunc = YAPI.getFunction("ColorLed", func);
-        if (yfunc != null) {
-            return (YColorLed) yfunc;
+    {
+        YColorLed obj;
+        obj = (YColorLed) YFunction._FindFromCache("ColorLed", func);
+        if (obj == null) {
+            obj = new YColorLed(func);
+            YFunction._AddToCache("ColorLed", func, obj);
         }
-        return new YColorLed(func);
+        return obj;
+    }
+
+    /**
+     * Registers the callback function that is invoked on every change of advertised value.
+     * The callback is invoked only during the execution of ySleep or yHandleEvents.
+     * This provides control over the time when the callback is triggered. For good responsiveness, remember to call
+     * one of these two functions periodically. To unregister a callback, pass a null pointer as argument.
+     * 
+     * @param callback : the callback function to call, or a null pointer. The callback function should take two
+     *         arguments: the function object of which the value has changed, and the character string describing
+     *         the new advertised value.
+     * @noreturn
+     */
+    public int registerValueCallback(UpdateCallback callback)
+    {
+        String val;
+        
+        if (callback != null) {
+            YFunction._UpdateValueCallbackList(this, true);
+        } else {
+            YFunction._UpdateValueCallbackList(this, false);
+        }
+        _valueCallbackColorLed = callback;
+        
+        // Immediately invoke value callback with current value
+        if (callback != null && isOnline()) {
+            val = _advertisedValue;
+            if (!(val.equals(""))) {
+                _invokeValueCallback(val);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int _invokeValueCallback(String value)
+    {
+        if (_valueCallbackColorLed != null) {
+            _valueCallbackColorLed.yNewValue(this, value);
+        } else {
+            super._invokeValueCallback(value);
+        }
+        return 0;
+    }
+
+    /**
+     * Continues the enumeration of RGB leds started using yFirstColorLed().
+     * 
+     * @return a pointer to a YColorLed object, corresponding to
+     *         an RGB led currently online, or a null pointer
+     *         if there are no more RGB leds to enumerate.
+     */
+    public  YColorLed nextColorLed()
+    {
+        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        if(next_hwid == null) return null;
+        return FindColorLed(next_hwid);
     }
 
     /**
@@ -504,61 +560,6 @@ public class YColorLed extends YFunction
         return FindColorLed(next_hwid);
     }
 
-    /**
-     * 
-     * @param func : functionid
-     */
-    private YColorLed(String func)
-    {
-        super("ColorLed", func);
-    }
-
-    @Override
-    void advertiseValue(String newvalue)
-    {
-        super.advertiseValue(newvalue);
-        if (_valueCallbackColorLed != null) {
-            _valueCallbackColorLed.yNewValue(this, newvalue);
-        }
-    }
-
-    /**
-     * Internal: check if we have a callback interface registered
-     * 
-     * @return yes if the user has registered a interface
-     */
-    @Override
-     protected boolean hasCallbackRegistered()
-    {
-        return super.hasCallbackRegistered() || (_valueCallbackColorLed!=null);
-    }
-
-    /**
-     * Registers the callback function that is invoked on every change of advertised value.
-     * The callback is invoked only during the execution of ySleep or yHandleEvents.
-     * This provides control over the time when the callback is triggered. For good responsiveness, remember to call
-     * one of these two functions periodically. To unregister a callback, pass a null pointer as argument.
-     * 
-     * @param callback : the callback function to call, or a null pointer. The callback function should take two
-     *         arguments: the function object of which the value has changed, and the character string describing
-     *         the new advertised value.
-     * @noreturn
-     */
-    public void registerValueCallback(YColorLed.UpdateCallback callback)
-    {
-         _valueCallbackColorLed =  callback;
-         if (callback != null && isOnline()) {
-             String newval;
-             try {
-                 newval = get_advertisedValue();
-                 if (!newval.equals("") && !newval.equals("!INVALDI!")) {
-                     callback.yNewValue(this, newval);
-                 }
-             } catch (YAPI_Exception ex) {
-             }
-         }
-    }
-
     //--- (end of YColorLed implementation)
-};
+}
 

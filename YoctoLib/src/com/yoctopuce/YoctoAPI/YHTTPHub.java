@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YHTTPHub.java 12427 2013-08-20 16:00:19Z seb $
+ * $Id: YHTTPHub.java 14540 2014-01-17 00:52:50Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -40,21 +40,22 @@
 package com.yoctopuce.YoctoAPI;
 
 import java.math.BigInteger;
-import java.net.URL;
+import java.net.SocketException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 class YHTTPHub extends YGenericHub {
-
-    protected URL url;
     private NotificationThread thread;
+    private final Object    _authLock=new Object();
     private HTTPParams _http_params;
     private String  _http_realm="";
     private String  _nounce="";
@@ -63,113 +64,120 @@ class YHTTPHub extends YGenericHub {
     private String   _opaque="";
     private Random  _randGen=new Random();
     private MessageDigest mdigest;
-    private long    _notifyPos = -1;
-    private int     _notifRetryCount=0;
     private int     _authRetryCount=0;
     private boolean _writeProtected=false;
+
+
 
     private HashMap<YDevice,yHTTPRequest> _httpReqByDev = new HashMap<YDevice, yHTTPRequest>();
 
 
-    synchronized boolean needRetryWithAuth()
+     boolean needRetryWithAuth()
     {
-        if (_http_params.geUser().length()==0 || _http_params.getPass().length()==0)
-            return false;
+        synchronized (_authLock){
+            if (_http_params.geUser().length()==0 || _http_params.getPass().length()==0)
+                return false;
 
-        if(_authRetryCount++>3){
-            return false;
+            if(_authRetryCount++>3){
+                return false;
+            }
+            return true;
         }
-        return true;
     }
 
-    synchronized  void authSucceded()
+     void authSucceded()
     {
-        _authRetryCount=0;
+        synchronized (_authLock){
+            _authRetryCount=0;
+        }
     }
 
 
     // Update the hub internal variables according
     // to a received header with WWW-Authenticate
-    synchronized void parseWWWAuthenticate(String header)
+    void parseWWWAuthenticate(String header)
     {
-        int pos = header.indexOf("\r\nWWW-Authenticate:");
-        if(pos == -1) return;
-        header = header.substring(pos+19);
-        int eol = header.indexOf('\r');
-        if(eol >=0) {
-            header = header.substring(0, eol);
-        }
-        _http_realm="";
-        _nounce ="";
-        _opaque="";
-        _nounce_count=0;
-
-        String tags[] = header.split(" ");
-        for(String tag : tags) {
-            String parts[] = tag.split("[=\",]");
-            String name,value;
-            if(parts.length==2){
-                name=parts[0];
-                value=parts[1];
-            }else if (parts.length==3){
-                name=parts[0];
-                value=parts[2];
-            }else{
-                continue;
+        synchronized (_authLock){
+                int pos = header.indexOf("\r\nWWW-Authenticate:");
+            if(pos == -1) return;
+            header = header.substring(pos+19);
+            int eol = header.indexOf('\r');
+            if(eol >=0) {
+                header = header.substring(0, eol);
             }
-            if(name.equals("realm")) {
-                _http_realm=value;
-            } else if(name.equals("nonce")) {
-                _nounce=value;
-            } else if(name.equals("opaque")) {
-                _opaque=value;
+            _http_realm="";
+            _nounce ="";
+            _opaque="";
+            _nounce_count=0;
+
+            String tags[] = header.split(" ");
+            for(String tag : tags) {
+                String parts[] = tag.split("[=\",]");
+                String name,value;
+                if(parts.length==2){
+                    name=parts[0];
+                    value=parts[1];
+                }else if (parts.length==3){
+                    name=parts[0];
+                    value=parts[2];
+                }else{
+                    continue;
+                }
+                if(name.equals("realm")) {
+                    _http_realm=value;
+                } else if(name.equals("nonce")) {
+                    _nounce=value;
+                } else if(name.equals("opaque")) {
+                    _opaque=value;
+                }
             }
+
+            String plaintext = _http_params.geUser()+":"+_http_realm+":"+_http_params.getPass();
+            mdigest.reset();
+            mdigest.update(plaintext.getBytes());
+            byte[] digest = this.mdigest.digest();
+            BigInteger bigInt = new BigInteger(1,digest);
+            _ha1 = bigInt.toString(16);
         }
-
-        String plaintext = _http_params.geUser()+":"+_http_realm+":"+_http_params.getPass();
-        mdigest.reset();
-        mdigest.update(plaintext.getBytes());
-        byte[] digest = this.mdigest.digest();
-        BigInteger bigInt = new BigInteger(1,digest);
-        _ha1 = bigInt.toString(16);
-
     }
 
 
 
     // Return an Authorization header for a given request
-    synchronized String getAuthorization(String request) throws YAPI_Exception
+    String getAuthorization(String request) throws YAPI_Exception
     {
-        if(_http_params.geUser().length()==0 || _http_realm.length()==0)
-            return "";
-        _nounce_count++;
-        int pos = request.indexOf(' ');
-        String method = request.substring(0, pos);
-        int enduri = request.indexOf(' ',pos+1);
-        if(enduri<0)
-            enduri=request.length();
-        String uri = request.substring(pos+1, enduri);
-        String nc = String.format("%08x", _nounce_count);
-        String cnonce = String.format("%08x", _randGen.nextInt());
+        synchronized(_authLock) {
+            if(_http_params.geUser().length()==0 || _http_realm.length()==0)
+                return "";
+            _nounce_count++;
+            int pos = request.indexOf(' ');
+            String method = request.substring(0, pos);
+            int enduri = request.indexOf(' ',pos+1);
+            if(enduri<0)
+                enduri=request.length();
+            String uri = request.substring(pos+1, enduri);
+            String nc = String.format("%08x", _nounce_count);
+            String cnonce = String.format("%08x", _randGen.nextInt());
 
-        String plaintext = method+":"+uri;
-        mdigest.reset();
-        mdigest.update(plaintext.getBytes());
-        byte[] digest = this.mdigest.digest();
-        BigInteger bigInt = new BigInteger(1,digest);
-        String ha2 = bigInt.toString(16);
-        plaintext =_ha1+":"+_nounce+":"+nc+":"+cnonce+":auth:"+ha2;
-        this.mdigest.reset();
-        this.mdigest.update(plaintext.getBytes());
-        digest = this.mdigest.digest();
-        bigInt = new BigInteger(1,digest);
-        String reponse = bigInt.toString(16);
+            String plaintext = method+":"+uri;
+            mdigest.reset();
+            mdigest.update(plaintext.getBytes());
+            byte[] digest = this.mdigest.digest();
+            BigInteger bigInt = new BigInteger(1,digest);
+            String ha2 = bigInt.toString(16);
+            plaintext =_ha1+":"+_nounce+":"+nc+":"+cnonce+":auth:"+ha2;
+            this.mdigest.reset();
+            this.mdigest.update(plaintext.getBytes());
+            digest = this.mdigest.digest();
+            bigInt = new BigInteger(1,digest);
+            String reponse = bigInt.toString(16);
 
 
-         String res = String.format(
-                 "Authorization: Digest username=\"%s\", realm=\"%s\", nonce=\"%s\", uri=\"%s\", qop=auth, nc=%s, cnonce=\"%s\", response=\"%s\", opaque=\"%s\"\r\n",
-                 _http_params.geUser(),_http_realm,_nounce,uri,nc,cnonce,reponse,_opaque);
-        return res;
+             String res = String.format(
+                     "Authorization: Digest username=\"%s\", realm=\"%s\", nonce=\"%s\", uri=\"%s\", qop=auth, nc=%s, cnonce=\"%s\", response=\"%s\", opaque=\"%s\"\r\n",
+                     _http_params.geUser(),_http_realm,_nounce,uri,nc,cnonce,reponse,_opaque);
+            return res;
+        }
     }
 
     private class HTTPParams{
@@ -200,13 +208,13 @@ class YHTTPHub extends YGenericHub {
             int portpos = url.indexOf(':', pos);
             if (portpos>0 && portpos < end_url) {
                 _host = url.substring(pos,portpos);
-                _port = Integer.parseInt(url.substring(portpos,end_url));
+                _port = Integer.parseInt(url.substring(portpos+1,end_url));
             }else {
                 _host = url.substring(pos,end_url);
             }
         }
 
-        
+
         String getHost()
         {
             return _host;
@@ -246,7 +254,7 @@ class YHTTPHub extends YGenericHub {
         }
     }
 
-    public YHTTPHub(int idx, String url_str) throws YAPI_Exception
+    YHTTPHub(int idx, String url_str) throws YAPI_Exception
     {
         super(idx);
         _http_params =new  HTTPParams(url_str);
@@ -258,17 +266,18 @@ class YHTTPHub extends YGenericHub {
     }
 
     @Override
-    public void startNotifications() throws YAPI_Exception
+    synchronized void startNotifications() throws YAPI_Exception
     {
-        _notifyPos =-1;
         thread = new YHTTPHub.NotificationThread();
         thread.setupConnection(this);
-        thread.setName("Notif_"+_http_params.getHost());
+        synchronized (_authLock){
+            thread.setName("Notif_"+_http_params.getHost());
+        }
         thread.start();
     }
 
     @Override
-    public void stopNotifications()
+    synchronized void stopNotifications()
     {
         if (thread != null) {
             thread.interrupt();
@@ -280,11 +289,11 @@ class YHTTPHub extends YGenericHub {
         thread = null;
     }
 
-    
-    
-    
+
+
+
     @Override
-	public void release()
+	synchronized void release()
 	{
         for( yHTTPRequest req :_httpReqByDev.values()){
             req.WaitRequestEnd();
@@ -293,31 +302,50 @@ class YHTTPHub extends YGenericHub {
 	}
 
 	@Override
-    public String getRootUrl()
+    String getRootUrl()
     {
-	    return _http_params.getUrl();
+        synchronized (_authLock){
+	        return _http_params.getUrl();
+        }
     }
 
     @Override
-    public boolean isSameRootUrl(String url)
+    synchronized boolean isSameRootUrl(String url)
     {
         HTTPParams params = new HTTPParams(url);
-        return params.getUrl().equals(_http_params.getUrl());
+        synchronized (_authLock){
+            return params.getUrl().equals(_http_params.getUrl());
+        }
     }
 
     private class NotificationThread extends Thread {
+        private static final int NET_HUB_NOT_CONNECTION_TIMEOUT = 6000;
         private yHTTPRequest _yreq;
+        private long    _notifyPos = -1;
+        private int     _notifRetryCount=0;
+        private boolean _sendPingNotification=false;
+        private boolean _connected=false;
+        private int _error_delay;
+
 
         public void setupConnection(YHTTPHub hub)
         {
             _yreq = new yHTTPRequest(hub,"Notification of "+_http_params.getHost());
         }
 
+        boolean disconectionDetetcted(){
+            if(_sendPingNotification){
+                return !_connected;
+            }
+            return false;
+        }
+
         private void handleNetNotification(String notification_line)
         {
             String ev = notification_line.trim();
             //System.out.println(notification_line);
-            if (ev.length() >= 3 && ev.charAt(0) == 'y') {
+
+            if (ev.length() >= 3 && ev.charAt(0) >= 'x' && ev.charAt(0) <= 'z') {
                 // function value ydx (tiny notification)
                 _devListValidity = 10000;
                 _notifRetryCount = 0;
@@ -333,13 +361,35 @@ class YHTTPHub extends YGenericHub {
                 String value = ev.substring(3);
                 String serial;
                 String funcid;
-                //System.out.println("tiny notification for "+devydx);
                 if (_serialByYdx.containsKey(devydx)) {
                     serial = _serialByYdx.get(devydx);
-                    funcid = YAPI.getDevice(serial).functionId(funydx);
-                    if (!funcid.equals("")) {
-                        //System.out.println("new value ("+value+") tiny notification for"+funcid);
-                        YAPI.setFunctionValue(serial + "." + funcid, value);
+                    YDevice ydev = YAPI.getDevice(serial);
+                    if(ydev!=null){
+                        if (funydx == 0xf) {
+                            Integer[] data = new Integer[5];
+                            for(int i = 0; i < 5; i++) {
+                                String part = value.substring(i * 2, i * 2 + 2);
+                                data[i] = Integer.parseInt(part,16);
+                            }
+                            ydev.setDeviceTime(data);
+                        } else {
+                            funcid = ydev.getYPEntry(funydx).getFuncId();
+                            if (!funcid.equals("")) {
+                                if(ev.charAt(0) == 'y') {
+                                    // function value ydx (tiny notification)
+                                    YAPI.setFunctionValue(serial + "." + funcid, value);
+                                } else {
+                                    // timed value report
+                                    ArrayList<Integer> report = new ArrayList<Integer>(1+value.length() / 2);
+                                    report.add((ev.charAt(0) == 'z' ? 1 : 0));
+                                    for(int pos = 0; pos < value.length(); pos += 2) {
+                                        int intval = Integer.parseInt(value.substring(pos,pos + 2),16);
+                                        report.add(intval);
+                                    }
+                                    YAPI.setTimedReport(serial + "." + funcid,ydev.getDeviceTime(), report);
+                                }
+                            }
+                        }
                     }
                 }
             } else if (ev.length() >= 5 && ev.startsWith("YN01")) {
@@ -378,7 +428,14 @@ class YHTTPHub extends YGenericHub {
         public void run()
         {
             while (!isInterrupted()) {
-                //YSPRINTF(buffer, 256,"GET /not.byn?abs=%d HTTP/1.1\r\n\r\n" , hub->notifAbsPos);
+                if(_error_delay>0){
+                    try {
+                        Thread.sleep(_error_delay);
+                    } catch (InterruptedException ex) {
+                        if(isInterrupted())
+                            return;
+                    }
+                }
                 try {
                     _yreq._requestReserve();
                     String notUrl;
@@ -388,27 +445,38 @@ class YHTTPHub extends YGenericHub {
                         notUrl = String.format("GET /not.byn?abs=%d\r\n",_notifyPos);
                     }
                     _yreq._requestStart(notUrl,null);
+                    _connected=true;
                     String fifo="";
                     do {
+                        byte[] partial;
                         _yreq._requestProcesss();
-                        byte[] partial =_yreq.getPartialResult();
+                        partial =_yreq.getPartialResult();
                         if (partial!=null){
                             fifo += new String(partial);
                         }
                         int pos;
                         do{
                             pos    = fifo.indexOf("\n");
-                            if( pos>0){
+                            if(pos <0) break;
+                            if (pos==0 && _sendPingNotification==false){
+                                try {
+                                    _yreq.setNoTrafficTimeout(NET_HUB_NOT_CONNECTION_TIMEOUT);
+                                    _sendPingNotification=true;
+                                } catch (SocketException ex) {
+                                    Logger.getLogger(YHTTPHub.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                            }else{
                                 String line = fifo.substring(0, pos+1);
                                 handleNetNotification(line);
-                                fifo = fifo.substring(pos+1);
                             }
-                        }while(pos>0);
+                            fifo = fifo.substring(pos+1);
+                        }while(pos>=0);
+                        _error_delay=0;
                     }while (!isInterrupted());
                     _yreq._requestStop();
                     _yreq._requestRelease();
-
                 } catch (YAPI_Exception ex) {
+                    _connected=false;
                     _yreq._requestStop();
                     _yreq._requestRelease();
                     _notifRetryCount++;
@@ -416,14 +484,7 @@ class YHTTPHub extends YGenericHub {
                     if (isInterrupted()) {
                         return;
                     }
-                    long delay = 500 << _notifRetryCount;
-                    if (delay > 8000) {
-                        delay = 8000;
-                    }
-                    try {
-                        Thread.sleep(delay);
-                    } catch (InterruptedException ex1) {
-                    }
+                    _error_delay = 500 << (_notifRetryCount>4?4:_notifRetryCount);
                 }
             }
         }
@@ -438,7 +499,7 @@ class YHTTPHub extends YGenericHub {
     }
 
     @Override
-    void updateDeviceList(boolean forceupdate) throws YAPI_Exception
+    synchronized void updateDeviceList(boolean forceupdate) throws YAPI_Exception
     {
 
         long now = YAPI.GetTickCount();
@@ -447,6 +508,10 @@ class YHTTPHub extends YGenericHub {
         }
         if (_devListExpires > now) {
             return;
+        }
+
+        if(thread.disconectionDetetcted()){
+            throw new YAPI_Exception(YAPI.TIMEOUT,"hub "+this._http_params.getUrl()+" is not reachable");
         }
 
         yHTTPRequest req =  new yHTTPRequest(this,"updateDeviceList "+_http_params.getHost());
@@ -489,9 +554,7 @@ class YHTTPHub extends YGenericHub {
                 for (int i = 0; i < yprecs_json.length(); i++) {
                     YPEntry yprec = new YPEntry(yprecs_json.getJSONObject(i));
                     yprecs_arr.add(yprec);
-                    if (ftype.reindexFunction(yprec.getHardwareId(),
-                            yprec.getLogicalName(), yprec.getAdvertisedValue())) {
-                    }
+                    ftype.reindexFunction(yprec);
                 }
                 yellowPages.put(classname, yprecs_arr);
             }
@@ -515,8 +578,13 @@ class YHTTPHub extends YGenericHub {
     }
 
     @Override
-    public byte[] devRequest(YDevice device,String req_first_line, byte[] req_head_and_body, Boolean async) throws YAPI_Exception
+    synchronized byte[] devRequest(YDevice device,String req_first_line, byte[] req_head_and_body, Boolean async) throws YAPI_Exception
     {
+
+        if(thread.disconectionDetetcted()){
+            throw new YAPI_Exception(YAPI.TIMEOUT,"hub "+this._http_params.getUrl()+" is not reachable");
+        }
+
         if (!_httpReqByDev.containsKey(device)){
             _httpReqByDev.put(device, new yHTTPRequest(this,"Device "+device.getSerialNumber()));
         }
@@ -532,15 +600,15 @@ class YHTTPHub extends YGenericHub {
         }
     }
 
-    public String getHost()
+    synchronized  String getHost()
     {
         return _http_params.getHost();
     }
 
-    public int getPort()
+    synchronized  int getPort()
     {
         return _http_params.getPort();
     }
 
-    
+
 }

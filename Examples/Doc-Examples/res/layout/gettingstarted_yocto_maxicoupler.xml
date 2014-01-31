@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="5"
-            android:text="Select a Yocto-MaxiRelay output:"
+            android:text="Select a Yocto-MaxiCoupler output:"
             tools:ignore="HardcodedText" />
 
         <Spinner

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGenericHub.java 12427 2013-08-20 16:00:19Z seb $
+ * $Id: YGenericHub.java 13228 2013-10-21 16:47:37Z seb $
  *
  * Internal YGenericHub object
  *
@@ -60,14 +60,14 @@ abstract class YGenericHub {
         _hubidx = idx;
     }
 
-    abstract public void release();
+    abstract void release();
     
-    abstract public String getRootUrl();
-    abstract public boolean isSameRootUrl(String url);
+    abstract String getRootUrl();
+    abstract boolean isSameRootUrl(String url);
 
-    abstract public void startNotifications() throws YAPI_Exception;
+    abstract void startNotifications() throws YAPI_Exception;
 
-    abstract public void stopNotifications();
+    abstract void stopNotifications();
 
     protected void updateFromWpAndYp(ArrayList<WPEntry> whitePages, HashMap<String, ArrayList<YPEntry>> yellowPages) throws YAPI_Exception
     {
@@ -105,5 +105,5 @@ abstract class YGenericHub {
 
     abstract void updateDeviceList(boolean forceupdate) throws YAPI_Exception;
 
-    abstract public byte[] devRequest(YDevice device,String req_first_line,byte[] req_head_and_body, Boolean async) throws YAPI_Exception;
+    abstract byte[] devRequest(YDevice device,String req_first_line,byte[] req_head_and_body, Boolean async) throws YAPI_Exception;
 }

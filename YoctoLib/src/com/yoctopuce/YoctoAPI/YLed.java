@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YLed.java 12324 2013-08-13 15:10:31Z mvuilleu $
+ * $Id: YLed.java 14305 2014-01-10 14:02:16Z seb $
  *
  * Implements yFindLed(), the high-level API for Led functions
  *
@@ -38,9 +38,12 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-//--- (globals)
-//--- (end of globals)
+    //--- (YLed return codes)
+    //--- (end of YLed return codes)
+//--- (YLed class start)
 /**
  * YLed Class: Led function interface
  * 
@@ -50,16 +53,8 @@ package com.yoctopuce.YoctoAPI;
  */
 public class YLed extends YFunction
 {
-    //--- (definitions)
-    private YLed.UpdateCallback _valueCallbackLed;
-    /**
-     * invalid logicalName value
-     */
-    public static final String LOGICALNAME_INVALID = YAPI.INVALID_STRING;
-    /**
-     * invalid advertisedValue value
-     */
-    public static final String ADVERTISEDVALUE_INVALID = YAPI.INVALID_STRING;
+//--- (end of YLed class start)
+//--- (YLed definitions)
     /**
      * invalid power value
      */
@@ -70,7 +65,7 @@ public class YLed extends YFunction
     /**
      * invalid luminosity value
      */
-    public static final int LUMINOSITY_INVALID = YAPI.INVALID_UNSIGNED;
+    public static final int LUMINOSITY_INVALID = YAPI.INVALID_UINT;
     /**
      * invalid blinking value
      */
@@ -82,107 +77,64 @@ public class YLed extends YFunction
     public static final int BLINKING_PANIC = 5;
     public static final int BLINKING_INVALID = -1;
 
-    //--- (end of definitions)
+    protected int _power = POWER_INVALID;
+    protected int _luminosity = LUMINOSITY_INVALID;
+    protected int _blinking = BLINKING_INVALID;
+    protected UpdateCallback _valueCallbackLed = null;
 
     /**
-     * UdateCallback for Led
+     * Deprecated UpdateCallback for Led
      */
     public interface UpdateCallback {
         /**
          * 
-         * @param function : the function object of which the value has changed
-         * @param functionValue :the character string describing the new advertised value
+         * @param function      : the function object of which the value has changed
+         * @param functionValue : the character string describing the new advertised value
          */
         void yNewValue(YLed function, String functionValue);
     }
 
+    /**
+     * TimedReportCallback for Led
+     */
+    public interface TimedReportCallback {
+        /**
+         * 
+         * @param function : the function object of which the value has changed
+         * @param measure  : measure
+         */
+        void timedReportCallback(YLed  function, YMeasure measure);
+    }
+    //--- (end of YLed definitions)
 
+
+    /**
+     * 
+     * @param func : functionid
+     */
+    protected YLed(String func)
+    {
+        super(func);
+        _className = "Led";
+        //--- (YLed attributes initialization)
+        //--- (end of YLed attributes initialization)
+    }
 
     //--- (YLed implementation)
-
-    /**
-     * Returns the logical name of the led.
-     * 
-     * @return a string corresponding to the logical name of the led
-     * 
-     * @throws YAPI_Exception
-     */
-    public String get_logicalName()  throws YAPI_Exception
+    @Override
+    protected void  _parseAttr(JSONObject json_val) throws JSONException
     {
-        String json_val = (String) _getAttr("logicalName");
-        return json_val;
+        if (json_val.has("power")) {
+            _power =  json_val.getInt("power")>0?1:0;
+        }
+        if (json_val.has("luminosity")) {
+            _luminosity =  json_val.getInt("luminosity");
+        }
+        if (json_val.has("blinking")) {
+            _blinking =  json_val.getInt("blinking");
+        }
+        super._parseAttr(json_val);
     }
-
-    /**
-     * Returns the logical name of the led.
-     * 
-     * @return a string corresponding to the logical name of the led
-     * 
-     * @throws YAPI_Exception
-     */
-    public String getLogicalName() throws YAPI_Exception
-
-    { return get_logicalName(); }
-
-    /**
-     * Changes the logical name of the led. You can use yCheckLogicalName()
-     * prior to this call to make sure that your parameter is valid.
-     * Remember to call the saveToFlash() method of the module if the
-     * modification must be kept.
-     * 
-     * @param newval : a string corresponding to the logical name of the led
-     * 
-     * @return YAPI.SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int set_logicalName( String  newval)  throws YAPI_Exception
-    {
-        String rest_val;
-        rest_val = newval;
-        _setAttr("logicalName",rest_val);
-        return YAPI.SUCCESS;
-    }
-
-    /**
-     * Changes the logical name of the led. You can use yCheckLogicalName()
-     * prior to this call to make sure that your parameter is valid.
-     * Remember to call the saveToFlash() method of the module if the
-     * modification must be kept.
-     * 
-     * @param newval : a string corresponding to the logical name of the led
-     * 
-     * @return YAPI_SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int setLogicalName( String newval)  throws YAPI_Exception
-
-    { return set_logicalName(newval); }
-
-    /**
-     * Returns the current value of the led (no more than 6 characters).
-     * 
-     * @return a string corresponding to the current value of the led (no more than 6 characters)
-     * 
-     * @throws YAPI_Exception
-     */
-    public String get_advertisedValue()  throws YAPI_Exception
-    {
-        String json_val = (String) _getAttr("advertisedValue");
-        return json_val;
-    }
-
-    /**
-     * Returns the current value of the led (no more than 6 characters).
-     * 
-     * @return a string corresponding to the current value of the led (no more than 6 characters)
-     * 
-     * @throws YAPI_Exception
-     */
-    public String getAdvertisedValue() throws YAPI_Exception
-
-    { return get_advertisedValue(); }
 
     /**
      * Returns the current led state.
@@ -193,8 +145,12 @@ public class YLed extends YFunction
      */
     public int get_power()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("power");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return POWER_INVALID;
+            }
+        }
+        return _power;
     }
 
     /**
@@ -217,7 +173,7 @@ public class YLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int set_power( int  newval)  throws YAPI_Exception
+    public int set_power(int  newval)  throws YAPI_Exception
     {
         String rest_val;
         rest_val = (newval > 0 ? "1" : "0");
@@ -234,7 +190,7 @@ public class YLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int setPower( int newval)  throws YAPI_Exception
+    public int setPower(int newval)  throws YAPI_Exception
 
     { return set_power(newval); }
 
@@ -247,8 +203,12 @@ public class YLed extends YFunction
      */
     public int get_luminosity()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("luminosity");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return LUMINOSITY_INVALID;
+            }
+        }
+        return _luminosity;
     }
 
     /**
@@ -271,10 +231,10 @@ public class YLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int set_luminosity( int  newval)  throws YAPI_Exception
+    public int set_luminosity(int  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = Long.toString(newval);
+        rest_val = Integer.toString(newval);
         _setAttr("luminosity",rest_val);
         return YAPI.SUCCESS;
     }
@@ -288,7 +248,7 @@ public class YLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int setLuminosity( int newval)  throws YAPI_Exception
+    public int setLuminosity(int newval)  throws YAPI_Exception
 
     { return set_luminosity(newval); }
 
@@ -302,8 +262,12 @@ public class YLed extends YFunction
      */
     public int get_blinking()  throws YAPI_Exception
     {
-        String json_val = (String) _getAttr("blinking");
-        return Integer.parseInt(json_val);
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return BLINKING_INVALID;
+            }
+        }
+        return _blinking;
     }
 
     /**
@@ -328,10 +292,10 @@ public class YLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int set_blinking( int  newval)  throws YAPI_Exception
+    public int set_blinking(int  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = Long.toString(newval);
+        rest_val = Integer.toString(newval);
         _setAttr("blinking",rest_val);
         return YAPI.SUCCESS;
     }
@@ -346,23 +310,9 @@ public class YLed extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int setBlinking( int newval)  throws YAPI_Exception
+    public int setBlinking(int newval)  throws YAPI_Exception
 
     { return set_blinking(newval); }
-
-    /**
-     * Continues the enumeration of leds started using yFirstLed().
-     * 
-     * @return a pointer to a YLed object, corresponding to
-     *         a led currently online, or a null pointer
-     *         if there are no more leds to enumerate.
-     */
-    public  YLed nextLed()
-    {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
-        if(next_hwid == null) return null;
-        return FindLed(next_hwid);
-    }
 
     /**
      * Retrieves a led for a given identifier.
@@ -388,11 +338,71 @@ public class YLed extends YFunction
      * @return a YLed object allowing you to drive the led.
      */
     public static YLed FindLed(String func)
-    {   YFunction yfunc = YAPI.getFunction("Led", func);
-        if (yfunc != null) {
-            return (YLed) yfunc;
+    {
+        YLed obj;
+        obj = (YLed) YFunction._FindFromCache("Led", func);
+        if (obj == null) {
+            obj = new YLed(func);
+            YFunction._AddToCache("Led", func, obj);
         }
-        return new YLed(func);
+        return obj;
+    }
+
+    /**
+     * Registers the callback function that is invoked on every change of advertised value.
+     * The callback is invoked only during the execution of ySleep or yHandleEvents.
+     * This provides control over the time when the callback is triggered. For good responsiveness, remember to call
+     * one of these two functions periodically. To unregister a callback, pass a null pointer as argument.
+     * 
+     * @param callback : the callback function to call, or a null pointer. The callback function should take two
+     *         arguments: the function object of which the value has changed, and the character string describing
+     *         the new advertised value.
+     * @noreturn
+     */
+    public int registerValueCallback(UpdateCallback callback)
+    {
+        String val;
+        
+        if (callback != null) {
+            YFunction._UpdateValueCallbackList(this, true);
+        } else {
+            YFunction._UpdateValueCallbackList(this, false);
+        }
+        _valueCallbackLed = callback;
+        
+        // Immediately invoke value callback with current value
+        if (callback != null && isOnline()) {
+            val = _advertisedValue;
+            if (!(val.equals(""))) {
+                _invokeValueCallback(val);
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int _invokeValueCallback(String value)
+    {
+        if (_valueCallbackLed != null) {
+            _valueCallbackLed.yNewValue(this, value);
+        } else {
+            super._invokeValueCallback(value);
+        }
+        return 0;
+    }
+
+    /**
+     * Continues the enumeration of leds started using yFirstLed().
+     * 
+     * @return a pointer to a YLed object, corresponding to
+     *         a led currently online, or a null pointer
+     *         if there are no more leds to enumerate.
+     */
+    public  YLed nextLed()
+    {
+        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        if(next_hwid == null) return null;
+        return FindLed(next_hwid);
     }
 
     /**
@@ -411,61 +421,6 @@ public class YLed extends YFunction
         return FindLed(next_hwid);
     }
 
-    /**
-     * 
-     * @param func : functionid
-     */
-    private YLed(String func)
-    {
-        super("Led", func);
-    }
-
-    @Override
-    void advertiseValue(String newvalue)
-    {
-        super.advertiseValue(newvalue);
-        if (_valueCallbackLed != null) {
-            _valueCallbackLed.yNewValue(this, newvalue);
-        }
-    }
-
-    /**
-     * Internal: check if we have a callback interface registered
-     * 
-     * @return yes if the user has registered a interface
-     */
-    @Override
-     protected boolean hasCallbackRegistered()
-    {
-        return super.hasCallbackRegistered() || (_valueCallbackLed!=null);
-    }
-
-    /**
-     * Registers the callback function that is invoked on every change of advertised value.
-     * The callback is invoked only during the execution of ySleep or yHandleEvents.
-     * This provides control over the time when the callback is triggered. For good responsiveness, remember to call
-     * one of these two functions periodically. To unregister a callback, pass a null pointer as argument.
-     * 
-     * @param callback : the callback function to call, or a null pointer. The callback function should take two
-     *         arguments: the function object of which the value has changed, and the character string describing
-     *         the new advertised value.
-     * @noreturn
-     */
-    public void registerValueCallback(YLed.UpdateCallback callback)
-    {
-         _valueCallbackLed =  callback;
-         if (callback != null && isOnline()) {
-             String newval;
-             try {
-                 newval = get_advertisedValue();
-                 if (!newval.equals("") && !newval.equals("!INVALDI!")) {
-                     callback.yNewValue(this, newval);
-                 }
-             } catch (YAPI_Exception ex) {
-             }
-         }
-    }
-
     //--- (end of YLed implementation)
-};
+}
 
