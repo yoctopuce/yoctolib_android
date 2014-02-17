@@ -1,0 +1,14 @@
+<resources>
+
+    <string name="app_name">Yocto-Graph</string>
+    <string name="title_activity_main">Yocto-Graph</string>
+    <string name="last_minutes">Last minute</string>
+    <string name="last_5_minutes">Last 5 minutes</string>
+    <string name="last_15_minutes">Last 15 minutes</string>
+    <string name="last_30_minutes">Last 30 minutes</string>
+    <string name="last_hour">Last hour</string>
+    <string name="graph_duration">Duration</string>
+    <string name="plug_a_device">Plug a Yoctopuce device to the USB port</string>
+    <string name="loading">Loading...</string>
+
+</resources>

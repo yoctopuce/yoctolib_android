@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDevice.java 14540 2014-01-17 00:52:50Z seb $
+ * $Id: YDevice.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Internal YDevice class
  *
@@ -45,6 +45,8 @@ import java.util.Iterator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+
 //
 // YDevice Class (used internally)
 //
@@ -60,8 +62,7 @@ import org.json.JSONObject;
 // This is in addition to the function-specific cache implemented in YFunction.
 //
 public class YDevice {
-
-    public static ArrayList<YDevice> _devCache = new ArrayList<YDevice>();// Device cache entries
+    //Todo: thread safe!
     private YGenericHub _hub;
     private WPEntry _wpRec;
     private long _cache_expiration;
@@ -89,7 +90,7 @@ public class YDevice {
                 }
             }
         }
-        YAPI.reindexDevice(this);
+        SafeYAPI().reindexDevice(this);
     }
 
     // Return the serial number of the device, as found during discovery
@@ -142,7 +143,7 @@ public class YDevice {
             return _cache_json;
         }
         String yreq = new String(requestHTTP("GET /api.json",null, false));
-        this._cache_expiration = YAPI.GetTickCount() + YAPI.DefaultCacheValidity;
+        this._cache_expiration = YAPI.GetTickCount() + SafeYAPI().DefaultCacheValidity;
         this._cache_json = yreq;
         return yreq;
     }
@@ -158,7 +159,7 @@ public class YDevice {
             loadval = new JSONObject(result);
 
 
-            _cache_expiration = YAPI.GetTickCount() + YAPI.DefaultCacheValidity;
+            _cache_expiration = YAPI.GetTickCount() + SafeYAPI().DefaultCacheValidity;
             _cache_json = result;
 
             // parse module and refresh names if needed
@@ -183,7 +184,7 @@ public class YDevice {
                     }
                     if (func.has("advertisedValue")) {
                         String pubval = func.getString("advertisedValue");
-                        YAPI.setFunctionValue(_wpRec.getSerialNumber(), pubval);
+                        SafeYAPI().setFunctionValue(_wpRec.getSerialNumber(), pubval);
                     }
                     for (int f = 0; f < _ypRecs.size(); f++) {
                         if (_ypRecs.get(f).getFuncId().equals(key)) {
@@ -201,7 +202,7 @@ public class YDevice {
         }
 
         if (reindex) {
-            YAPI.reindexDevice(this);
+            SafeYAPI().reindexDevice(this);
         }
         return YAPI.SUCCESS;
     }
@@ -220,7 +221,7 @@ public class YDevice {
 
 
 
-    public YPEntry getYPEntry(int idx)
+    YPEntry getYPEntry(int idx)
     {
         if (idx < _ypRecs.size()) {
             return _ypRecs.get(idx);
@@ -253,7 +254,7 @@ public class YDevice {
         _deviceTime = time + data[4] / 250.0;
     }
 
-    public YPEntry getModuleYPEntry()
+    YPEntry getModuleYPEntry()
     {
         return _moduleYPEntry;
     }

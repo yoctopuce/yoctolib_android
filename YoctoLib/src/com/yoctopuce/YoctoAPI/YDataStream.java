@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataStream.java 14615 2014-01-19 00:16:40Z mvuilleu $
+ * $Id: YDataStream.java 14929 2014-02-12 17:55:52Z seb $
  *
  * YDataStream Class: Sequence of measured data, stored by the data logger
  *
@@ -39,6 +39,7 @@
 
 package com.yoctopuce.YoctoAPI;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import java.util.ArrayList;
 
 //--- (generated code: YDataStream class start)
@@ -156,7 +157,7 @@ public class YDataStream
         iCalib = dataset.get_calibration();
         _caltyp = iCalib.get(0);
         if (_caltyp != 0) {
-            _calhdl = YAPI._getCalibrationHandler(_caltyp);
+            _calhdl = SafeYAPI()._getCalibrationHandler(_caltyp);
             _calpar.clear();
             _calraw.clear();
             _calref.clear();
@@ -174,8 +175,8 @@ public class YDataStream
                     _calraw.add(fRaw);
                     _calref.add(fRef);
                 } else {
-                    _calraw.add(YAPI._decimalToDouble(iRaw));
-                    _calref.add(YAPI._decimalToDouble(iRef));
+                    _calraw.add(SafeYAPI()._decimalToDouble(iRaw));
+                    _calref.add(SafeYAPI()._decimalToDouble(iRef));
                 }
                 i = i + 2;
             }
@@ -208,7 +209,7 @@ public class YDataStream
         ArrayList<Integer> udat = new ArrayList<Integer>();
         ArrayList<Double> dat = new ArrayList<Double>();
         // may throw an exception
-        udat = YAPI._decodeWords(_parent._json_get_string(sdata));
+        udat = SafeYAPI()._decodeWords(_parent._json_get_string(sdata));
         _values.clear();
         idx = 0;
         if (_isAvg) {
@@ -262,7 +263,7 @@ public class YDataStream
         if (_isScal) {
             val = (val - _offset) / _scale;
         } else {
-            val = YAPI._decimalToDouble(w);
+            val = SafeYAPI()._decimalToDouble(w);
         }
         if (_caltyp != 0) {
             val = _calhdl.yCalibrationHandler(val, _caltyp, _calpar, _calraw, _calref);

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: yHTTPRequest.java 13228 2013-10-21 16:47:37Z seb $
+ * $Id: yHTTPRequest.java 14929 2014-02-12 17:55:52Z seb $
  *
  * internal yHTTPRequest object
  *
@@ -39,6 +39,7 @@
 
 package com.yoctopuce.YoctoAPI;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import java.io.*;
 import java.net.Socket;
 import java.net.SocketException;
@@ -342,7 +343,7 @@ class yHTTPRequest implements Runnable{
             }
         }
         if(_state == State.IN_REQUEST)
-            YAPI.Log("WARNING: Last Http request did not finished");
+            SafeYAPI()._Log("WARNING: Last Http request did not finished");
         _state   = State.STOPED;
     }
 

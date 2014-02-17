@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YVoltage.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YVoltage.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindVoltage(), the high-level API for Voltage functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YVoltage return codes)
     //--- (end of YVoltage return codes)
@@ -150,14 +151,12 @@ public class YVoltage extends YSensor
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackVoltage = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -221,7 +220,7 @@ public class YVoltage extends YSensor
      */
     public  YVoltage nextVoltage()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindVoltage(next_hwid);
     }
@@ -237,7 +236,7 @@ public class YVoltage extends YSensor
      */
     public static YVoltage FirstVoltage()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Voltage");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Voltage");
         if (next_hwid == null)  return null;
         return FindVoltage(next_hwid);
     }

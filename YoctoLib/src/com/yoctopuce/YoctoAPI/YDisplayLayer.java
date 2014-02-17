@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDisplayLayer.java 14687 2014-01-23 11:01:59Z seb $
+ * $Id: YDisplayLayer.java 14929 2014-02-12 17:55:52Z seb $
  *
  * YDisplayLayer Class: Image layer containing data to display
  *
@@ -53,27 +53,65 @@ public class YDisplayLayer
 //--- (end of generated code: YDisplayLayer class start)
     //--- (generated code: YDisplayLayer definitions)
     public enum ALIGN {
-        TOP_LEFT (0),
-        CENTER_LEFT (1),
-        BASELINE_LEFT (2),
-        BOTTOM_LEFT (3),
-        TOP_CENTER (4),
-        CENTER (5),
-        BASELINE_CENTER (6),
-        BOTTOM_CENTER (7),
-        TOP_DECIMAL (8),
-        CENTER_DECIMAL (9),
-        BASELINE_DECIMAL (10),
-        BOTTOM_DECIMAL (11),
-        TOP_RIGHT (12),
-        CENTER_RIGHT (13),
-        BASELINE_RIGHT (14),
-        BOTTOM_RIGHT (15);
+        TOP_LEFT(0),
+        CENTER_LEFT(1),
+        BASELINE_LEFT(2),
+        BOTTOM_LEFT(3),
+        TOP_CENTER(4),
+        CENTER(5),
+        BASELINE_CENTER(6),
+        BOTTOM_CENTER(7),
+        TOP_DECIMAL(8),
+        CENTER_DECIMAL(9),
+        BASELINE_DECIMAL(10),
+        BOTTOM_DECIMAL(11),
+        TOP_RIGHT(12),
+        CENTER_RIGHT(13),
+        BASELINE_RIGHT(14),
+        BOTTOM_RIGHT(15);
         public final int value;
         private ALIGN(int val) 
         {
             this.value = val;
         };
+        public static ALIGN fromInt(int intval) 
+        {
+            switch(intval) {
+            case 0:
+                return TOP_LEFT;
+            case 1:
+                return CENTER_LEFT;
+            case 2:
+                return BASELINE_LEFT;
+            case 3:
+                return BOTTOM_LEFT;
+            case 4:
+                return TOP_CENTER;
+            case 5:
+                return CENTER;
+            case 6:
+                return BASELINE_CENTER;
+            case 7:
+                return BOTTOM_CENTER;
+            case 8:
+                return TOP_DECIMAL;
+            case 9:
+                return CENTER_DECIMAL;
+            case 10:
+                return BASELINE_DECIMAL;
+            case 11:
+                return BOTTOM_DECIMAL;
+            case 12:
+                return TOP_RIGHT;
+            case 13:
+                return CENTER_RIGHT;
+            case 14:
+                return BASELINE_RIGHT;
+            case 15:
+                return BOTTOM_RIGHT;
+            }
+            return null;
+        }
     };
     
 
@@ -232,7 +270,7 @@ public class YDisplayLayer
      */
     public int setAntialiasingMode(boolean mode)  throws YAPI_Exception
     {
-        return command_push(String.format("a%d",mode));
+        return command_push(String.format("a%d",(mode ? 1 : 0)));
     }
 
     /**
@@ -502,7 +540,7 @@ public class YDisplayLayer
      */
     public int setConsoleWordWrap(boolean wordwrap)  throws YAPI_Exception
     {
-        return command_push(String.format("w%d",wordwrap));
+        return command_push(String.format("w%d",(wordwrap ? 1 : 0)));
     }
 
     /**

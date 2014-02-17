@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YColorLed.java 14408 2014-01-14 15:16:28Z seb $
+ * $Id: YColorLed.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindColorLed(), the high-level API for ColorLed functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YColorLed return codes)
     //--- (end of YColorLed return codes)
@@ -180,8 +181,8 @@ public class YColorLed extends YFunction
      */
     public int get_rgbColor()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return RGBCOLOR_INVALID;
             }
         }
@@ -238,8 +239,8 @@ public class YColorLed extends YFunction
      */
     public int get_hslColor()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return HSLCOLOR_INVALID;
             }
         }
@@ -292,8 +293,8 @@ public class YColorLed extends YFunction
      */
     public YMove get_rgbMove()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return RGBMOVE_INVALID;
             }
         }
@@ -342,8 +343,8 @@ public class YColorLed extends YFunction
      */
     public YMove get_hslMove()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return HSLMOVE_INVALID;
             }
         }
@@ -396,8 +397,8 @@ public class YColorLed extends YFunction
      */
     public int get_rgbColorAtPowerOn()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return RGBCOLORATPOWERON_INVALID;
             }
         }
@@ -501,14 +502,12 @@ public class YColorLed extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackColorLed = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -539,7 +538,7 @@ public class YColorLed extends YFunction
      */
     public  YColorLed nextColorLed()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindColorLed(next_hwid);
     }
@@ -555,7 +554,7 @@ public class YColorLed extends YFunction
      */
     public static YColorLed FirstColorLed()
     {
-        String next_hwid = YAPI.getFirstHardwareId("ColorLed");
+        String next_hwid = SafeYAPI().getFirstHardwareId("ColorLed");
         if (next_hwid == null)  return null;
         return FindColorLed(next_hwid);
     }

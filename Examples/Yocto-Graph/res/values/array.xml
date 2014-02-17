@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="graph_duration">
+        <item>Last minute</item>
+        <item>Last 5 minutes</item>
+        <item>Last 15 minutes</item>
+        <item>Last 30 minutes</item>
+        <item>Last hour</item>
+    </string-array>
+</resources>

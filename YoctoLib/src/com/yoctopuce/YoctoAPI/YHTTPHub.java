@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YHTTPHub.java 14540 2014-01-17 00:52:50Z seb $
+ * $Id: YHTTPHub.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -39,7 +39,7 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import java.math.BigInteger;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import java.net.SocketException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -66,9 +66,6 @@ class YHTTPHub extends YGenericHub {
     private MessageDigest mdigest;
     private int     _authRetryCount=0;
     private boolean _writeProtected=false;
-
-
-
     private HashMap<YDevice,yHTTPRequest> _httpReqByDev = new HashMap<YDevice, yHTTPRequest>();
 
 
@@ -77,7 +74,6 @@ class YHTTPHub extends YGenericHub {
         synchronized (_authLock){
             if (_http_params.geUser().length()==0 || _http_params.getPass().length()==0)
                 return false;
-
             if(_authRetryCount++>3){
                 return false;
             }
@@ -136,8 +132,7 @@ class YHTTPHub extends YGenericHub {
             mdigest.reset();
             mdigest.update(plaintext.getBytes());
             byte[] digest = this.mdigest.digest();
-            BigInteger bigInt = new BigInteger(1,digest);
-            _ha1 = bigInt.toString(16);
+            _ha1 = YAPI._bytesToHexStr(digest, 0, digest.length);
         }
     }
 
@@ -163,16 +158,12 @@ class YHTTPHub extends YGenericHub {
             mdigest.reset();
             mdigest.update(plaintext.getBytes());
             byte[] digest = this.mdigest.digest();
-            BigInteger bigInt = new BigInteger(1,digest);
-            String ha2 = bigInt.toString(16);
+            String ha2 = YAPI._bytesToHexStr(digest, 0, digest.length);
             plaintext =_ha1+":"+_nounce+":"+nc+":"+cnonce+":auth:"+ha2;
             this.mdigest.reset();
             this.mdigest.update(plaintext.getBytes());
             digest = this.mdigest.digest();
-            bigInt = new BigInteger(1,digest);
-            String reponse = bigInt.toString(16);
-
-
+            String reponse = YAPI._bytesToHexStr(digest, 0, digest.length);
              String res = String.format(
                      "Authorization: Digest username=\"%s\", realm=\"%s\", nonce=\"%s\", uri=\"%s\", qop=auth, nc=%s, cnonce=\"%s\", response=\"%s\", opaque=\"%s\"\r\n",
                      _http_params.geUser(),_http_realm,_nounce,uri,nc,cnonce,reponse,_opaque);
@@ -180,84 +171,10 @@ class YHTTPHub extends YGenericHub {
         }
     }
 
-    private class HTTPParams{
-        private String  _host="";
-        private int     _port=4444;
-        private String  _user="";
-        private String  _pass="";
-
-        public HTTPParams(String url)
-        {
-            int pos = 0;
-            if (url.startsWith("http://")) {
-                pos =7;
-            }
-
-            int end_auth = url.indexOf('@',pos);
-            int end_user = url.indexOf(':',pos);
-            if(end_auth>0 && end_user>0 && end_user < end_auth) {
-                _user = url.substring(pos, end_user);
-                _pass = url.substring(end_user+1,end_auth);
-                pos = end_auth+1;
-            }
-
-            int end_url = url.indexOf('/',pos);
-            if (end_url<0)
-                end_url = url.length();
-
-            int portpos = url.indexOf(':', pos);
-            if (portpos>0 && portpos < end_url) {
-                _host = url.substring(pos,portpos);
-                _port = Integer.parseInt(url.substring(portpos+1,end_url));
-            }else {
-                _host = url.substring(pos,end_url);
-            }
-        }
-
-
-        String getHost()
-        {
-            return _host;
-        }
-
-        String getPass()
-        {
-            return _pass;
-        }
-
-        int getPort()
-        {
-            return _port;
-        }
-
-        String geUser()
-        {
-            return _user;
-        }
-
-
-        public String getUrl()
-        {
-            StringBuilder url= new StringBuilder();
-            if(!_user.equals("")){
-                url.append(_user);
-                if(!_pass.equals("")){
-                    url.append(":");
-                    url.append(_pass);
-                }
-                url.append("@");
-            }
-            url.append(_host);
-            url.append(":");
-            url.append(_pass.toString());
-            return url.toString();
-        }
-    }
-
-    YHTTPHub(int idx, String url_str) throws YAPI_Exception
+    YHTTPHub(int idx, HTTPParams httpParams) throws YAPI_Exception
     {
         super(idx);
-        _http_params =new  HTTPParams(url_str);
+        _http_params = httpParams;
         try {
             mdigest = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException ex) {
@@ -363,7 +280,7 @@ class YHTTPHub extends YGenericHub {
                 String funcid;
                 if (_serialByYdx.containsKey(devydx)) {
                     serial = _serialByYdx.get(devydx);
-                    YDevice ydev = YAPI.getDevice(serial);
+                    YDevice ydev = SafeYAPI().getDevice(serial);
                     if(ydev!=null){
                         if (funydx == 0xf) {
                             Integer[] data = new Integer[5];
@@ -377,7 +294,7 @@ class YHTTPHub extends YGenericHub {
                             if (!funcid.equals("")) {
                                 if(ev.charAt(0) == 'y') {
                                     // function value ydx (tiny notification)
-                                    YAPI.setFunctionValue(serial + "." + funcid, value);
+                                    SafeYAPI().setFunctionValue(serial + "." + funcid, value);
                                 } else {
                                     // timed value report
                                     ArrayList<Integer> report = new ArrayList<Integer>(1+value.length() / 2);
@@ -386,7 +303,7 @@ class YHTTPHub extends YGenericHub {
                                         int intval = Integer.parseInt(value.substring(pos,pos + 2),16);
                                         report.add(intval);
                                     }
-                                    YAPI.setTimedReport(serial + "." + funcid,ydev.getDeviceTime(), report);
+                                    SafeYAPI().setTimedReport(serial + "." + funcid,ydev.getDeviceTime(), report);
                                 }
                             }
                         }
@@ -412,7 +329,7 @@ class YHTTPHub extends YGenericHub {
                         case 5: // function value (long notification)
                             String[] parts = ev.substring(5).split(",");
                             //System.out.println("new value ("+parts[2]+") notification for"+parts[0] + "." + parts[1]);
-                            YAPI.setFunctionValue(parts[0] + "." + parts[1],
+                            SafeYAPI().setFunctionValue(parts[0] + "." + parts[1],
                                     parts[2]);
                             break;
                     }
@@ -534,11 +451,7 @@ class YHTTPHub extends YGenericHub {
             JSONObject yellowPages_json = loadval.getJSONObject("services").getJSONObject("yellowPages");
             if(loadval.has("network")){
                 String adminpass =loadval.getJSONObject("network").getString("adminPassword");
-                if(adminpass.length()>0){
-                    _writeProtected=true;
-                }else{
-                    _writeProtected=false;
-                }
+                _writeProtected = adminpass.length()>0;
             }
 
 
@@ -547,7 +460,7 @@ class YHTTPHub extends YGenericHub {
             Iterator<?> keys = yellowPages_json.keys();
             while (keys.hasNext()) {
                 String classname = keys.next().toString();
-                YFunctionType ftype = YAPI.getFnByType(classname);
+                YFunctionType ftype = SafeYAPI().getFnByType(classname);
                 JSONArray yprecs_json = yellowPages_json.getJSONArray(classname);
                 ArrayList<YPEntry> yprecs_arr = new ArrayList<YPEntry>(
                         yprecs_json.length());

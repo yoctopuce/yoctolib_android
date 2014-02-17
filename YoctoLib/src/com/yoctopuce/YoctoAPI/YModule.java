@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YModule.java 14540 2014-01-17 00:52:50Z seb $
+ * $Id: YModule.java 14929 2014-02-12 17:55:52Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -38,6 +38,7 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -126,7 +127,16 @@ public class YModule extends YFunction
     protected int _rebootCountdown = REBOOTCOUNTDOWN_INVALID;
     protected int _usbBandwidth = USBBANDWIDTH_INVALID;
     protected UpdateCallback _valueCallbackModule = null;
+    protected YAPI.LogCallback _logCallback = null;
 
+    public interface LogCallback {
+        /**
+         * 
+         * @param module  : the module object of the device
+         * @param logline : the log line (without carriage return)
+         */
+        void logCallback(YModule module, String logline);
+    }
     /**
      * Deprecated UpdateCallback for Module
      */
@@ -159,7 +169,7 @@ public class YModule extends YFunction
         String devid = _func;
         int dotidx = devid.indexOf('.');
         if( dotidx>=0) devid = devid.substring(0, dotidx);
-        YDevice dev = YAPI.getDevice(devid);
+        YDevice dev = SafeYAPI().getDevice(devid);
         if(dev==null) {
             throw new YAPI_Exception(YAPI.DEVICE_NOT_FOUND, "Device ["+devid+"] is not online");
         }
@@ -259,7 +269,7 @@ public class YModule extends YFunction
     public String get_productName()  throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PRODUCTNAME_INVALID;
             }
         }
@@ -287,7 +297,7 @@ public class YModule extends YFunction
     public String get_serialNumber()  throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return SERIALNUMBER_INVALID;
             }
         }
@@ -315,7 +325,7 @@ public class YModule extends YFunction
     public int get_productId()  throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PRODUCTID_INVALID;
             }
         }
@@ -343,7 +353,7 @@ public class YModule extends YFunction
     public int get_productRelease()  throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PRODUCTRELEASE_INVALID;
             }
         }
@@ -370,8 +380,8 @@ public class YModule extends YFunction
      */
     public String get_firmwareRelease()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return FIRMWARERELEASE_INVALID;
             }
         }
@@ -399,8 +409,8 @@ public class YModule extends YFunction
      */
     public int get_persistentSettings()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PERSISTENTSETTINGS_INVALID;
             }
         }
@@ -440,8 +450,8 @@ public class YModule extends YFunction
      */
     public int get_luminosity()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return LUMINOSITY_INVALID;
             }
         }
@@ -504,8 +514,8 @@ public class YModule extends YFunction
      */
     public int get_beacon()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return BEACON_INVALID;
             }
         }
@@ -562,8 +572,8 @@ public class YModule extends YFunction
      */
     public long get_upTime()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return UPTIME_INVALID;
             }
         }
@@ -590,8 +600,8 @@ public class YModule extends YFunction
      */
     public int get_usbCurrent()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return USBCURRENT_INVALID;
             }
         }
@@ -620,8 +630,8 @@ public class YModule extends YFunction
      */
     public int get_rebootCountdown()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return REBOOTCOUNTDOWN_INVALID;
             }
         }
@@ -663,8 +673,8 @@ public class YModule extends YFunction
      */
     public int get_usbBandwidth()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return USBBANDWIDTH_INVALID;
             }
         }
@@ -759,14 +769,12 @@ public class YModule extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackModule = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -891,7 +899,7 @@ public class YModule extends YFunction
      */
     public  YModule nextModule()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindModule(next_hwid);
     }
@@ -907,7 +915,7 @@ public class YModule extends YFunction
      */
     public static YModule FirstModule()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Module");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Module");
         if (next_hwid == null)  return null;
         return FindModule(next_hwid);
     }

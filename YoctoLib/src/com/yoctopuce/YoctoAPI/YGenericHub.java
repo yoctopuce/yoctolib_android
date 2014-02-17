@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGenericHub.java 13228 2013-10-21 16:47:37Z seb $
+ * $Id: YGenericHub.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Internal YGenericHub object
  *
@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.yoctopuce.YoctoAPI.YAPI.PlugEvent.Event;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 abstract class YGenericHub {
 
@@ -82,7 +83,7 @@ abstract class YGenericHub {
                 if (!currdev.getLogicalName().equals(wp.getLogicalName())) {
                     // Reindex device from its own data
                     currdev.refresh();
-                    YAPI.pushPlugEvent(Event.CHANGE, serial);
+                    SafeYAPI().pushPlugEvent(Event.CHANGE, serial);
                 } else if (currdev.getBeacon() > 0 != wp.getBeacon() > 0) {
                     currdev.refresh();
                 }
@@ -90,15 +91,15 @@ abstract class YGenericHub {
             } else {
                 YDevice dev = new YDevice(this, wp, yellowPages);
                 _devices.put(serial, dev);
-                YAPI.pushPlugEvent(Event.PLUG, serial);
-            	YAPI.Log("HUB: device "+serial+" has been pluged\n");
+                SafeYAPI().pushPlugEvent(Event.PLUG, serial);
+            	SafeYAPI()._Log("HUB: device "+serial+" has been pluged\n");
             }
         }
         
         for (YDevice dev : toRemove) {
         	String serial = dev.getSerialNumber();
-            YAPI.pushPlugEvent(Event.UNPLUG, serial);
-        	YAPI.Log("HUB: device "+serial+" has been unpluged\n");
+            SafeYAPI().pushPlugEvent(Event.UNPLUG, serial);
+        	SafeYAPI()._Log("HUB: device "+serial+" has been unpluged\n");
         	_devices.remove(serial);
         }
     }
@@ -106,4 +107,70 @@ abstract class YGenericHub {
     abstract void updateDeviceList(boolean forceupdate) throws YAPI_Exception;
 
     abstract byte[] devRequest(YDevice device,String req_first_line,byte[] req_head_and_body, Boolean async) throws YAPI_Exception;
+
+    protected static class HTTPParams {
+
+        private String _host = "";
+        private int _port = 4444;
+        private String _user = "";
+        private String _pass = "";
+
+        public  HTTPParams(String url) {
+            super();
+            int pos = 0;
+            if (url.startsWith("http://")) {
+                pos = 7;
+            }
+            int end_auth = url.indexOf('@', pos);
+            int end_user = url.indexOf(':', pos);
+            if (end_auth >= 0 && end_user >= 0 && end_user < end_auth) {
+                _user = url.substring(pos, end_user);
+                _pass = url.substring(end_user + 1, end_auth);
+                pos = end_auth + 1;
+            }
+            int end_url = url.indexOf('/', pos);
+            if (end_url < 0) {
+                end_url = url.length();
+            }
+            int portpos = url.indexOf(':', pos);
+            if (portpos > 0 && portpos < end_url) {
+                _host = url.substring(pos, portpos);
+                _port = Integer.parseInt(url.substring(portpos + 1, end_url));
+            } else {
+                _host = url.substring(pos, end_url);
+            }
+        }
+
+        String getHost() {
+            return _host;
+        }
+
+        String getPass() {
+            return _pass;
+        }
+
+        int getPort() {
+            return _port;
+        }
+
+        String geUser() {
+            return _user;
+        }
+
+        public String getUrl() {
+            StringBuilder url = new StringBuilder();
+            if (!_user.equals("")) {
+                url.append(_user);
+                if (!_pass.equals("")) {
+                    url.append(":");
+                    url.append(_pass);
+                }
+                url.append("@");
+            }
+            url.append(_host);
+            url.append(":");
+            url.append(_pass.toString());
+            return url.toString();
+        }
+    }
 }

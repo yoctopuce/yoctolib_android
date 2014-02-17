@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFiles.java 14615 2014-01-19 00:16:40Z mvuilleu $
+ * $Id: YFiles.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindFiles(), the high-level API for Files functions
  *
@@ -39,6 +39,7 @@
 
 package com.yoctopuce.YoctoAPI;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,8 +129,8 @@ public class YFiles extends YFunction
      */
     public int get_filesCount()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return FILESCOUNT_INVALID;
             }
         }
@@ -156,8 +157,8 @@ public class YFiles extends YFunction
      */
     public int get_freeSpace()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return FREESPACE_INVALID;
             }
         }
@@ -223,14 +224,12 @@ public class YFiles extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackFiles = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -368,7 +367,7 @@ public class YFiles extends YFunction
      */
     public  YFiles nextFiles()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindFiles(next_hwid);
     }
@@ -384,7 +383,7 @@ public class YFiles extends YFunction
      */
     public static YFiles FirstFiles()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Files");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Files");
         if (next_hwid == null)  return null;
         return FindFiles(next_hwid);
     }

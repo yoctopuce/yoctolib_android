@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YVoc.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YVoc.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindVoc(), the high-level API for Voc functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YVoc return codes)
     //--- (end of YVoc return codes)
@@ -150,14 +151,12 @@ public class YVoc extends YSensor
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackVoc = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -221,7 +220,7 @@ public class YVoc extends YSensor
      */
     public  YVoc nextVoc()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindVoc(next_hwid);
     }
@@ -237,7 +236,7 @@ public class YVoc extends YSensor
      */
     public static YVoc FirstVoc()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Voc");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Voc");
         if (next_hwid == null)  return null;
         return FindVoc(next_hwid);
     }

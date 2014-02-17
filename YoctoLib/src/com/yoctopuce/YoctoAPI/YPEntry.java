@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPEntry.java 14540 2014-01-17 00:52:50Z seb $
+ * $Id: YPEntry.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Yellow page implementation
  *
@@ -39,6 +39,7 @@
 
 package com.yoctopuce.YoctoAPI;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -78,8 +79,8 @@ class YPEntry {
         int pos = hardwareId.indexOf('.');
         _serial = hardwareId.substring(0, pos);
         _funcId = hardwareId.substring(pos+1);
-        _classname = YAPI.functionClass(_funcId);
-        _categ = YAPI.functionClass(_funcId);
+        _classname = SafeYAPI().functionClass(_funcId);
+        _categ = SafeYAPI().functionClass(_funcId);
         _logicalName = json.getString("logicalName");
         _advertisedValue = json.getString("advertisedValue");
         try {
@@ -97,8 +98,8 @@ class YPEntry {
     {
     	_serial =serial;
     	_funcId = functionID;
-        _classname = YAPI.functionClass(_funcId);
-        _categ = YAPI.functionClass(_funcId);
+        _classname = SafeYAPI().functionClass(_funcId);
+        _categ = SafeYAPI().functionClass(_funcId);
     }
 
     @Override
@@ -120,7 +121,7 @@ class YPEntry {
     public void setAdvertisedValue(String _advertisedValue)
     {
         this._advertisedValue = _advertisedValue;
-        YAPI.setFunctionValue(_serial+"."+_funcId, _advertisedValue);
+        SafeYAPI().setFunctionValue(_serial+"."+_funcId, _advertisedValue);
     }
 
     public String getHardwareId()
@@ -186,7 +187,7 @@ class YPEntry {
             else
                 return  _logicalName+".module";
         } else {
-            YPEntry moduleYP = YAPI.resolveFunction("Module", _serial);
+            YPEntry moduleYP = SafeYAPI().resolveFunction("Module", _serial);
             String module = moduleYP.getFriendlyName();
             int pos = module.indexOf(".");
             module = module.substring(0, pos);

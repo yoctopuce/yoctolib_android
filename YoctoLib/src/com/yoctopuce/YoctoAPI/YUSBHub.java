@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 14565 2014-01-17 11:27:03Z seb $
+ * $Id: YUSBHub.java 14929 2014-02-12 17:55:52Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -51,6 +51,8 @@ import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+
 class YUSBHub extends YGenericHub
 {
 	private static final String ACTION_USB_PERMISSION = "com.yoctopuce.YoctoAPI.USB_PERMISSION";
@@ -73,9 +75,9 @@ class YUSBHub extends YGenericHub
 					UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 					if (device != null) {
 						if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-							YAPI.Log("HUB_USB: permission granted for device " + device.getDeviceName()+"\n");
+                            SafeYAPI()._Log("HUB_USB: permission granted for device " + device.getDeviceName() + "\n");
 						} else {
-							YAPI.Log("HUB_USB: permission denied for device " + device.getDeviceName()+"\n");
+                            SafeYAPI()._Log("HUB_USB: permission denied for device " + device.getDeviceName() + "\n");
 						}
 					}
 				}		
@@ -86,7 +88,7 @@ class YUSBHub extends YGenericHub
     			 */
     			UsbDevice device = (UsbDevice)intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);      	        
     			if (device != null) {
-					YAPI.Log("HUB_USB: device " + device.getDeviceName()+"has been unplugeed (intent)");
+                    SafeYAPI()._Log("HUB_USB: device " + device.getDeviceName() + "has been unplugeed (intent)");
 					synchronized (_requestedPermitions) {
 						_requestedPermitions.remove(device.getDeviceName());
 					}
@@ -169,7 +171,7 @@ class YUSBHub extends YGenericHub
 					}
 					_requestedPermitions.add(device.getDeviceName());
 				}
-				YAPI.Log("HUB_USB: request permition for "+device.getDeviceName()+"\n"); 
+                SafeYAPI()._Log("HUB_USB: request permission for " + device.getDeviceName() + "\n");
 				Intent intent = new Intent(ACTION_USB_PERMISSION);
 				PendingIntent askPermissionIntent = PendingIntent.getBroadcast(_appContext, 0, intent, 0);
 				permissionPending=true;
@@ -197,23 +199,23 @@ class YUSBHub extends YGenericHub
 			}
 			int deviceid = device.getProductId();
 			if (deviceid == YAPI.YOCTO_DEVID_BOOTLOADER || deviceid == YAPI.YOCTO_DEVID_FACTORYBOOT) {
-				YAPI.Log("HUB_USB: drop yoctopuce bootloader for now\n");
+                SafeYAPI()._Log("HUB_USB: drop yoctopuce bootloader for now\n");
 				continue;
 			}
 			
 			if (_manager.hasPermission(device)){
 				if ( !_devsFromAndroidRef.containsKey(device.getDeviceName())) {
-					YAPI.Log("HUB_USB: use "+device.getDeviceName()+"\n");				
+                    SafeYAPI()._Log("HUB_USB: use " + device.getDeviceName() + "\n");
 					YUSBDevice newdev=new YUSBDevice(device, _manager);
 					try {
 						newdev.reset();
 						String serial=newdev.getSerial();
 						_devsFromAndroidRef.put(device.getDeviceName(), newdev);
 						_devsFromSerial.put(serial, newdev);
-						YAPI.Log("HUB_USB: Device "+serial+" ("+device.getDeviceName()+") started\n");
+                        SafeYAPI()._Log("HUB_USB: Device " + serial + " (" + device.getDeviceName() + ") started\n");
 					} catch (YAPI_Exception e) {
                         newdev.release();
-						YAPI.Log(e.getStackTraceToString());
+                        SafeYAPI()._Log(e.getStackTraceToString());
 					}
 				}
 				toRemove.remove(device.getDeviceName());
@@ -254,7 +256,7 @@ class YUSBHub extends YGenericHub
 	
 	static void SetContextType(Object ctx) throws YAPI_Exception
     {
-        YAPI.Log("HUB_USB:context type=" + ctx.getClass().getName() + "\n");
+        SafeYAPI()._Log("HUB_USB:context type=" + ctx.getClass().getName() + "\n");
         if (!(ctx instanceof Context)) {
             throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Object is not a valid Android Application Context");
         }

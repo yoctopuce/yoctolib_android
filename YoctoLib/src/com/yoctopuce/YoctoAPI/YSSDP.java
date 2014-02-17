@@ -5,7 +5,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -16,6 +15,17 @@ import java.util.HashMap;
  */
 public class YSSDP {
 
+    
+    interface HubDiscoveryCallback {
+        /**
+         *
+         * @param serial : the serial number of the discovered Hub
+         * @param urlToRegister : the new URL to register
+         * @param urlToUnegister : the old URL to unregister
+         */
+        void HubDiscoveryCallback(String serial, String urlToRegister, String urlToUnregister);
+    }
+    
     private static final int SSDP_PORT = 1900;
     private static final String SSDP_MCAST_ADDR = "239.255.255.250";
     private static final String SSDP_URN_YOCTOPUCE = "urn:yoctopuce-com:device:hub:1";
@@ -35,16 +45,18 @@ public class YSSDP {
     private boolean mListening;
     private MulticastSocket mSocketReception;
     private MulticastSocket mMsearchSocket;
-    private ArrayList<SSDPHubCallback> mCallbacks=new ArrayList<SSDPHubCallback>(2);
+    private HubDiscoveryCallback _callbacks;
 
     YSSDP(){
         mListening = false;
     }
 
 
-    public synchronized void addCallback(SSDPHubCallback callback) throws YAPI_Exception {
-        if(!mCallbacks.contains(callback))
-            mCallbacks.add(callback);
+    synchronized void addCallback(HubDiscoveryCallback callback) throws YAPI_Exception {
+        if (_callbacks == callback)
+            // allready started
+            return;
+        _callbacks = callback;
         if(!mListening){
             try {
                 startListening();
@@ -54,23 +66,8 @@ public class YSSDP {
         }
     }
 
-    public synchronized void removeCallback(SSDPHubCallback callback) {
-        if(mCallbacks.contains(callback))
-            mCallbacks.remove(callback);
-        if(mCallbacks.size()==0){
-            stopListening();
-        }
-    }
 
 
-    public interface SSDPHubCallback {
-        /**
-         *
-         * @param serial : the serial number of the discovered Hub
-         * @param url : the url (with port number) of the discoveredHub
-         */
-        void yNewSSDPHub(String serial, String url);
-    }
 
 
 
@@ -78,7 +75,6 @@ public class YSSDP {
 
 
     private  synchronized void updateCache(String uuid, String url, int cacheValidity) {
-
         if (cacheValidity <= 0)
             cacheValidity = 1800;
         cacheValidity*=1000;
@@ -86,34 +82,27 @@ public class YSSDP {
         if (mCache.containsKey(uuid)) {
             YSSDPCacheEntry entry = mCache.get(uuid);
             if (!entry.getURL().equals(url)) {
-                entry.setURL(url);
-                for (SSDPHubCallback call:mCallbacks){
-                    call.yNewSSDPHub(entry.getSerial(), entry.getURL());
-                 }
+                _callbacks.HubDiscoveryCallback(entry.getSerial(), url, entry.getURL());
+                entry.setURL(url);                
+            } else {
+                _callbacks.HubDiscoveryCallback(entry.getSerial(), url, null);                
             }
             entry.resetExpiration(cacheValidity);
             return;
         }
         YSSDPCacheEntry entry = new YSSDPCacheEntry(uuid, url, cacheValidity);
-        mCache.put(uuid, entry);
-        for (SSDPHubCallback call: mCallbacks){
-            call.yNewSSDPHub(entry.getSerial(), entry.getURL());
-        }
+        mCache.put(uuid, entry);        
+        _callbacks.HubDiscoveryCallback(entry.getSerial(), entry.getURL(), null);
     }
 
     private synchronized void checkCacheExpiration() {
         for (YSSDPCacheEntry entry :mCache.values()){
             if(entry.hasExpired()){
-                mCache.remove(entry.getUUID());
+                _callbacks.HubDiscoveryCallback(entry.getSerial(), null, entry.getURL());
+                mCache.remove(entry.getUUID());                
             }
         }
     }
-
-
-
-
-
-
 
     private Thread mListenBcastThread =new Thread(new Runnable() {
         @Override
@@ -132,7 +121,7 @@ public class YSSDP {
                 }catch (SocketTimeoutException ignored){
                 }catch (IOException e) {
                     //todo: better error handling
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    e.printStackTrace();
                 }
                 checkCacheExpiration();
             }
@@ -151,7 +140,7 @@ public class YSSDP {
         sendMSearch();
     }
 
-     private void stopListening() {
+    void Stop() {
         mListening = false;
         if(mListenMSearchThread.isAlive())
             mListenMSearchThread.interrupt();

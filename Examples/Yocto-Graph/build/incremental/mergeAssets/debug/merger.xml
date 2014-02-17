@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="AndroidYoctoLibUnspecified.aar" >
+        <source path="C:\data\yoctoprod\yoctolib\v1.0\Public\Android\Examples\Yocto-Graph\build\exploded-bundles\AndroidYoctoLibUnspecified.aar\assets" />
+    </dataSet>
+    <dataSet config="main" >
+        <source path="C:\data\yoctoprod\yoctolib\v1.0\Public\Android\Examples\Yocto-Graph\assets" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="C:\data\yoctoprod\yoctolib\v1.0\Public\Android\Examples\Yocto-Graph\build-types\debug\assets" />
+    </dataSet>
+
+</merger>

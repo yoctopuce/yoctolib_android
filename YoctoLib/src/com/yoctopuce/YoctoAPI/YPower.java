@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPower.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YPower.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindPower(), the high-level API for Power functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YPower return codes)
     //--- (end of YPower return codes)
@@ -137,8 +138,8 @@ public class YPower extends YSensor
      */
     public double get_cosPhi()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return COSPHI_INVALID;
             }
         }
@@ -181,8 +182,8 @@ public class YPower extends YSensor
      */
     public double get_meter()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return METER_INVALID;
             }
         }
@@ -211,8 +212,8 @@ public class YPower extends YSensor
      */
     public int get_meterTimer()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return METERTIMER_INVALID;
             }
         }
@@ -278,14 +279,12 @@ public class YPower extends YSensor
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackPower = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -341,6 +340,18 @@ public class YPower extends YSensor
     }
 
     /**
+     * Resets the energy counter.
+     * 
+     * @return YAPI.SUCCESS if the call succeeds.
+     * 
+     * @throws YAPI_Exception
+     */
+    public int reset()  throws YAPI_Exception
+    {
+        return set_meter(0);
+    }
+
+    /**
      * Continues the enumeration of electrical power sensors started using yFirstPower().
      * 
      * @return a pointer to a YPower object, corresponding to
@@ -349,7 +360,7 @@ public class YPower extends YSensor
      */
     public  YPower nextPower()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindPower(next_hwid);
     }
@@ -365,7 +376,7 @@ public class YPower extends YSensor
      */
     public static YPower FirstPower()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Power");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Power");
         if (next_hwid == null)  return null;
         return FindPower(next_hwid);
     }

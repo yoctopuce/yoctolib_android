@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YLed.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YLed.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindLed(), the high-level API for Led functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YLed return codes)
     //--- (end of YLed return codes)
@@ -145,8 +146,8 @@ public class YLed extends YFunction
      */
     public int get_power()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return POWER_INVALID;
             }
         }
@@ -203,8 +204,8 @@ public class YLed extends YFunction
      */
     public int get_luminosity()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return LUMINOSITY_INVALID;
             }
         }
@@ -262,8 +263,8 @@ public class YLed extends YFunction
      */
     public int get_blinking()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return BLINKING_INVALID;
             }
         }
@@ -362,14 +363,12 @@ public class YLed extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackLed = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -400,7 +399,7 @@ public class YLed extends YFunction
      */
     public  YLed nextLed()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindLed(next_hwid);
     }
@@ -416,7 +415,7 @@ public class YLed extends YFunction
      */
     public static YLed FirstLed()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Led");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Led");
         if (next_hwid == null)  return null;
         return FindLed(next_hwid);
     }

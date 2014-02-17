@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGenericSensor.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YGenericSensor.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindGenericSensor(), the high-level API for GenericSensor functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YGenericSensor return codes)
     //--- (end of YGenericSensor return codes)
@@ -177,8 +178,8 @@ public class YGenericSensor extends YSensor
      */
     public double get_signalValue()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return SIGNALVALUE_INVALID;
             }
         }
@@ -206,7 +207,7 @@ public class YGenericSensor extends YSensor
     public String get_signalUnit()  throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return SIGNALUNIT_INVALID;
             }
         }
@@ -233,8 +234,8 @@ public class YGenericSensor extends YSensor
      */
     public String get_signalRange()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return SIGNALRANGE_INVALID;
             }
         }
@@ -291,8 +292,8 @@ public class YGenericSensor extends YSensor
      */
     public String get_valueRange()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return VALUERANGE_INVALID;
             }
         }
@@ -390,14 +391,12 @@ public class YGenericSensor extends YSensor
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackGenericSensor = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -461,7 +460,7 @@ public class YGenericSensor extends YSensor
      */
     public  YGenericSensor nextGenericSensor()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindGenericSensor(next_hwid);
     }
@@ -477,7 +476,7 @@ public class YGenericSensor extends YSensor
      */
     public static YGenericSensor FirstGenericSensor()
     {
-        String next_hwid = YAPI.getFirstHardwareId("GenericSensor");
+        String next_hwid = SafeYAPI().getFirstHardwareId("GenericSensor");
         if (next_hwid == null)  return null;
         return FindGenericSensor(next_hwid);
     }

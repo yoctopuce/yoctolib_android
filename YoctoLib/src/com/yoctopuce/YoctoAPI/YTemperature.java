@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YTemperature.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YTemperature.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindTemperature(), the high-level API for Temperature functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YTemperature return codes)
     //--- (end of YTemperature return codes)
@@ -135,8 +136,8 @@ public class YTemperature extends YSensor
      */
     public int get_sensorType()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return SENSORTYPE_INVALID;
             }
         }
@@ -249,14 +250,12 @@ public class YTemperature extends YSensor
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackTemperature = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -320,7 +319,7 @@ public class YTemperature extends YSensor
      */
     public  YTemperature nextTemperature()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindTemperature(next_hwid);
     }
@@ -336,7 +335,7 @@ public class YTemperature extends YSensor
      */
     public static YTemperature FirstTemperature()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Temperature");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Temperature");
         if (next_hwid == null)  return null;
         return FindTemperature(next_hwid);
     }

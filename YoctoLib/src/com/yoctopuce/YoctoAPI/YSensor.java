@@ -39,6 +39,7 @@
 
 package com.yoctopuce.YoctoAPI;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -299,16 +300,16 @@ public class YSensor extends YFunction
     }
 
     /**
-     * Returns the measuring unit for the measured value.
+     * Returns the measuring unit for the measure.
      * 
-     * @return a string corresponding to the measuring unit for the measured value
+     * @return a string corresponding to the measuring unit for the measure
      * 
      * @throws YAPI_Exception
      */
     public String get_unit()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return UNIT_INVALID;
             }
         }
@@ -316,9 +317,9 @@ public class YSensor extends YFunction
     }
 
     /**
-     * Returns the measuring unit for the measured value.
+     * Returns the measuring unit for the measure.
      * 
-     * @return a string corresponding to the measuring unit for the measured value
+     * @return a string corresponding to the measuring unit for the measure
      * 
      * @throws YAPI_Exception
      */
@@ -327,17 +328,17 @@ public class YSensor extends YFunction
     { return get_unit(); }
 
     /**
-     * Returns the current measured value.
+     * Returns the current value of the measure.
      * 
-     * @return a floating point number corresponding to the current measured value
+     * @return a floating point number corresponding to the current value of the measure
      * 
      * @throws YAPI_Exception
      */
     public double get_currentValue()  throws YAPI_Exception
     {
         double res = 0;
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return CURRENTVALUE_INVALID;
             }
         }
@@ -350,9 +351,9 @@ public class YSensor extends YFunction
     }
 
     /**
-     * Returns the current measured value.
+     * Returns the current value of the measure.
      * 
-     * @return a floating point number corresponding to the current measured value
+     * @return a floating point number corresponding to the current value of the measure
      * 
      * @throws YAPI_Exception
      */
@@ -391,17 +392,18 @@ public class YSensor extends YFunction
     { return set_lowestValue(newval); }
 
     /**
-     * Returns the minimal value observed.
+     * Returns the minimal value observed for the measure since the device was started.
      * 
-     * @return a floating point number corresponding to the minimal value observed
+     * @return a floating point number corresponding to the minimal value observed for the measure since
+     * the device was started
      * 
      * @throws YAPI_Exception
      */
     public double get_lowestValue()  throws YAPI_Exception
     {
         double res = 0;
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return LOWESTVALUE_INVALID;
             }
         }
@@ -410,9 +412,10 @@ public class YSensor extends YFunction
     }
 
     /**
-     * Returns the minimal value observed.
+     * Returns the minimal value observed for the measure since the device was started.
      * 
-     * @return a floating point number corresponding to the minimal value observed
+     * @return a floating point number corresponding to the minimal value observed for the measure since
+     * the device was started
      * 
      * @throws YAPI_Exception
      */
@@ -451,17 +454,18 @@ public class YSensor extends YFunction
     { return set_highestValue(newval); }
 
     /**
-     * Returns the maximal value observed.
+     * Returns the maximal value observed for the measure since the device was started.
      * 
-     * @return a floating point number corresponding to the maximal value observed
+     * @return a floating point number corresponding to the maximal value observed for the measure since
+     * the device was started
      * 
      * @throws YAPI_Exception
      */
     public double get_highestValue()  throws YAPI_Exception
     {
         double res = 0;
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return HIGHESTVALUE_INVALID;
             }
         }
@@ -470,9 +474,10 @@ public class YSensor extends YFunction
     }
 
     /**
-     * Returns the maximal value observed.
+     * Returns the maximal value observed for the measure since the device was started.
      * 
-     * @return a floating point number corresponding to the maximal value observed
+     * @return a floating point number corresponding to the maximal value observed for the measure since
+     * the device was started
      * 
      * @throws YAPI_Exception
      */
@@ -489,8 +494,8 @@ public class YSensor extends YFunction
      */
     public double get_currentRawValue()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return CURRENTRAWVALUE_INVALID;
             }
         }
@@ -519,8 +524,8 @@ public class YSensor extends YFunction
      */
     public String get_logFrequency()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return LOGFREQUENCY_INVALID;
             }
         }
@@ -589,8 +594,8 @@ public class YSensor extends YFunction
      */
     public String get_reportFrequency()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return REPORTFREQUENCY_INVALID;
             }
         }
@@ -653,8 +658,8 @@ public class YSensor extends YFunction
      */
     public String get_calibrationParam()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return CALIBRATIONPARAM_INVALID;
             }
         }
@@ -722,8 +727,8 @@ public class YSensor extends YFunction
      */
     public double get_resolution()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return RESOLUTION_INVALID;
             }
         }
@@ -790,14 +795,12 @@ public class YSensor extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackSensor = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -852,7 +855,7 @@ public class YSensor extends YFunction
             return 0;
         }
         // New format, decode parameters
-        iCalib = YAPI._decodeWords(_calibrationParam);
+        iCalib = SafeYAPI()._decodeWords(_calibrationParam);
         // In case of unknown format, calibrated value will be provided by the device
         if (iCalib.size() < 2) {
             _caltyp = -1;
@@ -886,7 +889,7 @@ public class YSensor extends YFunction
         }
         
         _caltyp = iCalib.get(2);
-        _calhdl = YAPI._getCalibrationHandler(_caltyp);
+        _calhdl = SafeYAPI()._getCalibrationHandler(_caltyp);
         // parse calibration points
         position = 3;
         if (_caltyp <= 10) {
@@ -918,8 +921,8 @@ public class YSensor extends YFunction
                 _calraw.add(fRaw);
                 _calref.add(fRef);
             } else {
-                _calraw.add(YAPI._decimalToDouble(iRaw));
-                _calref.add(YAPI._decimalToDouble(iRef));
+                _calraw.add(SafeYAPI()._decimalToDouble(iRaw));
+                _calref.add(SafeYAPI()._decimalToDouble(iRef));
             }
             position = position + 2;
         }
@@ -1041,7 +1044,7 @@ public class YSensor extends YFunction
         
         // Load function parameters if not yet loaded
         if (_scale == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return YAPI.DEVICE_NOT_FOUND;
             }
         }
@@ -1082,7 +1085,7 @@ public class YSensor extends YFunction
         
         // Load function parameters if not yet loaded
         if (_scale == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return YAPI.INVALID_STRING;
             }
         }
@@ -1105,8 +1108,8 @@ public class YSensor extends YFunction
             res = String.format("%d",10 + npt);
             idx = 0;
             while (idx < npt) {
-                iRaw = (int) YAPI._doubleToDecimal(rawValues.get(idx));
-                iRef = (int) YAPI._doubleToDecimal(refValues.get(idx));
+                iRaw = (int) SafeYAPI()._doubleToDecimal(rawValues.get(idx));
+                iRef = (int) SafeYAPI()._doubleToDecimal(refValues.get(idx));
                 res = String.format("%s,%d,%d", res, iRaw,iRef);
                 idx = idx + 1;
             }
@@ -1197,7 +1200,7 @@ public class YSensor extends YFunction
         if (_isScal) {
             val = (val - _offset) / _scale;
         } else {
-            val = YAPI._decimalToDouble(w);
+            val = SafeYAPI()._decimalToDouble(w);
         }
         if (_caltyp != 0) {
             val = _calhdl.yCalibrationHandler(val, _caltyp, _calpar, _calraw, _calref);
@@ -1229,7 +1232,7 @@ public class YSensor extends YFunction
      */
     public  YSensor nextSensor()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindSensor(next_hwid);
     }
@@ -1245,7 +1248,7 @@ public class YSensor extends YFunction
      */
     public static YSensor FirstSensor()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Sensor");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Sensor");
         if (next_hwid == null)  return null;
         return FindSensor(next_hwid);
     }

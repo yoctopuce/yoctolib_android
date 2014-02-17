@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YHubPort.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YHubPort.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindHubPort(), the high-level API for HubPort functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YHubPort return codes)
     //--- (end of YHubPort return codes)
@@ -146,8 +147,8 @@ public class YHubPort extends YFunction
      */
     public int get_enabled()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return ENABLED_INVALID;
             }
         }
@@ -209,8 +210,8 @@ public class YHubPort extends YFunction
      */
     public int get_portState()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PORTSTATE_INVALID;
             }
         }
@@ -240,8 +241,8 @@ public class YHubPort extends YFunction
      */
     public int get_baudRate()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return BAUDRATE_INVALID;
             }
         }
@@ -309,14 +310,12 @@ public class YHubPort extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackHubPort = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -347,7 +346,7 @@ public class YHubPort extends YFunction
      */
     public  YHubPort nextHubPort()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindHubPort(next_hwid);
     }
@@ -363,7 +362,7 @@ public class YHubPort extends YFunction
      */
     public static YHubPort FirstHubPort()
     {
-        String next_hwid = YAPI.getFirstHardwareId("HubPort");
+        String next_hwid = SafeYAPI().getFirstHardwareId("HubPort");
         if (next_hwid == null)  return null;
         return FindHubPort(next_hwid);
     }

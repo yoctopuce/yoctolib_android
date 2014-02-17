@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBDevice.java 14565 2014-01-17 11:27:03Z seb $
+ * $Id: YUSBDevice.java 14945 2014-02-13 10:26:37Z seb $
  *
  * YUSBDevice Class: 
  *
@@ -50,6 +50,7 @@ import java.util.HashMap;
 
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 public class YUSBDevice
 {
@@ -183,7 +184,7 @@ public class YUSBDevice
                         _state = State.StreamReadyReceived;
                         _stateLock.notify();
                     } else {
-                        YAPI.Log("Streamready to early! :" + _state);
+                        SafeYAPI()._Log("Streamready to early! :" + _state);
                     }
                 }
             }
@@ -194,32 +195,33 @@ public class YUSBDevice
     public void handleTimedNotification(byte[] data) throws YAPI_Exception {
         int pos = 0;
         String serial = getSerial();
-        YDevice ydev = YAPI.getDevice(serial);
+        YDevice ydev = SafeYAPI().getDevice(serial);
         if (ydev==null) {
             // device has not been registered;
             return;
         }
         while (pos < data.length){
             int funYdx = data[pos] & 0xf;
+            boolean isAvg = (data[pos] & 0x80)!=0;
             int len = 1 + ((data[pos]>>4) & 0x7);
+            pos++;
             if (funYdx == 0xf) {
-                Integer[] intData = new Integer[data.length];
-                for (int i = 0; i < data.length; i++) {
-                    intData[i] = data[i] & 0xff;
+                Integer[] intData = new Integer[len];
+                for (int i = 0; i < len; i++) {
+                    intData[i] = data[pos + i] & 0xff;
                 }
                 ydev.setDeviceTime(intData);
             }else {
                 YPEntry yp = getYPEntryFromYdx(getSerial(),funYdx);
-                boolean isAvg = (data[pos] & 0x80)!=0;
                 ArrayList<Integer> report =  new ArrayList<Integer>(len+1);
                 report.add( isAvg ? 1 : 0);
-                for (int i = 1 ; i < len + 1; i++) {
-                    int b = data[i];
+                for (int i = 0 ; i < len ; i++) {
+                    int b = data[pos + i] & 0xff;
                     report.add(b);
                 }
-                YAPI.setTimedReport(yp.getHardwareId(), ydev.getDeviceTime(), report);
+                SafeYAPI().setTimedReport(yp.getHardwareId(), ydev.getDeviceTime(), report);
             }
-            pos += 1 + len;
+            pos += len;
         }
     }
 
@@ -244,14 +246,14 @@ public class YUSBDevice
                         _state = State.StartReceived;
                         _stateLock.notify();
                     } else {
-                        YAPI.Log("Drop late confpkt:" + newpkt.toString());
+                        SafeYAPI()._Log("Drop late confpkt:" + newpkt.toString());
                     }
                 }
             } else {
 
                 int expectedPktno = (_lastpktno + 1) & 7;
                 if (newpkt.getPktno() != expectedPktno) {
-                    YAPI.Log("Missing packet (look of pkt " + expectedPktno + " but get " + newpkt.getPktno() + ")\n");
+                    SafeYAPI()._Log("Missing packet (look of pkt " + expectedPktno + " but get " + newpkt.getPktno() + ")\n");
                 }
                 _lastpktno = newpkt.getPktno();
                 ArrayList<YPktStreamHead> streams = newpkt.getStreams();
@@ -286,7 +288,7 @@ public class YUSBDevice
                         }
                         break;
                     default:
-                        YAPI.Log("drop unknown ystream:" + s.toString());
+                        SafeYAPI()._Log("drop unknown ystream:" + s.toString());
                         break;
                     }
                 }
@@ -297,8 +299,8 @@ public class YUSBDevice
             Writer writer = new StringWriter();
             PrintWriter printWriter = new PrintWriter(writer);
             e.printStackTrace(printWriter);
-            YAPI.Log("Io error during packet decoding:" + e.toString());
-            YAPI.Log(writer.toString());
+            SafeYAPI()._Log("Io error during packet decoding:" + e.toString());
+            SafeYAPI()._Log(writer.toString());
             ioError(e.toString());
         }
     }
@@ -307,12 +309,12 @@ public class YUSBDevice
         synchronized (_stateLock) {
             if (isNotification){
                 if (_state != State.StreamReadyReceived && _state != State.StartReceived) {
-                    YAPI.Log("Drop early notification packet:" + newpkt.toString());
+                    SafeYAPI()._Log("Drop early notification packet:" + newpkt.toString());
                     return false;
                 }
             }else{
                 if (_state != State.StreamReadyReceived) {
-                    YAPI.Log("Drop early tcp packet:" + newpkt.toString());
+                    SafeYAPI()._Log("Drop early tcp packet:" + newpkt.toString());
                     return false;
                 }
             }
@@ -350,7 +352,7 @@ public class YUSBDevice
                 break;
             case Close_by_dev:
             case Closed:
-                YAPI.Log("Drop unexpected close from device\n");
+                SafeYAPI()._Log("Drop unexpected close from device\n");
                 break;
             case Opened:
                 _tcp_state = TCP_State.Close_by_dev;
@@ -441,7 +443,7 @@ public class YUSBDevice
                     }
                 }
                 if (_tcp_state != TCP_State.Closed) {
-                    YAPI.Log("USB Close without device ack\n");
+                    SafeYAPI()._Log("USB Close without device ack\n");
                     _tcp_state = TCP_State.Closed;
                 }
             }

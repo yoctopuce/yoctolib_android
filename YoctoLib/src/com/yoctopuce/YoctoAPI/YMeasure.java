@@ -40,6 +40,8 @@
 package com.yoctopuce.YoctoAPI;
 
 
+import android.util.Log;
+
 import java.util.Date;
 
 //--- (generated code: YMeasure class start)

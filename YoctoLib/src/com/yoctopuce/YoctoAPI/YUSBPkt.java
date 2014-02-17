@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBPkt.java 14540 2014-01-17 00:52:50Z seb $
+ * $Id: YUSBPkt.java 14929 2014-02-12 17:55:52Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 import java.util.ArrayList;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+
 
 public class YUSBPkt  {
 	
@@ -75,7 +77,7 @@ public class YUSBPkt  {
 	    if((version & 0xff00) != (YPKT_USB_VERSION_BCD & 0xff00)){
 	        // major version change
 	        if((version & 0xff00) > (YPKT_USB_VERSION_BCD & 0xff00)){
-	            YAPI.Log(String.format("Yoctopuce library is too old (using 0x%x need 0x%x) to handle device %s, please upgrade your Yoctopuce library\n",YPKT_USB_VERSION_BCD,version,serial));
+                SafeYAPI()._Log(String.format("Yoctopuce library is too old (using 0x%x need 0x%x) to handle device %s, please upgrade your Yoctopuce library\n", YPKT_USB_VERSION_BCD, version, serial));
 	            throw new YAPI_Exception(YAPI.IO_ERROR,"Library is too old to handle this device");
 	        } else {
 	            // implement backward compatibility when implementing a new protocol
@@ -83,9 +85,9 @@ public class YUSBPkt  {
 	        }
 	    } else if(version  != YPKT_USB_VERSION_BCD ){
 	        if(version > YPKT_USB_VERSION_BCD){
-	        	YAPI.Log(String.format("Device %s is using an newer protocol, consider upgrading your Yoctopuce library\n",serial));
+                SafeYAPI()._Log(String.format("Device %s is using an newer protocol, consider upgrading your Yoctopuce library\n",serial));
 	        }else{
-	        	YAPI.Log(String.format("Device %s is using an older protocol, consider upgrading the device firmware\n",serial));
+                SafeYAPI()._Log(String.format("Device %s is using an older protocol, consider upgrading the device firmware\n",serial));
 	        }
 	        return false;
 	    }

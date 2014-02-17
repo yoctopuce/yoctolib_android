@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YHumidity.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YHumidity.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindHumidity(), the high-level API for Humidity functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YHumidity return codes)
     //--- (end of YHumidity return codes)
@@ -150,14 +151,12 @@ public class YHumidity extends YSensor
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackHumidity = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -221,7 +220,7 @@ public class YHumidity extends YSensor
      */
     public  YHumidity nextHumidity()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindHumidity(next_hwid);
     }
@@ -237,7 +236,7 @@ public class YHumidity extends YSensor
      */
     public static YHumidity FirstHumidity()
     {
-        String next_hwid = YAPI.getFirstHardwareId("Humidity");
+        String next_hwid = SafeYAPI().getFirstHardwareId("Humidity");
         if (next_hwid == null)  return null;
         return FindHumidity(next_hwid);
     }

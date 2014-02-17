@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWakeUpMonitor.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YWakeUpMonitor.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindWakeUpMonitor(), the high-level API for WakeUpMonitor functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YWakeUpMonitor return codes)
     //--- (end of YWakeUpMonitor return codes)
@@ -176,8 +177,8 @@ public class YWakeUpMonitor extends YFunction
      */
     public int get_powerDuration()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return POWERDURATION_INVALID;
             }
         }
@@ -236,8 +237,8 @@ public class YWakeUpMonitor extends YFunction
      */
     public int get_sleepCountdown()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return SLEEPCOUNTDOWN_INVALID;
             }
         }
@@ -294,8 +295,8 @@ public class YWakeUpMonitor extends YFunction
      */
     public long get_nextWakeUp()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return NEXTWAKEUP_INVALID;
             }
         }
@@ -358,8 +359,8 @@ public class YWakeUpMonitor extends YFunction
      */
     public int get_wakeUpReason()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return WAKEUPREASON_INVALID;
             }
         }
@@ -391,8 +392,8 @@ public class YWakeUpMonitor extends YFunction
      */
     public int get_wakeUpState()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return WAKEUPSTATE_INVALID;
             }
         }
@@ -427,8 +428,8 @@ public class YWakeUpMonitor extends YFunction
      */
     public long get_rtcTime()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return RTCTIME_INVALID;
             }
         }
@@ -490,14 +491,12 @@ public class YWakeUpMonitor extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackWakeUpMonitor = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -613,7 +612,7 @@ public class YWakeUpMonitor extends YFunction
      */
     public  YWakeUpMonitor nextWakeUpMonitor()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindWakeUpMonitor(next_hwid);
     }
@@ -629,7 +628,7 @@ public class YWakeUpMonitor extends YFunction
      */
     public static YWakeUpMonitor FirstWakeUpMonitor()
     {
-        String next_hwid = YAPI.getFirstHardwareId("WakeUpMonitor");
+        String next_hwid = SafeYAPI().getFirstHardwareId("WakeUpMonitor");
         if (next_hwid == null)  return null;
         return FindWakeUpMonitor(next_hwid);
     }

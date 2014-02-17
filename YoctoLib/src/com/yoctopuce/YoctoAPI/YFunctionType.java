@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFunctionType.java 14540 2014-01-17 00:52:50Z seb $
+ * $Id: YFunctionType.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Internal YFunctionType object
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 
 // YFunctionType Class (used internally)
@@ -172,7 +174,7 @@ class YFunctionType {
         if(hwid.module.length()>0){
 
             // either the device id is a logical name, or the function is unknown
-            YDevice dev = YAPI.getDevice(hwid.module);
+            YDevice dev = SafeYAPI().getDevice(hwid.module);
             if (dev == null) {
                 throw new YAPI_Exception(YAPI.DEVICE_NOT_FOUND, "Device [" + hwid.module + "] not online");
             }
@@ -260,18 +262,18 @@ class YFunctionType {
             return;
         }
         yp.setAdvertisedValue(pubval);
-        YFunction conn_fn = YFunction._GetValueCallback(hwid);
+        YFunction conn_fn = SafeYAPI()._GetValueCallback(hwid);
         if (conn_fn != null) {
-            YAPI._PushDataEvent(new YAPI.DataEvent(conn_fn, pubval));
+            SafeYAPI()._PushDataEvent(new YAPI.DataEvent(conn_fn, pubval));
         }
     }
 
     // Stores a function timed value by hardware id, queue an event if needed
     public void setTimedReport(String hwid, double timestamp, ArrayList<Integer> report)
     {
-        YFunction func = YFunction._GetTimedReportCallback(hwid);
+        YFunction func = SafeYAPI()._GetTimedReportCallback(hwid);
         if (func!=null){
-            YAPI._PushDataEvent(new YAPI.DataEvent(func, timestamp, report));
+            SafeYAPI()._PushDataEvent(new YAPI.DataEvent(func, timestamp, report));
         }
     }
 

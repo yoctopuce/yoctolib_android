@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDualPower.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YDualPower.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindDualPower(), the high-level API for DualPower functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YDualPower return codes)
     //--- (end of YDualPower return codes)
@@ -148,8 +149,8 @@ public class YDualPower extends YFunction
      */
     public int get_powerState()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return POWERSTATE_INVALID;
             }
         }
@@ -179,8 +180,8 @@ public class YDualPower extends YFunction
      */
     public int get_powerControl()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return POWERCONTROL_INVALID;
             }
         }
@@ -242,8 +243,8 @@ public class YDualPower extends YFunction
      */
     public int get_extVoltage()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return EXTVOLTAGE_INVALID;
             }
         }
@@ -309,14 +310,12 @@ public class YDualPower extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackDualPower = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -347,7 +346,7 @@ public class YDualPower extends YFunction
      */
     public  YDualPower nextDualPower()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindDualPower(next_hwid);
     }
@@ -363,7 +362,7 @@ public class YDualPower extends YFunction
      */
     public static YDualPower FirstDualPower()
     {
-        String next_hwid = YAPI.getFirstHardwareId("DualPower");
+        String next_hwid = SafeYAPI().getFirstHardwareId("DualPower");
         if (next_hwid == null)  return null;
         return FindDualPower(next_hwid);
     }

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFunction.java 14565 2014-01-17 11:27:03Z seb $
+ * $Id: YFunction.java 14929 2014-02-12 17:55:52Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -49,7 +49,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-import static com.yoctopuce.YoctoAPI.YAPI.funcGetDevice;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+
 
 //--- (generated code: YFunction class start)
 /**
@@ -73,8 +74,7 @@ public class YFunction
 //--- (end of generated code: YFunction class start)
 
     public static final String FUNCTIONDESCRIPTOR_INVALID = "!INVALID!";
-    private static ArrayList<YFunction> _ValueCallbackList = new ArrayList<YFunction>();
-    private static ArrayList<YFunction> _TimedReportCallbackList = new ArrayList<YFunction>();
+
     protected String _className;
     protected String _func;
     protected int _lastErrorType;
@@ -147,71 +147,28 @@ public class YFunction
 
     protected static YFunction _FindFromCache(String className, String func)
     {
-        return YAPI.getFunction(className, func);
+        return SafeYAPI().getFunction(className, func);
     }
 
     protected static void _AddToCache(String className, String func, YFunction obj)
     {
-        YAPI.setFunction(className, func, obj);
+        SafeYAPI().setFunction(className, func, obj);
     }
 
-    static void _ClearCache()
-    {
-        _ValueCallbackList.clear();
-        _TimedReportCallbackList.clear();
-    }
 
     protected static void _UpdateValueCallbackList(YFunction func, boolean add)
     {
-        if (add)
-        {
-            func.isOnline();
-            if (!_ValueCallbackList.contains(func)) {
-                _ValueCallbackList.add(func);
-            }
-        } else {
-            _ValueCallbackList.remove(func);
-        }
+        SafeYAPI()._UpdateValueCallbackList(func, add);
     }
 
-    static YFunction _GetValueCallback(String hwid)
-    {
-        for (YFunction func : _ValueCallbackList) {
-            try {
-                if (func.getHardwareId().equals(hwid)) {
-                    return func;
-                }
-            } catch (YAPI_Exception ignore) {}
-        }
-        return null;
-    }
 
 
 
     protected static void _UpdateTimedReportCallbackList(YFunction func, boolean add)
     {
-        if (add)
-        {
-            func.isOnline();
-            if (!_TimedReportCallbackList.contains(func)) {
-                _TimedReportCallbackList.add(func);
-            }
-        } else {
-            _TimedReportCallbackList.remove(func);
-        }
+        SafeYAPI()._UpdateTimedReportCallbackList(func, add);
     }
 
-    static YFunction _GetTimedReportCallback(String hwid)
-    {        
-        for (YFunction func : _TimedReportCallbackList) {
-            try {
-                if (func.getHardwareId().equals(hwid)) {
-                    return func;
-                }
-            } catch (YAPI_Exception ignore) {}
-        }
-        return null;
-    }
 
     //--- (generated code: YFunction implementation)
     protected void  _parseAttr(JSONObject json_val) throws JSONException
@@ -233,8 +190,8 @@ public class YFunction
      */
     public String get_logicalName()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return LOGICALNAME_INVALID;
             }
         }
@@ -297,8 +254,8 @@ public class YFunction
      */
     public String get_advertisedValue()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return ADVERTISEDVALUE_INVALID;
             }
         }
@@ -364,14 +321,12 @@ public class YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackFunction = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -396,6 +351,26 @@ public class YFunction
         return 0;
     }
 
+    /**
+     * comment from .yc definition
+     */
+    public  YFunction nextFunction()
+    {
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
+        if(next_hwid == null) return null;
+        return FindFunction(next_hwid);
+    }
+
+    /**
+     * comment from .yc definition
+     */
+    public static YFunction FirstFunction()
+    {
+        String next_hwid = SafeYAPI().getFirstHardwareId("Function");
+        if (next_hwid == null)  return null;
+        return FindFunction(next_hwid);
+    }
+
     //--- (end of generated code: YFunction implementation)
 
     /**
@@ -416,7 +391,7 @@ public class YFunction
     public String describe()
     {
         try {
-            String hwid = YAPI.resolveFunction(_className, _func).getHardwareId();
+            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
             return _className + "(" + _func + ")="+hwid;
         } catch (YAPI_Exception ignored) {
         }
@@ -436,12 +411,12 @@ public class YFunction
      */
     public String get_hardwareId() throws YAPI_Exception
     {
-        return YAPI.resolveFunction(_className, _func).getHardwareId();
+        return SafeYAPI().resolveFunction(_className, _func).getHardwareId();
     }
 
     public String getHardwareId() throws YAPI_Exception
     {
-        return YAPI.resolveFunction(_className, _func).getHardwareId();
+        return SafeYAPI().resolveFunction(_className, _func).getHardwareId();
     }
 
 
@@ -455,12 +430,12 @@ public class YFunction
      */
     public String get_functionId() throws YAPI_Exception
     {
-        return YAPI.resolveFunction(_className, _func).getFuncId();
+        return SafeYAPI().resolveFunction(_className, _func).getFuncId();
     }
 
     public String getFunctionId() throws YAPI_Exception
     {
-        return YAPI.resolveFunction(_className, _func).getFuncId();
+        return SafeYAPI().resolveFunction(_className, _func).getFuncId();
     }
 
 
@@ -477,7 +452,7 @@ public class YFunction
      */
     public String get_friendlyName() throws YAPI_Exception
     {
-        YPEntry yp = YAPI.resolveFunction(_className, _func);
+        YPEntry yp = SafeYAPI().resolveFunction(_className, _func);
         return yp.getFriendlyName();
     }
 
@@ -538,7 +513,7 @@ public class YFunction
 
     private byte[] _request(String req_first_line,byte[] req_head_and_body) throws YAPI_Exception
     {
-        YDevice dev = YAPI.funcGetDevice(_className, _func);
+        YDevice dev = SafeYAPI().funcGetDevice(_className, _func);
         return dev.requestHTTP(req_first_line,req_head_and_body, false);
     }
 
@@ -549,7 +524,7 @@ public class YFunction
         String request = "POST /upload.html HTTP/1.1\r\n";
         String mp_header = "Content-Disposition: form-data; name=\""+path+"\"; filename=\"api\"\r\n"+
                     "Content-Type: application/octet-stream\r\n"+
-                    "Cobntent-Transfer-Encoding: binary\r\n\r\n";
+                    "Content-Transfer-Encoding: binary\r\n\r\n";
         // find a valid boundary
         do {
             boundary = String.format("Zz%06xzZ", randomGenerator.nextInt(0x1000000));
@@ -649,9 +624,8 @@ public class YFunction
     // leveraged for other modules
     protected JSONObject _devRequest(String extra) throws YAPI_Exception
     {
-        YDevice dev = funcGetDevice(_className, _func);
-        //_hwId = YAPI.resolveFunction(_className, _func);
-        YPEntry yp = YAPI.resolveFunction(_className, _func);
+        YDevice dev = SafeYAPI().funcGetDevice(_className, _func);
+        YPEntry yp = SafeYAPI().resolveFunction(_className, _func);
         _hwId = yp.getHardwareId();
         _funId = yp.getFuncId();
         _serial = yp.getSerial();
@@ -696,7 +670,7 @@ public class YFunction
     {
         String key = dataset.get_functionId()+":"+def;
         if(_dataStreams.containsKey(key)) {
-            return _dataStreams.get(def);
+            return _dataStreams.get(key);
         }
 
         YDataStream newDataStream = new YDataStream(this, dataset, YAPI._decodeWords(def));
@@ -721,7 +695,7 @@ public class YFunction
         }
         try {
             // Check that the function is available without throwing exceptions
-            load(YAPI.DefaultCacheValidity);
+            load(SafeYAPI().DefaultCacheValidity);
         } catch (YAPI_Exception ex) {
             return false;
         }
@@ -818,15 +792,15 @@ public class YFunction
         // try to resolve the function name to a device id without query
         if (_func.indexOf('.') == -1) {
             try {
-                ypEntry = YAPI.resolveFunction(_className, _func);
+                ypEntry = SafeYAPI().resolveFunction(_className, _func);
                 return YModule.FindModule(ypEntry.getSerial());
             } catch (YAPI_Exception ignored) {
             }
         }
         try {
             // device not resolved for now, force a communication for a last chance resolution
-            if (load(YAPI.DefaultCacheValidity) == YAPI.SUCCESS) {
-                ypEntry = YAPI.resolveFunction(_className, _func);
+            if (load(SafeYAPI().DefaultCacheValidity) == YAPI.SUCCESS) {
+                ypEntry = SafeYAPI().resolveFunction(_className, _func);
                 return YModule.FindModule(ypEntry.getSerial());
             }
         } catch (YAPI_Exception ignored) {
@@ -858,7 +832,7 @@ public class YFunction
     {
         // try to resolve the function name to a device id without query
         try {
-            return YAPI.resolveFunction(_className, _func).getHardwareId();
+            return SafeYAPI().resolveFunction(_className, _func).getHardwareId();
         } catch (YAPI_Exception ignored) {
             return FUNCTIONDESCRIPTOR_INVALID;
         }

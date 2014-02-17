@@ -3,7 +3,6 @@ package com.yoctopuce.doc_examples;
 import java.util.ArrayList;
 
 import com.yoctopuce.YoctoAPI.YAPI;
-import com.yoctopuce.YoctoAPI.YAPI.NewHubCallback;
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
 
 import android.app.ListFragment;
@@ -105,7 +104,6 @@ public class HubListFragment extends ListFragment {
             @Override
             protected Integer doInBackground(Integer... params) {
                 try {
-                    //YAPI.EnableUSBHost(getActivity());
                     YAPI.InitAPI(YAPI.DETECT_NONE);
                     YAPI.RegisterHubDiscoveryCallback(mNewHub);                    
                 } catch (YAPI_Exception e) {
@@ -119,13 +117,14 @@ public class HubListFragment extends ListFragment {
 
     
     
-    private NewHubCallback mNewHub = new NewHubCallback() {
+    private YAPI.HubDiscoveryCallback mNewHub = new YAPI.HubDiscoveryCallback() {
         @Override
-        public void yNewHub(String serial, String url) {
+        public void yHubDiscoveryCallback(String serial, String url)
+        {
             Message myMessage = mMainHandler.obtainMessage();
             Bundle messageBundle =new Bundle();
-			messageBundle.putString(NEW_HUB_SERIAL,serial);
-			messageBundle.putString(NEW_HUB_URL, url);
+            messageBundle.putString(NEW_HUB_SERIAL,serial);
+            messageBundle.putString(NEW_HUB_URL, url);
             myMessage.setData(messageBundle);
             mMainHandler.sendMessage(myMessage);
         }

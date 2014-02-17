@@ -183,7 +183,11 @@ class YPktStreamHead
 
 
     NotificationStreams decodeAsNotification(YUSBDevice dev) throws YAPI_Exception {
+        try {
         return new NotificationStreams(dev, _data);
+        }catch (ArrayIndexOutOfBoundsException ex) {
+            throw new YAPI_Exception(YAPI.IO_ERROR, "Invlalid USB packet");
+        }
     }
 
     static class NotificationStreams {
@@ -252,7 +256,6 @@ class YPktStreamHead
 
         public NotificationStreams(YUSBDevice dev, byte[] data) throws YAPI_Exception {
             int firstByte = data[0];
-
             if(firstByte <= NOTIFY_1STBYTE_MAXTINY) {
                 _notType = NotType.FUNCVAL;
                 _serial = dev.getSerial();

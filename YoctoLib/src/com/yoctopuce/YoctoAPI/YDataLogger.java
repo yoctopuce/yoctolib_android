@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataLogger.java 14615 2014-01-19 00:16:40Z mvuilleu $
+ * $Id: YDataLogger.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindDataLogger(), the high-level API for DataLogger functions
  *
@@ -39,6 +39,7 @@
 
 package com.yoctopuce.YoctoAPI; //test
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -138,7 +139,7 @@ public class YDataLogger extends YFunction
             httpreq += String.format("?run=%d&time=%d", runIdx, timeIdx);
         }
         String result;
-        YDevice dev = YAPI.getDevice(devid);
+        YDevice dev = SafeYAPI().getDevice(devid);
         try {
             result = new String(dev.requestHTTP(httpreq,null, false));
         } catch (YAPI_Exception ex) {
@@ -255,8 +256,8 @@ public class YDataLogger extends YFunction
      */
     public int get_currentRunIndex()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return CURRENTRUNINDEX_INVALID;
             }
         }
@@ -285,8 +286,8 @@ public class YDataLogger extends YFunction
      */
     public long get_timeUTC()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return TIMEUTC_INVALID;
             }
         }
@@ -344,8 +345,8 @@ public class YDataLogger extends YFunction
      */
     public int get_recording()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return RECORDING_INVALID;
             }
         }
@@ -405,8 +406,8 @@ public class YDataLogger extends YFunction
      */
     public int get_autoStart()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return AUTOSTART_INVALID;
             }
         }
@@ -466,8 +467,8 @@ public class YDataLogger extends YFunction
      */
     public int get_clearHistory()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return CLEARHISTORY_INVALID;
             }
         }
@@ -541,14 +542,12 @@ public class YDataLogger extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackDataLogger = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -622,7 +621,7 @@ public class YDataLogger extends YFunction
      */
     public  YDataLogger nextDataLogger()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindDataLogger(next_hwid);
     }
@@ -638,7 +637,7 @@ public class YDataLogger extends YFunction
      */
     public static YDataLogger FirstDataLogger()
     {
-        String next_hwid = YAPI.getFirstHardwareId("DataLogger");
+        String next_hwid = SafeYAPI().getFirstHardwareId("DataLogger");
         if (next_hwid == null)  return null;
         return FindDataLogger(next_hwid);
     }

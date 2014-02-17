@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWakeUpSchedule.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YWakeUpSchedule.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindWakeUpSchedule(), the high-level API for WakeUpSchedule functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YWakeUpSchedule return codes)
     //--- (end of YWakeUpSchedule return codes)
@@ -167,8 +168,8 @@ public class YWakeUpSchedule extends YFunction
      */
     public int get_minutesA()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return MINUTESA_INVALID;
             }
         }
@@ -225,8 +226,8 @@ public class YWakeUpSchedule extends YFunction
      */
     public int get_minutesB()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return MINUTESB_INVALID;
             }
         }
@@ -283,8 +284,8 @@ public class YWakeUpSchedule extends YFunction
      */
     public int get_hours()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return HOURS_INVALID;
             }
         }
@@ -341,8 +342,8 @@ public class YWakeUpSchedule extends YFunction
      */
     public int get_weekDays()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return WEEKDAYS_INVALID;
             }
         }
@@ -399,8 +400,8 @@ public class YWakeUpSchedule extends YFunction
      */
     public int get_monthDays()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return MONTHDAYS_INVALID;
             }
         }
@@ -457,8 +458,8 @@ public class YWakeUpSchedule extends YFunction
      */
     public int get_months()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return MONTHS_INVALID;
             }
         }
@@ -515,8 +516,8 @@ public class YWakeUpSchedule extends YFunction
      */
     public long get_nextOccurence()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return NEXTOCCURENCE_INVALID;
             }
         }
@@ -582,14 +583,12 @@ public class YWakeUpSchedule extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackWakeUpSchedule = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -649,7 +648,7 @@ public class YWakeUpSchedule extends YFunction
      */
     public  YWakeUpSchedule nextWakeUpSchedule()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindWakeUpSchedule(next_hwid);
     }
@@ -665,7 +664,7 @@ public class YWakeUpSchedule extends YFunction
      */
     public static YWakeUpSchedule FirstWakeUpSchedule()
     {
-        String next_hwid = YAPI.getFirstHardwareId("WakeUpSchedule");
+        String next_hwid = SafeYAPI().getFirstHardwareId("WakeUpSchedule");
         if (next_hwid == null)  return null;
         return FindWakeUpSchedule(next_hwid);
     }

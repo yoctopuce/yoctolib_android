@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YLightSensor.java 14305 2014-01-10 14:02:16Z seb $
+ * $Id: YLightSensor.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindLightSensor(), the high-level API for LightSensor functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YLightSensor return codes)
     //--- (end of YLightSensor return codes)
@@ -183,14 +184,12 @@ public class YLightSensor extends YSensor
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackLightSensor = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -254,7 +253,7 @@ public class YLightSensor extends YSensor
      */
     public  YLightSensor nextLightSensor()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindLightSensor(next_hwid);
     }
@@ -270,7 +269,7 @@ public class YLightSensor extends YSensor
      */
     public static YLightSensor FirstLightSensor()
     {
-        String next_hwid = YAPI.getFirstHardwareId("LightSensor");
+        String next_hwid = SafeYAPI().getFirstHardwareId("LightSensor");
         if (next_hwid == null)  return null;
         return FindLightSensor(next_hwid);
     }

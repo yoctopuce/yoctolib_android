@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDigitalIO.java 14528 2014-01-16 16:19:06Z mvuilleu $
+ * $Id: YDigitalIO.java 14929 2014-02-12 17:55:52Z seb $
  *
  * Implements yFindDigitalIO(), the high-level API for DigitalIO functions
  *
@@ -40,6 +40,7 @@
 package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
     //--- (YDigitalIO return codes)
     //--- (end of YDigitalIO return codes)
@@ -172,8 +173,8 @@ public class YDigitalIO extends YFunction
      */
     public int get_portState()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PORTSTATE_INVALID;
             }
         }
@@ -233,8 +234,8 @@ public class YDigitalIO extends YFunction
      */
     public int get_portDirection()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PORTDIRECTION_INVALID;
             }
         }
@@ -298,8 +299,8 @@ public class YDigitalIO extends YFunction
      */
     public int get_portOpenDrain()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PORTOPENDRAIN_INVALID;
             }
         }
@@ -363,8 +364,8 @@ public class YDigitalIO extends YFunction
      */
     public int get_portPolarity()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PORTPOLARITY_INVALID;
             }
         }
@@ -426,8 +427,8 @@ public class YDigitalIO extends YFunction
      */
     public int get_portSize()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PORTSIZE_INVALID;
             }
         }
@@ -455,8 +456,8 @@ public class YDigitalIO extends YFunction
      */
     public int get_outputVoltage()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return OUTPUTVOLTAGE_INVALID;
             }
         }
@@ -514,8 +515,8 @@ public class YDigitalIO extends YFunction
      */
     public String get_command()  throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPI.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+            if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return COMMAND_INVALID;
             }
         }
@@ -589,14 +590,12 @@ public class YDigitalIO extends YFunction
     public int registerValueCallback(UpdateCallback callback)
     {
         String val;
-        
         if (callback != null) {
             YFunction._UpdateValueCallbackList(this, true);
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
         _valueCallbackDigitalIO = callback;
-        
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -816,7 +815,7 @@ public class YDigitalIO extends YFunction
      */
     public  YDigitalIO nextDigitalIO()
     {
-        String next_hwid = YAPI.getNextHardwareId(_className, _func);
+        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
         if(next_hwid == null) return null;
         return FindDigitalIO(next_hwid);
     }
@@ -832,7 +831,7 @@ public class YDigitalIO extends YFunction
      */
     public static YDigitalIO FirstDigitalIO()
     {
-        String next_hwid = YAPI.getFirstHardwareId("DigitalIO");
+        String next_hwid = SafeYAPI().getFirstHardwareId("DigitalIO");
         if (next_hwid == null)  return null;
         return FindDigitalIO(next_hwid);
     }
