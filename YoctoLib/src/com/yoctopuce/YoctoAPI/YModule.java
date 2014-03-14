@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YModule.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: YModule.java 15407 2014-03-12 19:34:44Z mvuilleu $
  *
  * YModule Class: Module control interface
  *
@@ -266,7 +266,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public String get_productName()  throws YAPI_Exception
+    public String get_productName() throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -294,7 +294,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public String get_serialNumber()  throws YAPI_Exception
+    public String get_serialNumber() throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -322,7 +322,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int get_productId()  throws YAPI_Exception
+    public int get_productId() throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -350,7 +350,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int get_productRelease()  throws YAPI_Exception
+    public int get_productRelease() throws YAPI_Exception
     {
         if (_cacheExpiration == 0) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -378,7 +378,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public String get_firmwareRelease()  throws YAPI_Exception
+    public String get_firmwareRelease() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -407,7 +407,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int get_persistentSettings()  throws YAPI_Exception
+    public int get_persistentSettings() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -448,7 +448,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int get_luminosity()  throws YAPI_Exception
+    public int get_luminosity() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -512,7 +512,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int get_beacon()  throws YAPI_Exception
+    public int get_beacon() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -570,7 +570,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public long get_upTime()  throws YAPI_Exception
+    public long get_upTime() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -598,7 +598,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int get_usbCurrent()  throws YAPI_Exception
+    public int get_usbCurrent() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -628,7 +628,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int get_rebootCountdown()  throws YAPI_Exception
+    public int get_rebootCountdown() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -671,7 +671,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int get_usbBandwidth()  throws YAPI_Exception
+    public int get_usbBandwidth() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -805,7 +805,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int saveToFlash()  throws YAPI_Exception
+    public int saveToFlash() throws YAPI_Exception
     {
         return set_persistentSettings(PERSISTENTSETTINGS_SAVED);
     }
@@ -818,7 +818,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int revertFromFlash()  throws YAPI_Exception
+    public int revertFromFlash() throws YAPI_Exception
     {
         return set_persistentSettings(PERSISTENTSETTINGS_LOADED);
     }
@@ -832,7 +832,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int reboot(int secBeforeReboot)  throws YAPI_Exception
+    public int reboot(int secBeforeReboot) throws YAPI_Exception
     {
         return set_rebootCountdown(secBeforeReboot);
     }
@@ -846,7 +846,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int triggerFirmwareUpdate(int secBeforeReboot)  throws YAPI_Exception
+    public int triggerFirmwareUpdate(int secBeforeReboot) throws YAPI_Exception
     {
         return set_rebootCountdown(-secBeforeReboot);
     }
@@ -860,7 +860,7 @@ public class YModule extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public byte[] download(String pathname)  throws YAPI_Exception
+    public byte[] download(String pathname) throws YAPI_Exception
     {
         return _download(pathname);
     }
@@ -871,7 +871,7 @@ public class YModule extends YFunction
      * 
      * @return a binary buffer with module icon, in png format.
      */
-    public byte[] get_icon2d()  throws YAPI_Exception
+    public byte[] get_icon2d() throws YAPI_Exception
     {
         return _download("icon2d.png");
     }
@@ -882,7 +882,7 @@ public class YModule extends YFunction
      * 
      * @return a string with last logs of the module.
      */
-    public String get_lastLogs()  throws YAPI_Exception
+    public String get_lastLogs() throws YAPI_Exception
     {
         byte[] content;
         // may throw an exception
@@ -899,7 +899,13 @@ public class YModule extends YFunction
      */
     public  YModule nextModule()
     {
-        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
+        String next_hwid;
+        try {
+            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
+            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+        } catch (YAPI_Exception ignored) {
+            next_hwid = null;
+        }
         if(next_hwid == null) return null;
         return FindModule(next_hwid);
     }

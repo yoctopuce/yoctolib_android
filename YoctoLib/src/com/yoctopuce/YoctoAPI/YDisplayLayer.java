@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDisplayLayer.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: YDisplayLayer.java 15128 2014-02-28 10:22:03Z seb $
  *
  * YDisplayLayer Class: Image layer containing data to display
  *
@@ -180,7 +180,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int reset()  throws YAPI_Exception
+    public int reset() throws YAPI_Exception
     {
         _hidden = false;
         return command_flush("X");
@@ -196,7 +196,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int clear()  throws YAPI_Exception
+    public int clear() throws YAPI_Exception
     {
         return command_flush("x");
     }
@@ -213,7 +213,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int selectColorPen(int color)  throws YAPI_Exception
+    public int selectColorPen(int color) throws YAPI_Exception
     {
         return command_push(String.format("c%06x",color));
     }
@@ -232,7 +232,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int selectGrayPen(int graylevel)  throws YAPI_Exception
+    public int selectGrayPen(int graylevel) throws YAPI_Exception
     {
         return command_push(String.format("g%d",graylevel));
     }
@@ -247,7 +247,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int selectEraser()  throws YAPI_Exception
+    public int selectEraser() throws YAPI_Exception
     {
         return command_push("e");
     }
@@ -268,7 +268,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int setAntialiasingMode(boolean mode)  throws YAPI_Exception
+    public int setAntialiasingMode(boolean mode) throws YAPI_Exception
     {
         return command_push(String.format("a%d",(mode ? 1 : 0)));
     }
@@ -283,7 +283,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int drawPixel(int x,int y)  throws YAPI_Exception
+    public int drawPixel(int x,int y) throws YAPI_Exception
     {
         return command_flush(String.format("P%d,%d",x,y));
     }
@@ -300,7 +300,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int drawRect(int x1,int y1,int x2,int y2)  throws YAPI_Exception
+    public int drawRect(int x1,int y1,int x2,int y2) throws YAPI_Exception
     {
         return command_flush(String.format("R%d,%d,%d,%d",x1,y1,x2,y2));
     }
@@ -317,7 +317,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int drawBar(int x1,int y1,int x2,int y2)  throws YAPI_Exception
+    public int drawBar(int x1,int y1,int x2,int y2) throws YAPI_Exception
     {
         return command_flush(String.format("B%d,%d,%d,%d",x1,y1,x2,y2));
     }
@@ -333,7 +333,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int drawCircle(int x,int y,int r)  throws YAPI_Exception
+    public int drawCircle(int x,int y,int r) throws YAPI_Exception
     {
         return command_flush(String.format("C%d,%d,%d",x,y,r));
     }
@@ -349,7 +349,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int drawDisc(int x,int y,int r)  throws YAPI_Exception
+    public int drawDisc(int x,int y,int r) throws YAPI_Exception
     {
         return command_flush(String.format("D%d,%d,%d",x,y,r));
     }
@@ -367,7 +367,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int selectFont(String fontname)  throws YAPI_Exception
+    public int selectFont(String fontname) throws YAPI_Exception
     {
         return command_push(String.format("&%s%c",fontname,27));
     }
@@ -394,7 +394,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int drawText(int x,int y,ALIGN anchor,String text)  throws YAPI_Exception
+    public int drawText(int x,int y,ALIGN anchor,String text) throws YAPI_Exception
     {
         return command_flush(String.format("T%d,%d,%d,%s%c",x,y,anchor.value,text,27));
     }
@@ -413,7 +413,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int drawImage(int x,int y,String imagename)  throws YAPI_Exception
+    public int drawImage(int x,int y,String imagename) throws YAPI_Exception
     {
         return command_flush(String.format("*%d,%d,%s%c",x,y,imagename,27));
     }
@@ -438,7 +438,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int drawBitmap(int x,int y,int w,byte[] bitmap,int bgcol)  throws YAPI_Exception
+    public int drawBitmap(int x,int y,int w,byte[] bitmap,int bgcol) throws YAPI_Exception
     {
         String destname;
         destname = String.format("layer%d:%d,%d@%d,%d",_id,w,bgcol,x,y);
@@ -455,7 +455,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int moveTo(int x,int y)  throws YAPI_Exception
+    public int moveTo(int x,int y) throws YAPI_Exception
     {
         return command_push(String.format("@%d,%d",x,y));
     }
@@ -472,7 +472,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int lineTo(int x,int y)  throws YAPI_Exception
+    public int lineTo(int x,int y) throws YAPI_Exception
     {
         return command_flush(String.format("-%d,%d",x,y));
     }
@@ -490,7 +490,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int consoleOut(String text)  throws YAPI_Exception
+    public int consoleOut(String text) throws YAPI_Exception
     {
         return command_flush(String.format("!%s%c",text,27));
     }
@@ -507,7 +507,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int setConsoleMargins(int x1,int y1,int x2,int y2)  throws YAPI_Exception
+    public int setConsoleMargins(int x1,int y1,int x2,int y2) throws YAPI_Exception
     {
         return command_push(String.format("m%d,%d,%d,%d",x1,y1,x2,y2));
     }
@@ -523,7 +523,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int setConsoleBackground(int bgcol)  throws YAPI_Exception
+    public int setConsoleBackground(int bgcol) throws YAPI_Exception
     {
         return command_push(String.format("b%d",bgcol));
     }
@@ -538,7 +538,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int setConsoleWordWrap(boolean wordwrap)  throws YAPI_Exception
+    public int setConsoleWordWrap(boolean wordwrap) throws YAPI_Exception
     {
         return command_push(String.format("w%d",(wordwrap ? 1 : 0)));
     }
@@ -551,7 +551,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int clearConsole()  throws YAPI_Exception
+    public int clearConsole() throws YAPI_Exception
     {
         return command_flush("^");
     }
@@ -570,7 +570,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int setLayerPosition(int x,int y,int scrollTime)  throws YAPI_Exception
+    public int setLayerPosition(int x,int y,int scrollTime) throws YAPI_Exception
     {
         return command_flush(String.format("#%d,%d,%d",x,y,scrollTime));
     }
@@ -585,7 +585,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int hide()  throws YAPI_Exception
+    public int hide() throws YAPI_Exception
     {
         command_push("h");
         _hidden = true;
@@ -599,7 +599,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int unhide()  throws YAPI_Exception
+    public int unhide() throws YAPI_Exception
     {
         _hidden = false;
         return command_flush("s");
@@ -622,7 +622,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int get_displayWidth()  throws YAPI_Exception
+    public int get_displayWidth() throws YAPI_Exception
     {
         return _display.get_displayWidth();
     }
@@ -634,7 +634,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int get_displayHeight()  throws YAPI_Exception
+    public int get_displayHeight() throws YAPI_Exception
     {
         return _display.get_displayHeight();
     }
@@ -646,7 +646,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int get_layerWidth()  throws YAPI_Exception
+    public int get_layerWidth() throws YAPI_Exception
     {
         return _display.get_layerWidth();
     }
@@ -658,7 +658,7 @@ public class YDisplayLayer
      * 
      * @throws YAPI_Exception
      */
-    public int get_layerHeight()  throws YAPI_Exception
+    public int get_layerHeight() throws YAPI_Exception
     {
         return _display.get_layerHeight();
     }

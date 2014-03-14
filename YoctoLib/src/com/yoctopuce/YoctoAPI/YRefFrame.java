@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRefFrame.java 14977 2014-02-14 06:19:29Z mvuilleu $
+ * $Id: YRefFrame.java 15407 2014-03-12 19:34:44Z mvuilleu $
  *
  * Implements yFindRefFrame(), the high-level API for RefFrame functions
  *
@@ -10,24 +10,24 @@
  *
  *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
  *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ *  file into your software for the sole purpose of interfacing
+ *  with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
+ *  You may reproduce and distribute copies of this file in
  *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
+ *  code is to interface with Yoctopuce products. You must retain
  *  this notice in the distributed source file.
  *
  *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
+ *  for additional information regarding your rights and
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
  *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
+ *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
+ *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
  *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
  *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
  *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
@@ -41,6 +41,7 @@ package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+import java.util.ArrayList;
 
     //--- (YRefFrame return codes)
     //--- (end of YRefFrame return codes)
@@ -48,9 +49,11 @@ import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 /**
  * YRefFrame Class: Reference frame configuration
  * 
- * This class is used to setup the base orientation of the device, so that
- * the orientation functions relative to the earth surface place use
- * the proper reference frame.
+ * This class is used to setup the base orientation of the Yocto-3D, so that
+ * the orientation functions, relative to the earth surface plane, use
+ * the proper reference frame. The class also implements a tridimensional
+ * sensor calibration process, which can compensate for local variations
+ * of standard gravity and improve the precision of the tilt sensors.
  */
 public class YRefFrame extends YFunction
 {
@@ -130,6 +133,26 @@ public class YRefFrame extends YFunction
     protected double _bearing = BEARING_INVALID;
     protected String _calibrationParam = CALIBRATIONPARAM_INVALID;
     protected UpdateCallback _valueCallbackRefFrame = null;
+    protected int _calibStage = 0;
+    protected String _calibStageHint;
+    protected int _calibStageProgress = 0;
+    protected int _calibProgress = 0;
+    protected String _calibLogMsg;
+    protected String _calibSavedParams;
+    protected int _calibCount = 0;
+    protected int _calibInternalPos = 0;
+    protected int _calibPrevTick = 0;
+    protected ArrayList<Integer> _calibOrient = new ArrayList<Integer>();
+    protected ArrayList<Double> _calibDataAccX = new ArrayList<Double>();
+    protected ArrayList<Double> _calibDataAccY = new ArrayList<Double>();
+    protected ArrayList<Double> _calibDataAccZ = new ArrayList<Double>();
+    protected ArrayList<Double> _calibDataAcc = new ArrayList<Double>();
+    protected double _calibAccXOfs = 0;
+    protected double _calibAccYOfs = 0;
+    protected double _calibAccZOfs = 0;
+    protected double _calibAccXScale = 0;
+    protected double _calibAccYScale = 0;
+    protected double _calibAccZScale = 0;
 
     /**
      * Deprecated UpdateCallback for RefFrame
@@ -188,7 +211,7 @@ public class YRefFrame extends YFunction
     /**
      * @throws YAPI_Exception
      */
-    public int get_mountPos()  throws YAPI_Exception
+    public int get_mountPos() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -275,14 +298,14 @@ public class YRefFrame extends YFunction
 
     /**
      * Returns the reference bearing used by the compass. The relative bearing
-     * indicated by the compassis the difference between the measured magnetic
+     * indicated by the compass is the difference between the measured magnetic
      * heading and the reference bearing indicated here.
      * 
      * @return a floating point number corresponding to the reference bearing used by the compass
      * 
      * @throws YAPI_Exception
      */
-    public double get_bearing()  throws YAPI_Exception
+    public double get_bearing() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -294,7 +317,7 @@ public class YRefFrame extends YFunction
 
     /**
      * Returns the reference bearing used by the compass. The relative bearing
-     * indicated by the compassis the difference between the measured magnetic
+     * indicated by the compass is the difference between the measured magnetic
      * heading and the reference bearing indicated here.
      * 
      * @return a floating point number corresponding to the reference bearing used by the compass
@@ -308,7 +331,7 @@ public class YRefFrame extends YFunction
     /**
      * @throws YAPI_Exception
      */
-    public String get_calibrationParam()  throws YAPI_Exception
+    public String get_calibrationParam() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -425,7 +448,7 @@ public class YRefFrame extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public MOUNTPOSITION get_mountPosition()  throws YAPI_Exception
+    public MOUNTPOSITION get_mountPosition() throws YAPI_Exception
     {
         int pos = 0;
         pos = get_mountPos();
@@ -447,7 +470,7 @@ public class YRefFrame extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public MOUNTORIENTATION get_mountOrientation()  throws YAPI_Exception
+    public MOUNTORIENTATION get_mountOrientation() throws YAPI_Exception
     {
         int pos = 0;
         pos = get_mountPos();
@@ -455,7 +478,7 @@ public class YRefFrame extends YFunction
     }
 
     /**
-     * Changes the compass and inclinometers frame of reference. The magnetic compass
+     * Changes the compass and tilt sensor frame of reference. The magnetic compass
      * and the tilt sensors (pitch and roll) naturally work in the plane
      * parallel to the earth surface. In case the device is not installed upright
      * and horizontally, you must select its reference orientation (parallel to
@@ -479,11 +502,457 @@ public class YRefFrame extends YFunction
      * 
      * @throws YAPI_Exception
      */
-    public int set_mountPosition(MOUNTPOSITION position,MOUNTORIENTATION orientation)  throws YAPI_Exception
+    public int set_mountPosition(MOUNTPOSITION position,MOUNTORIENTATION orientation) throws YAPI_Exception
     {
         int pos = 0;
         pos = ((position.value) << (2)) + orientation.value;
         return set_mountPos(pos);
+    }
+
+    public int _calibSort(int start,int stopidx)
+    {
+        int idx = 0;
+        int changed = 0;
+        double a = 0;
+        double b = 0;
+        double xa = 0;
+        double xb = 0;
+        
+        // bubble sort is good since we will re-sort again after offset adjustment
+        changed = 1;
+        while (changed > 0) {
+            changed = 0;
+            a = _calibDataAcc.get(start);
+            idx = start + 1;
+            while (idx < stopidx) {
+                b = _calibDataAcc.get(idx);
+                if (a > b) {
+                    _calibDataAcc.set( idx-1, b);
+                    _calibDataAcc.set( idx, a);
+                    xa = _calibDataAccX.get(idx-1);
+                    xb = _calibDataAccX.get(idx);
+                    _calibDataAccX.set( idx-1, xb);
+                    _calibDataAccX.set( idx, xa);
+                    xa = _calibDataAccY.get(idx-1);
+                    xb = _calibDataAccY.get(idx);
+                    _calibDataAccY.set( idx-1, xb);
+                    _calibDataAccY.set( idx, xa);
+                    xa = _calibDataAccZ.get(idx-1);
+                    xb = _calibDataAccZ.get(idx);
+                    _calibDataAccZ.set( idx-1, xb);
+                    _calibDataAccZ.set( idx, xa);
+                    changed = changed + 1;
+                } else {
+                    a = b;
+                }
+                idx = idx + 1;
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * Initiates the sensors tridimensional calibration process.
+     * This calibration is used at low level for inertial position estimation
+     * and to enhance the precision of the tilt sensors.
+     * 
+     * After calling this method, the device should be moved according to the
+     * instructions provided by method get_3DCalibrationHint,
+     * and more3DCalibration should be invoked about 5 times per second.
+     * The calibration procedure is completed when the method
+     * get_3DCalibrationProgress returns 100. At this point,
+     * the computed calibration parameters can be applied using method
+     * save3DCalibration. The calibration process can be canceled
+     * at any time using method cancel3DCalibration.
+     * 
+     * @throws YAPI_Exception
+     */
+    public int start3DCalibration() throws YAPI_Exception
+    {
+        if (!(isOnline())) {
+            return YAPI.DEVICE_NOT_FOUND;
+        }
+        if (_calibStage != 0) {
+            cancel3DCalibration();
+        }
+        _calibSavedParams = get_calibrationParam();
+        set_calibrationParam("0");
+        _calibCount = 50;
+        _calibStage = 1;
+        _calibStageHint = "Set down the device on a steady horizontal surface";
+        _calibStageProgress = 0;
+        _calibProgress = 1;
+        _calibInternalPos = 0;
+        _calibPrevTick = (int) ((SafeYAPI().GetTickCount()) & (0x7FFFFFFF));
+        _calibOrient.clear();
+        _calibDataAccX.clear();
+        _calibDataAccY.clear();
+        _calibDataAccZ.clear();
+        _calibDataAcc.clear();
+        return YAPI.SUCCESS;
+    }
+
+    /**
+     * Continues the sensors tridimensional calibration process previously
+     * initiated using method start3DCalibration.
+     * This method should be called approximately 5 times per second, while
+     * positioning the device according to the instructions provided by method
+     * get_3DCalibrationHint. Note that the instructions change during
+     * the calibration process.
+     * 
+     * @throws YAPI_Exception
+     */
+    public int more3DCalibration() throws YAPI_Exception
+    {
+        int currTick = 0;
+        byte[] jsonData;
+        double xVal = 0;
+        double yVal = 0;
+        double zVal = 0;
+        double xSq = 0;
+        double ySq = 0;
+        double zSq = 0;
+        double norm = 0;
+        int orient = 0;
+        int idx = 0;
+        int pos = 0;
+        int err = 0;
+        // make sure calibration has been started
+        if (_calibStage == 0) {
+            return YAPI.INVALID_ARGUMENT;
+        }
+        if (_calibProgress == 100) {
+            return YAPI.SUCCESS;
+        }
+        
+        // make sure we leave at least 160ms between samples
+        currTick =  (int) ((SafeYAPI().GetTickCount()) & (0x7FFFFFFF));
+        if (((currTick - _calibPrevTick) & (0x7FFFFFFF)) < 160) {
+            return YAPI.SUCCESS;
+        }
+        // load current accelerometer values, make sure we are on a straight angle
+        // (default timeout to 0,5 sec without reading measure when out of range)
+        _calibStageHint = "Set down the device on a steady horizontal surface";
+        _calibPrevTick = ((currTick + 500) & (0x7FFFFFFF));
+        jsonData = _download("api/accelerometer.json");
+        xVal = Integer.valueOf(_json_get_key(jsonData, "xValue")) / 65536.0;
+        yVal = Integer.valueOf(_json_get_key(jsonData, "yValue")) / 65536.0;
+        zVal = Integer.valueOf(_json_get_key(jsonData, "zValue")) / 65536.0;
+        xSq = xVal * xVal;
+        if (xSq >= 0.04 && xSq < 0.64) {
+            return YAPI.SUCCESS;
+        }
+        if (xSq >= 1.44) {
+            return YAPI.SUCCESS;
+        }
+        ySq = yVal * yVal;
+        if (ySq >= 0.04 && ySq < 0.64) {
+            return YAPI.SUCCESS;
+        }
+        if (ySq >= 1.44) {
+            return YAPI.SUCCESS;
+        }
+        zSq = zVal * zVal;
+        if (zSq >= 0.04 && zSq < 0.64) {
+            return YAPI.SUCCESS;
+        }
+        if (zSq >= 1.44) {
+            return YAPI.SUCCESS;
+        }
+        norm = java.lang.Math.sqrt(xSq + ySq + zSq);
+        if (norm < 0.8 || norm > 1.2) {
+            return YAPI.SUCCESS;
+        }
+        _calibPrevTick = currTick;
+        
+        // Determine the device orientation index
+        if (zSq > 0.5) {
+            if (zVal > 0) {
+                orient = 0;
+            } else {
+                orient = 1;
+            }
+        }
+        if (xSq > 0.5) {
+            if (xVal > 0) {
+                orient = 2;
+            } else {
+                orient = 3;
+            }
+        }
+        if (ySq > 0.5) {
+            if (yVal > 0) {
+                orient = 4;
+            } else {
+                orient = 5;
+            }
+        }
+        
+        // Discard measures that are not in the proper orientation
+        if (_calibStageProgress == 0) {
+            idx = 0;
+            err = 0;
+            while (idx + 1 < _calibStage) {
+                if (_calibOrient.get(idx) == orient) {
+                    err = 1;
+                }
+                idx = idx + 1;
+            }
+            if (err != 0) {
+                _calibStageHint = "Turn the device on another face";
+                return YAPI.SUCCESS;
+            }
+            _calibOrient.add(orient);
+        } else {
+            if (orient != _calibOrient.get(_calibStage-1)) {
+                _calibStageHint = "Not yet done, please move back to the previous face";
+                return YAPI.SUCCESS;
+            }
+        }
+        
+        // Save measure
+        _calibStageHint = "calibrating..";
+        _calibDataAccX.add(xVal);
+        _calibDataAccY.add(yVal);
+        _calibDataAccZ.add(zVal);
+        _calibDataAcc.add(norm);
+        _calibInternalPos = _calibInternalPos + 1;
+        _calibProgress = 1 + 16 * (_calibStage - 1) + ((16 * _calibInternalPos) / (_calibCount));
+        if (_calibInternalPos < _calibCount) {
+            _calibStageProgress = 1 + ((99 * _calibInternalPos) / (_calibCount));
+            return YAPI.SUCCESS;
+        }
+        
+        // Stage done, compute preliminary result
+        pos = (_calibStage - 1) * _calibCount;
+        _calibSort(pos, pos + _calibCount);
+        pos = pos + ((_calibCount) / (2));
+        _calibLogMsg = String.format("Stage %d: median is %d,%d,%d", _calibStage,
+        (int) Math.round(1000*_calibDataAccX.get(pos)),
+        (int) Math.round(1000*_calibDataAccY.get(pos)),(int) Math.round(1000*_calibDataAccZ.get(pos)));
+        
+        // move to next stage
+        _calibStage = _calibStage + 1;
+        if (_calibStage < 7) {
+            _calibStageHint = "Turn the device on another face";
+            _calibPrevTick = ((currTick + 500) & (0x7FFFFFFF));
+            _calibStageProgress = 0;
+            _calibInternalPos = 0;
+            return YAPI.SUCCESS;
+        }
+        // Data collection completed, compute accelerometer shift
+        xVal = 0;
+        yVal = 0;
+        zVal = 0;
+        idx = 0;
+        while (idx < 6) {
+            pos = idx * _calibCount + ((_calibCount) / (2));
+            orient = _calibOrient.get(idx);
+            if (orient == 0 || orient == 1) {
+                zVal = zVal + _calibDataAccZ.get(pos);
+            }
+            if (orient == 2 || orient == 3) {
+                xVal = xVal + _calibDataAccX.get(pos);
+            }
+            if (orient == 4 || orient == 5) {
+                yVal = yVal + _calibDataAccY.get(pos);
+            }
+            idx = idx + 1;
+        }
+        _calibAccXOfs = xVal / 2.0;
+        _calibAccYOfs = yVal / 2.0;
+        _calibAccZOfs = zVal / 2.0;
+        
+        // Recompute all norms, taking into account the computed shift, and re-sort
+        pos = 0;
+        while (pos < _calibDataAcc.size()) {
+            xVal = _calibDataAccX.get(pos) - _calibAccXOfs;
+            yVal = _calibDataAccY.get(pos) - _calibAccYOfs;
+            zVal = _calibDataAccZ.get(pos) - _calibAccZOfs;
+            norm = java.lang.Math.sqrt(xVal * xVal + yVal * yVal + zVal * zVal);
+            _calibDataAcc.set( pos, norm);
+            pos = pos + 1;
+        }
+        idx = 0;
+        while (idx < 6) {
+            pos = idx * _calibCount;
+            _calibSort(pos, pos + _calibCount);
+            idx = idx + 1;
+        }
+        
+        // Compute the scaling factor for each axis
+        xVal = 0;
+        yVal = 0;
+        zVal = 0;
+        idx = 0;
+        while (idx < 6) {
+            pos = idx * _calibCount + ((_calibCount) / (2));
+            orient = _calibOrient.get(idx);
+            if (orient == 0 || orient == 1) {
+                zVal = zVal + _calibDataAcc.get(pos);
+            }
+            if (orient == 2 || orient == 3) {
+                xVal = xVal + _calibDataAcc.get(pos);
+            }
+            if (orient == 4 || orient == 5) {
+                yVal = yVal + _calibDataAcc.get(pos);
+            }
+            idx = idx + 1;
+        }
+        _calibAccXScale = xVal / 2.0;
+        _calibAccYScale = yVal / 2.0;
+        _calibAccZScale = zVal / 2.0;
+        
+        // Report completion
+        _calibProgress = 100;
+        _calibStageHint = "Calibration data ready for saving";
+        return YAPI.SUCCESS;
+    }
+
+    /**
+     * Returns instructions to proceed to the tridimensional calibration initiated with
+     * method start3DCalibration.
+     * 
+     * @return a character string.
+     */
+    public String get_3DCalibrationHint()
+    {
+        return _calibStageHint;
+    }
+
+    /**
+     * Returns the global process indicator for the tridimensional calibration
+     * initiated with method start3DCalibration.
+     * 
+     * @return an integer between 0 (not started) and 100 (stage completed).
+     */
+    public int get_3DCalibrationProgress()
+    {
+        return _calibProgress;
+    }
+
+    /**
+     * Returns index of the current stage of the calibration
+     * initiated with method start3DCalibration.
+     * 
+     * @return an integer, growing each time a calibration stage is completed.
+     */
+    public int get_3DCalibrationStage()
+    {
+        return _calibStage;
+    }
+
+    /**
+     * Returns the process indicator for the current stage of the calibration
+     * initiated with method start3DCalibration.
+     * 
+     * @return an integer between 0 (not started) and 100 (stage completed).
+     */
+    public int get_3DCalibrationStageProgress()
+    {
+        return _calibStageProgress;
+    }
+
+    /**
+     * Returns the latest log message from the calibration process.
+     * When no new message is available, returns an empty string.
+     * 
+     * @return a character string.
+     */
+    public String get_3DCalibrationLogMsg()
+    {
+        String msg;
+        msg = _calibLogMsg;
+        _calibLogMsg = "";
+        return msg;
+    }
+
+    /**
+     * Applies the sensors tridimensional calibration parameters that have just been computed.
+     * Remember to call the saveToFlash()  method of the module if the changes
+     * must be kept when the device is restarted.
+     * 
+     * @throws YAPI_Exception
+     */
+    public int save3DCalibration() throws YAPI_Exception
+    {
+        int shiftX = 0;
+        int shiftY = 0;
+        int shiftZ = 0;
+        int scaleExp = 0;
+        int scaleX = 0;
+        int scaleY = 0;
+        int scaleZ = 0;
+        int scaleLo = 0;
+        int scaleHi = 0;
+        String newcalib;
+        if (_calibProgress != 100) {
+            return YAPI.INVALID_ARGUMENT;
+        }
+        
+        // Compute integer values (correction unit is 732ug/count)
+        shiftX = -(int) Math.round(_calibAccXOfs / 0.000732);
+        if (shiftX < 0) {
+            shiftX = shiftX + 65536;
+        }
+        shiftY = -(int) Math.round(_calibAccYOfs / 0.000732);
+        if (shiftY < 0) {
+            shiftY = shiftY + 65536;
+        }
+        shiftZ = -(int) Math.round(_calibAccZOfs / 0.000732);
+        if (shiftZ < 0) {
+            shiftZ = shiftZ + 65536;
+        }
+        scaleX = (int) Math.round(2048.0 / _calibAccXScale) - 2048;
+        scaleY = (int) Math.round(2048.0 / _calibAccYScale) - 2048;
+        scaleZ = (int) Math.round(2048.0 / _calibAccZScale) - 2048;
+        if (scaleX < -2048 || scaleX >= 2048 || scaleY < -2048 || scaleY >= 2048 || scaleZ < -2048 || scaleZ >= 2048) {
+            scaleExp = 3;
+            if (scaleX < -1024 || scaleX >= 1024 || scaleY < -1024 || scaleY >= 1024 || scaleZ < -1024 || scaleZ >= 1024) {
+                scaleExp = 2;
+                if (scaleX < -512 || scaleX >= 512 || scaleY < -512 || scaleY >= 512 || scaleZ < -512 || scaleZ >= 512) {
+                    scaleExp = 1;
+                } else {
+                    scaleExp = 0;
+                }
+            }
+        }
+        if (scaleExp > 0) {
+            scaleX = ((scaleX) >> (scaleExp));
+            scaleY = ((scaleY) >> (scaleExp));
+            scaleZ = ((scaleZ) >> (scaleExp));
+        }
+        if (scaleX < 0) {
+            scaleX = scaleX + 1024;
+        }
+        if (scaleY < 0) {
+            scaleY = scaleY + 1024;
+        }
+        if (scaleZ < 0) {
+            scaleZ = scaleZ + 1024;
+        }
+        scaleLo = ((((scaleY) & (15))) << (12)) + ((scaleX) << (2)) + scaleExp;
+        scaleHi = ((scaleZ) << (6)) + ((scaleY) >> (4));
+        
+        // Save calibration parameters
+        newcalib = String.format("5,%d,%d,%d,%d,%d", shiftX, shiftY, shiftZ, scaleLo,scaleHi);
+        _calibStage = 0;
+        return set_calibrationParam(newcalib);
+    }
+
+    /**
+     * Aborts the sensors tridimensional calibration process et restores normal settings.
+     * 
+     * @throws YAPI_Exception
+     */
+    public int cancel3DCalibration() throws YAPI_Exception
+    {
+        if (_calibStage == 0) {
+            return YAPI.SUCCESS;
+        }
+        // may throw an exception
+        _calibStage = 0;
+        return set_calibrationParam(_calibSavedParams);
     }
 
     /**
@@ -495,7 +964,13 @@ public class YRefFrame extends YFunction
      */
     public  YRefFrame nextRefFrame()
     {
-        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
+        String next_hwid;
+        try {
+            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
+            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+        } catch (YAPI_Exception ignored) {
+            next_hwid = null;
+        }
         if(next_hwid == null) return null;
         return FindRefFrame(next_hwid);
     }

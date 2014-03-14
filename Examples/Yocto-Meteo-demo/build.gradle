@@ -7,11 +7,11 @@ dependencies {
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "19.0.0"
+    buildToolsVersion "19.0.3"
 
     defaultConfig {
-        versionCode getYoctBuildNumber()
-        versionName "1.10."+ getYoctBuildNumber()
+        versionCode getYoctoBuildNumber()
+        versionName "1.10."+ getYoctoBuildNumber()
         minSdkVersion 14
         targetSdkVersion 19
     }
@@ -42,7 +42,4 @@ android {
 }
 
 
-if(project.hasProperty("Yoctopuce.signing")
-    && new File(project.property("Yoctopuce.signing") + ".gradle").exists()) {
-  apply from: project.property("Yoctopuce.signing") + ".gradle";
-}
+setupSingature()

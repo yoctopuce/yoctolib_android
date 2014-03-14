@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFunction.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: YFunction.java 15407 2014-03-12 19:34:44Z mvuilleu $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -188,7 +188,7 @@ public class YFunction
      * 
      * @throws YAPI_Exception
      */
-    public String get_logicalName()  throws YAPI_Exception
+    public String get_logicalName() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -252,7 +252,7 @@ public class YFunction
      * 
      * @throws YAPI_Exception
      */
-    public String get_advertisedValue()  throws YAPI_Exception
+    public String get_advertisedValue() throws YAPI_Exception
     {
         if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -356,7 +356,13 @@ public class YFunction
      */
     public  YFunction nextFunction()
     {
-        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
+        String next_hwid;
+        try {
+            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
+            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+        } catch (YAPI_Exception ignored) {
+            next_hwid = null;
+        }
         if(next_hwid == null) return null;
         return FindFunction(next_hwid);
     }
@@ -374,7 +380,8 @@ public class YFunction
     //--- (end of generated code: YFunction implementation)
 
     /**
-     * Returns a short text that describes the function in the form TYPE(NAME)=SERIAL&#46;FUNCTIONID.
+     * Returns a short text that describes unambiguously the instance of the function in the form
+     * TYPE(NAME)=SERIAL&#46;FUNCTIONID.
      * More precisely,
      * TYPE       is the type of the function,
      * NAME       it the name used for the first access to the function,

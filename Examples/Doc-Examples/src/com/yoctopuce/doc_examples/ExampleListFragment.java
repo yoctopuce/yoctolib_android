@@ -22,6 +22,9 @@ public class ExampleListFragment extends ListFragment {
         mExampleList = new ArrayList<Example>();
         mExampleList.add(new Example("Hub Detected", HubListActivity.class,false));
         /** generated start */
+        /** generated GettingStarted_Yocto_3D start */
+        mExampleList.add(new Example("Yocto-3D", GettingStarted_Yocto_3D.class,false));
+        /** generated GettingStarted_Yocto_3D stop */   
         /** generated GettingStarted_Yocto_0_10V_Rx start */
         mExampleList.add(new Example("Yocto-0-10V-Rx", GettingStarted_Yocto_0_10V_Rx.class,false));
         /** generated GettingStarted_Yocto_0_10V_Rx stop */   

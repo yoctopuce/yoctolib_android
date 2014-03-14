@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAPI.java 14970 2014-02-13 17:19:31Z seb $
+ * $Id: YAPI.java 15091 2014-02-27 09:36:28Z mvuilleu $
  *
  * High-level programming interface, common to all modules
  *
@@ -1088,7 +1088,7 @@ public class YAPI {
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".15009";
+        return YOCTO_API_VERSION_STR + ".15447";
     }
 
     /**
@@ -1301,7 +1301,7 @@ public class YAPI {
 
     /**
      * Force a hub discovery, if a callback as been registered with yRegisterDeviceRemovalCallback it
-     * will be called for each net work hub that will respond to the discovery
+     * will be called for each net work hub that will respond to the discovery.
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * @throws YAPI_Exception

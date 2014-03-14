@@ -35,6 +35,15 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_3D start -->
+        <activity
+            android:name=".GettingStarted_Yocto_3D"
+            android:label="Yocto-3D" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_3D stop -->   
         <!-- generated GettingStarted_Yocto_0_10V_Rx start -->
         <activity
             android:name=".GettingStarted_Yocto_0_10V_Rx"

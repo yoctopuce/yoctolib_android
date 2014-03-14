@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: WPEntry.java 12427 2013-08-20 16:00:19Z seb $
+ * $Id: WPEntry.java 15245 2014-03-05 15:35:06Z seb $
  *
  * White page implementation
  *
@@ -43,14 +43,14 @@ import org.json.JSONObject;
 
 class WPEntry {
 
-    private String _logicalName;
-    private String _productName;
-    private int _productId;
-    private String _networkUrl;
+    private String _logicalName="";
+    private String _productName="";
+    private int _productId=-1;
+    private final String _networkUrl;
     private int _beacon;
-    private int _index;
+    private final int _index;
     private boolean _isValid;
-    private String _serialNumber;
+    private final String _serialNumber;
 
     public WPEntry(JSONObject json) throws JSONException
     {
@@ -59,9 +59,9 @@ class WPEntry {
         _logicalName = json.getString("logicalName");
         _productName = json.getString("productName");
         _productId = json.getInt("productId");
-        _networkUrl = json.getString("networkUrl");
+        String networkUrl = json.getString("networkUrl");
         //Remove the /api of the network URL
-        _networkUrl = _networkUrl.substring(0, _networkUrl.length() - 4);
+        _networkUrl = networkUrl.substring(0, networkUrl.length() - 4);
         _beacon = json.getInt("beacon");
         if (json.has("index")) {
             _index = json.getInt("index");
@@ -77,13 +77,14 @@ class WPEntry {
         return "WPEntry [_index=" + _index + ", _serialNumber=" + _serialNumber + ", _logicalName=" + _logicalName + ", _productName=" + _productName + ", _productId=" + _productId + ", _networkUrl=" + _networkUrl + ", _beacon=" + _beacon + ", _isValid=" + _isValid + "]";
     }
 
-    public WPEntry(int index, String serial, String neturl)
+    public WPEntry(int index, String serial, String netUrl)
     {
         super();
         _serialNumber = serial;
-        _networkUrl = neturl;
+        _networkUrl = netUrl;
         _index = index;
         _isValid = false;
+
     }
 
     public boolean isValid()
@@ -111,9 +112,10 @@ class WPEntry {
         this._beacon = _beacon;
     }
 
-    public void setLogicalName(String _logicalName)
+    public void setLogicalName(String logicalName)
     {
-        this._logicalName = _logicalName;
+        assert logicalName != null;
+        this._logicalName = logicalName;
     }
 
     public String getLogicalName()

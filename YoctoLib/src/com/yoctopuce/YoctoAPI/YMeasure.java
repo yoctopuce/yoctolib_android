@@ -40,8 +40,6 @@
 package com.yoctopuce.YoctoAPI;
 
 
-import android.util.Log;
-
 import java.util.Date;
 
 //--- (generated code: YMeasure class start)
@@ -72,12 +70,10 @@ public class YMeasure
         _avgVal = avgVal;
         _maxVal = maxVal;
     }
-
-
+    
     YMeasure() {
     }
-
-
+    
     public Date get_startTimeUTC_asDate() {
         return new Date((long) (_start*1000+0.5));
     }
