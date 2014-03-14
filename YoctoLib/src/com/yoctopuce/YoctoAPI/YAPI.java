@@ -1088,7 +1088,7 @@ public class YAPI {
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".15447";
+        return YOCTO_API_VERSION_STR + ".15466";
     }
 
     /**

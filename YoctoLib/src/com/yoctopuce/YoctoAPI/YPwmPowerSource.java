@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: pic24config.php 15250 2014-03-06 10:13:58Z seb $
+ * $Id: pic24config.php 15411 2014-03-13 12:08:37Z mvuilleu $
  *
  * Implements yFindPwmPowerSource(), the high-level API for PwmPowerSource functions
  *
