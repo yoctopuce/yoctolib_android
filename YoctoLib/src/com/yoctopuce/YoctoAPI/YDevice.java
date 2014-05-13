@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDevice.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: YDevice.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Internal YDevice class
  *
@@ -39,11 +39,12 @@
 
 package com.yoctopuce.YoctoAPI;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
@@ -62,7 +63,6 @@ import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 // This is in addition to the function-specific cache implemented in YFunction.
 //
 public class YDevice {
-    //Todo: thread safe!
     private YGenericHub _hub;
     private WPEntry _wpRec;
     private long _cache_expiration;
@@ -70,6 +70,9 @@ public class YDevice {
     private HashMap<Integer, YPEntry> _ypRecs;
     private double _deviceTime;
     private YPEntry _moduleYPEntry;
+    private YModule.LogCallback _logCallback = null;
+    private int _logpos = 0;
+    private boolean _logIsPulling=false;
 
     // Device constructor. Automatically call the YAPI functin to reindex device
      YDevice(YGenericHub hub, WPEntry wpRec, HashMap<String, ArrayList<YPEntry>> ypRecs) throws YAPI_Exception
@@ -142,7 +145,7 @@ public class YDevice {
         if (_cache_expiration > YAPI.GetTickCount()) {
             return _cache_json;
         }
-        String yreq = new String(requestHTTP("GET /api.json",null, false));
+        String yreq = new String(requestHTTPSync("GET /api.json",null));
         this._cache_expiration = YAPI.GetTickCount() + SafeYAPI().DefaultCacheValidity;
         this._cache_json = yreq;
         return yreq;
@@ -230,7 +233,19 @@ public class YDevice {
     }
 
 
-    byte[] requestHTTP(String request,byte[] rest_of_request, boolean async) throws YAPI_Exception
+    byte[] requestHTTPSync(String request,byte[] rest_of_request) throws YAPI_Exception
+    {
+        String shortRequest = formatRequest(request);
+        return _hub.devRequestSync(this, shortRequest, rest_of_request);
+    }
+
+    void requestHTTPAsync(String request,byte[] rest_of_request, YGenericHub.RequestAsyncResult asyncResult, Object context) throws YAPI_Exception
+    {
+        String shortRequest = formatRequest(request);
+        _hub.devRequestAsync(this, shortRequest, rest_of_request, asyncResult, context);
+    }
+
+    private String formatRequest(String request) throws YAPI_Exception
     {
         String[] words = request.split(" ");
         if (words.length < 2) {
@@ -241,9 +256,9 @@ public class YDevice {
         if (relativeUrl.charAt(0) != '/') {
             relativeUrl = "/" + relativeUrl;
         }
-        String shortRequest = String.format("%s %s%s\r\n", words[0],_wpRec.getNetworkUrl(),relativeUrl);
-        return _hub.devRequest(this,shortRequest,rest_of_request, async);
+        return String.format("%s %s%s", words[0],_wpRec.getNetworkUrl(),relativeUrl);
     }
+
 
     public double getDeviceTime() {
         return _deviceTime;
@@ -257,5 +272,55 @@ public class YDevice {
     YPEntry getModuleYPEntry()
     {
         return _moduleYPEntry;
+    }
+
+    private YGenericHub.RequestAsyncResult _logCallbackHandler = new YGenericHub.RequestAsyncResult() {
+        @Override
+        public void RequestAsyncDone(Object context, byte[] result)
+        {
+
+            if (result == null) {
+                _logIsPulling=false;
+                return;                
+            }
+            if (_logCallback == null) {
+                _logIsPulling=false;
+                return;
+            }
+            String resultStr = new String(result);
+            int pos = resultStr.lastIndexOf("@");
+            if (pos < 0) {
+                _logIsPulling=false;
+                return;
+            }
+            String logs = resultStr.substring(0, pos);
+            String posStr = resultStr.substring(pos + 1);
+            _logpos = Integer.valueOf(posStr);
+            YModule module = YModule.FindModule(getSerialNumber());
+            String[] lines = logs.split("\n");
+            for (String line : lines) {
+                _logCallback.logCallback(module, line);
+            }
+            _logIsPulling=false;
+        }
+    };
+
+    void triggerLogPull()
+    {
+        if (_logCallback==null || _logIsPulling)
+            return;
+        _logIsPulling=true;
+        String request = "GET logs.txt?pos=" + _logpos ;
+        try {
+            requestHTTPAsync(request, null, _logCallbackHandler, new Integer(_logpos));
+        } catch (YAPI_Exception ex) {
+            SafeYAPI()._Log("LOG error:" + ex.getLocalizedMessage());
+        }
+    }
+
+    void registerLogCallback(YModule.LogCallback callback)
+    {
+        _logCallback = callback;
+        triggerLogPull();
     }
 }

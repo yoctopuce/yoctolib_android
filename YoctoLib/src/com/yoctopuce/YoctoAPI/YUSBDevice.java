@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBDevice.java 14945 2014-02-13 10:26:37Z seb $
+ * $Id: YUSBDevice.java 16128 2014-05-09 09:18:06Z seb $
  *
  * YUSBDevice Class: 
  *
@@ -38,6 +38,9 @@
  *********************************************************************/
 package com.yoctopuce.YoctoAPI;
 
+import android.hardware.usb.UsbDevice;
+import android.hardware.usb.UsbManager;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -48,8 +51,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import android.hardware.usb.UsbDevice;
-import android.hardware.usb.UsbManager;
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 public class YUSBDevice
@@ -69,6 +70,9 @@ public class YUSBDevice
     // state of the device
     private final Object _stateLock = new Object();
     private State _state = State.Detected;
+    private YGenericHub.RequestAsyncResult _asyncResult;
+    private Object _asyncContext;
+
 
     private enum State {
         Detected, ResetReceived, StartReceived, StreamReadyReceived,  NotWorking
@@ -80,7 +84,6 @@ public class YUSBDevice
 
     private TCP_State _tcp_state = TCP_State.Closed;
     private final ByteArrayOutputStream _req_result = new ByteArrayOutputStream(1024);
-    private byte[] _currentRequest;
     private long _currentRequestTimeout;
 
     // mapping for ydx<serial> of potential subdevice for this USB device
@@ -133,7 +136,6 @@ public class YUSBDevice
      */
     private void handleNotifcation(YPktStreamHead.NotificationStreams not) throws YAPI_Exception
     {
-        // YAPI.Log(not.dump());
         WPEntry wp;
         YPEntry yp;
         synchronized (_usbWP) {
@@ -165,7 +167,7 @@ public class YUSBDevice
             break;
         case FUNCVAL:
             yp = getYPEntryFromNotification(not);
-            yp.setAdvertisedValue(not.getFuncval());
+            SafeYAPI().setFunctionValue(yp.getHardwareId(), not.getFuncval());
             break;
         case LOG:
             break;
@@ -276,6 +278,9 @@ public class YUSBDevice
                         if (checkDeviceState(false, newpkt)){
                             synchronized (_req_result) {
                                 _req_result.write(s.getDataAsByteArray());
+                                if (_asyncResult != null) {
+                                    _asyncResult.RequestAsyncDone(_asyncContext,_req_result.toByteArray());
+                                }
                             }
                             remoteClose();
                         }
@@ -453,49 +458,56 @@ public class YUSBDevice
         }
     }
 
-    public synchronized byte[] sendRequest(String firstLine, byte[] rest_of_request, boolean async) throws YAPI_Exception
+    private void sendRequest(String firstLine, byte[] rest_of_request, YGenericHub.RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception
     {
-        byte[] result;
         // first enssure that last request has finished
         waitForState(State.StreamReadyReceived, null, 10, "Device not ready");
         finishLastRequest(true);
         synchronized (_req_result) {
             _req_result.reset();
         }
-
-
+        byte[] currentRequest;
         if (rest_of_request == null) {
-            _currentRequest =(firstLine+"\r\n\r\n").getBytes();
+            currentRequest = (firstLine + "\r\n\r\n").getBytes();
         } else {
             firstLine += "\r\n";
             int len = firstLine.length() + rest_of_request.length;
-            _currentRequest = new byte[len];
-            System.arraycopy(firstLine.getBytes(), 0, _currentRequest, 0, len);
-            System.arraycopy(rest_of_request, 0, _currentRequest,firstLine.length(), rest_of_request.length);
+            currentRequest = new byte[len];
+            System.arraycopy(firstLine.getBytes(), 0, currentRequest, 0, len);
+            System.arraycopy(rest_of_request, 0, currentRequest,firstLine.length(), rest_of_request.length);
         }
+        _asyncResult = asyncResult;
+        _asyncContext = asyncContext;
         _currentRequestTimeout = YAPI.GetTickCount() + 10000;// 10 sec
-
         int pos =0;
-        while (pos < _currentRequest.length) {
+        while (pos < currentRequest.length) {
             YUSBPktOut ypkt = new YUSBPktOut(this);
-            pos += ypkt.pushTCP(_currentRequest, pos, _currentRequest.length -pos);
+            pos += ypkt.pushTCP(currentRequest, pos, currentRequest.length -pos);
             _rawDev.sendPkt(ypkt);
         }
         checkMetaUTC();
-        if (!async) {
-            finishLastRequest(false);
-            synchronized (_req_result) {
-                result = _req_result.toByteArray();
-            }
-            int hpos = YAPI._find_in_bytes(result, "\r\n\r\n".getBytes());
-            if (hpos >= 0) {
-                return Arrays.copyOfRange(result, hpos + 4, result.length);
-            }
-        } else {
-            return new byte[0];
+    }
+
+    public synchronized void sendRequestAsync(String firstLine, byte[] rest_of_request, YGenericHub.RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception
+    {
+        sendRequest(firstLine, rest_of_request, asyncResult, asyncContext);
+    }
+
+    public synchronized byte[] sendRequestSync(String firstLine, byte[] rest_of_request) throws YAPI_Exception
+    {
+        byte[] result;
+        sendRequest(firstLine, rest_of_request, null, null);
+        finishLastRequest(false);
+        synchronized (_req_result) {
+            result = _req_result.toByteArray();
+        }
+        int hpos = YAPI._find_in_bytes(result, "\r\n\r\n".getBytes());
+        if (hpos >= 0) {
+            return Arrays.copyOfRange(result, hpos + 4, result.length);
         }
         return result;
     }
+
 
     public String getSerial()
     {
@@ -534,6 +546,7 @@ public class YUSBDevice
 
     public void ioError(String errorMessage)
     {
+        SafeYAPI()._Log("USB IO Error:" + errorMessage);
         setNewState(State.NotWorking);
     }
 

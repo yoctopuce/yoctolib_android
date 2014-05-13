@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFunction.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YFunction.java 15999 2014-05-01 08:28:57Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -186,7 +186,7 @@ public class YFunction
      * 
      * @return a string corresponding to the logical name of the function
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_logicalName() throws YAPI_Exception
     {
@@ -203,7 +203,7 @@ public class YFunction
      * 
      * @return a string corresponding to the logical name of the function
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getLogicalName() throws YAPI_Exception
 
@@ -219,7 +219,7 @@ public class YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_logicalName(String  newval)  throws YAPI_Exception
     {
@@ -239,7 +239,7 @@ public class YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setLogicalName(String newval)  throws YAPI_Exception
 
@@ -250,7 +250,7 @@ public class YFunction
      * 
      * @return a string corresponding to the current value of the function (no more than 6 characters)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_advertisedValue() throws YAPI_Exception
     {
@@ -267,7 +267,7 @@ public class YFunction
      * 
      * @return a string corresponding to the current value of the function (no more than 6 characters)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getAdvertisedValue() throws YAPI_Exception
 
@@ -316,7 +316,7 @@ public class YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -410,11 +410,11 @@ public class YFunction
     /**
      * Returns the unique hardware identifier of the function in the form SERIAL.FUNCTIONID.
      * The unique hardware identifier is composed of the device serial
-     * number and of the hardware identifier of the function. (for example RELAYLO1-123456.relay1)
+     * number and of the hardware identifier of the function (for example RELAYLO1-123456.relay1).
      * 
      * @return a string that uniquely identifies the function (ex: RELAYLO1-123456.relay1)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_hardwareId() throws YAPI_Exception
     {
@@ -433,7 +433,7 @@ public class YFunction
      * 
      * @return a string that identifies the function (ex: relay1)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_functionId() throws YAPI_Exception
     {
@@ -455,7 +455,7 @@ public class YFunction
      * @return a string that uniquely identifies the function using logical names
      *         (ex: MyCustomName.relay1)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_friendlyName() throws YAPI_Exception
     {
@@ -506,6 +506,7 @@ public class YFunction
                     .replaceAll("%2C", ",").replaceAll("%2F", "/")
                     .replaceAll("%3A", ":").replaceAll("%3B", ";").replaceAll("%3F", "?")
                     .replaceAll("%40", "@").replaceAll("%5B", "[").replaceAll("%5D", "]");
+            extra += "&.";
         } catch (UnsupportedEncodingException ex) {
             throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Unsupported Encoding");
         }
@@ -521,7 +522,7 @@ public class YFunction
     private byte[] _request(String req_first_line,byte[] req_head_and_body) throws YAPI_Exception
     {
         YDevice dev = SafeYAPI().funcGetDevice(_className, _func);
-        return dev.requestHTTP(req_first_line,req_head_and_body, false);
+        return dev.requestHTTPSync(req_first_line, req_head_and_body);
     }
 
     protected int _upload(String path, byte[] content) throws YAPI_Exception
@@ -655,7 +656,7 @@ public class YFunction
             // request specified function only to minimize traffic
             if (extra.equals("")) {
                 String httpreq = "GET /api/" + _funId + ".json";
-                String yreq = new String(dev.requestHTTP(httpreq,null, false));
+                String yreq = new String(dev.requestHTTPSync(httpreq, null));
                 try {
                     loadval = new JSONObject(yreq);
                 } catch (JSONException ex) {
@@ -665,7 +666,7 @@ public class YFunction
                 }
             } else {
                 String httpreq = "GET /api/" + _funId + extra;
-                dev.requestHTTP(httpreq,null, true);
+                dev.requestHTTPAsync(httpreq, null, null, null);
                 return null;
             }
         }
@@ -777,7 +778,7 @@ public class YFunction
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int load(long msValidity) throws YAPI_Exception
     {
@@ -797,10 +798,13 @@ public class YFunction
     {
         YPEntry ypEntry;
         // try to resolve the function name to a device id without query
+        if (_serial != null && !_serial.equals("")) {
+            return YModule.FindModule(_serial + ".module");
+        }
         if (_func.indexOf('.') == -1) {
             try {
                 ypEntry = SafeYAPI().resolveFunction(_className, _func);
-                return YModule.FindModule(ypEntry.getSerial());
+                return YModule.FindModule(ypEntry.getSerial() + ".module");
             } catch (YAPI_Exception ignored) {
             }
         }
@@ -808,7 +812,7 @@ public class YFunction
             // device not resolved for now, force a communication for a last chance resolution
             if (load(SafeYAPI().DefaultCacheValidity) == YAPI.SUCCESS) {
                 ypEntry = SafeYAPI().resolveFunction(_className, _func);
-                return YModule.FindModule(ypEntry.getSerial());
+                return YModule.FindModule(ypEntry.getSerial() + ".module");
             }
         } catch (YAPI_Exception ignored) {
         }
@@ -883,7 +887,7 @@ public class YFunction
      * This attribute is never touched by the API, and is at disposal of the caller to store a context.
      * 
      * @param data : any kind of object to be stored
-     * @noreturn
+     * 
      */
     public void set_userData(Object data)
     {

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPEntry.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: YPEntry.java 16128 2014-05-09 09:18:06Z seb $
  *
  * Yellow page implementation
  *
@@ -121,7 +121,7 @@ class YPEntry {
     public void setAdvertisedValue(String _advertisedValue)
     {
         this._advertisedValue = _advertisedValue;
-        SafeYAPI().setFunctionValue(_serial+"."+_funcId, _advertisedValue);
+
     }
 
     public String getHardwareId()

@@ -1,35 +1,35 @@
 /*********************************************************************
  *
- * $Id: pic24config.php 13541 2013-11-12 15:09:26Z seb $
+ * $Id: YSensor.java 16091 2014-05-08 12:10:31Z seb $
  *
  * Implements yFindSensor(), the high-level API for Sensor functions
  *
- * - - - - - - - - - License information: - - - - - - - - - 
+ * - - - - - - - - - License information: - - - - - - - - -
  *
  *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
  *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
  *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ *  file into your software for the sole purpose of interfacing
+ *  with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
+ *  You may reproduce and distribute copies of this file in
  *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
+ *  code is to interface with Yoctopuce products. You must retain
  *  this notice in the distributed source file.
  *
  *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
+ *  for additional information regarding your rights and
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
+ *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
  *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
  *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
  *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
@@ -170,7 +170,7 @@ public class YSensor extends YFunction
             calibType = npt;
         } else {
             calibType = 10 + npt;
-        }        
+        }
         res = Integer.toString(calibType);
         if(calibType<=10){
             for (int i = 0; i < npt; i++) {
@@ -200,7 +200,7 @@ public class YSensor extends YFunction
      */
     static int _decodeCalibrationPoints(String calibParams, ArrayList<Integer> intPt, ArrayList<Double> rawPt, ArrayList<Double> calPt) throws YAPI_Exception
     {
-        
+
         intPt.clear();
         rawPt.clear();
         calPt.clear();
@@ -216,7 +216,7 @@ public class YSensor extends YFunction
         ArrayList<Integer> iCalib = YAPI._decodeWords(calibParams);
         if(iCalib.size() < 2) {
             // bad format
-            return -1; 
+            return -1;
         }
         if(iCalib.size() == 2) {
             // no calibration
@@ -247,7 +247,7 @@ public class YSensor extends YFunction
         }
         if (intPt.size() < 10) {
             return -1;
-        }       
+        }
         return calibType;
     }
 
@@ -304,7 +304,7 @@ public class YSensor extends YFunction
      * 
      * @return a string corresponding to the measuring unit for the measure
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_unit() throws YAPI_Exception
     {
@@ -321,7 +321,7 @@ public class YSensor extends YFunction
      * 
      * @return a string corresponding to the measuring unit for the measure
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getUnit() throws YAPI_Exception
 
@@ -332,7 +332,7 @@ public class YSensor extends YFunction
      * 
      * @return a floating point number corresponding to the current value of the measure
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_currentValue() throws YAPI_Exception
     {
@@ -355,7 +355,7 @@ public class YSensor extends YFunction
      * 
      * @return a floating point number corresponding to the current value of the measure
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getCurrentValue() throws YAPI_Exception
 
@@ -368,7 +368,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_lowestValue(double  newval)  throws YAPI_Exception
     {
@@ -385,7 +385,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setLowestValue(double newval)  throws YAPI_Exception
 
@@ -397,7 +397,7 @@ public class YSensor extends YFunction
      * @return a floating point number corresponding to the minimal value observed for the measure since
      * the device was started
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_lowestValue() throws YAPI_Exception
     {
@@ -417,7 +417,7 @@ public class YSensor extends YFunction
      * @return a floating point number corresponding to the minimal value observed for the measure since
      * the device was started
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getLowestValue() throws YAPI_Exception
 
@@ -430,7 +430,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_highestValue(double  newval)  throws YAPI_Exception
     {
@@ -447,7 +447,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setHighestValue(double newval)  throws YAPI_Exception
 
@@ -459,7 +459,7 @@ public class YSensor extends YFunction
      * @return a floating point number corresponding to the maximal value observed for the measure since
      * the device was started
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_highestValue() throws YAPI_Exception
     {
@@ -479,7 +479,7 @@ public class YSensor extends YFunction
      * @return a floating point number corresponding to the maximal value observed for the measure since
      * the device was started
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getHighestValue() throws YAPI_Exception
 
@@ -490,7 +490,7 @@ public class YSensor extends YFunction
      * 
      * @return a floating point number corresponding to the uncalibrated, unrounded raw value returned by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_currentRawValue() throws YAPI_Exception
     {
@@ -507,7 +507,7 @@ public class YSensor extends YFunction
      * 
      * @return a floating point number corresponding to the uncalibrated, unrounded raw value returned by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getCurrentRawValue() throws YAPI_Exception
 
@@ -520,7 +520,7 @@ public class YSensor extends YFunction
      * @return a string corresponding to the datalogger recording frequency for this function, or "OFF"
      *         when measures are not stored in the data logger flash memory
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_logFrequency() throws YAPI_Exception
     {
@@ -539,7 +539,7 @@ public class YSensor extends YFunction
      * @return a string corresponding to the datalogger recording frequency for this function, or "OFF"
      *         when measures are not stored in the data logger flash memory
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getLogFrequency() throws YAPI_Exception
 
@@ -556,7 +556,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_logFrequency(String  newval)  throws YAPI_Exception
     {
@@ -577,7 +577,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setLogFrequency(String newval)  throws YAPI_Exception
 
@@ -590,7 +590,7 @@ public class YSensor extends YFunction
      * @return a string corresponding to the timed value notification frequency, or "OFF" if timed
      *         value notifications are disabled for this function
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_reportFrequency() throws YAPI_Exception
     {
@@ -609,7 +609,7 @@ public class YSensor extends YFunction
      * @return a string corresponding to the timed value notification frequency, or "OFF" if timed
      *         value notifications are disabled for this function
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getReportFrequency() throws YAPI_Exception
 
@@ -626,7 +626,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_reportFrequency(String  newval)  throws YAPI_Exception
     {
@@ -647,14 +647,14 @@ public class YSensor extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setReportFrequency(String newval)  throws YAPI_Exception
 
     { return set_reportFrequency(newval); }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_calibrationParam() throws YAPI_Exception
     {
@@ -667,7 +667,7 @@ public class YSensor extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getCalibrationParam() throws YAPI_Exception
 
@@ -693,7 +693,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_resolution(double  newval)  throws YAPI_Exception
     {
@@ -711,7 +711,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setResolution(double newval)  throws YAPI_Exception
 
@@ -723,7 +723,7 @@ public class YSensor extends YFunction
      * 
      * @return a floating point number corresponding to the resolution of the measured values
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_resolution() throws YAPI_Exception
     {
@@ -741,7 +741,7 @@ public class YSensor extends YFunction
      * 
      * @return a floating point number corresponding to the resolution of the measured values
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getResolution() throws YAPI_Exception
 
@@ -790,7 +790,7 @@ public class YSensor extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -977,7 +977,7 @@ public class YSensor extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {
@@ -1018,7 +1018,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int calibrateFromPoints(ArrayList<Double> rawValues,ArrayList<Double> refValues) throws YAPI_Exception
     {
@@ -1039,7 +1039,7 @@ public class YSensor extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int loadCalibrationPoints(ArrayList<Double> rawValues,ArrayList<Double> refValues) throws YAPI_Exception
     {
@@ -1103,8 +1103,8 @@ public class YSensor extends YFunction
             res = String.format("%d",npt);
             idx = 0;
             while (idx < npt) {
-                iRaw = (int) Math.round(rawValues.get(idx) * _scale - _offset);
-                iRef = (int) Math.round(refValues.get(idx) * _scale - _offset);
+                iRaw = (int) Math.round(rawValues.get(idx) * _scale + _offset);
+                iRef = (int) Math.round(refValues.get(idx) * _scale + _offset);
                 res = String.format("%s,%d,%d", res, iRaw,iRef);
                 idx = idx + 1;
             }

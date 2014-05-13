@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: pic24config.php 13217 2013-10-19 20:39:05Z mvuilleu $
+ * $Id: YMeasure.java 15813 2014-04-16 06:57:36Z seb $
  *
  * Implements yFindMeasure(), the high-level API for Measure functions
  *
@@ -100,7 +100,7 @@ public class YMeasure
 
     /**
      * Returns the end time of the measure, relative to the Jan 1, 1970 UTC
-     * (Unix timestamp). When the recording rate is higher then 1 sample
+     * (Unix timestamp). When the recording rate is higher than 1 sample
      * per second, the timestamp may have a fractional part.
      * 
      * @return an floating point number corresponding to the number of seconds

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDisplay.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YDisplay.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindDisplay(), the high-level API for Display functions
  *
@@ -10,26 +10,26 @@
  *
  *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
  *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ *  file into your software for the sole purpose of interfacing
+ *  with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
+ *  You may reproduce and distribute copies of this file in
  *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
+ *  code is to interface with Yoctopuce products. You must retain
  *  this notice in the distributed source file.
  *
  *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
+ *  for additional information regarding your rights and
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
+ *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
  *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
  *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
  *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
@@ -37,7 +37,7 @@
  *
  *********************************************************************/
 
-package com.yoctopuce.YoctoAPI; 
+package com.yoctopuce.YoctoAPI;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import org.json.JSONException;
@@ -209,7 +209,7 @@ public class YDisplay extends YFunction
      * @return either YDisplay.ENABLED_FALSE or YDisplay.ENABLED_TRUE, according to true if the screen is
      * powered, false otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_enabled() throws YAPI_Exception
     {
@@ -226,7 +226,7 @@ public class YDisplay extends YFunction
      * 
      * @return either Y_ENABLED_FALSE or Y_ENABLED_TRUE, according to true if the screen is powered, false otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getEnabled() throws YAPI_Exception
 
@@ -240,7 +240,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_enabled(int  newval)  throws YAPI_Exception
     {
@@ -257,7 +257,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setEnabled(int newval)  throws YAPI_Exception
 
@@ -268,7 +268,7 @@ public class YDisplay extends YFunction
      * 
      * @return a string corresponding to the name of the sequence to play when the displayed is powered on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_startupSeq() throws YAPI_Exception
     {
@@ -285,7 +285,7 @@ public class YDisplay extends YFunction
      * 
      * @return a string corresponding to the name of the sequence to play when the displayed is powered on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getStartupSeq() throws YAPI_Exception
 
@@ -300,7 +300,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_startupSeq(String  newval)  throws YAPI_Exception
     {
@@ -319,7 +319,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setStartupSeq(String newval)  throws YAPI_Exception
 
@@ -330,7 +330,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the luminosity of the  module informative leds (from 0 to 100)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_brightness() throws YAPI_Exception
     {
@@ -347,7 +347,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the luminosity of the  module informative leds (from 0 to 100)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getBrightness() throws YAPI_Exception
 
@@ -362,7 +362,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_brightness(int  newval)  throws YAPI_Exception
     {
@@ -381,7 +381,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setBrightness(int newval)  throws YAPI_Exception
 
@@ -394,7 +394,7 @@ public class YDisplay extends YFunction
      * YDisplay.ORIENTATION_RIGHT and YDisplay.ORIENTATION_DOWN corresponding to the currently selected
      * display orientation
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_orientation() throws YAPI_Exception
     {
@@ -412,7 +412,7 @@ public class YDisplay extends YFunction
      * @return a value among Y_ORIENTATION_LEFT, Y_ORIENTATION_UP, Y_ORIENTATION_RIGHT and
      * Y_ORIENTATION_DOWN corresponding to the currently selected display orientation
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getOrientation() throws YAPI_Exception
 
@@ -427,7 +427,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_orientation(int  newval)  throws YAPI_Exception
     {
@@ -446,7 +446,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setOrientation(int newval)  throws YAPI_Exception
 
@@ -457,7 +457,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the display width, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_displayWidth() throws YAPI_Exception
     {
@@ -474,7 +474,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the display width, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getDisplayWidth() throws YAPI_Exception
 
@@ -485,7 +485,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the display height, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_displayHeight() throws YAPI_Exception
     {
@@ -502,7 +502,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the display height, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getDisplayHeight() throws YAPI_Exception
 
@@ -514,7 +514,7 @@ public class YDisplay extends YFunction
      * @return a value among YDisplay.DISPLAYTYPE_MONO, YDisplay.DISPLAYTYPE_GRAY and
      * YDisplay.DISPLAYTYPE_RGB corresponding to the display type: monochrome, gray levels or full color
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_displayType() throws YAPI_Exception
     {
@@ -532,7 +532,7 @@ public class YDisplay extends YFunction
      * @return a value among Y_DISPLAYTYPE_MONO, Y_DISPLAYTYPE_GRAY and Y_DISPLAYTYPE_RGB corresponding to
      * the display type: monochrome, gray levels or full color
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getDisplayType() throws YAPI_Exception
 
@@ -543,7 +543,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the width of the layers to draw on, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_layerWidth() throws YAPI_Exception
     {
@@ -560,7 +560,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the width of the layers to draw on, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getLayerWidth() throws YAPI_Exception
 
@@ -571,7 +571,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the height of the layers to draw on, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_layerHeight() throws YAPI_Exception
     {
@@ -588,7 +588,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the height of the layers to draw on, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getLayerHeight() throws YAPI_Exception
 
@@ -599,7 +599,7 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the number of available layers to draw on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_layerCount() throws YAPI_Exception
     {
@@ -616,14 +616,14 @@ public class YDisplay extends YFunction
      * 
      * @return an integer corresponding to the number of available layers to draw on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getLayerCount() throws YAPI_Exception
 
     { return get_layerCount(); }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_command() throws YAPI_Exception
     {
@@ -636,7 +636,7 @@ public class YDisplay extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getCommand() throws YAPI_Exception
 
@@ -697,7 +697,7 @@ public class YDisplay extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -734,7 +734,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int resetAll() throws YAPI_Exception
     {
@@ -747,12 +747,12 @@ public class YDisplay extends YFunction
      * Smoothly changes the brightness of the screen to produce a fade-in or fade-out
      * effect.
      * 
-     * @param brightness: the new screen brightness
-     * @param duration: duration of the brightness transition, in milliseconds.
+     * @param brightness : the new screen brightness
+     * @param duration : duration of the brightness transition, in milliseconds.
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int fade(int brightness,int duration) throws YAPI_Exception
     {
@@ -767,7 +767,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int newSequence() throws YAPI_Exception
     {
@@ -786,7 +786,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int saveSequence(String sequenceName) throws YAPI_Exception
     {
@@ -806,7 +806,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int playSequence(String sequenceName) throws YAPI_Exception
     {
@@ -826,7 +826,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int pauseSequence(int delay_ms) throws YAPI_Exception
     {
@@ -840,7 +840,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int stopSequence() throws YAPI_Exception
     {
@@ -858,7 +858,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int upload(String pathname,byte[] content) throws YAPI_Exception
     {
@@ -877,7 +877,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int copyLayerContent(int srcLayerId,int dstLayerId) throws YAPI_Exception
     {
@@ -898,7 +898,7 @@ public class YDisplay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int swapLayerContent(int layerIdA,int layerIdB) throws YAPI_Exception
     {
@@ -956,7 +956,7 @@ public class YDisplay extends YFunction
      * 
      * @return an YDisplayLayer object
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public synchronized YDisplayLayer get_displayLayer(int layerId) throws YAPI_Exception
     {
@@ -972,7 +972,7 @@ public class YDisplay extends YFunction
         }
         return _allDisplayLayers[layerId];
     }
-    
+
     public synchronized int flushLayers() throws YAPI_Exception
     {
         if(_allDisplayLayers != null) {
@@ -982,7 +982,7 @@ public class YDisplay extends YFunction
         }
         return YAPI.SUCCESS;
     }
-    
+
     public synchronized void resetHiddenLayerFlags() throws YAPI_Exception
     {
         if(_allDisplayLayers != null) {
@@ -991,7 +991,7 @@ public class YDisplay extends YFunction
             }
         }
     }
-    
+
     public synchronized int sendCommand(String cmd) throws YAPI_Exception
     {
         if(!_recording) {
@@ -999,6 +999,6 @@ public class YDisplay extends YFunction
         }
         this._sequence += cmd+"\n";
         return YAPI.SUCCESS;
-    }    
+    }
 }
 

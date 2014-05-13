@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YModule.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YModule.java 16091 2014-05-08 12:10:31Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -38,9 +38,10 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 //--- (generated code: YModule class start)
 /**
@@ -127,7 +128,7 @@ public class YModule extends YFunction
     protected int _rebootCountdown = REBOOTCOUNTDOWN_INVALID;
     protected int _usbBandwidth = USBBANDWIDTH_INVALID;
     protected UpdateCallback _valueCallbackModule = null;
-    protected YAPI.LogCallback _logCallback = null;
+    protected YModule.LogCallback _logCallback = null;
 
     public interface LogCallback {
         /**
@@ -215,6 +216,29 @@ public class YModule extends YFunction
         return dev.getYPEntry(functionIndex).getAdvertisedValue();
     }
 
+      /**
+       * Registers a device log callback function. This callback will be called each time
+       * that a module sends a new log message. Mostly useful to debug a Yoctopuce module.
+       * 
+       * @param callback : the callback function to call, or a null pointer. The callback function should take two
+       *         arguments: the module object that emitted the log message, and the character string containing the log.
+       * 
+       */
+    public void registerLogCallback(LogCallback callback)
+    {
+        _logCallback = callback;
+        YDevice ydev = SafeYAPI().getDevice(_serial);
+        if (ydev!=null) {
+            ydev.registerLogCallback(callback);
+        }
+    }
+    
+  
+    LogCallback get_logCallback()
+    {
+        return _logCallback;
+    }
+    
 
     // --- (generated code: YModule implementation)
     @Override
@@ -264,7 +288,7 @@ public class YModule extends YFunction
      * 
      * @return a string corresponding to the commercial name of the module, as set by the factory
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_productName() throws YAPI_Exception
     {
@@ -281,7 +305,7 @@ public class YModule extends YFunction
      * 
      * @return a string corresponding to the commercial name of the module, as set by the factory
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getProductName() throws YAPI_Exception
 
@@ -292,7 +316,7 @@ public class YModule extends YFunction
      * 
      * @return a string corresponding to the serial number of the module, as set by the factory
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_serialNumber() throws YAPI_Exception
     {
@@ -309,7 +333,7 @@ public class YModule extends YFunction
      * 
      * @return a string corresponding to the serial number of the module, as set by the factory
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getSerialNumber() throws YAPI_Exception
 
@@ -320,7 +344,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the USB device identifier of the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_productId() throws YAPI_Exception
     {
@@ -337,7 +361,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the USB device identifier of the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getProductId() throws YAPI_Exception
 
@@ -348,7 +372,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the hardware release version of the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_productRelease() throws YAPI_Exception
     {
@@ -365,7 +389,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the hardware release version of the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getProductRelease() throws YAPI_Exception
 
@@ -376,7 +400,7 @@ public class YModule extends YFunction
      * 
      * @return a string corresponding to the version of the firmware embedded in the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_firmwareRelease() throws YAPI_Exception
     {
@@ -393,7 +417,7 @@ public class YModule extends YFunction
      * 
      * @return a string corresponding to the version of the firmware embedded in the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getFirmwareRelease() throws YAPI_Exception
 
@@ -405,7 +429,7 @@ public class YModule extends YFunction
      * @return a value among YModule.PERSISTENTSETTINGS_LOADED, YModule.PERSISTENTSETTINGS_SAVED and
      * YModule.PERSISTENTSETTINGS_MODIFIED corresponding to the current state of persistent module settings
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_persistentSettings() throws YAPI_Exception
     {
@@ -423,7 +447,7 @@ public class YModule extends YFunction
      * @return a value among Y_PERSISTENTSETTINGS_LOADED, Y_PERSISTENTSETTINGS_SAVED and
      * Y_PERSISTENTSETTINGS_MODIFIED corresponding to the current state of persistent module settings
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPersistentSettings() throws YAPI_Exception
 
@@ -446,7 +470,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the luminosity of the  module informative leds (from 0 to 100)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_luminosity() throws YAPI_Exception
     {
@@ -463,7 +487,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the luminosity of the  module informative leds (from 0 to 100)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getLuminosity() throws YAPI_Exception
 
@@ -479,7 +503,7 @@ public class YModule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_luminosity(int  newval)  throws YAPI_Exception
     {
@@ -499,7 +523,7 @@ public class YModule extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setLuminosity(int newval)  throws YAPI_Exception
 
@@ -510,7 +534,7 @@ public class YModule extends YFunction
      * 
      * @return either YModule.BEACON_OFF or YModule.BEACON_ON, according to the state of the localization beacon
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_beacon() throws YAPI_Exception
     {
@@ -527,7 +551,7 @@ public class YModule extends YFunction
      * 
      * @return either Y_BEACON_OFF or Y_BEACON_ON, according to the state of the localization beacon
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getBeacon() throws YAPI_Exception
 
@@ -540,7 +564,7 @@ public class YModule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_beacon(int  newval)  throws YAPI_Exception
     {
@@ -557,7 +581,7 @@ public class YModule extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setBeacon(int newval)  throws YAPI_Exception
 
@@ -568,7 +592,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the number of milliseconds spent since the module was powered on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_upTime() throws YAPI_Exception
     {
@@ -585,7 +609,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the number of milliseconds spent since the module was powered on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getUpTime() throws YAPI_Exception
 
@@ -596,7 +620,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the current consumed by the module on the USB bus, in milli-amps
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_usbCurrent() throws YAPI_Exception
     {
@@ -613,7 +637,7 @@ public class YModule extends YFunction
      * 
      * @return an integer corresponding to the current consumed by the module on the USB bus, in milli-amps
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getUsbCurrent() throws YAPI_Exception
 
@@ -626,7 +650,7 @@ public class YModule extends YFunction
      * @return an integer corresponding to the remaining number of seconds before the module restarts, or zero when no
      *         reboot has been scheduled
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_rebootCountdown() throws YAPI_Exception
     {
@@ -645,7 +669,7 @@ public class YModule extends YFunction
      * @return an integer corresponding to the remaining number of seconds before the module restarts, or zero when no
      *         reboot has been scheduled
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getRebootCountdown() throws YAPI_Exception
 
@@ -669,7 +693,7 @@ public class YModule extends YFunction
      * @return either YModule.USBBANDWIDTH_SIMPLE or YModule.USBBANDWIDTH_DOUBLE, according to the number
      * of USB interfaces used by the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_usbBandwidth() throws YAPI_Exception
     {
@@ -687,45 +711,11 @@ public class YModule extends YFunction
      * @return either Y_USBBANDWIDTH_SIMPLE or Y_USBBANDWIDTH_DOUBLE, according to the number of USB
      * interfaces used by the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getUsbBandwidth() throws YAPI_Exception
 
     { return get_usbBandwidth(); }
-
-    /**
-     * Changes the number of USB interfaces used by the module. You must reboot the module
-     * after changing this setting.
-     * 
-     * @param newval : either YModule.USBBANDWIDTH_SIMPLE or YModule.USBBANDWIDTH_DOUBLE, according to the
-     * number of USB interfaces used by the module
-     * 
-     * @return YAPI.SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int set_usbBandwidth(int  newval)  throws YAPI_Exception
-    {
-        String rest_val;
-        rest_val = Integer.toString(newval);
-        _setAttr("usbBandwidth",rest_val);
-        return YAPI.SUCCESS;
-    }
-
-    /**
-     * Changes the number of USB interfaces used by the module. You must reboot the module
-     * after changing this setting.
-     * 
-     * @param newval : either Y_USBBANDWIDTH_SIMPLE or Y_USBBANDWIDTH_DOUBLE, according to the number of
-     * USB interfaces used by the module
-     * 
-     * @return YAPI_SUCCESS if the call succeeds.
-     * 
-     * @throws YAPI_Exception
-     */
-    public int setUsbBandwidth(int newval)  throws YAPI_Exception
-
-    { return set_usbBandwidth(newval); }
 
     /**
      * Allows you to find a module from its serial number or from its logical name.
@@ -764,7 +754,7 @@ public class YModule extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -803,7 +793,7 @@ public class YModule extends YFunction
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int saveToFlash() throws YAPI_Exception
     {
@@ -816,7 +806,7 @@ public class YModule extends YFunction
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int revertFromFlash() throws YAPI_Exception
     {
@@ -830,7 +820,7 @@ public class YModule extends YFunction
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int reboot(int secBeforeReboot) throws YAPI_Exception
     {
@@ -844,7 +834,7 @@ public class YModule extends YFunction
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int triggerFirmwareUpdate(int secBeforeReboot) throws YAPI_Exception
     {
@@ -858,7 +848,7 @@ public class YModule extends YFunction
      * 
      * @return a binary buffer with the file content
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public byte[] download(String pathname) throws YAPI_Exception
     {

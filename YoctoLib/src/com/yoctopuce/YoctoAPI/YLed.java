@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YLed.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YLed.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindLed(), the high-level API for Led functions
  *
@@ -142,7 +142,7 @@ public class YLed extends YFunction
      * 
      * @return either YLed.POWER_OFF or YLed.POWER_ON, according to the current led state
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_power() throws YAPI_Exception
     {
@@ -159,7 +159,7 @@ public class YLed extends YFunction
      * 
      * @return either Y_POWER_OFF or Y_POWER_ON, according to the current led state
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPower() throws YAPI_Exception
 
@@ -172,7 +172,7 @@ public class YLed extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_power(int  newval)  throws YAPI_Exception
     {
@@ -189,7 +189,7 @@ public class YLed extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setPower(int newval)  throws YAPI_Exception
 
@@ -200,7 +200,7 @@ public class YLed extends YFunction
      * 
      * @return an integer corresponding to the current led intensity (in per cent)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_luminosity() throws YAPI_Exception
     {
@@ -217,7 +217,7 @@ public class YLed extends YFunction
      * 
      * @return an integer corresponding to the current led intensity (in per cent)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getLuminosity() throws YAPI_Exception
 
@@ -230,7 +230,7 @@ public class YLed extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_luminosity(int  newval)  throws YAPI_Exception
     {
@@ -247,7 +247,7 @@ public class YLed extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setLuminosity(int newval)  throws YAPI_Exception
 
@@ -259,7 +259,7 @@ public class YLed extends YFunction
      * @return a value among YLed.BLINKING_STILL, YLed.BLINKING_RELAX, YLed.BLINKING_AWARE,
      * YLed.BLINKING_RUN, YLed.BLINKING_CALL and YLed.BLINKING_PANIC corresponding to the current led signaling mode
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_blinking() throws YAPI_Exception
     {
@@ -277,7 +277,7 @@ public class YLed extends YFunction
      * @return a value among Y_BLINKING_STILL, Y_BLINKING_RELAX, Y_BLINKING_AWARE, Y_BLINKING_RUN,
      * Y_BLINKING_CALL and Y_BLINKING_PANIC corresponding to the current led signaling mode
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getBlinking() throws YAPI_Exception
 
@@ -291,7 +291,7 @@ public class YLed extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_blinking(int  newval)  throws YAPI_Exception
     {
@@ -309,7 +309,7 @@ public class YLed extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setBlinking(int newval)  throws YAPI_Exception
 
@@ -358,7 +358,7 @@ public class YLed extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWireless.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YWireless.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindWireless(), the high-level API for Wireless functions
  *
@@ -10,26 +10,26 @@
  *
  *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
  *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ *  file into your software for the sole purpose of interfacing
+ *  with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
+ *  You may reproduce and distribute copies of this file in
  *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
+ *  code is to interface with Yoctopuce products. You must retain
  *  this notice in the distributed source file.
  *
  *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
+ *  for additional information regarding your rights and
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
+ *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
  *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
  *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
  *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
@@ -161,7 +161,7 @@ public class YWireless extends YFunction
      * 
      * @return an integer corresponding to the link quality, expressed in percent
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_linkQuality() throws YAPI_Exception
     {
@@ -178,7 +178,7 @@ public class YWireless extends YFunction
      * 
      * @return an integer corresponding to the link quality, expressed in percent
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getLinkQuality() throws YAPI_Exception
 
@@ -189,7 +189,7 @@ public class YWireless extends YFunction
      * 
      * @return a string corresponding to the wireless network name (SSID)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_ssid() throws YAPI_Exception
     {
@@ -206,7 +206,7 @@ public class YWireless extends YFunction
      * 
      * @return a string corresponding to the wireless network name (SSID)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getSsid() throws YAPI_Exception
 
@@ -218,7 +218,7 @@ public class YWireless extends YFunction
      * @return an integer corresponding to the 802.11 channel currently used, or 0 when the selected
      * network has not been found
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_channel() throws YAPI_Exception
     {
@@ -236,7 +236,7 @@ public class YWireless extends YFunction
      * @return an integer corresponding to the 802.11 channel currently used, or 0 when the selected
      * network has not been found
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getChannel() throws YAPI_Exception
 
@@ -249,7 +249,7 @@ public class YWireless extends YFunction
      * YWireless.SECURITY_WPA and YWireless.SECURITY_WPA2 corresponding to the security algorithm used by
      * the selected wireless network
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_security() throws YAPI_Exception
     {
@@ -267,7 +267,7 @@ public class YWireless extends YFunction
      * @return a value among Y_SECURITY_UNKNOWN, Y_SECURITY_OPEN, Y_SECURITY_WEP, Y_SECURITY_WPA and
      * Y_SECURITY_WPA2 corresponding to the security algorithm used by the selected wireless network
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getSecurity() throws YAPI_Exception
 
@@ -278,7 +278,7 @@ public class YWireless extends YFunction
      * 
      * @return a string corresponding to the latest status message from the wireless interface
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_message() throws YAPI_Exception
     {
@@ -295,14 +295,14 @@ public class YWireless extends YFunction
      * 
      * @return a string corresponding to the latest status message from the wireless interface
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getMessage() throws YAPI_Exception
 
     { return get_message(); }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_wlanConfig() throws YAPI_Exception
     {
@@ -315,7 +315,7 @@ public class YWireless extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getWlanConfig() throws YAPI_Exception
 
@@ -343,7 +343,7 @@ public class YWireless extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int joinNetwork(String ssid,String securityKey)  throws YAPI_Exception
     {
@@ -365,7 +365,7 @@ public class YWireless extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int adhocNetwork(String ssid,String securityKey)  throws YAPI_Exception
     {
@@ -418,7 +418,7 @@ public class YWireless extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -459,7 +459,7 @@ public class YWireless extends YFunction
      * @return a list of YWlanRecord objects, containing the SSID, channel,
      *         link quality and the type of security of the wireless network.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public ArrayList<YWlanRecord> get_detectedWlans() throws YAPI_Exception
     {

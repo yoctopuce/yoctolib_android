@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRealTimeClock.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YRealTimeClock.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindRealTimeClock(), the high-level API for RealTimeClock functions
  *
@@ -145,7 +145,7 @@ public class YRealTimeClock extends YFunction
      * @return an integer corresponding to the current time in Unix format (number of elapsed seconds
      * since Jan 1st, 1970)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_unixTime() throws YAPI_Exception
     {
@@ -163,7 +163,7 @@ public class YRealTimeClock extends YFunction
      * @return an integer corresponding to the current time in Unix format (number of elapsed seconds
      * since Jan 1st, 1970)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getUnixTime() throws YAPI_Exception
 
@@ -177,7 +177,7 @@ public class YRealTimeClock extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_unixTime(long  newval)  throws YAPI_Exception
     {
@@ -195,7 +195,7 @@ public class YRealTimeClock extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setUnixTime(long newval)  throws YAPI_Exception
 
@@ -206,7 +206,7 @@ public class YRealTimeClock extends YFunction
      * 
      * @return a string corresponding to the current time in the form "YYYY/MM/DD hh:mm:ss"
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_dateTime() throws YAPI_Exception
     {
@@ -223,7 +223,7 @@ public class YRealTimeClock extends YFunction
      * 
      * @return a string corresponding to the current time in the form "YYYY/MM/DD hh:mm:ss"
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getDateTime() throws YAPI_Exception
 
@@ -234,7 +234,7 @@ public class YRealTimeClock extends YFunction
      * 
      * @return an integer corresponding to the number of seconds between current time and UTC time (time zone)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_utcOffset() throws YAPI_Exception
     {
@@ -251,7 +251,7 @@ public class YRealTimeClock extends YFunction
      * 
      * @return an integer corresponding to the number of seconds between current time and UTC time (time zone)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getUtcOffset() throws YAPI_Exception
 
@@ -267,7 +267,7 @@ public class YRealTimeClock extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_utcOffset(int  newval)  throws YAPI_Exception
     {
@@ -287,7 +287,7 @@ public class YRealTimeClock extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setUtcOffset(int newval)  throws YAPI_Exception
 
@@ -299,7 +299,7 @@ public class YRealTimeClock extends YFunction
      * @return either YRealTimeClock.TIMESET_FALSE or YRealTimeClock.TIMESET_TRUE, according to true if
      * the clock has been set, and false otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_timeSet() throws YAPI_Exception
     {
@@ -317,7 +317,7 @@ public class YRealTimeClock extends YFunction
      * @return either Y_TIMESET_FALSE or Y_TIMESET_TRUE, according to true if the clock has been set, and
      * false otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getTimeSet() throws YAPI_Exception
 
@@ -366,7 +366,7 @@ public class YRealTimeClock extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

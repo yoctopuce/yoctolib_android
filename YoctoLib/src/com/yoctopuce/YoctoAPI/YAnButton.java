@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAnButton.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YAnButton.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindAnButton(), the high-level API for AnButton functions
  *
@@ -205,7 +205,7 @@ public class YAnButton extends YFunction
      * 
      * @return an integer corresponding to the current calibrated input value (between 0 and 1000, included)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_calibratedValue() throws YAPI_Exception
     {
@@ -222,7 +222,7 @@ public class YAnButton extends YFunction
      * 
      * @return an integer corresponding to the current calibrated input value (between 0 and 1000, included)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getCalibratedValue() throws YAPI_Exception
 
@@ -233,7 +233,7 @@ public class YAnButton extends YFunction
      * 
      * @return an integer corresponding to the current measured input value as-is (between 0 and 4095, included)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_rawValue() throws YAPI_Exception
     {
@@ -250,7 +250,7 @@ public class YAnButton extends YFunction
      * 
      * @return an integer corresponding to the current measured input value as-is (between 0 and 4095, included)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getRawValue() throws YAPI_Exception
 
@@ -261,7 +261,7 @@ public class YAnButton extends YFunction
      * 
      * @return either YAnButton.ANALOGCALIBRATION_OFF or YAnButton.ANALOGCALIBRATION_ON
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_analogCalibration() throws YAPI_Exception
     {
@@ -278,7 +278,7 @@ public class YAnButton extends YFunction
      * 
      * @return either Y_ANALOGCALIBRATION_OFF or Y_ANALOGCALIBRATION_ON
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getAnalogCalibration() throws YAPI_Exception
 
@@ -292,7 +292,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_analogCalibration(int  newval)  throws YAPI_Exception
     {
@@ -310,7 +310,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setAnalogCalibration(int newval)  throws YAPI_Exception
 
@@ -322,7 +322,7 @@ public class YAnButton extends YFunction
      * @return an integer corresponding to the maximal value measured during the calibration (between 0
      * and 4095, included)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_calibrationMax() throws YAPI_Exception
     {
@@ -340,7 +340,7 @@ public class YAnButton extends YFunction
      * @return an integer corresponding to the maximal value measured during the calibration (between 0
      * and 4095, included)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getCalibrationMax() throws YAPI_Exception
 
@@ -357,7 +357,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_calibrationMax(int  newval)  throws YAPI_Exception
     {
@@ -378,7 +378,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setCalibrationMax(int newval)  throws YAPI_Exception
 
@@ -390,7 +390,7 @@ public class YAnButton extends YFunction
      * @return an integer corresponding to the minimal value measured during the calibration (between 0
      * and 4095, included)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_calibrationMin() throws YAPI_Exception
     {
@@ -408,7 +408,7 @@ public class YAnButton extends YFunction
      * @return an integer corresponding to the minimal value measured during the calibration (between 0
      * and 4095, included)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getCalibrationMin() throws YAPI_Exception
 
@@ -425,7 +425,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_calibrationMin(int  newval)  throws YAPI_Exception
     {
@@ -446,7 +446,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setCalibrationMin(int newval)  throws YAPI_Exception
 
@@ -458,7 +458,7 @@ public class YAnButton extends YFunction
      * @return an integer corresponding to the sensibility for the input (between 1 and 1000) for
      * triggering user callbacks
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_sensitivity() throws YAPI_Exception
     {
@@ -476,7 +476,7 @@ public class YAnButton extends YFunction
      * @return an integer corresponding to the sensibility for the input (between 1 and 1000) for
      * triggering user callbacks
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getSensitivity() throws YAPI_Exception
 
@@ -495,7 +495,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_sensitivity(int  newval)  throws YAPI_Exception
     {
@@ -518,7 +518,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setSensitivity(int newval)  throws YAPI_Exception
 
@@ -530,7 +530,7 @@ public class YAnButton extends YFunction
      * @return either YAnButton.ISPRESSED_FALSE or YAnButton.ISPRESSED_TRUE, according to true if the
      * input (considered as binary) is active (closed contact), and false otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_isPressed() throws YAPI_Exception
     {
@@ -548,7 +548,7 @@ public class YAnButton extends YFunction
      * @return either Y_ISPRESSED_FALSE or Y_ISPRESSED_TRUE, according to true if the input (considered as
      * binary) is active (closed contact), and false otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getIsPressed() throws YAPI_Exception
 
@@ -562,7 +562,7 @@ public class YAnButton extends YFunction
      * and the last time
      *         the input button was pressed (the input contact transitionned from open to closed)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_lastTimePressed() throws YAPI_Exception
     {
@@ -582,7 +582,7 @@ public class YAnButton extends YFunction
      * and the last time
      *         the input button was pressed (the input contact transitionned from open to closed)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getLastTimePressed() throws YAPI_Exception
 
@@ -596,7 +596,7 @@ public class YAnButton extends YFunction
      * and the last time
      *         the input button was released (the input contact transitionned from closed to open)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_lastTimeReleased() throws YAPI_Exception
     {
@@ -616,7 +616,7 @@ public class YAnButton extends YFunction
      * and the last time
      *         the input button was released (the input contact transitionned from closed to open)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getLastTimeReleased() throws YAPI_Exception
 
@@ -627,7 +627,7 @@ public class YAnButton extends YFunction
      * 
      * @return an integer corresponding to the pulse counter value
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_pulseCounter() throws YAPI_Exception
     {
@@ -644,7 +644,7 @@ public class YAnButton extends YFunction
      * 
      * @return an integer corresponding to the pulse counter value
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getPulseCounter() throws YAPI_Exception
 
@@ -667,7 +667,7 @@ public class YAnButton extends YFunction
      * 
      * @return an integer corresponding to the timer of the pulses counter (ms)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_pulseTimer() throws YAPI_Exception
     {
@@ -684,7 +684,7 @@ public class YAnButton extends YFunction
      * 
      * @return an integer corresponding to the timer of the pulses counter (ms)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getPulseTimer() throws YAPI_Exception
 
@@ -733,7 +733,7 @@ public class YAnButton extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -770,7 +770,7 @@ public class YAnButton extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int resetCounter() throws YAPI_Exception
     {

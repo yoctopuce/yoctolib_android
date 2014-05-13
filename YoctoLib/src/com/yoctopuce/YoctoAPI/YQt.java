@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: pic24config.php 14955 2014-02-13 11:26:43Z mvuilleu $
+ * $Id: YQt.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindQt(), the high-level API for Qt functions
  *
@@ -42,20 +42,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
-    //--- (YQt return codes)
-    //--- (end of YQt return codes)
-//--- (YQt class start)
+//--- (generated code: YQt return codes)
+    //--- (end of generated code: YQt return codes)
+//--- (generated code: YQt class start)
 /**
  * YQt Class: Quaternion interface
  * 
- * The Yoctopuce API provides an estimate of the attitude of the device
- * using a quaternion. Other representations can be obtained using methods
- * of the class Gyro.
+ * The Yoctopuce API YQt class provides direct access to the Yocto3D attitude estimation
+ * using a quaternion. It is usually not needed to use the YQt class directly, as the
+ * YGyro class provides a more convenient higher-level interface.
  */
 public class YQt extends YSensor
 {
-//--- (end of YQt class start)
-//--- (YQt definitions)
+//--- (end of generated code: YQt class start)
+//--- (generated code: YQt definitions)
     protected UpdateCallback _valueCallbackQt = null;
     protected TimedReportCallback _timedReportCallbackQt = null;
 
@@ -82,7 +82,7 @@ public class YQt extends YSensor
          */
         void timedReportCallback(YQt  function, YMeasure measure);
     }
-    //--- (end of YQt definitions)
+    //--- (end of generated code: YQt definitions)
 
 
     /**
@@ -93,11 +93,11 @@ public class YQt extends YSensor
     {
         super(func);
         _className = "Qt";
-        //--- (YQt attributes initialization)
-        //--- (end of YQt attributes initialization)
+        //--- (generated code: YQt attributes initialization)
+        //--- (end of generated code: YQt attributes initialization)
     }
 
-    //--- (YQt implementation)
+    //--- (generated code: YQt implementation)
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {
@@ -147,7 +147,7 @@ public class YQt extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -188,7 +188,7 @@ public class YQt extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {
@@ -221,7 +221,13 @@ public class YQt extends YSensor
      */
     public  YQt nextQt()
     {
-        String next_hwid = SafeYAPI().getNextHardwareId(_className, _func);
+        String next_hwid;
+        try {
+            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
+            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+        } catch (YAPI_Exception ignored) {
+            next_hwid = null;
+        }
         if(next_hwid == null) return null;
         return FindQt(next_hwid);
     }
@@ -242,6 +248,6 @@ public class YQt extends YSensor
         return FindQt(next_hwid);
     }
 
-    //--- (end of YQt implementation)
+    //--- (end of generated code: YQt implementation)
 }
 

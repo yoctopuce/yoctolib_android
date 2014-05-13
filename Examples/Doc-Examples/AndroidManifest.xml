@@ -35,6 +35,24 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_Altimeter start -->
+        <activity
+            android:name=".GettingStarted_Yocto_Altimeter"
+            android:label="Yocto-Altimeter" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_Altimeter stop -->   
+        <!-- generated GettingStarted_Yocto_PWM_Tx start -->
+        <activity
+            android:name=".GettingStarted_Yocto_PWM_Tx"
+            android:label="Yocto-PWM-Tx" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_PWM_Tx stop -->   
         <!-- generated GettingStarted_Yocto_3D start -->
         <activity
             android:name=".GettingStarted_Yocto_3D"

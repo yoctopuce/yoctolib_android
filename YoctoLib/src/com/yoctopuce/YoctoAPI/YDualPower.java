@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDualPower.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YDualPower.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindDualPower(), the high-level API for DualPower functions
  *
@@ -145,7 +145,7 @@ public class YDualPower extends YFunction
      * YDualPower.POWERSTATE_FROM_EXT corresponding to the current power source for module functions that
      * require lots of current
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_powerState() throws YAPI_Exception
     {
@@ -163,7 +163,7 @@ public class YDualPower extends YFunction
      * @return a value among Y_POWERSTATE_OFF, Y_POWERSTATE_FROM_USB and Y_POWERSTATE_FROM_EXT
      * corresponding to the current power source for module functions that require lots of current
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPowerState() throws YAPI_Exception
 
@@ -176,7 +176,7 @@ public class YDualPower extends YFunction
      * YDualPower.POWERCONTROL_FROM_EXT and YDualPower.POWERCONTROL_OFF corresponding to the selected
      * power source for module functions that require lots of current
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_powerControl() throws YAPI_Exception
     {
@@ -194,7 +194,7 @@ public class YDualPower extends YFunction
      * @return a value among Y_POWERCONTROL_AUTO, Y_POWERCONTROL_FROM_USB, Y_POWERCONTROL_FROM_EXT and
      * Y_POWERCONTROL_OFF corresponding to the selected power source for module functions that require lots of current
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPowerControl() throws YAPI_Exception
 
@@ -209,7 +209,7 @@ public class YDualPower extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_powerControl(int  newval)  throws YAPI_Exception
     {
@@ -228,7 +228,7 @@ public class YDualPower extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setPowerControl(int newval)  throws YAPI_Exception
 
@@ -239,7 +239,7 @@ public class YDualPower extends YFunction
      * 
      * @return an integer corresponding to the measured voltage on the external power source, in millivolts
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_extVoltage() throws YAPI_Exception
     {
@@ -256,7 +256,7 @@ public class YDualPower extends YFunction
      * 
      * @return an integer corresponding to the measured voltage on the external power source, in millivolts
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getExtVoltage() throws YAPI_Exception
 
@@ -305,7 +305,7 @@ public class YDualPower extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

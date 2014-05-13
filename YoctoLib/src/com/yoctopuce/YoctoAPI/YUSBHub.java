@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: YUSBHub.java 15825 2014-04-16 17:11:32Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -39,10 +39,6 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -50,6 +46,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
@@ -59,7 +59,7 @@ class YUSBHub extends YGenericHub
 	private static Context _appContext = null;
 	private HashMap<String, YUSBDevice> _devsFromAndroidRef = new HashMap<String, YUSBDevice>();
 	private HashMap<String, YUSBDevice>     _devsFromSerial = new HashMap<String, YUSBDevice>();
-	private ArrayList<String>  _requestedPermitions = new ArrayList<String>();
+	private final ArrayList<String>  _requestedPermitions = new ArrayList<String>();
 	private UsbManager _manager;
 	private boolean permissionPending=false;
 
@@ -243,17 +243,26 @@ class YUSBHub extends YGenericHub
         updateFromWpAndYp(whitePages, yellowPages);
 	}
 
-	@Override	
-	byte[] devRequest(YDevice device, String req_first_line, byte[] req_head_and_body, Boolean async) throws YAPI_Exception
-	{
-		String serial = device.getSerialNumber();
-		if(!_devsFromSerial.containsKey(serial))
-			throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Device has been unpluged");
-		YUSBDevice d=_devsFromSerial.get(serial);
-		return  d.sendRequest(req_first_line,req_head_and_body,async);
-	}
-	
-	
+    @Override
+    void devRequestAsync(YDevice device, String req_first_line, byte[] req_head_and_body, RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception
+    {
+        String serial = device.getSerialNumber();
+        if(!_devsFromSerial.containsKey(serial))
+            throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Device has been unpluged");
+        YUSBDevice d=_devsFromSerial.get(serial);
+        d.sendRequestAsync(req_first_line, req_head_and_body, asyncResult, asyncContext);
+    }
+
+    @Override
+    byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body) throws YAPI_Exception
+    {
+        String serial = device.getSerialNumber();
+        if(!_devsFromSerial.containsKey(serial))
+            throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Device has been unpluged");
+        YUSBDevice d=_devsFromSerial.get(serial);
+        return  d.sendRequestSync(req_first_line, req_head_and_body);
+    }
+
 	static void SetContextType(Object ctx) throws YAPI_Exception
     {
         SafeYAPI()._Log("HUB_USB:context type=" + ctx.getClass().getName() + "\n");
@@ -285,5 +294,9 @@ class YUSBHub extends YGenericHub
 	{
 		return url.equals("usb");
 	}
-	
+
+    public static boolean RegisterLocalhost()
+    {
+        return false;
+    }
 }

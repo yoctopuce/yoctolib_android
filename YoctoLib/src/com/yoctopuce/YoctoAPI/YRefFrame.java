@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRefFrame.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YRefFrame.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindRefFrame(), the high-level API for RefFrame functions
  *
@@ -209,7 +209,7 @@ public class YRefFrame extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_mountPos() throws YAPI_Exception
     {
@@ -222,7 +222,7 @@ public class YRefFrame extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getMountPos() throws YAPI_Exception
 
@@ -260,7 +260,7 @@ public class YRefFrame extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_bearing(double  newval)  throws YAPI_Exception
     {
@@ -290,7 +290,7 @@ public class YRefFrame extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setBearing(double newval)  throws YAPI_Exception
 
@@ -303,7 +303,7 @@ public class YRefFrame extends YFunction
      * 
      * @return a floating point number corresponding to the reference bearing used by the compass
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_bearing() throws YAPI_Exception
     {
@@ -322,14 +322,14 @@ public class YRefFrame extends YFunction
      * 
      * @return a floating point number corresponding to the reference bearing used by the compass
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getBearing() throws YAPI_Exception
 
     { return get_bearing(); }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_calibrationParam() throws YAPI_Exception
     {
@@ -342,7 +342,7 @@ public class YRefFrame extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getCalibrationParam() throws YAPI_Exception
 
@@ -403,7 +403,7 @@ public class YRefFrame extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -446,7 +446,7 @@ public class YRefFrame extends YFunction
      *         YRefFrame.MOUNTPOSITION_REAR,     YRefFrame.MOUNTPOSITION_LEFT),
      *         corresponding to the installation in a box, on one of the six faces.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public MOUNTPOSITION get_mountPosition() throws YAPI_Exception
     {
@@ -468,7 +468,7 @@ public class YRefFrame extends YFunction
      *         On the bottom face, the 12H orientation points to the front, while
      *         on the top face, the 12H orientation points to the rear.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public MOUNTORIENTATION get_mountOrientation() throws YAPI_Exception
     {
@@ -484,12 +484,12 @@ public class YRefFrame extends YFunction
      * and horizontally, you must select its reference orientation (parallel to
      * the earth surface) so that the measures are made relative to this position.
      * 
-     * @param position: a value among the YRefFrame.MOUNTPOSITION enumeration
+     * @param position : a value among the YRefFrame.MOUNTPOSITION enumeration
      *         (YRefFrame.MOUNTPOSITION_BOTTOM,   YRefFrame.MOUNTPOSITION_TOP,
      *         YRefFrame.MOUNTPOSITION_FRONT,    YRefFrame.MOUNTPOSITION_RIGHT,
      *         YRefFrame.MOUNTPOSITION_REAR,     YRefFrame.MOUNTPOSITION_LEFT),
      *         corresponding to the installation in a box, on one of the six faces.
-     * @param orientation: a value among the enumeration YRefFrame.MOUNTORIENTATION
+     * @param orientation : a value among the enumeration YRefFrame.MOUNTORIENTATION
      *         (YRefFrame.MOUNTORIENTATION_TWELVE, YRefFrame.MOUNTORIENTATION_THREE,
      *         YRefFrame.MOUNTORIENTATION_SIX,     YRefFrame.MOUNTORIENTATION_NINE)
      *         corresponding to the orientation of the "X" arrow on the device,
@@ -500,7 +500,7 @@ public class YRefFrame extends YFunction
      * Remember to call the saveToFlash()
      * method of the module if the modification must be kept.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_mountPosition(MOUNTPOSITION position,MOUNTORIENTATION orientation) throws YAPI_Exception
     {
@@ -565,7 +565,7 @@ public class YRefFrame extends YFunction
      * save3DCalibration. The calibration process can be canceled
      * at any time using method cancel3DCalibration.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int start3DCalibration() throws YAPI_Exception
     {
@@ -600,7 +600,7 @@ public class YRefFrame extends YFunction
      * get_3DCalibrationHint. Note that the instructions change during
      * the calibration process.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int more3DCalibration() throws YAPI_Exception
     {
@@ -872,7 +872,7 @@ public class YRefFrame extends YFunction
      * Remember to call the saveToFlash()  method of the module if the changes
      * must be kept when the device is restarted.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int save3DCalibration() throws YAPI_Exception
     {
@@ -943,7 +943,7 @@ public class YRefFrame extends YFunction
     /**
      * Aborts the sensors tridimensional calibration process et restores normal settings.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int cancel3DCalibration() throws YAPI_Exception
     {

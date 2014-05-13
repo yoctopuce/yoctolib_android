@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPower.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YPower.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindPower(), the high-level API for Power functions
  *
@@ -134,7 +134,7 @@ public class YPower extends YSensor
      * @return a floating point number corresponding to the power factor (the ratio between the real power consumed,
      *         measured in W, and the apparent power provided, measured in VA)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_cosPhi() throws YAPI_Exception
     {
@@ -153,7 +153,7 @@ public class YPower extends YSensor
      * @return a floating point number corresponding to the power factor (the ratio between the real power consumed,
      *         measured in W, and the apparent power provided, measured in VA)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getCosPhi() throws YAPI_Exception
 
@@ -178,7 +178,7 @@ public class YPower extends YSensor
      * @return a floating point number corresponding to the energy counter, maintained by the wattmeter by
      * integrating the power consumption over time
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_meter() throws YAPI_Exception
     {
@@ -197,7 +197,7 @@ public class YPower extends YSensor
      * @return a floating point number corresponding to the energy counter, maintained by the wattmeter by
      * integrating the power consumption over time
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getMeter() throws YAPI_Exception
 
@@ -208,7 +208,7 @@ public class YPower extends YSensor
      * 
      * @return an integer corresponding to the elapsed time since last energy counter reset, in seconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_meterTimer() throws YAPI_Exception
     {
@@ -225,7 +225,7 @@ public class YPower extends YSensor
      * 
      * @return an integer corresponding to the elapsed time since last energy counter reset, in seconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getMeterTimer() throws YAPI_Exception
 
@@ -274,7 +274,7 @@ public class YPower extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -315,7 +315,7 @@ public class YPower extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {
@@ -344,7 +344,7 @@ public class YPower extends YSensor
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int reset() throws YAPI_Exception
     {

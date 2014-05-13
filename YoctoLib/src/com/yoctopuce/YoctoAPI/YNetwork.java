@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YNetwork.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YNetwork.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindNetwork(), the high-level API for Network functions
  *
@@ -293,7 +293,7 @@ public class YNetwork extends YFunction
      * YNetwork.READINESS_LINKED, YNetwork.READINESS_LAN_OK and YNetwork.READINESS_WWW_OK corresponding to
      * the current established working mode of the network interface
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_readiness() throws YAPI_Exception
     {
@@ -324,7 +324,7 @@ public class YNetwork extends YFunction
      * @return a value among Y_READINESS_DOWN, Y_READINESS_EXISTS, Y_READINESS_LINKED, Y_READINESS_LAN_OK
      * and Y_READINESS_WWW_OK corresponding to the current established working mode of the network interface
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getReadiness() throws YAPI_Exception
 
@@ -336,7 +336,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the MAC address of the network interface
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_macAddress() throws YAPI_Exception
     {
@@ -354,7 +354,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the MAC address of the network interface
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getMacAddress() throws YAPI_Exception
 
@@ -366,7 +366,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the IP address currently in use by the device
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_ipAddress() throws YAPI_Exception
     {
@@ -384,7 +384,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the IP address currently in use by the device
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getIpAddress() throws YAPI_Exception
 
@@ -395,7 +395,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the subnet mask currently used by the device
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_subnetMask() throws YAPI_Exception
     {
@@ -412,7 +412,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the subnet mask currently used by the device
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getSubnetMask() throws YAPI_Exception
 
@@ -423,7 +423,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the IP address of the router on the device subnet (default gateway)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_router() throws YAPI_Exception
     {
@@ -440,14 +440,14 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the IP address of the router on the device subnet (default gateway)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getRouter() throws YAPI_Exception
 
     { return get_router(); }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_ipConfig() throws YAPI_Exception
     {
@@ -460,7 +460,7 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getIpConfig() throws YAPI_Exception
 
@@ -491,7 +491,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int useDHCP(String fallbackIpAddr,int fallbackSubnetMaskLen,String fallbackRouter)  throws YAPI_Exception
     {
@@ -511,7 +511,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int useStaticIP(String ipAddress,int subnetMaskLen,String router)  throws YAPI_Exception
     {
@@ -526,7 +526,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the IP address of the primary name server to be used by the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_primaryDNS() throws YAPI_Exception
     {
@@ -543,7 +543,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the IP address of the primary name server to be used by the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getPrimaryDNS() throws YAPI_Exception
 
@@ -558,7 +558,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_primaryDNS(String  newval)  throws YAPI_Exception
     {
@@ -577,7 +577,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setPrimaryDNS(String newval)  throws YAPI_Exception
 
@@ -588,7 +588,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the IP address of the secondary name server to be used by the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_secondaryDNS() throws YAPI_Exception
     {
@@ -605,7 +605,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the IP address of the secondary name server to be used by the module
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getSecondaryDNS() throws YAPI_Exception
 
@@ -620,7 +620,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_secondaryDNS(String  newval)  throws YAPI_Exception
     {
@@ -639,7 +639,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setSecondaryDNS(String newval)  throws YAPI_Exception
 
@@ -652,7 +652,7 @@ public class YNetwork extends YFunction
      * @return a string corresponding to a hash string if a password has been set for "user" user,
      *         or an empty string otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_userPassword() throws YAPI_Exception
     {
@@ -671,7 +671,7 @@ public class YNetwork extends YFunction
      * @return a string corresponding to a hash string if a password has been set for "user" user,
      *         or an empty string otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getUserPassword() throws YAPI_Exception
 
@@ -688,7 +688,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_userPassword(String  newval)  throws YAPI_Exception
     {
@@ -709,7 +709,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setUserPassword(String newval)  throws YAPI_Exception
 
@@ -722,7 +722,7 @@ public class YNetwork extends YFunction
      * @return a string corresponding to a hash string if a password has been set for user "admin",
      *         or an empty string otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_adminPassword() throws YAPI_Exception
     {
@@ -741,7 +741,7 @@ public class YNetwork extends YFunction
      * @return a string corresponding to a hash string if a password has been set for user "admin",
      *         or an empty string otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getAdminPassword() throws YAPI_Exception
 
@@ -758,7 +758,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_adminPassword(String  newval)  throws YAPI_Exception
     {
@@ -779,7 +779,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setAdminPassword(String newval)  throws YAPI_Exception
 
@@ -793,7 +793,7 @@ public class YNetwork extends YFunction
      * activation state of the multicast announce protocols to allow easy
      *         discovery of the module in the network neighborhood (uPnP/Bonjour protocol)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_discoverable() throws YAPI_Exception
     {
@@ -813,7 +813,7 @@ public class YNetwork extends YFunction
      * the multicast announce protocols to allow easy
      *         discovery of the module in the network neighborhood (uPnP/Bonjour protocol)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getDiscoverable() throws YAPI_Exception
 
@@ -829,7 +829,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_discoverable(int  newval)  throws YAPI_Exception
     {
@@ -849,7 +849,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setDiscoverable(int newval)  throws YAPI_Exception
 
@@ -864,7 +864,7 @@ public class YNetwork extends YFunction
      * triggering an automated
      *         reboot to try to recover Internet connectivity
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_wwwWatchdogDelay() throws YAPI_Exception
     {
@@ -885,7 +885,7 @@ public class YNetwork extends YFunction
      * triggering an automated
      *         reboot to try to recover Internet connectivity
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getWwwWatchdogDelay() throws YAPI_Exception
 
@@ -903,7 +903,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_wwwWatchdogDelay(int  newval)  throws YAPI_Exception
     {
@@ -925,7 +925,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setWwwWatchdogDelay(int newval)  throws YAPI_Exception
 
@@ -936,7 +936,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the callback URL to notify of significant state changes
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_callbackUrl() throws YAPI_Exception
     {
@@ -953,7 +953,7 @@ public class YNetwork extends YFunction
      * 
      * @return a string corresponding to the callback URL to notify of significant state changes
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getCallbackUrl() throws YAPI_Exception
 
@@ -967,7 +967,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_callbackUrl(String  newval)  throws YAPI_Exception
     {
@@ -985,7 +985,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setCallbackUrl(String newval)  throws YAPI_Exception
 
@@ -998,7 +998,7 @@ public class YNetwork extends YFunction
      * YNetwork.CALLBACKMETHOD_PUT corresponding to the HTTP method used to notify callbacks for
      * significant state changes
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_callbackMethod() throws YAPI_Exception
     {
@@ -1016,7 +1016,7 @@ public class YNetwork extends YFunction
      * @return a value among Y_CALLBACKMETHOD_POST, Y_CALLBACKMETHOD_GET and Y_CALLBACKMETHOD_PUT
      * corresponding to the HTTP method used to notify callbacks for significant state changes
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getCallbackMethod() throws YAPI_Exception
 
@@ -1031,7 +1031,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_callbackMethod(int  newval)  throws YAPI_Exception
     {
@@ -1049,7 +1049,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setCallbackMethod(int newval)  throws YAPI_Exception
 
@@ -1063,7 +1063,7 @@ public class YNetwork extends YFunction
      * YNetwork.CALLBACKENCODING_YOCTO_API corresponding to the encoding standard to use for representing
      * notification values
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_callbackEncoding() throws YAPI_Exception
     {
@@ -1082,7 +1082,7 @@ public class YNetwork extends YFunction
      * Y_CALLBACKENCODING_JSON_ARRAY, Y_CALLBACKENCODING_CSV and Y_CALLBACKENCODING_YOCTO_API
      * corresponding to the encoding standard to use for representing notification values
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getCallbackEncoding() throws YAPI_Exception
 
@@ -1098,7 +1098,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_callbackEncoding(int  newval)  throws YAPI_Exception
     {
@@ -1117,7 +1117,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setCallbackEncoding(int newval)  throws YAPI_Exception
 
@@ -1130,7 +1130,7 @@ public class YNetwork extends YFunction
      * @return a string corresponding to a hashed version of the notification callback credentials if set,
      *         or an empty string otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_callbackCredentials() throws YAPI_Exception
     {
@@ -1149,7 +1149,7 @@ public class YNetwork extends YFunction
      * @return a string corresponding to a hashed version of the notification callback credentials if set,
      *         or an empty string otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getCallbackCredentials() throws YAPI_Exception
 
@@ -1170,7 +1170,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_callbackCredentials(String  newval)  throws YAPI_Exception
     {
@@ -1195,7 +1195,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setCallbackCredentials(String newval)  throws YAPI_Exception
 
@@ -1212,7 +1212,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int callbackLogin(String username,String password)  throws YAPI_Exception
     {
@@ -1227,7 +1227,7 @@ public class YNetwork extends YFunction
      * 
      * @return an integer corresponding to the minimum waiting time between two callback notifications, in seconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_callbackMinDelay() throws YAPI_Exception
     {
@@ -1244,7 +1244,7 @@ public class YNetwork extends YFunction
      * 
      * @return an integer corresponding to the minimum waiting time between two callback notifications, in seconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getCallbackMinDelay() throws YAPI_Exception
 
@@ -1258,7 +1258,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_callbackMinDelay(int  newval)  throws YAPI_Exception
     {
@@ -1276,7 +1276,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setCallbackMinDelay(int newval)  throws YAPI_Exception
 
@@ -1287,7 +1287,7 @@ public class YNetwork extends YFunction
      * 
      * @return an integer corresponding to the maximum waiting time between two callback notifications, in seconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_callbackMaxDelay() throws YAPI_Exception
     {
@@ -1304,7 +1304,7 @@ public class YNetwork extends YFunction
      * 
      * @return an integer corresponding to the maximum waiting time between two callback notifications, in seconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getCallbackMaxDelay() throws YAPI_Exception
 
@@ -1318,7 +1318,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_callbackMaxDelay(int  newval)  throws YAPI_Exception
     {
@@ -1336,7 +1336,7 @@ public class YNetwork extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setCallbackMaxDelay(int newval)  throws YAPI_Exception
 
@@ -1350,7 +1350,7 @@ public class YNetwork extends YFunction
      * @return an integer corresponding to the current consumed by the module from Power-over-Ethernet
      * (PoE), in milli-amps
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_poeCurrent() throws YAPI_Exception
     {
@@ -1370,7 +1370,7 @@ public class YNetwork extends YFunction
      * @return an integer corresponding to the current consumed by the module from Power-over-Ethernet
      * (PoE), in milli-amps
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPoeCurrent() throws YAPI_Exception
 
@@ -1419,7 +1419,7 @@ public class YNetwork extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

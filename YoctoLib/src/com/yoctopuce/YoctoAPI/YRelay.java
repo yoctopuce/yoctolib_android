@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRelay.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YRelay.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindRelay(), the high-level API for Relay functions
  *
@@ -204,7 +204,7 @@ public class YRelay extends YFunction
      * @return either YRelay.STATE_A or YRelay.STATE_B, according to the state of the relays (A for the
      * idle position, B for the active position)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_state() throws YAPI_Exception
     {
@@ -222,7 +222,7 @@ public class YRelay extends YFunction
      * @return either Y_STATE_A or Y_STATE_B, according to the state of the relays (A for the idle
      * position, B for the active position)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getState() throws YAPI_Exception
 
@@ -236,7 +236,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_state(int  newval)  throws YAPI_Exception
     {
@@ -254,7 +254,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setState(int newval)  throws YAPI_Exception
 
@@ -268,7 +268,7 @@ public class YRelay extends YFunction
      * YRelay.STATEATPOWERON_B corresponding to the state of the relays at device startup (A for the idle
      * position, B for the active position, UNCHANGED for no change)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_stateAtPowerOn() throws YAPI_Exception
     {
@@ -288,7 +288,7 @@ public class YRelay extends YFunction
      * corresponding to the state of the relays at device startup (A for the idle position, B for the
      * active position, UNCHANGED for no change)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getStateAtPowerOn() throws YAPI_Exception
 
@@ -304,7 +304,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_stateAtPowerOn(int  newval)  throws YAPI_Exception
     {
@@ -323,7 +323,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setStateAtPowerOn(int newval)  throws YAPI_Exception
 
@@ -335,7 +335,7 @@ public class YRelay extends YFunction
      * 
      * @return an integer
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_maxTimeOnStateA() throws YAPI_Exception
     {
@@ -353,7 +353,7 @@ public class YRelay extends YFunction
      * 
      * @return an integer
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getMaxTimeOnStateA() throws YAPI_Exception
 
@@ -367,7 +367,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_maxTimeOnStateA(long  newval)  throws YAPI_Exception
     {
@@ -385,7 +385,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setMaxTimeOnStateA(long newval)  throws YAPI_Exception
 
@@ -397,7 +397,7 @@ public class YRelay extends YFunction
      * 
      * @return an integer
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_maxTimeOnStateB() throws YAPI_Exception
     {
@@ -415,7 +415,7 @@ public class YRelay extends YFunction
      * 
      * @return an integer
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getMaxTimeOnStateB() throws YAPI_Exception
 
@@ -429,7 +429,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_maxTimeOnStateB(long  newval)  throws YAPI_Exception
     {
@@ -447,7 +447,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setMaxTimeOnStateB(long newval)  throws YAPI_Exception
 
@@ -459,7 +459,7 @@ public class YRelay extends YFunction
      * @return either YRelay.OUTPUT_OFF or YRelay.OUTPUT_ON, according to the output state of the relays,
      * when used as a simple switch (single throw)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_output() throws YAPI_Exception
     {
@@ -477,7 +477,7 @@ public class YRelay extends YFunction
      * @return either Y_OUTPUT_OFF or Y_OUTPUT_ON, according to the output state of the relays, when used
      * as a simple switch (single throw)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getOutput() throws YAPI_Exception
 
@@ -491,7 +491,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_output(int  newval)  throws YAPI_Exception
     {
@@ -509,7 +509,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setOutput(int newval)  throws YAPI_Exception
 
@@ -523,7 +523,7 @@ public class YRelay extends YFunction
      * returned to idle position
      *         (state A), during a measured pulse generation
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_pulseTimer() throws YAPI_Exception
     {
@@ -543,7 +543,7 @@ public class YRelay extends YFunction
      * returned to idle position
      *         (state A), during a measured pulse generation
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getPulseTimer() throws YAPI_Exception
 
@@ -569,7 +569,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int pulse(int ms_duration)  throws YAPI_Exception
     {
@@ -580,7 +580,7 @@ public class YRelay extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YDelayedPulse get_delayedPulseTimer() throws YAPI_Exception
     {
@@ -593,7 +593,7 @@ public class YRelay extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YDelayedPulse getDelayedPulseTimer() throws YAPI_Exception
 
@@ -619,7 +619,7 @@ public class YRelay extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int delayedPulse(int ms_delay,int ms_duration)  throws YAPI_Exception
     {
@@ -636,7 +636,7 @@ public class YRelay extends YFunction
      * @return an integer corresponding to the number of milliseconds remaining before a pulse (delayedPulse() call)
      *         When there is no scheduled pulse, returns zero
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_countdown() throws YAPI_Exception
     {
@@ -655,7 +655,7 @@ public class YRelay extends YFunction
      * @return an integer corresponding to the number of milliseconds remaining before a pulse (delayedPulse() call)
      *         When there is no scheduled pulse, returns zero
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getCountdown() throws YAPI_Exception
 
@@ -704,7 +704,7 @@ public class YRelay extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

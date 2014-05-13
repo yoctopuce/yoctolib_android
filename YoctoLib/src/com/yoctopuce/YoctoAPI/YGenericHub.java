@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGenericHub.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: YGenericHub.java 15825 2014-04-16 17:11:32Z seb $
  *
  * Internal YGenericHub object
  *
@@ -39,10 +39,11 @@
 
 package com.yoctopuce.YoctoAPI;
 
+import com.yoctopuce.YoctoAPI.YAPI.PlugEvent.Event;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.yoctopuce.YoctoAPI.YAPI.PlugEvent.Event;
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 abstract class YGenericHub {
@@ -55,6 +56,7 @@ abstract class YGenericHub {
     protected HashMap<Integer, String> _serialByYdx = new HashMap<Integer, String>();
     protected HashMap<String, YDevice> _devices = new HashMap< String, YDevice>();
     //protected ArrayList<WPEntry> wpages = new ArrayList<WPEntry>();
+    protected boolean _reportConnnectionLost=true;
 
     public YGenericHub(int idx)
     {
@@ -106,7 +108,18 @@ abstract class YGenericHub {
 
     abstract void updateDeviceList(boolean forceupdate) throws YAPI_Exception;
 
-    abstract byte[] devRequest(YDevice device,String req_first_line,byte[] req_head_and_body, Boolean async) throws YAPI_Exception;
+
+    interface RequestAsyncResult {
+        void RequestAsyncDone(Object context, byte[] result);
+    }
+    abstract void devRequestAsync(YDevice device,String req_first_line,byte[] req_head_and_body, RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception;
+
+    abstract byte[] devRequestSync(YDevice device,String req_first_line,byte[] req_head_and_body) throws YAPI_Exception;
+
+    void reportConnectionLost(boolean reportConnnectionLost)
+    {
+        _reportConnnectionLost = reportConnnectionLost;
+    }
 
     protected static class HTTPParams {
 
@@ -169,7 +182,7 @@ abstract class YGenericHub {
             }
             url.append(_host);
             url.append(":");
-            url.append(_pass.toString());
+            url.append(_pass);
             return url.toString();
         }
     }

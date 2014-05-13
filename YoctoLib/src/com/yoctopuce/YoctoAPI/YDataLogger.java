@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataLogger.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YDataLogger.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindDataLogger(), the high-level API for DataLogger functions
  *
@@ -10,26 +10,26 @@
  *
  *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
  *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ *  file into your software for the sole purpose of interfacing
+ *  with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
+ *  You may reproduce and distribute copies of this file in
  *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
+ *  code is to interface with Yoctopuce products. You must retain
  *  this notice in the distributed source file.
  *
  *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
+ *  for additional information regarding your rights and
  *  obligations.
  *
  *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
+ *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
  *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
  *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
  *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
@@ -39,12 +39,14 @@
 
 package com.yoctopuce.YoctoAPI; //test
 
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
-import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
+
+import java.util.ArrayList;
+
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 //--- (generated code: YDataLogger class start)
 /**
@@ -141,7 +143,7 @@ public class YDataLogger extends YFunction
         String result;
         YDevice dev = SafeYAPI().getDevice(devid);
         try {
-            result = new String(dev.requestHTTP(httpreq,null, false));
+            result = new String(dev.requestHTTPSync(httpreq, null));
         } catch (YAPI_Exception ex) {
             if (!_dataLoggerURL.equals("/dataLogger.json")) {
                 _dataLoggerURL = "/dataLogger.json";
@@ -181,7 +183,7 @@ public class YDataLogger extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_dataStreams(ArrayList<YDataStream> v) throws YAPI_Exception
     {
@@ -252,7 +254,7 @@ public class YDataLogger extends YFunction
      * @return an integer corresponding to the current run number, corresponding to the number of times the module was
      *         powered on with the dataLogger enabled at some point
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_currentRunIndex() throws YAPI_Exception
     {
@@ -271,7 +273,7 @@ public class YDataLogger extends YFunction
      * @return an integer corresponding to the current run number, corresponding to the number of times the module was
      *         powered on with the dataLogger enabled at some point
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getCurrentRunIndex() throws YAPI_Exception
 
@@ -282,7 +284,7 @@ public class YDataLogger extends YFunction
      * 
      * @return an integer corresponding to the Unix timestamp for current UTC time, if known
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_timeUTC() throws YAPI_Exception
     {
@@ -299,7 +301,7 @@ public class YDataLogger extends YFunction
      * 
      * @return an integer corresponding to the Unix timestamp for current UTC time, if known
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getTimeUTC() throws YAPI_Exception
 
@@ -312,7 +314,7 @@ public class YDataLogger extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_timeUTC(long  newval)  throws YAPI_Exception
     {
@@ -329,7 +331,7 @@ public class YDataLogger extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setTimeUTC(long newval)  throws YAPI_Exception
 
@@ -341,7 +343,7 @@ public class YDataLogger extends YFunction
      * @return either YDataLogger.RECORDING_OFF or YDataLogger.RECORDING_ON, according to the current
      * activation state of the data logger
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_recording() throws YAPI_Exception
     {
@@ -358,7 +360,7 @@ public class YDataLogger extends YFunction
      * 
      * @return either Y_RECORDING_OFF or Y_RECORDING_ON, according to the current activation state of the data logger
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getRecording() throws YAPI_Exception
 
@@ -372,7 +374,7 @@ public class YDataLogger extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_recording(int  newval)  throws YAPI_Exception
     {
@@ -390,7 +392,7 @@ public class YDataLogger extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setRecording(int newval)  throws YAPI_Exception
 
@@ -402,7 +404,7 @@ public class YDataLogger extends YFunction
      * @return either YDataLogger.AUTOSTART_OFF or YDataLogger.AUTOSTART_ON, according to the default
      * activation state of the data logger on power up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_autoStart() throws YAPI_Exception
     {
@@ -420,7 +422,7 @@ public class YDataLogger extends YFunction
      * @return either Y_AUTOSTART_OFF or Y_AUTOSTART_ON, according to the default activation state of the
      * data logger on power up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getAutoStart() throws YAPI_Exception
 
@@ -436,7 +438,7 @@ public class YDataLogger extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_autoStart(int  newval)  throws YAPI_Exception
     {
@@ -456,14 +458,14 @@ public class YDataLogger extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setAutoStart(int newval)  throws YAPI_Exception
 
     { return set_autoStart(newval); }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_clearHistory() throws YAPI_Exception
     {
@@ -476,7 +478,7 @@ public class YDataLogger extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getClearHistory() throws YAPI_Exception
 
@@ -537,7 +539,7 @@ public class YDataLogger extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -575,7 +577,7 @@ public class YDataLogger extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int forgetAllDataStreams() throws YAPI_Exception
     {
@@ -592,7 +594,7 @@ public class YDataLogger extends YFunction
      * 
      * @return a list of YDataSet object.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public ArrayList<YDataSet> get_dataSets() throws YAPI_Exception
     {

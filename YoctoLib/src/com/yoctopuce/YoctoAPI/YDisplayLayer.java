@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDisplayLayer.java 15128 2014-02-28 10:22:03Z seb $
+ * $Id: YDisplayLayer.java 15999 2014-05-01 08:28:57Z seb $
  *
  * YDisplayLayer Class: Image layer containing data to display
  *
@@ -178,7 +178,7 @@ public class YDisplayLayer
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int reset() throws YAPI_Exception
     {
@@ -194,7 +194,7 @@ public class YDisplayLayer
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int clear() throws YAPI_Exception
     {
@@ -207,11 +207,11 @@ public class YDisplayLayer
      * For grayscale or monochrome displays, the value is
      * automatically converted to the proper range.
      * 
-     * @param color: the desired pen color, as a 24-bit RGB value
+     * @param color : the desired pen color, as a 24-bit RGB value
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int selectColorPen(int color) throws YAPI_Exception
     {
@@ -226,11 +226,11 @@ public class YDisplayLayer
      * lower than 128 is rendered as black, and any value equal
      * or above to 128 is non-black.
      * 
-     * @param graylevel: the desired gray level, from 0 to 255
+     * @param graylevel : the desired gray level, from 0 to 255
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int selectGrayPen(int graylevel) throws YAPI_Exception
     {
@@ -245,7 +245,7 @@ public class YDisplayLayer
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int selectEraser() throws YAPI_Exception
     {
@@ -261,12 +261,12 @@ public class YDisplayLayer
      * but you can disable it if you prefer. This setting has no effect
      * on monochrome displays.
      * 
-     * @param mode: <t>true</t> to enable antialiasing, <t>false</t> to
+     * @param mode : <t>true</t> to enable antialiasing, <t>false</t> to
      *         disable it.
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setAntialiasingMode(boolean mode) throws YAPI_Exception
     {
@@ -276,12 +276,12 @@ public class YDisplayLayer
     /**
      * Draws a single pixel at the specified position.
      * 
-     * @param x: the distance from left of layer, in pixels
-     * @param y: the distance from top of layer, in pixels
+     * @param x : the distance from left of layer, in pixels
+     * @param y : the distance from top of layer, in pixels
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int drawPixel(int x,int y) throws YAPI_Exception
     {
@@ -291,14 +291,14 @@ public class YDisplayLayer
     /**
      * Draws an empty rectangle at a specified position.
      * 
-     * @param x1: the distance from left of layer to the left border of the rectangle, in pixels
-     * @param y1: the distance from top of layer to the top border of the rectangle, in pixels
-     * @param x2: the distance from left of layer to the right border of the rectangle, in pixels
-     * @param y2: the distance from top of layer to the bottom border of the rectangle, in pixels
+     * @param x1 : the distance from left of layer to the left border of the rectangle, in pixels
+     * @param y1 : the distance from top of layer to the top border of the rectangle, in pixels
+     * @param x2 : the distance from left of layer to the right border of the rectangle, in pixels
+     * @param y2 : the distance from top of layer to the bottom border of the rectangle, in pixels
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int drawRect(int x1,int y1,int x2,int y2) throws YAPI_Exception
     {
@@ -308,14 +308,14 @@ public class YDisplayLayer
     /**
      * Draws a filled rectangular bar at a specified position.
      * 
-     * @param x1: the distance from left of layer to the left border of the rectangle, in pixels
-     * @param y1: the distance from top of layer to the top border of the rectangle, in pixels
-     * @param x2: the distance from left of layer to the right border of the rectangle, in pixels
-     * @param y2: the distance from top of layer to the bottom border of the rectangle, in pixels
+     * @param x1 : the distance from left of layer to the left border of the rectangle, in pixels
+     * @param y1 : the distance from top of layer to the top border of the rectangle, in pixels
+     * @param x2 : the distance from left of layer to the right border of the rectangle, in pixels
+     * @param y2 : the distance from top of layer to the bottom border of the rectangle, in pixels
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int drawBar(int x1,int y1,int x2,int y2) throws YAPI_Exception
     {
@@ -325,13 +325,13 @@ public class YDisplayLayer
     /**
      * Draws an empty circle at a specified position.
      * 
-     * @param x: the distance from left of layer to the center of the circle, in pixels
-     * @param y: the distance from top of layer to the center of the circle, in pixels
-     * @param r: the radius of the circle, in pixels
+     * @param x : the distance from left of layer to the center of the circle, in pixels
+     * @param y : the distance from top of layer to the center of the circle, in pixels
+     * @param r : the radius of the circle, in pixels
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int drawCircle(int x,int y,int r) throws YAPI_Exception
     {
@@ -341,13 +341,13 @@ public class YDisplayLayer
     /**
      * Draws a filled disc at a given position.
      * 
-     * @param x: the distance from left of layer to the center of the disc, in pixels
-     * @param y: the distance from top of layer to the center of the disc, in pixels
-     * @param r: the radius of the disc, in pixels
+     * @param x : the distance from left of layer to the center of the disc, in pixels
+     * @param y : the distance from top of layer to the center of the disc, in pixels
+     * @param r : the radius of the disc, in pixels
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int drawDisc(int x,int y,int r) throws YAPI_Exception
     {
@@ -361,11 +361,11 @@ public class YDisplayLayer
      * file, check the device logs for any error message such as missing font file or bad font
      * file format.
      * 
-     * @param fontname: the font file name
+     * @param fontname : the font file name
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int selectFont(String fontname) throws YAPI_Exception
     {
@@ -377,9 +377,9 @@ public class YDisplayLayer
      * to the specified pixel position is called the anchor point, and can be chosen among
      * several options. Text is rendered from left to right, without implicit wrapping.
      * 
-     * @param x: the distance from left of layer to the text anchor point, in pixels
-     * @param y: the distance from top of layer to the text anchor point, in pixels
-     * @param anchor: the text anchor point, chosen among the YDisplayLayer.ALIGN enumeration:
+     * @param x : the distance from left of layer to the text anchor point, in pixels
+     * @param y : the distance from top of layer to the text anchor point, in pixels
+     * @param anchor : the text anchor point, chosen among the YDisplayLayer.ALIGN enumeration:
      *         YDisplayLayer.ALIGN_TOP_LEFT,    YDisplayLayer.ALIGN_CENTER_LEFT,   
      *         YDisplayLayer.ALIGN_BASELINE_LEFT,    YDisplayLayer.ALIGN_BOTTOM_LEFT,
      *         YDisplayLayer.ALIGN_TOP_CENTER,  YDisplayLayer.ALIGN_CENTER,        
@@ -388,11 +388,11 @@ public class YDisplayLayer
      *         YDisplayLayer.ALIGN_BASELINE_DECIMAL, YDisplayLayer.ALIGN_BOTTOM_DECIMAL,
      *         YDisplayLayer.ALIGN_TOP_RIGHT,   YDisplayLayer.ALIGN_CENTER_RIGHT,  
      *         YDisplayLayer.ALIGN_BASELINE_RIGHT,   YDisplayLayer.ALIGN_BOTTOM_RIGHT.
-     * @param text: the text string to draw
+     * @param text : the text string to draw
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int drawText(int x,int y,ALIGN anchor,String text) throws YAPI_Exception
     {
@@ -405,13 +405,13 @@ public class YDisplayLayer
      * file, check the device logs for any error message such as missing image file or bad
      * image file format.
      * 
-     * @param x: the distance from left of layer to the left of the image, in pixels
-     * @param y: the distance from top of layer to the top of the image, in pixels
-     * @param imagename: the GIF file name
+     * @param x : the distance from left of layer to the left of the image, in pixels
+     * @param y : the distance from top of layer to the top of the image, in pixels
+     * @param imagename : the GIF file name
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int drawImage(int x,int y,String imagename) throws YAPI_Exception
     {
@@ -427,16 +427,16 @@ public class YDisplayLayer
      * gray level, unless -1 is specified, in which case they are not drawn at all
      * (as if transparent).
      * 
-     * @param x: the distance from left of layer to the left of the bitmap, in pixels
-     * @param y: the distance from top of layer to the top of the bitmap, in pixels
-     * @param w: the width of the bitmap, in pixels
-     * @param bitmap: a binary object
-     * @param bgcol: the background gray level to use for zero bits (0 = black,
+     * @param x : the distance from left of layer to the left of the bitmap, in pixels
+     * @param y : the distance from top of layer to the top of the bitmap, in pixels
+     * @param w : the width of the bitmap, in pixels
+     * @param bitmap : a binary object
+     * @param bgcol : the background gray level to use for zero bits (0 = black,
      *         255 = white), or -1 to leave the pixels unchanged
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int drawBitmap(int x,int y,int w,byte[] bitmap,int bgcol) throws YAPI_Exception
     {
@@ -448,12 +448,12 @@ public class YDisplayLayer
     /**
      * Moves the drawing pointer of this layer to the specified position.
      * 
-     * @param x: the distance from left of layer, in pixels
-     * @param y: the distance from top of layer, in pixels
+     * @param x : the distance from left of layer, in pixels
+     * @param y : the distance from top of layer, in pixels
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int moveTo(int x,int y) throws YAPI_Exception
     {
@@ -465,12 +465,12 @@ public class YDisplayLayer
      * The specified destination pixel is included in the line. The pointer position
      * is then moved to the end point of the line.
      * 
-     * @param x: the distance from left of layer to the end point of the line, in pixels
-     * @param y: the distance from top of layer to the end point of the line, in pixels
+     * @param x : the distance from left of layer to the end point of the line, in pixels
+     * @param y : the distance from top of layer to the end point of the line, in pixels
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int lineTo(int x,int y) throws YAPI_Exception
     {
@@ -484,11 +484,11 @@ public class YDisplayLayer
      * is hit. When the new text to display extends below the lower margin, the
      * console area is automatically scrolled up.
      * 
-     * @param text: the message to display
+     * @param text : the message to display
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int consoleOut(String text) throws YAPI_Exception
     {
@@ -498,14 +498,14 @@ public class YDisplayLayer
     /**
      * Sets up display margins for the consoleOut function.
      * 
-     * @param x1: the distance from left of layer to the left margin, in pixels
-     * @param y1: the distance from top of layer to the top margin, in pixels
-     * @param x2: the distance from left of layer to the right margin, in pixels
-     * @param y2: the distance from top of layer to the bottom margin, in pixels
+     * @param x1 : the distance from left of layer to the left margin, in pixels
+     * @param y1 : the distance from top of layer to the top margin, in pixels
+     * @param x2 : the distance from left of layer to the right margin, in pixels
+     * @param y2 : the distance from top of layer to the bottom margin, in pixels
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setConsoleMargins(int x1,int y1,int x2,int y2) throws YAPI_Exception
     {
@@ -516,12 +516,12 @@ public class YDisplayLayer
      * Sets up the background color used by the clearConsole function and by
      * the console scrolling feature.
      * 
-     * @param bgcol: the background gray level to use when scrolling (0 = black,
+     * @param bgcol : the background gray level to use when scrolling (0 = black,
      *         255 = white), or -1 for transparent
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setConsoleBackground(int bgcol) throws YAPI_Exception
     {
@@ -531,12 +531,12 @@ public class YDisplayLayer
     /**
      * Sets up the wrapping behaviour used by the consoleOut function.
      * 
-     * @param wordwrap: true to wrap only between words,
+     * @param wordwrap : true to wrap only between words,
      *         false to wrap on the last column anyway.
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setConsoleWordWrap(boolean wordwrap) throws YAPI_Exception
     {
@@ -549,7 +549,7 @@ public class YDisplayLayer
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int clearConsole() throws YAPI_Exception
     {
@@ -561,14 +561,14 @@ public class YDisplayLayer
      * When smooth scrolling is used, the display offset of the layer is
      * automatically updated during the next milliseconds to animate the move of the layer.
      * 
-     * @param x: the distance from left of display to the upper left corner of the layer
-     * @param y: the distance from top of display to the upper left corner of the layer
-     * @param scrollTime: number of milliseconds to use for smooth scrolling, or
+     * @param x : the distance from left of display to the upper left corner of the layer
+     * @param y : the distance from top of display to the upper left corner of the layer
+     * @param scrollTime : number of milliseconds to use for smooth scrolling, or
      *         0 if the scrolling should be immediate.
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setLayerPosition(int x,int y,int scrollTime) throws YAPI_Exception
     {
@@ -583,7 +583,7 @@ public class YDisplayLayer
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int hide() throws YAPI_Exception
     {
@@ -597,7 +597,7 @@ public class YDisplayLayer
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int unhide() throws YAPI_Exception
     {
@@ -620,7 +620,7 @@ public class YDisplayLayer
      * 
      * @return an integer corresponding to the display width, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_displayWidth() throws YAPI_Exception
     {
@@ -632,7 +632,7 @@ public class YDisplayLayer
      * 
      * @return an integer corresponding to the display height, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_displayHeight() throws YAPI_Exception
     {
@@ -644,7 +644,7 @@ public class YDisplayLayer
      * 
      * @return an integer corresponding to the width of the layers to draw on, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_layerWidth() throws YAPI_Exception
     {
@@ -656,7 +656,7 @@ public class YDisplayLayer
      * 
      * @return an integer corresponding to the height of the layers to draw on, in pixels
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_layerHeight() throws YAPI_Exception
     {

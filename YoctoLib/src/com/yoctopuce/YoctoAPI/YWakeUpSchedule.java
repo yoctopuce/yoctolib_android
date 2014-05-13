@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWakeUpSchedule.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YWakeUpSchedule.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindWakeUpSchedule(), the high-level API for WakeUpSchedule functions
  *
@@ -164,7 +164,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the minutes in the 00-29 interval of each hour scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_minutesA() throws YAPI_Exception
     {
@@ -181,7 +181,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the minutes in the 00-29 interval of each hour scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getMinutesA() throws YAPI_Exception
 
@@ -194,7 +194,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_minutesA(int  newval)  throws YAPI_Exception
     {
@@ -211,7 +211,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setMinutesA(int newval)  throws YAPI_Exception
 
@@ -222,7 +222,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the minutes in the 30-59 intervalof each hour scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_minutesB() throws YAPI_Exception
     {
@@ -239,7 +239,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the minutes in the 30-59 intervalof each hour scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getMinutesB() throws YAPI_Exception
 
@@ -252,7 +252,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_minutesB(int  newval)  throws YAPI_Exception
     {
@@ -269,7 +269,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setMinutesB(int newval)  throws YAPI_Exception
 
@@ -280,7 +280,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the hours scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_hours() throws YAPI_Exception
     {
@@ -297,7 +297,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the hours scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getHours() throws YAPI_Exception
 
@@ -310,7 +310,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_hours(int  newval)  throws YAPI_Exception
     {
@@ -327,7 +327,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setHours(int newval)  throws YAPI_Exception
 
@@ -338,7 +338,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the days of the week scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_weekDays() throws YAPI_Exception
     {
@@ -355,7 +355,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the days of the week scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getWeekDays() throws YAPI_Exception
 
@@ -368,7 +368,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_weekDays(int  newval)  throws YAPI_Exception
     {
@@ -385,7 +385,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setWeekDays(int newval)  throws YAPI_Exception
 
@@ -396,7 +396,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the days of the month scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_monthDays() throws YAPI_Exception
     {
@@ -413,7 +413,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the days of the month scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getMonthDays() throws YAPI_Exception
 
@@ -426,7 +426,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_monthDays(int  newval)  throws YAPI_Exception
     {
@@ -443,7 +443,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setMonthDays(int newval)  throws YAPI_Exception
 
@@ -454,7 +454,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the months scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_months() throws YAPI_Exception
     {
@@ -471,7 +471,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the months scheduled for wake up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getMonths() throws YAPI_Exception
 
@@ -484,7 +484,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_months(int  newval)  throws YAPI_Exception
     {
@@ -501,7 +501,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setMonths(int newval)  throws YAPI_Exception
 
@@ -512,7 +512,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the date/time (seconds) of the next wake up occurence
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_nextOccurence() throws YAPI_Exception
     {
@@ -529,7 +529,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return an integer corresponding to the date/time (seconds) of the next wake up occurence
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getNextOccurence() throws YAPI_Exception
 
@@ -578,7 +578,7 @@ public class YWakeUpSchedule extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -630,7 +630,7 @@ public class YWakeUpSchedule extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_minutes(long bitmap) throws YAPI_Exception
     {

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataSet.java 15286 2014-03-06 19:34:42Z martinm $
+ * $Id: YDataSet.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindDataSet(), the high-level API for DataSet functions
  *
@@ -95,17 +95,17 @@ public class YDataSet
         _endTime    = endTime;
         _progress   = -1;
         _hardwareId = "";
-        _summary = new YMeasure();
+        _summary    = new YMeasure();
     }
 
     // YDataSet constructor for the new datalogger
     public YDataSet(YFunction parent, String json) throws YAPI_Exception
     {
-        _parent    = parent;
-        _startTime = 0;
-        _endTime   = 0;
+        _parent     = parent;
+        _startTime  = 0;
+        _endTime    = 0;
         _hardwareId = "";
-        _summary = new YMeasure();
+        _summary    = new YMeasure();
         this._parse(json);
     }
 
@@ -154,7 +154,7 @@ public class YDataSet
                     }
                 }
             }
-            if((_streams.size() > 0) && (summaryTotalTime>0)) {
+            if((_streams.size() > 0) && (summaryTotalTime>0)){
                 // update time boundaries with actual data
                 YDataStream stream = _streams.get(_streams.size()-1);
                 long endtime = stream.get_startTimeUTC() + stream.get_duration();
@@ -249,7 +249,7 @@ public class YDataSet
      * 
      * @return a string that uniquely identifies the function (ex: THRMCPL1-123456.temperature1)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_hardwareId() throws YAPI_Exception
     {
@@ -278,7 +278,7 @@ public class YDataSet
      * 
      * @return a string that represents a physical unit.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_unit() throws YAPI_Exception
     {
@@ -346,7 +346,7 @@ public class YDataSet
      * @return an integer in the range 0 to 100 (percentage of completion),
      *         or a negative error code in case of failure.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int loadMore() throws YAPI_Exception
     {
@@ -400,7 +400,7 @@ public class YDataSet
      * @return a table of records, where each record depicts the
      *         measured values during a time interval
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public ArrayList<YMeasure> get_preview() throws YAPI_Exception
     {
@@ -430,7 +430,7 @@ public class YDataSet
      * @return a table of records, where each record depicts the
      *         measured value for a given time interval
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public ArrayList<YMeasure> get_measures() throws YAPI_Exception
     {

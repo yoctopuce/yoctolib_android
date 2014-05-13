@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YOsControl.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YOsControl.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindOsControl(), the high-level API for OsControl functions
  *
@@ -118,7 +118,7 @@ public class YOsControl extends YFunction
      * @return an integer corresponding to the remaining number of seconds before the OS shutdown, or zero when no
      *         shutdown has been scheduled
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_shutdownCountdown() throws YAPI_Exception
     {
@@ -137,7 +137,7 @@ public class YOsControl extends YFunction
      * @return an integer corresponding to the remaining number of seconds before the OS shutdown, or zero when no
      *         shutdown has been scheduled
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getShutdownCountdown() throws YAPI_Exception
 
@@ -198,7 +198,7 @@ public class YOsControl extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -237,7 +237,7 @@ public class YOsControl extends YFunction
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int shutdown(int secBeforeShutDown) throws YAPI_Exception
     {

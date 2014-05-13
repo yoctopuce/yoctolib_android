@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCompass.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YCompass.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindCompass(), the high-level API for Compass functions
  *
@@ -124,7 +124,7 @@ public class YCompass extends YSensor
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_axis() throws YAPI_Exception
     {
@@ -137,7 +137,7 @@ public class YCompass extends YSensor
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getAxis() throws YAPI_Exception
 
@@ -148,7 +148,7 @@ public class YCompass extends YSensor
      * 
      * @return a floating point number corresponding to the magnetic heading, regardless of the configured bearing
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_magneticHeading() throws YAPI_Exception
     {
@@ -165,7 +165,7 @@ public class YCompass extends YSensor
      * 
      * @return a floating point number corresponding to the magnetic heading, regardless of the configured bearing
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getMagneticHeading() throws YAPI_Exception
 
@@ -214,7 +214,7 @@ public class YCompass extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -255,7 +255,7 @@ public class YCompass extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {

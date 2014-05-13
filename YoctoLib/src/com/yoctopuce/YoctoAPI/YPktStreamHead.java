@@ -1,7 +1,6 @@
 package com.yoctopuce.YoctoAPI;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 /**

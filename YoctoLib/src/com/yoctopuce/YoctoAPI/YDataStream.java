@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataStream.java 15249 2014-03-06 10:12:58Z seb $
+ * $Id: YDataStream.java 15999 2014-05-01 08:28:57Z seb $
  *
  * YDataStream Class: Sequence of measured data, stored by the data logger
  *
@@ -361,7 +361,7 @@ public class YDataStream
      * 
      * @return an unsigned number corresponding to the number of rows.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_rowCount() throws YAPI_Exception
     {
@@ -383,7 +383,7 @@ public class YDataStream
      * 
      * @return an unsigned number corresponding to the number of columns.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_columnCount() throws YAPI_Exception
     {
@@ -409,7 +409,7 @@ public class YDataStream
      * @return a list containing as many strings as there are columns in the
      *         data stream.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public ArrayList<String> get_columnNames() throws YAPI_Exception
     {
@@ -428,7 +428,7 @@ public class YDataStream
      * @return a floating-point number corresponding to the smallest value,
      *         or YDataStream.DATA_INVALID if the stream is not yet complete (still recording).
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_minValue() throws YAPI_Exception
     {
@@ -443,7 +443,7 @@ public class YDataStream
      * @return a floating-point number corresponding to the average value,
      *         or YDataStream.DATA_INVALID if the stream is not yet complete (still recording).
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_averageValue() throws YAPI_Exception
     {
@@ -458,7 +458,7 @@ public class YDataStream
      * @return a floating-point number corresponding to the largest value,
      *         or YDataStream.DATA_INVALID if the stream is not yet complete (still recording).
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_maxValue() throws YAPI_Exception
     {
@@ -470,7 +470,7 @@ public class YDataStream
      * 
      * @return the number of seconds covered by this stream.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_duration() throws YAPI_Exception
     {
@@ -493,7 +493,7 @@ public class YDataStream
      *         data stream. Each row itself is a list of floating-point
      *         numbers.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public ArrayList<ArrayList<Double>> get_dataRows() throws YAPI_Exception
     {
@@ -517,7 +517,7 @@ public class YDataStream
      * 
      * @return a floating-point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_data(int row,int col) throws YAPI_Exception
     {

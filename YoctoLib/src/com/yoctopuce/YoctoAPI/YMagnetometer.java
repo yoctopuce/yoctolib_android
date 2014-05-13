@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YMagnetometer.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YMagnetometer.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindMagnetometer(), the high-level API for Magnetometer functions
  *
@@ -133,7 +133,7 @@ public class YMagnetometer extends YSensor
      * @return a floating point number corresponding to the X component of the magnetic field, as a
      * floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_xValue() throws YAPI_Exception
     {
@@ -151,7 +151,7 @@ public class YMagnetometer extends YSensor
      * @return a floating point number corresponding to the X component of the magnetic field, as a
      * floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getXValue() throws YAPI_Exception
 
@@ -163,7 +163,7 @@ public class YMagnetometer extends YSensor
      * @return a floating point number corresponding to the Y component of the magnetic field, as a
      * floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_yValue() throws YAPI_Exception
     {
@@ -181,7 +181,7 @@ public class YMagnetometer extends YSensor
      * @return a floating point number corresponding to the Y component of the magnetic field, as a
      * floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getYValue() throws YAPI_Exception
 
@@ -193,7 +193,7 @@ public class YMagnetometer extends YSensor
      * @return a floating point number corresponding to the Z component of the magnetic field, as a
      * floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_zValue() throws YAPI_Exception
     {
@@ -211,7 +211,7 @@ public class YMagnetometer extends YSensor
      * @return a floating point number corresponding to the Z component of the magnetic field, as a
      * floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getZValue() throws YAPI_Exception
 
@@ -260,7 +260,7 @@ public class YMagnetometer extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -301,7 +301,7 @@ public class YMagnetometer extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {

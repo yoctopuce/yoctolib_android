@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWatchdog.java 15434 2014-03-14 06:37:47Z mvuilleu $
+ * $Id: YWatchdog.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindWatchdog(), the high-level API for Watchdog functions
  *
@@ -241,7 +241,7 @@ public class YWatchdog extends YFunction
      * @return either YWatchdog.STATE_A or YWatchdog.STATE_B, according to the state of the watchdog (A
      * for the idle position, B for the active position)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_state() throws YAPI_Exception
     {
@@ -259,7 +259,7 @@ public class YWatchdog extends YFunction
      * @return either Y_STATE_A or Y_STATE_B, according to the state of the watchdog (A for the idle
      * position, B for the active position)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getState() throws YAPI_Exception
 
@@ -273,7 +273,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_state(int  newval)  throws YAPI_Exception
     {
@@ -291,7 +291,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setState(int newval)  throws YAPI_Exception
 
@@ -305,7 +305,7 @@ public class YWatchdog extends YFunction
      * YWatchdog.STATEATPOWERON_B corresponding to the state of the watchdog at device startup (A for the
      * idle position, B for the active position, UNCHANGED for no change)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_stateAtPowerOn() throws YAPI_Exception
     {
@@ -325,7 +325,7 @@ public class YWatchdog extends YFunction
      * corresponding to the state of the watchdog at device startup (A for the idle position, B for the
      * active position, UNCHANGED for no change)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getStateAtPowerOn() throws YAPI_Exception
 
@@ -341,7 +341,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_stateAtPowerOn(int  newval)  throws YAPI_Exception
     {
@@ -360,7 +360,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setStateAtPowerOn(int newval)  throws YAPI_Exception
 
@@ -372,7 +372,7 @@ public class YWatchdog extends YFunction
      * 
      * @return an integer
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_maxTimeOnStateA() throws YAPI_Exception
     {
@@ -390,7 +390,7 @@ public class YWatchdog extends YFunction
      * 
      * @return an integer
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getMaxTimeOnStateA() throws YAPI_Exception
 
@@ -404,7 +404,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_maxTimeOnStateA(long  newval)  throws YAPI_Exception
     {
@@ -422,7 +422,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setMaxTimeOnStateA(long newval)  throws YAPI_Exception
 
@@ -434,7 +434,7 @@ public class YWatchdog extends YFunction
      * 
      * @return an integer
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_maxTimeOnStateB() throws YAPI_Exception
     {
@@ -452,7 +452,7 @@ public class YWatchdog extends YFunction
      * 
      * @return an integer
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getMaxTimeOnStateB() throws YAPI_Exception
 
@@ -466,7 +466,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_maxTimeOnStateB(long  newval)  throws YAPI_Exception
     {
@@ -484,7 +484,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setMaxTimeOnStateB(long newval)  throws YAPI_Exception
 
@@ -496,7 +496,7 @@ public class YWatchdog extends YFunction
      * @return either YWatchdog.OUTPUT_OFF or YWatchdog.OUTPUT_ON, according to the output state of the
      * watchdog, when used as a simple switch (single throw)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_output() throws YAPI_Exception
     {
@@ -514,7 +514,7 @@ public class YWatchdog extends YFunction
      * @return either Y_OUTPUT_OFF or Y_OUTPUT_ON, according to the output state of the watchdog, when
      * used as a simple switch (single throw)
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getOutput() throws YAPI_Exception
 
@@ -528,7 +528,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_output(int  newval)  throws YAPI_Exception
     {
@@ -546,7 +546,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setOutput(int newval)  throws YAPI_Exception
 
@@ -560,7 +560,7 @@ public class YWatchdog extends YFunction
      * returned to idle position
      *         (state A), during a measured pulse generation
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_pulseTimer() throws YAPI_Exception
     {
@@ -580,7 +580,7 @@ public class YWatchdog extends YFunction
      * returned to idle position
      *         (state A), during a measured pulse generation
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getPulseTimer() throws YAPI_Exception
 
@@ -606,7 +606,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int pulse(int ms_duration)  throws YAPI_Exception
     {
@@ -617,7 +617,7 @@ public class YWatchdog extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YDelayedPulse get_delayedPulseTimer() throws YAPI_Exception
     {
@@ -630,7 +630,7 @@ public class YWatchdog extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YDelayedPulse getDelayedPulseTimer() throws YAPI_Exception
 
@@ -656,7 +656,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int delayedPulse(int ms_delay,int ms_duration)  throws YAPI_Exception
     {
@@ -673,7 +673,7 @@ public class YWatchdog extends YFunction
      * @return an integer corresponding to the number of milliseconds remaining before a pulse (delayedPulse() call)
      *         When there is no scheduled pulse, returns zero
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_countdown() throws YAPI_Exception
     {
@@ -692,7 +692,7 @@ public class YWatchdog extends YFunction
      * @return an integer corresponding to the number of milliseconds remaining before a pulse (delayedPulse() call)
      *         When there is no scheduled pulse, returns zero
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getCountdown() throws YAPI_Exception
 
@@ -704,7 +704,7 @@ public class YWatchdog extends YFunction
      * @return either YWatchdog.AUTOSTART_OFF or YWatchdog.AUTOSTART_ON, according to the watchdog runing
      * state at module power on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_autoStart() throws YAPI_Exception
     {
@@ -721,7 +721,7 @@ public class YWatchdog extends YFunction
      * 
      * @return either Y_AUTOSTART_OFF or Y_AUTOSTART_ON, according to the watchdog runing state at module power on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getAutoStart() throws YAPI_Exception
 
@@ -736,7 +736,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_autoStart(int  newval)  throws YAPI_Exception
     {
@@ -755,7 +755,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setAutoStart(int newval)  throws YAPI_Exception
 
@@ -766,7 +766,7 @@ public class YWatchdog extends YFunction
      * 
      * @return either YWatchdog.RUNNING_OFF or YWatchdog.RUNNING_ON, according to the watchdog running state
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_running() throws YAPI_Exception
     {
@@ -783,7 +783,7 @@ public class YWatchdog extends YFunction
      * 
      * @return either Y_RUNNING_OFF or Y_RUNNING_ON, according to the watchdog running state
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getRunning() throws YAPI_Exception
 
@@ -797,7 +797,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_running(int  newval)  throws YAPI_Exception
     {
@@ -814,7 +814,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setRunning(int newval)  throws YAPI_Exception
 
@@ -827,7 +827,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int resetWatchdog()  throws YAPI_Exception
     {
@@ -843,7 +843,7 @@ public class YWatchdog extends YFunction
      * @return an integer corresponding to  the waiting duration before a reset is automatically triggered
      * by the watchdog, in milliseconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_triggerDelay() throws YAPI_Exception
     {
@@ -861,7 +861,7 @@ public class YWatchdog extends YFunction
      * @return an integer corresponding to  the waiting duration before a reset is automatically triggered
      * by the watchdog, in milliseconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getTriggerDelay() throws YAPI_Exception
 
@@ -875,7 +875,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_triggerDelay(long  newval)  throws YAPI_Exception
     {
@@ -893,7 +893,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setTriggerDelay(long newval)  throws YAPI_Exception
 
@@ -904,7 +904,7 @@ public class YWatchdog extends YFunction
      * 
      * @return an integer corresponding to the duration of resets caused by the watchdog, in milliseconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long get_triggerDuration() throws YAPI_Exception
     {
@@ -921,7 +921,7 @@ public class YWatchdog extends YFunction
      * 
      * @return an integer corresponding to the duration of resets caused by the watchdog, in milliseconds
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public long getTriggerDuration() throws YAPI_Exception
 
@@ -934,7 +934,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_triggerDuration(long  newval)  throws YAPI_Exception
     {
@@ -951,7 +951,7 @@ public class YWatchdog extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setTriggerDuration(long newval)  throws YAPI_Exception
 
@@ -1000,7 +1000,7 @@ public class YWatchdog extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

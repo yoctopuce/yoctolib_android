@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YColorLed.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YColorLed.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindColorLed(), the high-level API for ColorLed functions
  *
@@ -177,7 +177,7 @@ public class YColorLed extends YFunction
      * 
      * @return an integer corresponding to the current RGB color of the led
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_rgbColor() throws YAPI_Exception
     {
@@ -194,7 +194,7 @@ public class YColorLed extends YFunction
      * 
      * @return an integer corresponding to the current RGB color of the led
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getRgbColor() throws YAPI_Exception
 
@@ -207,7 +207,7 @@ public class YColorLed extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_rgbColor(int  newval)  throws YAPI_Exception
     {
@@ -224,7 +224,7 @@ public class YColorLed extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setRgbColor(int newval)  throws YAPI_Exception
 
@@ -235,7 +235,7 @@ public class YColorLed extends YFunction
      * 
      * @return an integer corresponding to the current HSL color of the led
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_hslColor() throws YAPI_Exception
     {
@@ -252,7 +252,7 @@ public class YColorLed extends YFunction
      * 
      * @return an integer corresponding to the current HSL color of the led
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getHslColor() throws YAPI_Exception
 
@@ -265,7 +265,7 @@ public class YColorLed extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_hslColor(int  newval)  throws YAPI_Exception
     {
@@ -282,14 +282,14 @@ public class YColorLed extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setHslColor(int newval)  throws YAPI_Exception
 
     { return set_hslColor(newval); }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YMove get_rgbMove() throws YAPI_Exception
     {
@@ -302,7 +302,7 @@ public class YColorLed extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YMove getRgbMove() throws YAPI_Exception
 
@@ -328,7 +328,7 @@ public class YColorLed extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int rgbMove(int rgb_target,int ms_duration)  throws YAPI_Exception
     {
@@ -339,7 +339,7 @@ public class YColorLed extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YMove get_hslMove() throws YAPI_Exception
     {
@@ -352,7 +352,7 @@ public class YColorLed extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YMove getHslMove() throws YAPI_Exception
 
@@ -378,7 +378,7 @@ public class YColorLed extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int hslMove(int hsl_target,int ms_duration)  throws YAPI_Exception
     {
@@ -393,7 +393,7 @@ public class YColorLed extends YFunction
      * 
      * @return an integer corresponding to the configured color to be displayed when the module is turned on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_rgbColorAtPowerOn() throws YAPI_Exception
     {
@@ -410,7 +410,7 @@ public class YColorLed extends YFunction
      * 
      * @return an integer corresponding to the configured color to be displayed when the module is turned on
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getRgbColorAtPowerOn() throws YAPI_Exception
 
@@ -427,7 +427,7 @@ public class YColorLed extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_rgbColorAtPowerOn(int  newval)  throws YAPI_Exception
     {
@@ -448,7 +448,7 @@ public class YColorLed extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setRgbColorAtPowerOn(int newval)  throws YAPI_Exception
 
@@ -497,7 +497,7 @@ public class YColorLed extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

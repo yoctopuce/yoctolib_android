@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAPI.java 15091 2014-02-27 09:36:28Z mvuilleu $
+ * $Id: YAPI.java 16128 2014-05-09 09:18:06Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -46,8 +46,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Locale;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -736,7 +734,7 @@ public class YAPI {
         return dev;
     }
 
-    protected synchronized int _AddNewHub(String url, InputStream request, OutputStream response) throws YAPI_Exception
+    protected synchronized int _AddNewHub(String url, boolean reportConnnectionLost, InputStream request, OutputStream response) throws YAPI_Exception
     {
         for (YGenericHub h : _hubs) {
             if (h.isSameRootUrl(url)) {
@@ -752,18 +750,22 @@ public class YAPI {
             newhub = new YUSBHub(_hubs.size());
         } else if (url.equals("net")){
             if((_apiMode& DETECT_NET)==0) {
-                //newhub = new YHTTPHub(_hubs.size(), new YGenericHub.HTTPParams("localhost"));
-                //_hubs.add(newhub);
-                //newhub.startNotifications();
+                if (YUSBHub.RegisterLocalhost()) {
+                    newhub = new YHTTPHub(_hubs.size(), new YGenericHub.HTTPParams("localhost"));
+                    _hubs.add(newhub);
+                    newhub.reportConnectionLost(false);
+                    newhub.startNotifications();
+                }
                 _apiMode |= DETECT_NET;
                 _ssdp.addCallback(_ssdpCallback);
             }
             return SUCCESS;
         } else if (parsedurl.getHost().equals("callback")){
-            newhub = null;//fixme:new YCallbackHub(_hubs.size(), parsedurl, request, response);
+            newhub = new YCallbackHub(_hubs.size(), parsedurl, request, response);
         }else {
             newhub = new YHTTPHub(_hubs.size(), parsedurl);
         }
+        newhub.reportConnectionLost(reportConnnectionLost);
         _hubs.add(newhub);
         newhub.startNotifications();
         return SUCCESS;
@@ -842,6 +844,7 @@ public class YAPI {
     private static YAPI _SingleYAPI = null;
 
 
+    @SuppressWarnings("UnusedDeclaration")
     public static synchronized void SetThreadSpecificMode() throws YAPI_Exception
     {
         if (_SingleYAPI != null)
@@ -908,15 +911,6 @@ public class YAPI {
         _ssdp = new YSSDP();
     }
 
-    private void setAPIMode(int mode) throws YAPI_Exception
-    {
-        if((mode & DETECT_NET)!=0) {
-            _ssdp.addCallback(_ssdpCallback);
-        }
-        _apiMode = mode;
-    }
-
-
     void _FreeAPI()
     {
         if((_apiMode & DETECT_NET)!=0){
@@ -931,7 +925,7 @@ public class YAPI {
 
     public int _RegisterHub(String url) throws YAPI_Exception
     {
-        _AddNewHub(url, null, null);
+        _AddNewHub(url, true, null, null);
         // Register device list
         _updateDeviceList_internal(true, false);
         return SUCCESS;
@@ -940,21 +934,16 @@ public class YAPI {
     
     public int _RegisterHub(String url, InputStream request, OutputStream response) throws YAPI_Exception
     {
-        _AddNewHub(url, request, response);
+        _AddNewHub(url, true, request, response);
         // Register device list
         _updateDeviceList_internal(true, false);
         return SUCCESS;
     }
 
-    
-    public void _EnableUSBHost(Object osContext) throws YAPI_Exception
-    {
-        YUSBHub.SetContextType(osContext);
-    }
 
     public int _PreregisterHub(String url) throws YAPI_Exception
     {
-        _AddNewHub(url, null, null);
+        _AddNewHub(url, false, null, null);
         return SUCCESS;
     }
 
@@ -1010,8 +999,6 @@ public class YAPI {
                 try {
                     Thread.sleep(3);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(YAPI.class.getName()).log(Level.SEVERE,
-                            null, ex);
                     throw new YAPI_Exception(YAPI.IO_ERROR,
                             "Thread has been interrupted");
                 }
@@ -1088,7 +1075,7 @@ public class YAPI {
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".15466";
+        return YOCTO_API_VERSION_STR + ".16182";
     }
 
     /**
@@ -1108,13 +1095,17 @@ public class YAPI {
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public static int InitAPI(int mode) throws YAPI_Exception {
 
         YAPI yapi = SafeYAPI();
-        //FIXME: Ensure API is working in correcte Mode
-
+        if ((mode & YAPI.DETECT_NET)!=0){
+            yapi._RegisterHub("net");
+        } 
+        if ((mode & YAPI.DETECT_USB)!=0){
+            yapi._RegisterHub("usb");
+        } 
         return YAPI.SUCCESS;
     }
 
@@ -1179,7 +1170,7 @@ public class YAPI {
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public static int RegisterHub(String url) throws YAPI_Exception
     {
@@ -1201,7 +1192,7 @@ public class YAPI {
      * 
      * @param osContext : an object of class android.content.Context (or any subclass).
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public static void EnableUSBHost(Object osContext) throws YAPI_Exception
     {
@@ -1220,7 +1211,7 @@ public class YAPI {
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public static int PreregisterHub(String url) throws YAPI_Exception
     {
@@ -1250,7 +1241,7 @@ public class YAPI {
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public static int UpdateDeviceList() throws YAPI_Exception
     {
@@ -1270,7 +1261,7 @@ public class YAPI {
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public static int HandleEvents() throws YAPI_Exception {
         return SafeYAPI()._HandleEvents();
@@ -1292,7 +1283,7 @@ public class YAPI {
      * 
      * @return YAPI.SUCCESS when the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public static int Sleep(long ms_duration) throws YAPI_Exception
     {
@@ -1304,7 +1295,7 @@ public class YAPI {
      * will be called for each net work hub that will respond to the discovery.
      * 
      * @return YAPI.SUCCESS when the call succeeds.
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int TriggerHubDiscovery() throws YAPI_Exception
     {

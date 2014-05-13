@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YHubPort.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YHubPort.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindHubPort(), the high-level API for HubPort functions
  *
@@ -143,7 +143,7 @@ public class YHubPort extends YFunction
      * @return either YHubPort.ENABLED_FALSE or YHubPort.ENABLED_TRUE, according to true if the Yocto-hub
      * port is powered, false otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_enabled() throws YAPI_Exception
     {
@@ -161,7 +161,7 @@ public class YHubPort extends YFunction
      * @return either Y_ENABLED_FALSE or Y_ENABLED_TRUE, according to true if the Yocto-hub port is
      * powered, false otherwise
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getEnabled() throws YAPI_Exception
 
@@ -176,7 +176,7 @@ public class YHubPort extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_enabled(int  newval)  throws YAPI_Exception
     {
@@ -194,7 +194,7 @@ public class YHubPort extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setEnabled(int newval)  throws YAPI_Exception
 
@@ -206,7 +206,7 @@ public class YHubPort extends YFunction
      * @return a value among YHubPort.PORTSTATE_OFF, YHubPort.PORTSTATE_OVRLD, YHubPort.PORTSTATE_ON,
      * YHubPort.PORTSTATE_RUN and YHubPort.PORTSTATE_PROG corresponding to the current state of the Yocto-hub port
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_portState() throws YAPI_Exception
     {
@@ -224,7 +224,7 @@ public class YHubPort extends YFunction
      * @return a value among Y_PORTSTATE_OFF, Y_PORTSTATE_OVRLD, Y_PORTSTATE_ON, Y_PORTSTATE_RUN and
      * Y_PORTSTATE_PROG corresponding to the current state of the Yocto-hub port
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPortState() throws YAPI_Exception
 
@@ -237,7 +237,7 @@ public class YHubPort extends YFunction
      * 
      * @return an integer corresponding to the current baud rate used by this Yocto-hub port, in kbps
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_baudRate() throws YAPI_Exception
     {
@@ -256,7 +256,7 @@ public class YHubPort extends YFunction
      * 
      * @return an integer corresponding to the current baud rate used by this Yocto-hub port, in kbps
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getBaudRate() throws YAPI_Exception
 
@@ -305,7 +305,7 @@ public class YHubPort extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

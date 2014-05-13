@@ -1,0 +1,74 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="select Yocto-PwmOutput:"
+        tools:ignore="HardcodedText"/>
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="frequency (in Hz):"
+        tools:ignore="HardcodedText"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/frequency"
+        android:hint="1000"
+        tools:ignore="HardcodedText"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Duty Cycle:"
+        style="?android:listSeparatorTextViewStyle"
+        tools:ignore="HardcodedText"/>
+
+    <SeekBar
+        android:id="@+id/seekBarPos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:buttonBarButtonStyle"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/movePosButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:onClick="update"
+            android:text="Move to duty cycle"
+            tools:ignore="HardcodedText"/>
+
+        <Button
+            android:id="@+id/setPosButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="?android:buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:onClick="update"
+            android:text="Set duty cycle"
+            tools:ignore="HardcodedText"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YServo.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YServo.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindServo(), the high-level API for Servo functions
  *
@@ -188,7 +188,7 @@ public class YServo extends YFunction
      * 
      * @return an integer corresponding to the current servo position
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_position() throws YAPI_Exception
     {
@@ -205,7 +205,7 @@ public class YServo extends YFunction
      * 
      * @return an integer corresponding to the current servo position
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPosition() throws YAPI_Exception
 
@@ -218,7 +218,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_position(int  newval)  throws YAPI_Exception
     {
@@ -235,7 +235,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setPosition(int newval)  throws YAPI_Exception
 
@@ -246,7 +246,7 @@ public class YServo extends YFunction
      * 
      * @return either YServo.ENABLED_FALSE or YServo.ENABLED_TRUE, according to the state of the servos
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_enabled() throws YAPI_Exception
     {
@@ -263,7 +263,7 @@ public class YServo extends YFunction
      * 
      * @return either Y_ENABLED_FALSE or Y_ENABLED_TRUE, according to the state of the servos
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getEnabled() throws YAPI_Exception
 
@@ -276,7 +276,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_enabled(int  newval)  throws YAPI_Exception
     {
@@ -293,7 +293,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setEnabled(int newval)  throws YAPI_Exception
 
@@ -304,7 +304,7 @@ public class YServo extends YFunction
      * 
      * @return an integer corresponding to the current range of use of the servo
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_range() throws YAPI_Exception
     {
@@ -321,7 +321,7 @@ public class YServo extends YFunction
      * 
      * @return an integer corresponding to the current range of use of the servo
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getRange() throws YAPI_Exception
 
@@ -339,7 +339,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_range(int  newval)  throws YAPI_Exception
     {
@@ -361,7 +361,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setRange(int newval)  throws YAPI_Exception
 
@@ -372,7 +372,7 @@ public class YServo extends YFunction
      * 
      * @return an integer corresponding to the duration in microseconds of a neutral pulse for the servo
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_neutral() throws YAPI_Exception
     {
@@ -389,7 +389,7 @@ public class YServo extends YFunction
      * 
      * @return an integer corresponding to the duration in microseconds of a neutral pulse for the servo
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getNeutral() throws YAPI_Exception
 
@@ -407,7 +407,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_neutral(int  newval)  throws YAPI_Exception
     {
@@ -429,14 +429,14 @@ public class YServo extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setNeutral(int newval)  throws YAPI_Exception
 
     { return set_neutral(newval); }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YMove get_move() throws YAPI_Exception
     {
@@ -449,7 +449,7 @@ public class YServo extends YFunction
     }
 
     /**
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public YMove getMove() throws YAPI_Exception
 
@@ -475,7 +475,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int move(int target,int ms_duration)  throws YAPI_Exception
     {
@@ -490,7 +490,7 @@ public class YServo extends YFunction
      * 
      * @return an integer corresponding to the servo position at device power up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_positionAtPowerOn() throws YAPI_Exception
     {
@@ -507,7 +507,7 @@ public class YServo extends YFunction
      * 
      * @return an integer corresponding to the servo position at device power up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPositionAtPowerOn() throws YAPI_Exception
 
@@ -521,7 +521,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_positionAtPowerOn(int  newval)  throws YAPI_Exception
     {
@@ -539,7 +539,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setPositionAtPowerOn(int newval)  throws YAPI_Exception
 
@@ -551,7 +551,7 @@ public class YServo extends YFunction
      * @return either YServo.ENABLEDATPOWERON_FALSE or YServo.ENABLEDATPOWERON_TRUE, according to the
      * servo signal generator state at power up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_enabledAtPowerOn() throws YAPI_Exception
     {
@@ -569,7 +569,7 @@ public class YServo extends YFunction
      * @return either Y_ENABLEDATPOWERON_FALSE or Y_ENABLEDATPOWERON_TRUE, according to the servo signal
      * generator state at power up
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getEnabledAtPowerOn() throws YAPI_Exception
 
@@ -583,7 +583,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_enabledAtPowerOn(int  newval)  throws YAPI_Exception
     {
@@ -601,7 +601,7 @@ public class YServo extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setEnabledAtPowerOn(int newval)  throws YAPI_Exception
 
@@ -650,7 +650,7 @@ public class YServo extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGyro.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YGyro.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindGyro(), the high-level API for Gyro functions
  *
@@ -41,8 +41,6 @@ package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
-import static java.lang.Math.asin;
-import static java.lang.Math.atan2;
 
 //--- (generated code: YGyro return codes)
     //--- (end of generated code: YGyro return codes)
@@ -174,7 +172,7 @@ public class YGyro extends YSensor
      * @return a floating point number corresponding to the angular velocity around the X axis of the
      * device, as a floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_xValue() throws YAPI_Exception
     {
@@ -192,7 +190,7 @@ public class YGyro extends YSensor
      * @return a floating point number corresponding to the angular velocity around the X axis of the
      * device, as a floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getXValue() throws YAPI_Exception
 
@@ -204,7 +202,7 @@ public class YGyro extends YSensor
      * @return a floating point number corresponding to the angular velocity around the Y axis of the
      * device, as a floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_yValue() throws YAPI_Exception
     {
@@ -222,7 +220,7 @@ public class YGyro extends YSensor
      * @return a floating point number corresponding to the angular velocity around the Y axis of the
      * device, as a floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getYValue() throws YAPI_Exception
 
@@ -234,7 +232,7 @@ public class YGyro extends YSensor
      * @return a floating point number corresponding to the angular velocity around the Z axis of the
      * device, as a floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_zValue() throws YAPI_Exception
     {
@@ -252,7 +250,7 @@ public class YGyro extends YSensor
      * @return a floating point number corresponding to the angular velocity around the Z axis of the
      * device, as a floating point number
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getZValue() throws YAPI_Exception
 
@@ -301,7 +299,7 @@ public class YGyro extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -342,7 +340,7 @@ public class YGyro extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {
@@ -565,7 +563,7 @@ public class YGyro extends YSensor
      *         the YGyro object of the turning device, and the floating
      *         point values of the four components w, x, y and z
      *         (as floating-point numbers).
-     * @noreturn
+     * 
      */
     public int registerQuaternionCallback(YQuatCallback callback) throws YAPI_Exception
     {
@@ -606,7 +604,7 @@ public class YGyro extends YSensor
      *         the YGyro object of the turning device, and the floating
      *         point values of the three angles roll, pitch and heading
      *         in degrees (as floating-point numbers).
-     * @noreturn
+     * 
      */
     public int registerAnglesCallback(YAnglesCallback callback) throws YAPI_Exception
     {

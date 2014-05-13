@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YTemperature.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YTemperature.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindTemperature(), the high-level API for Temperature functions
  *
@@ -132,7 +132,7 @@ public class YTemperature extends YSensor
      * YTemperature.SENSORTYPE_PT100_4WIRES, YTemperature.SENSORTYPE_PT100_3WIRES and
      * YTemperature.SENSORTYPE_PT100_2WIRES corresponding to the temperature sensor type
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_sensorType() throws YAPI_Exception
     {
@@ -152,7 +152,7 @@ public class YTemperature extends YSensor
      * Y_SENSORTYPE_TYPE_T, Y_SENSORTYPE_PT100_4WIRES, Y_SENSORTYPE_PT100_3WIRES and
      * Y_SENSORTYPE_PT100_2WIRES corresponding to the temperature sensor type
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getSensorType() throws YAPI_Exception
 
@@ -173,7 +173,7 @@ public class YTemperature extends YSensor
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_sensorType(int  newval)  throws YAPI_Exception
     {
@@ -196,7 +196,7 @@ public class YTemperature extends YSensor
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setSensorType(int newval)  throws YAPI_Exception
 
@@ -245,7 +245,7 @@ public class YTemperature extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -286,7 +286,7 @@ public class YTemperature extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {

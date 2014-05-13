@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YVoc.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YVoc.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindVoc(), the high-level API for Voc functions
  *
@@ -146,7 +146,7 @@ public class YVoc extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -187,7 +187,7 @@ public class YVoc extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {

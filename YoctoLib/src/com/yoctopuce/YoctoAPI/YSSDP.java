@@ -8,6 +8,8 @@ import java.net.SocketTimeoutException;
 import java.util.Date;
 import java.util.HashMap;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+
 /**
  * YSSDP Class: network discovery using ssdp
  * <p/>
@@ -21,7 +23,7 @@ public class YSSDP {
          *
          * @param serial : the serial number of the discovered Hub
          * @param urlToRegister : the new URL to register
-         * @param urlToUnegister : the old URL to unregister
+         * @param urlToUnregister : the old URL to unregister
          */
         void HubDiscoveryCallback(String serial, String urlToRegister, String urlToUnregister);
     }
@@ -65,12 +67,6 @@ public class YSSDP {
             }
         }
     }
-
-
-
-
-
-
 
 
 
@@ -120,8 +116,7 @@ public class YSSDP {
                     parseIncomingMessage(ssdpMessage);
                 }catch (SocketTimeoutException ignored){
                 }catch (IOException e) {
-                    //todo: better error handling
-                    e.printStackTrace();
+                    SafeYAPI()._Log("SSDP:" + e.getLocalizedMessage());
                 }
                 checkCacheExpiration();
             }

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: yHTTPRequest.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: yHTTPRequest.java 15999 2014-05-01 08:28:57Z seb $
  *
  * internal yHTTPRequest object
  *
@@ -39,16 +39,21 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Date;
 
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 class yHTTPRequest implements Runnable{
+    private Object _context;
+    private YGenericHub.RequestAsyncResult _resultCallback;
 
     private enum State {
         AVAIL, IN_REQUEST,STOPED
@@ -58,6 +63,7 @@ class yHTTPRequest implements Runnable{
 
     private YHTTPHub                _hub;
     private Socket                  _socket  = null;
+    private boolean                 _resuse_socket = false;
     private BufferedOutputStream    _out     = null;
     private BufferedInputStream     _in      = null;
     private State                   _state= State.AVAIL;
@@ -74,7 +80,7 @@ class yHTTPRequest implements Runnable{
     yHTTPRequest(YHTTPHub hub,String dbglabel)
     {
         _hub = hub;
-        _dbglabel =dbglabel;
+        _dbglabel = dbglabel;
     }
 
     public void setNoTrafficTimeout(int noTrafficTimeout) throws SocketException {
@@ -108,42 +114,55 @@ class yHTTPRequest implements Runnable{
 
 
 
-    void _requestStart(String firstLine,byte[] rest_of_request) throws YAPI_Exception
+    void _requestStart(String firstLine,byte[] rest_of_request, Object context, 
+            YGenericHub.RequestAsyncResult resultCallback) throws YAPI_Exception
     {
         byte[] full_request;
         _firstLine =firstLine;
         _rest_of_request =rest_of_request;
+        _context = context;
+        _resultCallback = resultCallback;
+        String persistent_tag = firstLine.substring(firstLine.length() - 2);
+        if(persistent_tag.equals("&.")) {
+            firstLine += " \r\n";
+        } else {
+            firstLine += " \r\nConnection: close\r\n";
+        }
         if(rest_of_request == null){
-            String str_request = firstLine+_hub.getAuthorization(firstLine)+"Connection: close\r\n\r\n";
+            String str_request = firstLine+_hub.getAuthorization(firstLine)+"\r\n";
             full_request = str_request.getBytes();
         }else{
-            String str_request = firstLine+_hub.getAuthorization(firstLine)+"Connection: close\r\n";
+            String str_request = firstLine+_hub.getAuthorization(firstLine);
             int len = str_request.length();
             full_request = new byte[len + rest_of_request.length];
             System.arraycopy(str_request.getBytes(), 0, full_request, 0, len);
             System.arraycopy(rest_of_request, 0, full_request, len, rest_of_request.length);
         }
         try {
-            _socket  = new Socket(_hub.getHost(), _hub.getPort());
-            _socket.setTcpNoDelay(true);
-            _out     = new BufferedOutputStream(_socket.getOutputStream());
-            _in      = new BufferedInputStream(_socket.getInputStream());
+            if (!_resuse_socket) {
+                _socket = new Socket(_hub.getHost(), _hub.getPort());
+                _socket.setTcpNoDelay(true);
+                _out = new BufferedOutputStream(_socket.getOutputStream());
+                _in = new BufferedInputStream(_socket.getInputStream());
+            }
+            _resuse_socket = false;
             _result.reset();
             _header.setLength(0);
-            _header_found=false;
-            _eof=false;
-	    _out.write(full_request);
+            _header_found = false;
+            _eof = false;
+            _out.write(full_request);
             _out.flush();
-            _lastReceiveDate= null;
+            _lastReceiveDate = null;
 
         }
         catch (UnknownHostException e)
         {
             _requestStop();
             throw new YAPI_Exception(YAPI.INVALID_ARGUMENT,"Unknown host("+_hub.getHost()+")");
-        }
-        catch (IOException e)
-        {
+        } catch (SocketException e) {
+            _requestStop();
+            throw new YAPI_Exception(YAPI.IO_ERROR,e.getLocalizedMessage());
+        } catch (IOException e) {
             _requestStop();
             throw new YAPI_Exception(YAPI.IO_ERROR,e.getLocalizedMessage());
         }
@@ -153,17 +172,19 @@ class yHTTPRequest implements Runnable{
     void _requestStop()
     {
         try {
-            if(_out!=null){
-                _out.close();
-                _out = null;
-            }
-            if(_in!=null){
-                _in.close();
-                _in = null;
-            }
-            if(_socket!= null){
-                _socket.close();
-                _socket = null;
+            if (!_resuse_socket) {
+                if (_out != null) {
+                    _out.close();
+                    _out = null;
+                }
+                if (_in != null) {
+                    _in.close();
+                    _in = null;
+                }
+                if (_socket != null) {
+                    _socket.close();
+                    _socket = null;
+                }
             }
         } catch (IOException ignored) {
         }
@@ -172,7 +193,7 @@ class yHTTPRequest implements Runnable{
     void _requestReset() throws YAPI_Exception
     {
         _requestStop();
-        _requestStart(_firstLine,_rest_of_request);
+        _requestStart(_firstLine,_rest_of_request,_context,_resultCallback);
     }
 
 
@@ -196,12 +217,13 @@ class yHTTPRequest implements Runnable{
                     continue;   
                 }
                 long timeout = now.getTime()-_lastReceiveDate.getTime();
-                throw new YAPI_Exception(YAPI.TIMEOUT,String.format("Hub did not send data durring %d seconds",timeout/1000));
+                throw new YAPI_Exception(YAPI.TIMEOUT,String.format("Hub did not send data during %d seconds",timeout/1000));
             } catch (IOException e) {
                 throw new YAPI_Exception(YAPI.IO_ERROR,e.getLocalizedMessage());
             }
             if(read<0){
                 // end of connection
+                _resuse_socket = false;
                 _eof=true;
             }else if(read>0){
                 _lastReceiveDate= new Date();
@@ -219,16 +241,18 @@ class yHTTPRequest implements Runnable{
                             }
                             _header_found = true;
                             _header.setLength(pos);
-                            if ( _header.indexOf("OK\r\n")!=0 ) {
+                            if (_header.indexOf("0K\r\n")==0) {
+                                _resuse_socket = true;
+                            }else if (_header.indexOf("OK\r\n")!=0) {
                                 int lpos = _header.indexOf("\r\n");
-                                if(_header.indexOf("HTTP/1.1 ")!=0)
-                                    throw new YAPI_Exception(YAPI.IO_ERROR,"Invalid HTTP response header");
+                                if (_header.indexOf("HTTP/1.1 ") != 0)
+                                    throw new YAPI_Exception(YAPI.IO_ERROR, "Invalid HTTP response header");
 
                                 String parts[] = _header.substring(9, lpos).split(" ");
-                                if(parts[0].equals("401")){
-                                    if(!_hub.needRetryWithAuth()) {
+                                if (parts[0].equals("401")) {
+                                    if (!_hub.needRetryWithAuth()) {
                                         // No credential provided, give up immediately
-                                        throw new YAPI_Exception(YAPI.UNAUTHORIZED,"Authentication required");
+                                        throw new YAPI_Exception(YAPI.UNAUTHORIZED, "Authentication required");
                                     } else {
                                         _hub.parseWWWAuthenticate(_header.toString());
                                         _requestReset();
@@ -236,16 +260,20 @@ class yHTTPRequest implements Runnable{
                                     }
 
                                 }
-                                if(!parts[0].equals("200") && !parts[0].equals("304")){
-                                    throw new YAPI_Exception(YAPI.IO_ERROR,"Received HTTP status "+parts[0]+" ("+parts[1]+")");
+                                if (!parts[0].equals("200") && !parts[0].equals("304")) {
+                                    throw new YAPI_Exception(YAPI.IO_ERROR, "Received HTTP status " + parts[0] + " (" + parts[1] + ")");
                                 }
                             }
                             _hub.authSucceded();
                         }
-                    }else {
+                    } else{
                         _result.write(buffer, 0, read);
                     }
-
+                    if (_resuse_socket) {
+                        if (_result.toString().endsWith("\r\n")) {
+                            _eof = true;
+                        }
+                    }
                 }
             }
         }while(retry);
@@ -278,7 +306,7 @@ class yHTTPRequest implements Runnable{
         byte[] res;
         _requestReserve();
         try {
-            _requestStart(req_first_line, req_head_and_body);
+            _requestStart(req_first_line, req_head_and_body,null,null);
             int read;
             do {
                 read = _requestProcesss();
@@ -304,24 +332,32 @@ class yHTTPRequest implements Runnable{
     @Override
     public void run()
     {
+        byte[] res = null;
         try {
             _requestProcesss();
             int read;
             do {
                 read = _requestProcesss();
             } while (read >= 0);
+            synchronized (_result) {
+                res = _result.toByteArray();
+                _result.reset();            
+            }
         } catch (YAPI_Exception ignored) {
         }
         _requestStop();
-        _requestRelease();
+        if (_resultCallback!=null){
+            _resultCallback.RequestAsyncDone(_context, res);
+        }
+        _requestRelease();        
     }
 
 
-    void RequestAsync(String req_first_line, byte[] req_head_and_body) throws YAPI_Exception
+    void RequestAsync(String req_first_line, byte[] req_head_and_body,YGenericHub.RequestAsyncResult callback, Object context) throws YAPI_Exception
     {
         _requestReserve();
         try {
-           _requestStart(req_first_line,req_head_and_body);
+           _requestStart(req_first_line,req_head_and_body, context, callback);
            Thread t = new Thread(this);
            t.setName(_dbglabel);
            t.start();
@@ -344,6 +380,9 @@ class yHTTPRequest implements Runnable{
         }
         if(_state == State.IN_REQUEST)
             SafeYAPI()._Log("WARNING: Last Http request did not finished");
+        // ensure that we close all socket
+        _resuse_socket = false;
+        _requestStop();
         _state   = State.STOPED;
     }
 

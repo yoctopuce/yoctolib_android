@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: pic24config.php 15411 2014-03-13 12:08:37Z mvuilleu $
+ * $Id: YPwmPowerSource.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindPwmPowerSource(), the high-level API for PwmPowerSource functions
  *
@@ -122,7 +122,7 @@ public class YPwmPowerSource extends YFunction
      * YPwmPowerSource.POWERMODE_EXT_V and YPwmPowerSource.POWERMODE_OPNDRN corresponding to the selected
      * power source for the PWM on the same device
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int get_powerMode() throws YAPI_Exception
     {
@@ -140,7 +140,7 @@ public class YPwmPowerSource extends YFunction
      * @return a value among Y_POWERMODE_USB_5V, Y_POWERMODE_USB_3V, Y_POWERMODE_EXT_V and
      * Y_POWERMODE_OPNDRN corresponding to the selected power source for the PWM on the same device
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int getPowerMode() throws YAPI_Exception
 
@@ -160,7 +160,7 @@ public class YPwmPowerSource extends YFunction
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_powerMode(int  newval)  throws YAPI_Exception
     {
@@ -184,7 +184,7 @@ public class YPwmPowerSource extends YFunction
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setPowerMode(int newval)  throws YAPI_Exception
 
@@ -233,7 +233,7 @@ public class YPwmPowerSource extends YFunction
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {

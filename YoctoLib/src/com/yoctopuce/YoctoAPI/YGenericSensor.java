@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGenericSensor.java 15407 2014-03-12 19:34:44Z mvuilleu $
+ * $Id: YGenericSensor.java 15999 2014-05-01 08:28:57Z seb $
  *
  * Implements yFindGenericSensor(), the high-level API for GenericSensor functions
  *
@@ -144,7 +144,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_unit(String  newval)  throws YAPI_Exception
     {
@@ -163,7 +163,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setUnit(String newval)  throws YAPI_Exception
 
@@ -174,7 +174,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return a floating point number corresponding to the measured value of the electrical signal used by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double get_signalValue() throws YAPI_Exception
     {
@@ -191,7 +191,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return a floating point number corresponding to the measured value of the electrical signal used by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public double getSignalValue() throws YAPI_Exception
 
@@ -202,7 +202,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return a string corresponding to the measuring unit of the electrical signal used by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_signalUnit() throws YAPI_Exception
     {
@@ -219,7 +219,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return a string corresponding to the measuring unit of the electrical signal used by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getSignalUnit() throws YAPI_Exception
 
@@ -230,7 +230,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return a string corresponding to the electric signal range used by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_signalRange() throws YAPI_Exception
     {
@@ -247,7 +247,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return a string corresponding to the electric signal range used by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getSignalRange() throws YAPI_Exception
 
@@ -260,7 +260,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_signalRange(String  newval)  throws YAPI_Exception
     {
@@ -277,7 +277,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setSignalRange(String newval)  throws YAPI_Exception
 
@@ -288,7 +288,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return a string corresponding to the physical value range measured by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String get_valueRange() throws YAPI_Exception
     {
@@ -305,7 +305,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return a string corresponding to the physical value range measured by the sensor
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public String getValueRange() throws YAPI_Exception
 
@@ -319,7 +319,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int set_valueRange(String  newval)  throws YAPI_Exception
     {
@@ -337,7 +337,7 @@ public class YGenericSensor extends YSensor
      * 
      * @return YAPI_SUCCESS if the call succeeds.
      * 
-     * @throws YAPI_Exception
+     * @throws YAPI_Exception on error
      */
     public int setValueRange(String newval)  throws YAPI_Exception
 
@@ -386,7 +386,7 @@ public class YGenericSensor extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -427,7 +427,7 @@ public class YGenericSensor extends YSensor
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * @noreturn
+     * 
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {

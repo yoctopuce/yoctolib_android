@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: WPEntry.java 15245 2014-03-05 15:35:06Z seb $
+ * $Id: WPEntry.java 15487 2014-03-19 10:17:22Z seb $
  *
  * White page implementation
  *
@@ -84,7 +84,6 @@ class WPEntry {
         _networkUrl = netUrl;
         _index = index;
         _isValid = false;
-
     }
 
     public boolean isValid()
