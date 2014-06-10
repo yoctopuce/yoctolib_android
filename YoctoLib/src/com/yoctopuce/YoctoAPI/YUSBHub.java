@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 15825 2014-04-16 17:11:32Z seb $
+ * $Id: YUSBHub.java 16480 2014-06-10 08:28:21Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -249,6 +249,10 @@ class YUSBHub extends YGenericHub
         String serial = device.getSerialNumber();
         if(!_devsFromSerial.containsKey(serial))
             throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Device has been unpluged");
+        int i = req_first_line.lastIndexOf("&.");
+        if (i >=0) {
+            req_first_line = req_first_line.substring(0,i);
+        }
         YUSBDevice d=_devsFromSerial.get(serial);
         d.sendRequestAsync(req_first_line, req_head_and_body, asyncResult, asyncContext);
     }

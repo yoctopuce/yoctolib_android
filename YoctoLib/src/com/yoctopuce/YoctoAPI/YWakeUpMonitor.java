@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWakeUpMonitor.java 15999 2014-05-01 08:28:57Z seb $
+ * $Id: YWakeUpMonitor.java 16424 2014-06-04 14:26:41Z seb $
  *
  * Implements yFindWakeUpMonitor(), the high-level API for WakeUpMonitor functions
  *
@@ -551,7 +551,7 @@ public class YWakeUpMonitor extends YFunction
      * RTC time must have been set before calling this function. The count down before sleep
      * can be canceled with resetSleepCountDown.
      * 
-     * @param secUntilWakeUp : sleep duration, in secondes
+     * @param secUntilWakeUp : number of seconds before next wake up
      * @param secBeforeSleep : number of seconds before going into sleep mode
      * 
      * @return YAPI.SUCCESS if the call succeeds.

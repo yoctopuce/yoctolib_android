@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDisplay.java 15999 2014-05-01 08:28:57Z seb $
+ * $Id: YDisplay.java 16340 2014-05-30 10:41:54Z seb $
  *
  * Implements yFindDisplay(), the high-level API for Display functions
  *
@@ -731,6 +731,8 @@ public class YDisplay extends YFunction
 
     /**
      * Clears the display screen and resets all display layers to their default state.
+     * Using this function in a sequence will kill the sequence play-back. Don't use that
+     * function to reset the display at sequence start-up.
      * 
      * @return YAPI.SUCCESS if the call succeeds.
      * 
