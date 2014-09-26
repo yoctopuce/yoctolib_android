@@ -21,7 +21,24 @@ public class ExampleListFragment extends ListFragment {
         super.onCreate(savedInstanceState);
         mExampleList = new ArrayList<Example>();
         mExampleList.add(new Example("Hub Detected", HubListActivity.class,false));
+        mExampleList.add(new Example("Prog-EventBased", ProgEventBasedActivity.class,false));
+        mExampleList.add(new Example("Prog-MODBUS", ProgModbus.class,false));
         /** generated start */
+        /** generated GettingStarted_Yocto_WatchdogDC start */
+        mExampleList.add(new Example("Yocto-WatchdogDC", GettingStarted_Yocto_WatchdogDC.class,false));
+        /** generated GettingStarted_Yocto_WatchdogDC stop */   
+        /** generated GettingStarted_Yocto_PWM_Rx start */
+        mExampleList.add(new Example("Yocto-PWM-Rx", GettingStarted_Yocto_PWM_Rx.class,false));
+        /** generated GettingStarted_Yocto_PWM_Rx stop */   
+        /** generated GettingStarted_Yocto_milliVolt_Rx_BNC start */
+        mExampleList.add(new Example("Yocto-milliVolt-Rx-BNC", GettingStarted_Yocto_milliVolt_Rx_BNC.class,false));
+        /** generated GettingStarted_Yocto_milliVolt_Rx_BNC stop */   
+        /** generated GettingStarted_Yocto_milliVolt_Rx start */
+        mExampleList.add(new Example("Yocto-milliVolt-Rx", GettingStarted_Yocto_milliVolt_Rx.class,false));
+        /** generated GettingStarted_Yocto_milliVolt_Rx stop */   
+        /** generated GettingStarted_Yocto_Motor_DC start */
+        mExampleList.add(new Example("Yocto-Motor-DC", GettingStarted_Yocto_Motor_DC.class,false));
+        /** generated GettingStarted_Yocto_Motor_DC stop */   
         /** generated GettingStarted_Yocto_Altimeter start */
         mExampleList.add(new Example("Yocto-Altimeter", GettingStarted_Yocto_Altimeter.class,false));
         /** generated GettingStarted_Yocto_Altimeter stop */   

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 16480 2014-06-10 08:28:21Z seb $
+ * $Id: YUSBHub.java 17834 2014-09-26 06:54:36Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -103,7 +103,7 @@ class YUSBHub extends YGenericHub
 
 	YUSBHub(int idx) throws YAPI_Exception
 	{
-		super(idx);
+		super(idx, true);
 		_manager = (UsbManager) _appContext.getSystemService(Context.USB_SERVICE);
 		if (_manager == null) {
 			throw new YAPI_Exception(YAPI.IO_ERROR, "Unable to get Android USB manager");
@@ -242,6 +242,12 @@ class YUSBHub extends YGenericHub
 		}
         updateFromWpAndYp(whitePages, yellowPages);
 	}
+
+    @Override
+    java.util.ArrayList<String> firmwareUpdate(String serial, YFirmwareFile firmware, byte[] settings, UpdateProgress progress) throws YAPI_Exception
+    {
+        throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Firmware update over USB is not yet supported");
+    }
 
     @Override
     void devRequestAsync(YDevice device, String req_first_line, byte[] req_head_and_body, RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception

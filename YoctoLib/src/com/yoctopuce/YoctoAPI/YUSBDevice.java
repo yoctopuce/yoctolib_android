@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBDevice.java 16128 2014-05-09 09:18:06Z seb $
+ * $Id: YUSBDevice.java 17030 2014-07-28 15:05:44Z seb $
  *
  * YUSBDevice Class: 
  *
@@ -228,7 +228,38 @@ public class YUSBDevice
     }
 
 
-
+    public void handleTimedNotificationV2(byte[] data) throws YAPI_Exception {
+        int pos = 0;
+        String serial = getSerial();
+        YDevice ydev = SafeYAPI().getDevice(serial);
+        if (ydev==null) {
+            // device has not been registered;
+            return;
+        }
+        while (pos < data.length) {
+            int funYdx = data[pos] & 0xf;
+            int extralen = (data[pos] >> 4);
+            int len = extralen + 1;
+            pos++; // consume generic header
+            if (funYdx == 0xf) {
+                Integer[] intData = new Integer[len];
+                for (int i = 0; i < len; i++) {
+                    intData[i] = data[pos + i] & 0xff;
+                }
+                ydev.setDeviceTime(intData);
+            } else {
+                YPEntry yp = getYPEntryFromYdx(getSerial(), funYdx);
+                ArrayList<Integer> report = new ArrayList<Integer>(len + 1);
+                report.add(2);
+                for (int i = 0; i < len; i++) {
+                    int b = data[pos + i] & 0xff;
+                    report.add(b);
+                }
+                SafeYAPI().setTimedReport(yp.getHardwareId(), ydev.getDeviceTime(), report);
+            }
+            pos += len;
+        }
+    }
 
 
     /*
@@ -279,7 +310,7 @@ public class YUSBDevice
                             synchronized (_req_result) {
                                 _req_result.write(s.getDataAsByteArray());
                                 if (_asyncResult != null) {
-                                    _asyncResult.RequestAsyncDone(_asyncContext,_req_result.toByteArray());
+                                    _asyncResult.RequestAsyncDone(_asyncContext,_req_result.toByteArray(),YAPI.SUCCESS,null);
                                 }
                             }
                             remoteClose();
@@ -290,6 +321,11 @@ public class YUSBDevice
                     case YPktStreamHead.YSTREAM_REPORT:
                         if (checkDeviceState(true, newpkt)){
                             handleTimedNotification(s.getDataAsByteArray());
+                        }
+                        break;
+                    case YPktStreamHead.YSTREAM_REPORT_V2:
+                        if (checkDeviceState(true, newpkt)){
+                            handleTimedNotificationV2(s.getDataAsByteArray());
                         }
                         break;
                     default:

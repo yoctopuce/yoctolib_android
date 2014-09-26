@@ -41,13 +41,14 @@ package com.yoctopuce.YoctoAPI;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 public class YCallbackHub extends YGenericHub
 {
 
     public YCallbackHub(int idx, HTTPParams parsedurl, InputStream request, OutputStream response) throws YAPI_Exception
     {
-        super(idx);
+        super(idx, true);
         throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "HTTP Callback mode is not supported on Android Platform");
     }
 
@@ -66,6 +67,14 @@ public class YCallbackHub extends YGenericHub
     {
         throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "HTTP Callback mode is not supported on Android Platform");
     }
+
+    @Override
+    ArrayList<String> firmwareUpdate(String serial, YFirmwareFile firmware, byte[] settings, UpdateProgress progress) throws YAPI_Exception, InterruptedException
+    {
+        throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Firmware update is not supported in HTTP callback");
+    }
+
+
 
     @Override
     void devRequestAsync(YDevice device, String req_first_line, byte[] req_head_and_body, RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception

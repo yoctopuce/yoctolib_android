@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YOldDataStream.java 15488 2014-03-19 10:18:09Z seb $
+ * $Id: YOldDataStream.java 17843 2014-09-26 08:09:00Z seb $
  *
  * YDataStream Class: Sequence of measured data, stored by the data logger
  *
@@ -76,12 +76,7 @@ public class YOldDataStream extends YDataStream
         _avgVal = DATA_INVALID;
         _maxVal = DATA_INVALID;
     }
-    
-    /**
-     * Internal function to preload all values into object
-     * @return
-     * @throws YAPI_Exception
-     */
+        
     public int loadStream() throws YAPI_Exception
     {
         JSONArray coldiv = null;
@@ -182,7 +177,7 @@ public class YOldDataStream extends YDataStream
             try {
                 String data = jsonObj.getString("data");
                 udata = YAPI._decodeWords(data);
-            } catch (JSONException ex) {
+            } catch (JSONException ignore) {
             }
 
             if (udata == null) {

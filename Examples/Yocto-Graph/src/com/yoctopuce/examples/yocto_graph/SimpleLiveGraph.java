@@ -30,6 +30,7 @@ public class SimpleLiveGraph
 	{
 		_serie = new TimeSeries(name);
         _serieRenderer = new XYSeriesRenderer();
+        _serieRenderer.setLineWidth(3);
 		// Add single dataset to multiple dataset
         _multipleDataset = new XYMultipleSeriesDataset();
         _multipleDataset.addSeries(_serie);

@@ -34,7 +34,66 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
+        <activity
+            android:name=".ProgEventBasedActivity"
+            android:label="Prog-EventBased">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <activity
+            android:name=".ProgModbus"
+            android:label="Prog-MODBUS">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_WatchdogDC start -->
+        <activity
+            android:name=".GettingStarted_Yocto_WatchdogDC"
+            android:label="Yocto-WatchdogDC" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_WatchdogDC stop -->   
+        <!-- generated GettingStarted_Yocto_PWM_Rx start -->
+        <activity
+            android:name=".GettingStarted_Yocto_PWM_Rx"
+            android:label="Yocto-PWM-Rx" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_PWM_Rx stop -->   
+        <!-- generated GettingStarted_Yocto_milliVolt_Rx_BNC start -->
+        <activity
+            android:name=".GettingStarted_Yocto_milliVolt_Rx_BNC"
+            android:label="Yocto-milliVolt-Rx-BNC" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_milliVolt_Rx_BNC stop -->   
+        <!-- generated GettingStarted_Yocto_milliVolt_Rx start -->
+        <activity
+            android:name=".GettingStarted_Yocto_milliVolt_Rx"
+            android:label="Yocto-milliVolt-Rx" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_milliVolt_Rx stop -->   
+        <!-- generated GettingStarted_Yocto_Motor_DC start -->
+        <activity
+            android:name=".GettingStarted_Yocto_Motor_DC"
+            android:label="Yocto-Motor-DC" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_Motor_DC stop -->   
         <!-- generated GettingStarted_Yocto_Altimeter start -->
         <activity
             android:name=".GettingStarted_Yocto_Altimeter"

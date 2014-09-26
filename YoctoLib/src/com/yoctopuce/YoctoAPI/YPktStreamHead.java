@@ -8,20 +8,21 @@ import java.util.Arrays;
 */
 class YPktStreamHead
 {
-    protected static final int USB_PKT_STREAM_HEAD=2;
+    protected static final int USB_PKT_STREAM_HEAD = 2;
     // pkt type definitions
-    protected static final int YPKT_STREAM=0;
-    protected static final int YPKT_CONF=1;
+    protected static final int YPKT_STREAM = 0;
+    protected static final int YPKT_CONF = 1;
     // pkt config type
-    protected static final int USB_CONF_RESET=0;
-    protected static final int USB_CONF_START=1;
+    protected static final int USB_CONF_RESET = 0;
+    protected static final int USB_CONF_START = 1;
     // stream type
-    protected static final int YSTREAM_EMPTY=0;
-    protected static final int YSTREAM_TCP=1;
-    protected static final int YSTREAM_TCP_CLOSE=2;
-    protected static final int YSTREAM_NOTICE=3;
-    protected static final int YSTREAM_REPORT=4;
-    protected static final int YSTREAM_META=5;
+    protected static final int YSTREAM_EMPTY = 0;
+    protected static final int YSTREAM_TCP = 1;
+    protected static final int YSTREAM_TCP_CLOSE = 2;
+    protected static final int YSTREAM_NOTICE = 3;
+    protected static final int YSTREAM_REPORT = 4;
+    protected static final int YSTREAM_META = 5;
+    protected static final int YSTREAM_REPORT_V2 = 6;
 
     private int  _pktNumber;
     private int  _streamType;
@@ -122,6 +123,9 @@ class YPktStreamHead
             case YSTREAM_META:
                 stream="META";
                 break;
+            case YSTREAM_REPORT_V2:
+                stream="REPORT_V2";
+                break;
             default:
                 stream = "INVALID!";
                 break;
@@ -150,7 +154,7 @@ class YPktStreamHead
         if (dataLen > pkt.remaining()){
             throw new YAPI_Exception(YAPI.IO_ERROR,String.format("invalid ystream header (invalid length %d>%d)",dataLen,pkt.remaining()));
         }
-        return  new YPktStreamHead(pktNumber, pktType, streamType, pkt, dataLen);
+        return new YPktStreamHead(pktNumber, pktType, streamType, pkt, dataLen);
     }
 
 

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBRawDevice.java 14271 2014-01-09 10:03:04Z seb $
+ * $Id: YUSBRawDevice.java 16575 2014-06-16 07:08:33Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -223,6 +223,7 @@ public class YUSBRawDevice implements Runnable {
             try {
                 _yUsbDevice.checkMetaUTC();
             } catch (YAPI_Exception e) {
+                nbSuccessiveError++;
                 _yUsbDevice.ioError(e.getMessage());
             }
 

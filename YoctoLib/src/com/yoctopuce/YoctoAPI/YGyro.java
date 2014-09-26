@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGyro.java 15999 2014-05-01 08:28:57Z seb $
+ * $Id: YGyro.java 17569 2014-09-10 08:16:24Z seb $
  *
  * Implements yFindGyro(), the high-level API for Gyro functions
  *
@@ -47,10 +47,11 @@ import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 //--- (generated code: YGyro class start)
 /**
  * YGyro Class: Gyroscope function interface
- * 
+ *
  * The Yoctopuce application programming interface allows you to read an instant
  * measure of the sensor, as well as the minimal and maximal values observed.
  */
+ @SuppressWarnings("UnusedDeclaration")
 public class YGyro extends YSensor
 {
 //--- (end of generated code: YGyro class start)
@@ -117,7 +118,7 @@ public class YGyro extends YSensor
      */
     public interface UpdateCallback {
         /**
-         * 
+         *
          * @param function      : the function object of which the value has changed
          * @param functionValue : the character string describing the new advertised value
          */
@@ -129,7 +130,7 @@ public class YGyro extends YSensor
      */
     public interface TimedReportCallback {
         /**
-         * 
+         *
          * @param function : the function object of which the value has changed
          * @param measure  : measure
          */
@@ -155,28 +156,28 @@ public class YGyro extends YSensor
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {
         if (json_val.has("xValue")) {
-            _xValue =  json_val.getDouble("xValue")/65536.0;
+            _xValue =  Math.round(json_val.getDouble("xValue") * 1000.0 / 65536.0) / 1000.0;
         }
         if (json_val.has("yValue")) {
-            _yValue =  json_val.getDouble("yValue")/65536.0;
+            _yValue =  Math.round(json_val.getDouble("yValue") * 1000.0 / 65536.0) / 1000.0;
         }
         if (json_val.has("zValue")) {
-            _zValue =  json_val.getDouble("zValue")/65536.0;
+            _zValue =  Math.round(json_val.getDouble("zValue") * 1000.0 / 65536.0) / 1000.0;
         }
         super._parseAttr(json_val);
     }
 
     /**
      * Returns the angular velocity around the X axis of the device, as a floating point number.
-     * 
-     * @return a floating point number corresponding to the angular velocity around the X axis of the
+     *
+     *  @return a floating point number corresponding to the angular velocity around the X axis of the
      * device, as a floating point number
-     * 
+     *
      * @throws YAPI_Exception on error
      */
     public double get_xValue() throws YAPI_Exception
     {
-        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return XVALUE_INVALID;
             }
@@ -186,10 +187,10 @@ public class YGyro extends YSensor
 
     /**
      * Returns the angular velocity around the X axis of the device, as a floating point number.
-     * 
-     * @return a floating point number corresponding to the angular velocity around the X axis of the
+     *
+     *  @return a floating point number corresponding to the angular velocity around the X axis of the
      * device, as a floating point number
-     * 
+     *
      * @throws YAPI_Exception on error
      */
     public double getXValue() throws YAPI_Exception
@@ -198,15 +199,15 @@ public class YGyro extends YSensor
 
     /**
      * Returns the angular velocity around the Y axis of the device, as a floating point number.
-     * 
-     * @return a floating point number corresponding to the angular velocity around the Y axis of the
+     *
+     *  @return a floating point number corresponding to the angular velocity around the Y axis of the
      * device, as a floating point number
-     * 
+     *
      * @throws YAPI_Exception on error
      */
     public double get_yValue() throws YAPI_Exception
     {
-        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return YVALUE_INVALID;
             }
@@ -216,10 +217,10 @@ public class YGyro extends YSensor
 
     /**
      * Returns the angular velocity around the Y axis of the device, as a floating point number.
-     * 
-     * @return a floating point number corresponding to the angular velocity around the Y axis of the
+     *
+     *  @return a floating point number corresponding to the angular velocity around the Y axis of the
      * device, as a floating point number
-     * 
+     *
      * @throws YAPI_Exception on error
      */
     public double getYValue() throws YAPI_Exception
@@ -228,15 +229,15 @@ public class YGyro extends YSensor
 
     /**
      * Returns the angular velocity around the Z axis of the device, as a floating point number.
-     * 
-     * @return a floating point number corresponding to the angular velocity around the Z axis of the
+     *
+     *  @return a floating point number corresponding to the angular velocity around the Z axis of the
      * device, as a floating point number
-     * 
+     *
      * @throws YAPI_Exception on error
      */
     public double get_zValue() throws YAPI_Exception
     {
-        if (_cacheExpiration <= SafeYAPI().GetTickCount()) {
+        if (_cacheExpiration <= YAPI.GetTickCount()) {
             if (load(YAPI.SafeYAPI().DefaultCacheValidity) != YAPI.SUCCESS) {
                 return ZVALUE_INVALID;
             }
@@ -246,10 +247,10 @@ public class YGyro extends YSensor
 
     /**
      * Returns the angular velocity around the Z axis of the device, as a floating point number.
-     * 
-     * @return a floating point number corresponding to the angular velocity around the Z axis of the
+     *
+     *  @return a floating point number corresponding to the angular velocity around the Z axis of the
      * device, as a floating point number
-     * 
+     *
      * @throws YAPI_Exception on error
      */
     public double getZValue() throws YAPI_Exception
@@ -266,7 +267,7 @@ public class YGyro extends YSensor
      * <li>ModuleLogicalName.FunctionIdentifier</li>
      * <li>ModuleLogicalName.FunctionLogicalName</li>
      * </ul>
-     * 
+     *
      * This function does not require that the gyroscope is online at the time
      * it is invoked. The returned object is nevertheless valid.
      * Use the method YGyro.isOnline() to test if the gyroscope is
@@ -274,9 +275,9 @@ public class YGyro extends YSensor
      * a gyroscope by logical name, no error is notified: the first instance
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
-     * 
+     *
      * @param func : a string that uniquely characterizes the gyroscope
-     * 
+     *
      * @return a YGyro object allowing you to drive the gyroscope.
      */
     public static YGyro FindGyro(String func)
@@ -295,11 +296,11 @@ public class YGyro extends YSensor
      * The callback is invoked only during the execution of ySleep or yHandleEvents.
      * This provides control over the time when the callback is triggered. For good responsiveness, remember to call
      * one of these two functions periodically. To unregister a callback, pass a null pointer as argument.
-     * 
+     *
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and the character string describing
      *         the new advertised value.
-     * 
+     *
      */
     public int registerValueCallback(UpdateCallback callback)
     {
@@ -336,11 +337,11 @@ public class YGyro extends YSensor
      * The callback is invoked only during the execution of ySleep or yHandleEvents.
      * This provides control over the time when the callback is triggered. For good responsiveness, remember to call
      * one of these two functions periodically. To unregister a callback, pass a null pointer as argument.
-     * 
+     *
      * @param callback : the callback function to call, or a null pointer. The callback function should take two
      *         arguments: the function object of which the value has changed, and an YMeasure object describing
      *         the new advertised value.
-     * 
+     *
      */
     public int registerTimedReportCallback(TimedReportCallback callback)
     {
@@ -366,10 +367,10 @@ public class YGyro extends YSensor
 
     public int _loadQuaternion() throws YAPI_Exception
     {
-        int now_stamp = 0;
-        int age_ms = 0;
+        int now_stamp;
+        int age_ms;
         
-        now_stamp = (int) ((SafeYAPI().GetTickCount()) & (0x7FFFFFFF));
+        now_stamp = (int) ((YAPI.GetTickCount()) & (0x7FFFFFFF));
         age_ms = (((now_stamp - _qt_stamp)) & (0x7FFFFFFF));
         if ((age_ms >= 10) || (_qt_stamp == 0)) {
             if (load(10) != YAPI.SUCCESS) {
@@ -404,12 +405,12 @@ public class YGyro extends YSensor
 
     public int _loadAngles() throws YAPI_Exception
     {
-        double sqw = 0;
-        double sqx = 0;
-        double sqy = 0;
-        double sqz = 0;
-        double norm = 0;
-        double delta = 0;
+        double sqw;
+        double sqx;
+        double sqy;
+        double sqz;
+        double norm;
+        double delta;
         // may throw an exception
         if (_loadQuaternion() != YAPI.SUCCESS) {
             return YAPI.DEVICE_NOT_FOUND;
@@ -423,15 +424,15 @@ public class YGyro extends YSensor
             delta = _y * _w - _x * _z;
             if (delta > 0.499 * norm) {
                 _pitch = 90.0;
-                _head  = Math.round(2.0 * 1800.0/java.lang.Math.PI * java.lang.Math.atan2(_x,_w)) / 10.0;
+                _head  = (double)Math.round(2.0 * 1800.0/java.lang.Math.PI * java.lang.Math.atan2(_x,_w)) / 10.0;
             } else {
                 if (delta < -0.499 * norm) {
                     _pitch = -90.0;
-                    _head  = Math.round(-2.0 * 1800.0/java.lang.Math.PI * java.lang.Math.atan2(_x,_w)) / 10.0;
+                    _head  = (double)Math.round(-2.0 * 1800.0/java.lang.Math.PI * java.lang.Math.atan2(_x,_w)) / 10.0;
                 } else {
-                    _roll  = Math.round(1800.0/java.lang.Math.PI * java.lang.Math.atan2(2.0 * (_w * _x + _y * _z),sqw - sqx - sqy + sqz)) / 10.0;
-                    _pitch = Math.round(1800.0/java.lang.Math.PI * java.lang.Math.asin(2.0 * delta / norm)) / 10.0;
-                    _head  = Math.round(1800.0/java.lang.Math.PI * java.lang.Math.atan2(2.0 * (_x * _y + _z * _w),sqw + sqx - sqy - sqz)) / 10.0;
+                    _roll  = (double)Math.round(1800.0/java.lang.Math.PI * java.lang.Math.atan2(2.0 * (_w * _x + _y * _z),sqw - sqx - sqy + sqz)) / 10.0;
+                    _pitch = (double)Math.round(1800.0/java.lang.Math.PI * java.lang.Math.asin(2.0 * delta / norm)) / 10.0;
+                    _head  = (double)Math.round(1800.0/java.lang.Math.PI * java.lang.Math.atan2(2.0 * (_x * _y + _z * _w),sqw + sqx - sqy - sqz)) / 10.0;
                 }
             }
             _angles_stamp = _qt_stamp;
@@ -446,7 +447,7 @@ public class YGyro extends YSensor
      * The axis corresponding to the roll angle can be mapped to any
      * of the device X, Y or Z physical directions using methods of
      * the class YRefFrame.
-     * 
+     *
      * @return a floating-point number corresponding to roll angle
      *         in degrees, between -180 and +180.
      */
@@ -463,7 +464,7 @@ public class YGyro extends YSensor
      * The axis corresponding to the pitch angle can be mapped to any
      * of the device X, Y or Z physical directions using methods of
      * the class YRefFrame.
-     * 
+     *
      * @return a floating-point number corresponding to pitch angle
      *         in degrees, between -90 and +90.
      */
@@ -480,7 +481,7 @@ public class YGyro extends YSensor
      * The axis corresponding to the heading can be mapped to any
      * of the device X, Y or Z physical directions using methods of
      * the class YRefFrame.
-     * 
+     *
      * @return a floating-point number corresponding to heading
      *         in degrees, between 0 and 360.
      */
@@ -495,7 +496,7 @@ public class YGyro extends YSensor
      * describing the device estimated orientation, based on the
      * integration of gyroscopic measures combined with acceleration and
      * magnetic field measurements.
-     * 
+     *
      * @return a floating-point number corresponding to the w
      *         component of the quaternion.
      */
@@ -511,7 +512,7 @@ public class YGyro extends YSensor
      * integration of gyroscopic measures combined with acceleration and
      * magnetic field measurements. The x component is
      * mostly correlated with rotations on the roll axis.
-     * 
+     *
      * @return a floating-point number corresponding to the x
      *         component of the quaternion.
      */
@@ -526,7 +527,7 @@ public class YGyro extends YSensor
      * integration of gyroscopic measures combined with acceleration and
      * magnetic field measurements. The y component is
      * mostly correlated with rotations on the pitch axis.
-     * 
+     *
      * @return a floating-point number corresponding to the y
      *         component of the quaternion.
      */
@@ -541,7 +542,7 @@ public class YGyro extends YSensor
      * integration of gyroscopic measures combined with acceleration and
      * magnetic field measurements. The x component is
      * mostly correlated with changes of heading.
-     * 
+     *
      * @return a floating-point number corresponding to the z
      *         component of the quaternion.
      */
@@ -557,13 +558,13 @@ public class YGyro extends YSensor
      * This provides control over the time when the callback is triggered.
      * For good responsiveness, remember to call one of these two functions periodically.
      * To unregister a callback, pass a null pointer as argument.
-     * 
+     *
      * @param callback : the callback function to invoke, or a null pointer.
      *         The callback function should take five arguments:
      *         the YGyro object of the turning device, and the floating
      *         point values of the four components w, x, y and z
      *         (as floating-point numbers).
-     * 
+     *
      */
     public int registerQuaternionCallback(YQuatCallback callback) throws YAPI_Exception
     {
@@ -598,13 +599,13 @@ public class YGyro extends YSensor
      * This provides control over the time when the callback is triggered.
      * For good responsiveness, remember to call one of these two functions periodically.
      * To unregister a callback, pass a null pointer as argument.
-     * 
+     *
      * @param callback : the callback function to invoke, or a null pointer.
      *         The callback function should take four arguments:
      *         the YGyro object of the turning device, and the floating
      *         point values of the three angles roll, pitch and heading
      *         in degrees (as floating-point numbers).
-     * 
+     *
      */
     public int registerAnglesCallback(YAnglesCallback callback) throws YAPI_Exception
     {
@@ -651,7 +652,7 @@ public class YGyro extends YSensor
         if (qtIndex < 4) {
             return 0;
         }
-        _qt_stamp = (int) ((SafeYAPI().GetTickCount()) & (0x7FFFFFFF));
+        _qt_stamp = (int) ((YAPI.GetTickCount()) & (0x7FFFFFFF));
         if (_quatCallback != null) {
             _quatCallback.yQuaternionCallback(this, _w, _x, _y, _z);
         }
@@ -664,7 +665,7 @@ public class YGyro extends YSensor
 
     /**
      * Continues the enumeration of gyroscopes started using yFirstGyro().
-     * 
+     *
      * @return a pointer to a YGyro object, corresponding to
      *         a gyroscope currently online, or a null pointer
      *         if there are no more gyroscopes to enumerate.
@@ -686,7 +687,7 @@ public class YGyro extends YSensor
      * Starts the enumeration of gyroscopes currently accessible.
      * Use the method YGyro.nextGyro() to iterate on
      * next gyroscopes.
-     * 
+     *
      * @return a pointer to a YGyro object, corresponding to
      *         the first gyro currently online, or a null pointer
      *         if there are none.

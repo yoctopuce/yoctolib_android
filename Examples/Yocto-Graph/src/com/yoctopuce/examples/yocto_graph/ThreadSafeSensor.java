@@ -117,7 +117,7 @@ public class ThreadSafeSensor {
         }
         _measures.add(measure);
         double roundvalue = measure.get_averageValue() * _iresol;
-        _lastValue = Math.round(roundvalue) / _iresol;
+        _lastValue = (double) Math.round(roundvalue) / _iresol;
     }
 
     @Override
