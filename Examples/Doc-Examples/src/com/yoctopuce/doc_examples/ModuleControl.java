@@ -2,7 +2,6 @@ package com.yoctopuce.doc_examples;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -79,7 +78,6 @@ public class ModuleControl extends Activity implements OnItemSelectedListener
             field = (TextView) findViewById(R.id.usbcurrentfield);
             field.setText(module.getUsbCurrent() + " mA");
             Switch sw = (Switch) findViewById(R.id.beaconswitch);
-            Log.d("switch", "beacon" + module.get_beacon());
             sw.setChecked(module.getBeacon() == YModule.BEACON_ON);
             field = (TextView) findViewById(R.id.logs);
             field.setText(module.get_lastLogs());

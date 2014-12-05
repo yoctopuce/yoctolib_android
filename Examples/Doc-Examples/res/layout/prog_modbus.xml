@@ -1,32 +1,27 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:stretchColumns="1">
-
-    <TableRow
-        android:id="@+id/tableRow1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Module to use:"
-            tools:ignore="HardcodedText" />
-
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </TableRow>
-
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/textView1"
+        style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please enter the MODBUS slave address (1...255)"
+        android:text="Module to use:"
+        tools:ignore="HardcodedText" />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="MODBUS slave address (1...255)"
         tools:ignore="HardcodedText" />
 
     <EditText
@@ -37,9 +32,10 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Please select a Coil No (>=1), Input Bit No (>=10001+), Register No (>=30001) or Input Register No (>=40001)"
+        android:text="Coil No (>=1), Input Bit No (>=10001+), Register No (>=30001) or Input Register No (>=40001)"
         tools:ignore="HardcodedText" />
 
     <EditText
@@ -51,6 +47,7 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Value to set (optional)"
@@ -64,6 +61,7 @@
         tools:ignore="HardcodedText" />
 
     <TextView
+        style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Result:"
@@ -74,6 +72,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
+        android:gravity="center"
+        android:text="0"
+        android:textSize="40sp"
         tools:ignore="HardcodedText" />
 
     <Button
@@ -83,4 +84,4 @@
         android:text="Refresh:"
         tools:ignore="HardcodedText" />
 
-</TableLayout>
+</LinearLayout>

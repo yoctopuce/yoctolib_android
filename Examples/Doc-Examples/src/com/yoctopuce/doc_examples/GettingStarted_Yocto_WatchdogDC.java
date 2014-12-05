@@ -7,15 +7,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.yoctopuce.YoctoAPI.YAPI;
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
-import com.yoctopuce.YoctoAPI.YPwmOutput;
-import com.yoctopuce.YoctoAPI.YVoltage;
 import com.yoctopuce.YoctoAPI.YWatchdog;
 
 public class GettingStarted_Yocto_WatchdogDC extends Activity implements OnItemSelectedListener

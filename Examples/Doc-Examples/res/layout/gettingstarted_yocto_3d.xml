@@ -1,111 +1,95 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent"
-             android:stretchColumns="1">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TableRow
-        android:id="@+id/tableRow1"
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:text="Module to use:"
+        tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Module to use:"
-            tools:ignore="HardcodedText"/>
-
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </TableRow>
-
-    <TableRow
+    <Spinner
+        android:id="@+id/spinner1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tilt 1:"
-            tools:ignore="HardcodedText"/>
-
-        <TextView
-            android:id="@+id/tilt1field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText"/>
-    </TableRow>
-
-    <TableRow
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="Tilt 1:"
+        tools:ignore="HardcodedText" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Tilt 2:"
-            tools:ignore="HardcodedText"/>
-
-        <TextView
-            android:id="@+id/tilt2field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText"/>
-    </TableRow>
-
-    <TableRow
+    <TextView
+        android:id="@+id/tilt1field"
+        android:gravity="center"
+        android:textSize="30sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Compass:"
-            tools:ignore="HardcodedText"/>
-
-        <TextView
-            android:id="@+id/compassfield"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText"/>
-    </TableRow>
-
-    <TableRow
+    <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="Tilt 2:"
+        tools:ignore="HardcodedText" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Accelerometer:"
-            tools:ignore="HardcodedText"/>
-
-        <TextView
-            android:id="@+id/accelfield"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText"/>
-    </TableRow>
-
-    <TableRow
+    <TextView
+        android:id="@+id/tilt2field"
+        android:gravity="center"
+        android:textSize="30sp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Gyro:"
-            tools:ignore="HardcodedText"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="Compass:"
+        tools:ignore="HardcodedText" />
 
-        <TextView
-            android:id="@+id/gyrofield"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:ignore="HardcodedText"/>
-    </TableRow>
+    <TextView
+        android:id="@+id/compassfield"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="30sp"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="Accelerometer:"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/accelfield"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:text="Gyro:"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/gyrofield"
+        android:gravity="center"
+        android:textSize="30sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="HardcodedText" />
 
 
-</TableLayout>
+</LinearLayout>

@@ -5,25 +5,6 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.+'
-    }    
-}
-
-
-
-
-
-def getYoctoBuildNumber() {
-    if(hasProperty('Yoctopuce.build_number')) {
-        return Integer.parseInt(property("Yoctopuce.build_number"))
-    }
-    return 123
-}
-
-
-def setupSingature() {
-    if(hasProperty("Yoctopuce.signing")
-        && new File(property("Yoctopuce.signing") + ".gradle").exists()) {
-        apply from: property("Yoctopuce.signing") + ".gradle";
+        classpath 'com.android.tools.build:gradle:0.13.2'
     }
 }

@@ -1,11 +1,15 @@
 package com.yoctopuce.examples.yocto_relay;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
@@ -22,6 +26,8 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.yoctopuce.YoctoAPI.YAPI;
 
 public class RelayListFragment extends ListFragment
 {
@@ -69,10 +75,49 @@ public class RelayListFragment extends ListFragment
             YoctoService.setServiceAlarm(getActivity(), startService);
             getActivity().invalidateOptionsMenu();
             return true;
+        case R.id.menu_about:
+            showAbout(getActivity());
+            return true;
         default:
             return super.onOptionsItemSelected(item);
         }
     }
+
+
+
+
+    protected void showAbout(Context ctx) {
+        // Inflate the about message contents
+        @SuppressLint("InflateParams") View messageView = getActivity().getLayoutInflater().inflate(R.layout.about, null);
+
+        Resources resources = getResources();
+        // set application message
+        String app_name = resources.getString(R.string.app_name);
+        TextView textView = (TextView) messageView.findViewById(R.id.about_message);
+        String format = resources.getString(R.string.about_intro);
+        textView.setText(String.format(format,app_name));
+        String version = "0";
+        try {
+            PackageInfo pInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
+            version = pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        textView = (TextView) messageView.findViewById(R.id.app_version);
+        textView.setText(version);
+
+        textView = (TextView) messageView.findViewById(R.id.yapi_version);
+        textView.setText(YAPI.GetAPIVersion());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        builder.setIcon(R.drawable.yoctorelay);
+        builder.setTitle(app_name);
+        builder.setView(messageView);
+        builder.create();
+        builder.show();
+    }
+
+
 
     @Override
     public void onPrepareOptionsMenu(Menu menu)
@@ -99,7 +144,7 @@ public class RelayListFragment extends ListFragment
         i.putExtra(YoctoService.EXTRA_TOGGLE, r.getHwId());
         getActivity().startService(i);
         //notify everybody that something has changed
-        mYoctoSingleton.notfyChanges();
+        mYoctoSingleton.notifyChanges();
         //((RelayAdapter) getListAdapter()).notifyDataSetChanged();
     }
 
@@ -119,7 +164,7 @@ public class RelayListFragment extends ListFragment
         {
             Log.i(TAG, "getView for " + position);
             if (convertView == null) {
-                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_relay, null);
+                convertView = getActivity().getLayoutInflater().inflate(R.layout.list_item_relay, parent, false);
             }
             Relay r = mYoctoSingleton.getRelay(position);
             if(r!=null){

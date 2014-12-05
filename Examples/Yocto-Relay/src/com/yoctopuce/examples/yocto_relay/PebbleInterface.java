@@ -45,7 +45,7 @@ public class PebbleInterface
                     Log.i(TAG, "jsonData null");
                     return;
                 }
-                int cmd=PREVIOUS_RELAY;
+                int cmd;
                 try {
                     final PebbleDictionary data = PebbleDictionary.fromJson(jsonData);
                     cmd = data.getUnsignedInteger(CMD_KEY).intValue();
@@ -66,7 +66,7 @@ public class PebbleInterface
                     if(relay==null)
                         break;
                     relay.toggle();
-                    singleton.notfyChanges();
+                    singleton.notifyChanges();
                     // send message to the service
                     Intent serviceintent = new Intent(context, YoctoService.class);
                     serviceintent.putExtra(YoctoService.EXTRA_TOGGLE, relay.getHwId());
@@ -82,7 +82,7 @@ public class PebbleInterface
                     PebbleDictionary dictionary = relay.toPebbleDictionary();
                     PebbleKit.sendDataToPebble(context, PEBBLE_APP_UUID, dictionary);
                 } else {
-                    PebbleDictionary dictionary = Relay.getEmtpyPebbleDictionary();
+                    PebbleDictionary dictionary = Relay.getEmptyPebbleDictionary();
                     PebbleKit.sendDataToPebble(context, PEBBLE_APP_UUID, dictionary);
                 }
             }

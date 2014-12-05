@@ -57,14 +57,14 @@ public class RelayListStorage
             Relay r = i.next(); // must be called before i.remove
             if (r.getSerial().equals(serial)) {
                 mRelays.remove(r);
-                notfyChanges();
+                notifyChanges();
             }
             i.remove();
         }
 
     }
 
-    public void notfyChanges()
+    public void notifyChanges()
     {
         mContext.sendBroadcast(new Intent(ACTION_RELAY_LIST_CHANGED));
         if(mPebbleRelay!=null){
@@ -80,12 +80,12 @@ public class RelayListStorage
         for (Relay r : mRelays) {
             if (r.getHwId().equals(newrelay.getHwId())) {
                 if (r.updateFromYRelay(newrelay)) {
-                    notfyChanges();
+                    notifyChanges();
                 }
                 return;
             }
         }
-        notfyChanges();
+        notifyChanges();
         mRelays.add(newrelay);
     }
 

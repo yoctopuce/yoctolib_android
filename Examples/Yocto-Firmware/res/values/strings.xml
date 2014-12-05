@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Yocto-Firmware</string>
+    <string name="title_activity_firmware_update">Firmware Update</string>
+    <string name="icon2d">Icon2d</string>
+    <string name="do_not_exit">Do not exit the application!</string>
+    <string name="update_firmware">Updating Firmware</string>
+    <string name="continue_button">Continue</string>
+    <string name="title_activity_usbdevice_plugged">USBDevicePluggedActivity</string>
+    <string name="about">About</string>
+    <string name="title_activity_check_firmware">Check Firmware</string>
+    <string name="module_description">%1$s %2$s</string>
+    <string name="firmware_description">Need to update to %1$s</string>
+    <string name="up_to_date">Up to date</string>
+    <string name="dialog_confirm_update_text">You are about to update the firmware of %1$s with the firmware revision %2$s. All settings of %1$s will be preserved.</string>
+    <string name="dialog_confirm_update_text2">During firmware update the USB device will reboot multiples times, and Android will pop up a dialogue to allow the allow %1$s to access USB devices. <b>You need to authorise %1$s to access USB device</b> otherwise the firmware update will finish correctly and you may lost your settings.</string>
+    <string name="dialog_confirm_update_text3">Also, if you have other applications that have register access to Yoctopuce devices, Android may ask you if you want to start these other activity. <b> you need to deny USB accept to all application except %1$s</b>.</string>
+    <string name="dialog_confirm_update_text4">Please do not power off your Android device, or exit the application during the firmware update.</string>
+    <string name="update">Update</string>
+    <string name="cancel">Cancel</string>
+    <string name="title_dialog_confirm_update">Update Firmware of %1$s</string>
+    <string name="title_activity_do_update">DoUpdateActivity</string>
+    <string name="title_dialog_no_need_update">Already up to date</string>
+    <string name="dialog_ok">OK</string>
+    <string name="error">Error</string>
+    <string name="update_success">Firmware has been successfully updated</string>
+    <string name="about_intro">If you have trouble with %1$s application please contact support@yoctopuce.com</string>
+    <string name="application_version">Application version:</string>
+    <string name="yapi_version">Yoctopuce API version:</string>
+    <string name="force_update">Force update</string>
+    <string name="plug_a_module">Plug an Yoctopuce module to your USB port</string>
+
+</resources>

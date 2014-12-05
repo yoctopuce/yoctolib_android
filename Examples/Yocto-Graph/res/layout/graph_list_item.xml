@@ -37,7 +37,6 @@
                   android:paddingRight="4dp"
                   android:paddingTop="4dp"
                   android:minHeight="200dp"
-                  android:layout_weight="1"
                   android:orientation="vertical" />
 
 </RelativeLayout>

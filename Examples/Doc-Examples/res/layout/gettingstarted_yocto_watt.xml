@@ -1,17 +1,12 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:stretchColumns="1" >
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <TableRow
-        android:id="@+id/tableRow1"
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Module to use:"
             tools:ignore="HardcodedText" />
@@ -19,16 +14,13 @@
         <Spinner
             android:id="@+id/spinner1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            style="?android:listSeparatorTextViewStyle"
             android:text="Current Power:"
             tools:ignore="HardcodedText" />
 
@@ -36,7 +28,8 @@
             android:id="@+id/powerfield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="30sp"
             tools:ignore="HardcodedText" />
-    </TableRow>
-
-</TableLayout>
+   </LinearLayout>

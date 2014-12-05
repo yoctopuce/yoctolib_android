@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAPI_Exception.java 12427 2013-08-20 16:00:19Z seb $
+ * $Id: YAPI_Exception.java 18342 2014-11-12 10:14:51Z seb $
  *
  * Class used to report exceptions within Yocto-API
  *
@@ -57,8 +57,7 @@ public class YAPI_Exception extends Exception {
     public int errorType;
 
     /**
-     *
-     * @param code : an error code defined in YAPI
+     * @param code    : an error code defined in YAPI
      * @param message : a message that describe the issue
      */
     public YAPI_Exception(int code, String message)
@@ -68,8 +67,7 @@ public class YAPI_Exception extends Exception {
     }
 
     /**
-     *
-     * @param code : an error code defined in YAPI
+     * @param code    : an error code defined in YAPI
      * @param message : a message that describe the issue
      */
     public YAPI_Exception(int code, String message, Exception e)

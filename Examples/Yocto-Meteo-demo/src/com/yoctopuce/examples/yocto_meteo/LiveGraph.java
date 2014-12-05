@@ -41,7 +41,7 @@ public class LiveGraph
 	
 	public interface PositionChangeListener {
 		void positionHasChanged(LiveGraph graph,long x_range,long x_max);
-	};
+	}
 	
 	PositionChangeListener _posChangeListener=null;
 	

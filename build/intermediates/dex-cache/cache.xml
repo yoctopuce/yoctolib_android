@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Graph/build/intermediates/pre-dexed/release/classes-59ab345bbeeaf2029ce735383c8828feba27a267.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Graph/build/intermediates/exploded-aar/Android/YoctoLib/unspecified/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="df3638e4340462ddd7bfc94eafca6c5a698a23cf"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Meteo-demo/build/intermediates/pre-dexed/release/achartengine-1.0.0-f984056e9cec2809cb6de6d0b3aafbdc6adfb1f9.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Meteo-demo/libs/achartengine-1.0.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="b2bb0af9f390c0edd4d7d95f613f38da3abe0144"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Doc-Examples/build/intermediates/pre-dexed/release/classes-e5d4c41e032549359ee5af71b39b52020008a069.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Doc-Examples/build/intermediates/exploded-aar/Android/YoctoLib/unspecified/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="df3638e4340462ddd7bfc94eafca6c5a698a23cf"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Graph/build/intermediates/pre-dexed/release/achartengine-1.1.0-cb1a6bbced6cb20027e03b4505e1b41acd754378.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Graph/libs/achartengine-1.1.0.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="9932e3fb9fbe54e80873e77f72a99f79e33b3250"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Relay/build/intermediates/pre-dexed/release/classes-aeb7ba0b7527500a5dca4341ac7ff44cb97f087c.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Relay/build/intermediates/exploded-aar/Android/YoctoLib/unspecified/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="df3638e4340462ddd7bfc94eafca6c5a698a23cf"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Graph/build/intermediates/pre-dexed/release/android-support-v4-b3b7d4e82ec9a398caf027948169d462ce08aee9.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Graph/libs/android-support-v4.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="bd6479f5dd592790607e0504e66e0f31c2b4d308"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Meteo-demo/build/intermediates/pre-dexed/release/classes-08974766b40ecd8f7c60a3bcd556ac3987021c6b.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Meteo-demo/build/intermediates/exploded-aar/Android/YoctoLib/unspecified/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="df3638e4340462ddd7bfc94eafca6c5a698a23cf"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Firmware/build/intermediates/pre-dexed/release/classes-b0d06ddf32d145e0b534a77bfa7521b98ff3a4bc.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Firmware/build/intermediates/exploded-aar/Android/YoctoLib/unspecified/classes.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="df3638e4340462ddd7bfc94eafca6c5a698a23cf"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Relay/build/intermediates/pre-dexed/release/pebble_kit-a4a40ab147c301a3903012dd5e27c2f87b41e9c2.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Relay/libs/pebble_kit.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="c5666fe25c5c0a17968c60bee54d67b916a55372"/>
+    <item
+        dex="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Relay/build/intermediates/pre-dexed/release/android-support-v4-c52a5f4d88327fcce28e9aa59d132fe71dd82aff.jar"
+        jar="/newbuild/yoctoprod/yoctolib/v1.0/Public/Android/Examples/Yocto-Relay/libs/android-support-v4.jar"
+        jumboMode="false"
+        revision="20.0.0"
+        sha1="bd6479f5dd592790607e0504e66e0f31c2b4d308"/>
+
+</pre-dex-items>

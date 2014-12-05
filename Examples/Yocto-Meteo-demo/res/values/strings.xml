@@ -6,5 +6,9 @@
     <string name="tempunit">°C</string>
     <string name="humunit">Rh</string>
     <string name="presunit">hPa</string>
+    <string name="about">About</string>
+    <string name="about_intro">If you have trouble with %1$s application please contact support@yoctopuce.com</string>
+    <string name="application_version">Application version:</string>
+    <string name="yapi_version">Yoctopuce API version:</string>
 
 </resources>

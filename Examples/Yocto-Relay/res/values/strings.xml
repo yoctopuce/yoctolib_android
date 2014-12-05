@@ -5,4 +5,9 @@
 	<string name="start_service">Start service</string>
 	<string name="stop_service">Stop service</string>
 	<string name="set_hub_addr">Set Hub address</string>
+    <string name="about">About</string>
+    <string name="about_intro">If you have trouble with %1$s application please contact support@yoctopuce.com</string>
+    <string name="application_version">Application version:</string>
+    <string name="yapi_version">Yoctopuce API version:</string>
+
 </resources>

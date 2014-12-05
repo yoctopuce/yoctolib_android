@@ -1,7 +1,5 @@
 package com.yoctopuce.examples.yocto_graph;
 
-import android.util.Log;
-
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
 import com.yoctopuce.YoctoAPI.YDataSet;
 import com.yoctopuce.YoctoAPI.YMeasure;

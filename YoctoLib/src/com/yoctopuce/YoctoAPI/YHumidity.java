@@ -1,8 +1,8 @@
 /*********************************************************************
  *
- * $Id: YHumidity.java 17569 2014-09-10 08:16:24Z seb $
+ * $Id: YHumidity.java 18482 2014-11-21 16:52:18Z seb $
  *
- * Implements yFindHumidity(), the high-level API for Humidity functions
+ * Implements FindHumidity(), the high-level API for Humidity functions
  *
  * - - - - - - - - - License information: - - - - - - - - - 
  *
@@ -42,8 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
-    //--- (YHumidity return codes)
-    //--- (end of YHumidity return codes)
+//--- (YHumidity return codes)
+//--- (end of YHumidity return codes)
 //--- (YHumidity class start)
 /**
  * YHumidity Class: Humidity function interface

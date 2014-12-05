@@ -69,11 +69,14 @@ public class YCallbackHub extends YGenericHub
     }
 
     @Override
-    ArrayList<String> firmwareUpdate(String serial, YFirmwareFile firmware, byte[] settings, UpdateProgress progress) throws YAPI_Exception, InterruptedException
-    {
-        throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Firmware update is not supported in HTTP callback");
+    public ArrayList<String> getBootloaders() {
+        return null;
     }
 
+    @Override
+    ArrayList<String> firmwareUpdate(String serial, YFirmwareFile firmware, byte[] settings, UpdateProgress progress) throws YAPI_Exception, InterruptedException {
+        throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Firmware update is not supported in HTTP callback");
+    }
 
 
     @Override

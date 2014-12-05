@@ -1,8 +1,5 @@
 package com.yoctopuce.doc_examples;
 
-/**
- * Created by seb on 09.09.13.
- */
 @SuppressWarnings("rawtypes")
 public class Example implements Comparable<Example> {
     private String mName;

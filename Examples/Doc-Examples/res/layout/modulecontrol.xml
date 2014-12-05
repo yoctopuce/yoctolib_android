@@ -1,16 +1,17 @@
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:stretchColumns="1" >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TableRow
-        android:id="@+id/tableRow1"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
 
         <TextView
-            android:id="@+id/textView1"
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Module to use:"
@@ -19,14 +20,11 @@
         <Spinner
             android:id="@+id/spinner1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp" />
 
         <TextView
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Serial:"
@@ -36,14 +34,13 @@
             android:id="@+id/serialfield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="30sp"
             tools:ignore="HardcodedText" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
 
         <TextView
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Logical name:"
@@ -53,31 +50,30 @@
             android:id="@+id/logicalnamefield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="30sp"
             tools:ignore="HardcodedText" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
 
         <TextView
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Luminosity:"
+
             tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/luminosityfield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="30sp"
             tools:ignore="HardcodedText" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
 
         <TextView
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Beacon:"
@@ -85,17 +81,14 @@
 
         <Switch
             android:id="@+id/beaconswitch"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:onClick="toggleBeacon" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+            android:gravity="center"
+            android:onClick="toggleBeacon"
+            android:layout_gravity="center" />
 
         <TextView
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="UpTime"
@@ -105,14 +98,13 @@
             android:id="@+id/uptimefield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="30sp"
             tools:ignore="HardcodedText" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
 
         <TextView
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="USB current:"
@@ -122,31 +114,34 @@
             android:id="@+id/usbcurrentfield"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="0"
+            android:textSize="30sp"
             tools:ignore="HardcodedText" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
 
         <TextView
+            style="?android:listSeparatorTextViewStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Logs:"
+
             tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/logs"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-           />
-    </TableRow>
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="refreshInfo"
-        android:text="Refresh:"
-        tools:ignore="HardcodedText" />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="refreshInfo"
+            android:text="Refresh:"
+            tools:ignore="HardcodedText" />
 
-</TableLayout>
+
+    </LinearLayout>
+</ScrollView>

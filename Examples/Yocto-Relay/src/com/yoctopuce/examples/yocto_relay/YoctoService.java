@@ -78,18 +78,12 @@ public class YoctoService extends Service implements DeviceArrivalCallback, Devi
     }
 
     @Override
-    public void onStart(Intent intent, int startId)
+    public int onStartCommand(Intent intent, int flags, int startId)
     {
         Message msg = mServiceHandler.obtainMessage();
         msg.arg1 = startId;
         msg.obj = intent;
         mServiceHandler.sendMessage(msg);
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId)
-    {
-        onStart(intent, startId);
         return START_STICKY;
     }
 

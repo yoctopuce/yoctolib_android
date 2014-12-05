@@ -1,4 +1,4 @@
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
@@ -6,16 +6,30 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "20"
+    compileSdkVersion 21
+    buildToolsVersion "20.0.0"
 
     defaultConfig {
-        versionCode getYoctoBuildNumber()
-        versionName "1.10."+ getYoctoBuildNumber()
+        versionCode 18640
+        versionName "1.11.18640"
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 21
     }
 
+    signingConfigs {
+        release {
+            storeFile file("../../../AndroidKeyStore")
+            storePassword System.getenv("ANDROID_KSTORE_PWD")
+            keyPassword System.getenv("ANDROID_KEY_PWD")
+            keyAlias  System.getenv("ANDROID_KEY_NAME")
+        }
+    }
+    buildTypes {
+        release {
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -39,7 +53,8 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+    lintOptions {
+        abortOnError false
+    }
+
 }
-
-
-setupSingature()

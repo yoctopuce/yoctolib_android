@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/paragraph1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:textSize="@dimen/paragraph_text_size"
+        android:text="@string/dialog_confirm_update_text"
+        />
+
+    <TextView
+        android:id="@+id/paragraph2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:textSize="@dimen/paragraph_text_size"
+        android:text="@string/dialog_confirm_update_text2"
+        />
+
+    <TextView
+        android:id="@+id/paragraph3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:textSize="@dimen/paragraph_text_size"
+        android:text="@string/dialog_confirm_update_text3"/>
+
+    <TextView
+        android:id="@+id/paragraph4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:textSize="@dimen/paragraph_text_size"
+        android:text="@string/dialog_confirm_update_text4"/>
+
+</LinearLayout>

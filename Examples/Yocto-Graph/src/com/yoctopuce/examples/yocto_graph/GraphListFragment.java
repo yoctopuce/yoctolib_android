@@ -10,9 +10,6 @@ import android.os.Handler;
 import android.support.v4.app.ListFragment;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -24,6 +21,7 @@ import org.achartengine.GraphicalView;
 
 import java.util.ArrayList;
 
+@SuppressWarnings("deprecation")
 public class GraphListFragment extends ListFragment {
 
 
@@ -94,9 +92,8 @@ public class GraphListFragment extends ListFragment {
             // the view hierarchy; it would just never be used.
             return null;
         }
-        View view = inflater.inflate(R.layout.graph_list_fragment, null);
 
-        return view;
+        return inflater.inflate(R.layout.graph_list_fragment, container, false);
     }
 
 
@@ -116,24 +113,7 @@ public class GraphListFragment extends ListFragment {
     }
 
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.graph_list_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId()) {
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    private BroadcastReceiver mNeedUpdateScreen = new BroadcastReceiver() {
+    private final BroadcastReceiver mNeedUpdateScreen = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent)
         {
@@ -141,7 +121,7 @@ public class GraphListFragment extends ListFragment {
         }
     };
 
-    private BroadcastReceiver mNeedUpdateOneGraph = new BroadcastReceiver() {
+    private final BroadcastReceiver mNeedUpdateOneGraph = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent)
         {
@@ -175,7 +155,7 @@ public class GraphListFragment extends ListFragment {
 
         final Handler mHandler = new Handler();
         private ArrayList<ThreadSafeSensor> _sensors;
-        private SparseArray<SimpleLiveGraph> _liveGraphs = new SparseArray<SimpleLiveGraph>();
+        private final SparseArray<SimpleLiveGraph> _liveGraphs = new SparseArray<SimpleLiveGraph>();
 
         GraphAdapter(ArrayList<ThreadSafeSensor> sensorList)
         {
@@ -206,7 +186,7 @@ public class GraphListFragment extends ListFragment {
         {
             if (convertView == null) {
                 convertView = getActivity().getLayoutInflater()
-                        .inflate(R.layout.graph_list_item, null);
+                        .inflate(R.layout.graph_list_item, parent, false);
                 if (convertView == null) {
                     return null;
                 }

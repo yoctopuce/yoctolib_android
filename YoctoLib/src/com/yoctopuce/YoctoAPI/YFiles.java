@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFiles.java 17678 2014-09-16 16:31:26Z seb $
+ * $Id: YFiles.java 18342 2014-11-12 10:14:51Z seb $
  *
  * Implements yFindFiles(), the high-level API for Files functions
  *
@@ -40,7 +40,9 @@
 package com.yoctopuce.YoctoAPI;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+
 import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -113,10 +115,10 @@ public class YFiles extends YFunction
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {
         if (json_val.has("filesCount")) {
-            _filesCount =  json_val.getInt("filesCount");
+            _filesCount = json_val.getInt("filesCount");
         }
         if (json_val.has("freeSpace")) {
-            _freeSpace =  json_val.getInt("freeSpace");
+            _freeSpace = json_val.getInt("freeSpace");
         }
         super._parseAttr(json_val);
     }
@@ -146,8 +148,9 @@ public class YFiles extends YFunction
      * @throws YAPI_Exception on error
      */
     public int getFilesCount() throws YAPI_Exception
-
-    { return get_filesCount(); }
+    {
+        return get_filesCount();
+    }
 
     /**
      * Returns the free space for uploading new files to the filesystem, in bytes.
@@ -174,8 +177,9 @@ public class YFiles extends YFunction
      * @throws YAPI_Exception on error
      */
     public int getFreeSpace() throws YAPI_Exception
-
-    { return get_freeSpace(); }
+    {
+        return get_freeSpace();
+    }
 
     /**
      * Retrieves a filesystem for a given identifier.

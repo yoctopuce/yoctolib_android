@@ -3,7 +3,6 @@ package com.yoctopuce.doc_examples;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.yoctopuce.YoctoAPI.YAPI;
@@ -13,7 +12,6 @@ import com.yoctopuce.YoctoAPI.YMeasure;
 import com.yoctopuce.YoctoAPI.YModule;
 import com.yoctopuce.YoctoAPI.YSensor;
 
-import java.util.ArrayList;
 import java.util.Date;
 
 public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceArrivalCallback, YAnButton.UpdateCallback,YSensor.TimedReportCallback,YSensor.UpdateCallback,YAPI.DeviceRemovalCallback {
@@ -37,7 +35,6 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
 
     private void pushEvent(String message) {
         mAdapter.add(new Events(new Date(), message));
-        Log.d(TAG, message);
     }
 
 
@@ -146,7 +143,6 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
             YSensor sensor = YSensor.FirstSensor();
             while (sensor != null) {
                 if (sensor.get_module().get_serialNumber().equals(serial)) {
-                    String hardwareId = sensor.get_hardwareId();
                     sensor.registerValueCallback(this);
                     sensor.registerTimedReportCallback(this);
                 }

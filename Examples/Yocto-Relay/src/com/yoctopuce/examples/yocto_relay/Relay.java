@@ -38,13 +38,13 @@ public class Relay
         return mYRelay;
     }
 
-    public boolean updateFromYRelay(Relay newrelay)
+    public boolean updateFromYRelay(Relay newRelay)
     {
-        if (mRelayName == newrelay.mRelayName && mOn == newrelay.mOn && mModuleName ==newrelay.mModuleName)
+        if (mRelayName.equals(newRelay.mRelayName) && mOn == newRelay.mOn && mModuleName.equals(newRelay.mModuleName))
             return false;
-        mRelayName = newrelay.mRelayName;
-        mModuleName = newrelay.mModuleName;
-        mOn = newrelay.mOn;
+        mRelayName = newRelay.mRelayName;
+        mModuleName = newRelay.mModuleName;
+        mOn = newRelay.mOn;
         return true;
     }
 
@@ -105,7 +105,7 @@ public class Relay
         return data;
     }
 
-    public static PebbleDictionary getEmtpyPebbleDictionary()
+    public static PebbleDictionary getEmptyPebbleDictionary()
     {
         PebbleDictionary data = new PebbleDictionary();
         data.addString(RELAY_STATE, "");

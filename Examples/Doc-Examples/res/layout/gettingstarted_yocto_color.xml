@@ -2,58 +2,59 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="5"
-            android:text="select Yocto-Color:"
-            tools:ignore="HardcodedText" />
-
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-    </LinearLayout>
+    android:orientation="vertical">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/textView1"
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="select Yocto-Color:"
+        tools:ignore="HardcodedText"
+        />
+
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="25dp"/>
+
+    <TextView
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="red:"
         tools:ignore="HardcodedText" />
 
     <SeekBar
         android:id="@+id/seekBarRed"
+        android:layout_margin="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:layout_width="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Green:"
         tools:ignore="HardcodedText" />
 
     <SeekBar
         android:id="@+id/seekBarGreen"
+        android:layout_margin="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:layout_width="wrap_content"
+        style="?android:listSeparatorTextViewStyle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Blue:"
         tools:ignore="HardcodedText" />
 
     <SeekBar
         android:id="@+id/seekBarBlue"
+        android:layout_margin="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBPkt.java 14929 2014-02-12 17:55:52Z seb $
+ * $Id: YUSBPkt.java 18317 2014-11-10 09:25:47Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
@@ -44,18 +44,18 @@ import java.util.ArrayList;
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 
-public class YUSBPkt  {
-	
+public class YUSBPkt {
 
-	// generic pkt definitions
-    protected static final int YPKT_USB_VERSION_BCD=0x0206;
-    public static final int USB_PKT_SIZE=64;
+
+    // generic pkt definitions
+    protected static final int YPKT_USB_VERSION_BCD = 0x0206;
+    public static final int USB_PKT_SIZE = 64;
     private final YUSBDevice _dev;
     protected int _pktno = 0;
-	protected ArrayList<YPktStreamHead> _streams;
+    protected ArrayList<YPktStreamHead> _streams;
 
 
-    YUSBPkt(YUSBDevice dev, int pktno, ArrayList<YPktStreamHead>streams)
+    YUSBPkt(YUSBDevice dev, int pktno, ArrayList<YPktStreamHead> streams)
     {
         _dev = dev;
         _streams = streams;
@@ -63,81 +63,88 @@ public class YUSBPkt  {
     }
 
 
-    int getPktno() {
+    int getPktno()
+    {
         return _pktno;
     }
 
-    public ArrayList<YPktStreamHead> getStreams() {
+    public ArrayList<YPktStreamHead> getStreams()
+    {
         return _streams;
     }
 
-    protected static boolean isCompatibe(int version,String serial) throws YAPI_Exception
-	{
+    protected static boolean isCompatibe(int version, String serial) throws YAPI_Exception
+    {
 
-	    if((version & 0xff00) != (YPKT_USB_VERSION_BCD & 0xff00)){
-	        // major version change
-	        if((version & 0xff00) > (YPKT_USB_VERSION_BCD & 0xff00)){
+        if ((version & 0xff00) != (YPKT_USB_VERSION_BCD & 0xff00)) {
+            // major version change
+            if ((version & 0xff00) > (YPKT_USB_VERSION_BCD & 0xff00)) {
                 SafeYAPI()._Log(String.format("Yoctopuce library is too old (using 0x%x need 0x%x) to handle device %s, please upgrade your Yoctopuce library\n", YPKT_USB_VERSION_BCD, version, serial));
-	            throw new YAPI_Exception(YAPI.IO_ERROR,"Library is too old to handle this device");
-	        } else {
-	            // implement backward compatibility when implementing a new protocol
-	            throw new YAPI_Exception(YAPI.IO_ERROR,"implement backward compatibility when implementing a new protocol");
-	        }
-	    } else if(version  != YPKT_USB_VERSION_BCD ){
-	        if(version > YPKT_USB_VERSION_BCD){
-                SafeYAPI()._Log(String.format("Device %s is using an newer protocol, consider upgrading your Yoctopuce library\n",serial));
-	        }else{
-                SafeYAPI()._Log(String.format("Device %s is using an older protocol, consider upgrading the device firmware\n",serial));
-	        }
-	        return false;
-	    }
-	    return true;
-	}
+                throw new YAPI_Exception(YAPI.IO_ERROR, "Library is too old to handle this device");
+            } else {
+                // implement backward compatibility when implementing a new protocol
+                throw new YAPI_Exception(YAPI.IO_ERROR, "implement backward compatibility when implementing a new protocol");
+            }
+        } else if (version != YPKT_USB_VERSION_BCD) {
+            if (version > YPKT_USB_VERSION_BCD) {
+                SafeYAPI()._Log(String.format("Device %s is using an newer protocol, consider upgrading your Yoctopuce library\n", serial));
+            } else {
+                SafeYAPI()._Log(String.format("Device %s is using an older protocol, consider upgrading the device firmware\n", serial));
+            }
+            return false;
+        }
+        return true;
+    }
 
-    public String toString() {
-        String dump = String.format("pktno:%d with %d ystream",_pktno, _streams.size());
-        for (YPktStreamHead s :_streams) {
+    public String toString()
+    {
+        String dump = String.format("pktno:%d with %d ystream", _pktno, _streams.size());
+        for (YPktStreamHead s : _streams) {
             dump += "\n" + s.toString();
         }
         return dump;
     }
 
 
-    protected static class ConfPktReset
-	{
+    protected static class ConfPktReset {
         private int _api;
         private int _ok;
         private int _ifaceNo;
         private int _nbIface;
 
-        public ConfPktReset(int api, int ok, int ifaceno, int nbiface) {
+        public ConfPktReset(int api, int ok, int ifaceno, int nbiface)
+        {
             this._api = api;
             this._ok = ok;
             this._ifaceNo = ifaceno;
             this._nbIface = nbiface;
         }
 
-        public int getApi() {
+        public int getApi()
+        {
             return _api;
         }
 
-        public int getOk() {
+        public int getOk()
+        {
             return _ok;
         }
 
-        public int getIfaceNo() {
+        public int getIfaceNo()
+        {
             return _ifaceNo;
         }
 
-        public int getNbIface() {
+        public int getNbIface()
+        {
             return _nbIface;
         }
 
         static public ConfPktReset Decode(byte[] data)
-		{
+        {
             int api = data[0] + ((int) data[1] << 8);
-            return new ConfPktReset(api, data[2],data[3],data[4]);
-		}
+            return new ConfPktReset(api, data[2], data[3], data[4]);
+        }
 
         public YPktStreamHead getAsStream()
         {
@@ -145,19 +152,20 @@ public class YUSBPkt  {
             data[0] = (byte) (_api & 0xff);
             data[1] = (byte) ((_api >> 8) & 0xff);
             data[2] = 1;
-            return new YPktStreamHead(0, YPktStreamHead.YPKT_CONF,YPktStreamHead.USB_CONF_RESET, data,0,data.length);
+            return new YPktStreamHead(0, YPktStreamHead.YPKT_CONF, YPktStreamHead.USB_CONF_RESET, data, 0, data.length);
         }
-	}
-	
-	protected static class ConfPktStart
-	{
+    }
+
+    protected static class ConfPktStart {
         private int _nbIface;
 
-        public ConfPktStart(int nbiface) {
+        public ConfPktStart(int nbiface)
+        {
             this._nbIface = nbiface;
         }
 
-        public int getNbIface() {
+        public int getNbIface()
+        {
             return _nbIface;
         }
 
@@ -170,7 +178,7 @@ public class YUSBPkt  {
         {
             byte[] data = new byte[USB_PKT_SIZE - YPktStreamHead.USB_PKT_STREAM_HEAD];
             data[0] = (byte) _nbIface;
-            return new YPktStreamHead(0, YPktStreamHead.YPKT_CONF,YPktStreamHead.USB_CONF_START, data,0,data.length);
+            return new YPktStreamHead(0, YPktStreamHead.YPKT_CONF, YPktStreamHead.USB_CONF_START, data, 0, data.length);
         }
 
     }

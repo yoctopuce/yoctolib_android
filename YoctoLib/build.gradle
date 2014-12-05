@@ -5,8 +5,8 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "20"
+    compileSdkVersion 21
+    buildToolsVersion "20.0.0"
 
     sourceSets {
         main {
@@ -31,4 +31,8 @@ android {
         debug.setRoot('build-types/debug')
         release.setRoot('build-types/release')
     }
+    lintOptions {
+        abortOnError false
+    }
+
 }

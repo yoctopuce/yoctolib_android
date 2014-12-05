@@ -43,10 +43,8 @@ public class SensorStorage {
 
     public synchronized ThreadSafeSensor get(String hwid)
     {
-        Iterator<ThreadSafeSensor> iterator = _sensors.iterator();
-        while ( iterator.hasNext() ) {
-            ThreadSafeSensor next = iterator.next();
-            if ( hwid.equals( next.getHwId() ) ) {
+        for (ThreadSafeSensor next : _sensors) {
+            if (hwid.equals(next.getHwId())) {
                 return next;
             }
         }

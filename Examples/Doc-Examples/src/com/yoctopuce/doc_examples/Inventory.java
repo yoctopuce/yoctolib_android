@@ -2,6 +2,7 @@ package com.yoctopuce.doc_examples;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class Inventory extends Activity
                 String line = module.get_serialNumber() + " (" + module.get_productName() + ")";
                 TextView tx = new TextView(this);
                 tx.setText(line);
+                tx.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
                 layout.addView(tx);
                 module = module.nextModule();
             }

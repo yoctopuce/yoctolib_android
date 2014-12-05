@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBRawDevice.java 16575 2014-06-16 07:08:33Z seb $
+ * $Id: YUSBRawDevice.java 18638 2014-12-04 13:52:51Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -48,186 +48,267 @@ import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbRequest;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class YUSBRawDevice implements Runnable {
-	protected UsbDevice _device = null;
-	private UsbManager _manager = null;
-	private UsbDeviceConnection _connection;
-	private UsbInterface _intf;
-	private String _serial = null;
-	private YUSBDevice _yUsbDevice;
-	private boolean _muststop = false;
-	private final Object _threadLock = new Object();
-	private Thread thread;
+    private State _state;
+    private YUSBHub _usbHub;
+    private String _serial;
+
+    public String getSerial()
+    {
+        return _serial;
+    }
+
+    public boolean isUsable()
+    {
+        return _state == State.ACCEPTED;
+    }
+
+    enum State {
+        UNPLUGGED,
+        PLUGGED,
+        ACCEPTED,
+        REJECTED
+    }
+
+    final private UsbDevice _device;
+    final private UsbManager _manager;
+    final private IOHandler _ioHandler;
+    private UsbDeviceConnection _connection;
+    private UsbInterface _intf;
+    private boolean _muststop = false;
+    private final Object _threadLock = new Object();
+    private Thread thread;
+    private boolean _ioStarted;
 
 
-	private boolean mustBgThreadStop() {
-		boolean b;
-		synchronized (_threadLock) {
-			b = _muststop;
-		}
-		return b;
-	}
+    private boolean mustBgThreadStop()
+    {
+        boolean b;
+        synchronized (_threadLock) {
+            b = _muststop;
+        }
+        return b;
+    }
 
-	private void stopBgThread() {
-		synchronized (_threadLock) {
-			_muststop = true;
-		}
-	}
+    private void stopBgThread()
+    {
+        synchronized (_threadLock) {
+            _muststop = true;
+        }
+    }
 
-	String getSerial() {
-		return _serial;
-	}
+    public UsbDevice getUsbDevice()
+    {
+        return _device;
+    }
 
 
-	YUSBRawDevice(UsbDevice device, UsbManager manager, YUSBDevice yUsbDevice) {
-		_device = device;
-		_manager = manager;
-		_yUsbDevice = yUsbDevice;
 
-	}
+    public interface IOHandler {
+        public void newPKT(ByteBuffer android_raw_pkt);
 
-	public synchronized void start() throws YAPI_Exception {
-		_intf = _device.getInterface(0);
-		/* Open a connection to the USB device */
-		_connection = _manager.openDevice(_device);
+        public void ioError(String msg);
 
-		if (_connection == null) {
-			throw new YAPI_Exception(YAPI.IO_ERROR,
-					"unable to open connection to device "
-							+ _device.getDeviceName());
-		}
+        void rawDeviceUpdateState(YUSBRawDevice yusbRawDevice);
+    }
+
+    YUSBRawDevice(YUSBHub yusbHub, UsbDevice device, UsbManager manager, IOHandler handler)
+    {
+        _usbHub = yusbHub;
+        _device = device;
+        _manager = manager;
+        _ioHandler = handler;
+        _ioStarted = false;
+        _state = State.PLUGGED;
+    }
+
+
+    public synchronized void ensureIOStarted()
+    {
+        if (_ioStarted)
+            return;
+        _intf = _device.getInterface(0);
+        if (!_manager.hasPermission(_device)) {
+            if (_state == State.REJECTED && _device.getProductId() != YAPI.YOCTO_DEVID_BOOTLOADER) {
+                // if the user has rejected the authorisation we do not ask it again
+                // (except for bootloaders)
+                return;
+            }
+            _usbHub.triggerPermissionRequest(this);
+        } else {
+            permissionAccepted();
+        }
+    }
+
+    boolean permissionAccepted()
+    {
+        _state = State.ACCEPTED;
+        /* Open a connection to the USB device */
+        _connection = _manager.openDevice(_device);
+        if (_connection == null) {
+            YAPI.SafeYAPI()._Log("unable to open connection to device " + _device.getDeviceName());
+            release();
+            return false;
+        }
 
 		/* Claim the required interface to gain access to it */
-		if (!_connection.claimInterface(_intf, true)) {
-			throw new YAPI_Exception(YAPI.IO_ERROR,
-					"unable to claim interface 0 for device "
-							+ _device.getDeviceName());
-		}
-		_serial = _connection.getSerial();
-		thread = new Thread(this);
-		thread.setName("IOusb_" + _serial);
-		thread.start();
-	}
+        if (!_connection.claimInterface(_intf, true)) {
+            YAPI.SafeYAPI()._Log("unable to claim interface 0 for device " + _device.getDeviceName());
+            release();
+            return false;
+        }
+        _serial = _connection.getSerial();
+        thread = new Thread(this);
+        thread.setName("IOusb_" + _serial);
+        thread.start();
+        _ioStarted = true;
 
-	public synchronized void release() {
-		stopBgThread();
-		if (_connection!=null) {
-			_connection.releaseInterface(_intf);
-			_connection.close();
-		}
-		if (thread != null) {
-			try {
+        _ioHandler.rawDeviceUpdateState(this);
+        return true;
+    }
 
-				thread.join(20);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			thread = null;
-		}
-		/* Clear up all of the locals */
-		_device = null;
-		_manager = null;
-		_connection = null;
-		_intf = null;
-	}
+    public void permissionRejected()
+    {
+        _state = State.REJECTED;
 
-	public synchronized void sendPkt(YUSBPktOut ypkt) throws YAPI_Exception {
-		if (_intf == null) {
-			throw new YAPI_Exception(YAPI.IO_ERROR, "Device is gone");
-		}
-		UsbEndpoint endpointOUT = null;
-		for (int e = 0; e < _intf.getEndpointCount(); e++) {
-			UsbEndpoint endp = _intf.getEndpoint(e);
-			// out and in meaning is a bit strange
-			// USB_DIR_OUT Used to signify direction of data for a UsbEndpoint
-			// is OUT (host to device)
-			// USB_DIR_IN Used to signify direction of data for a UsbEndpoint is
-			// IN (device to host)
-			if (endp.getDirection() == UsbConstants.USB_DIR_OUT) {
-				endpointOUT = endp;
-			}
-		}
+    }
+
+    public void unplug()
+    {
+        _state = State.UNPLUGGED;
+    }
+
+
+    public synchronized void release()
+    {
+        stopBgThread();
+        if (_connection != null) {
+            _connection.releaseInterface(_intf);
+            _connection.close();
+        }
+        if (thread != null) {
+            try {
+                thread.join(20);
+            } catch (InterruptedException e) {
+                // Restore the interrupted status
+                Thread.currentThread().interrupt();
+            }
+            thread = null;
+        }
+        /* Clear up all of the locals */
+        _connection = null;
+        _intf = null;
+    }
+
+    public synchronized void sendPkt(byte[] outPkt) throws YAPI_Exception
+    {
+        if (_intf == null) {
+            throw new YAPI_Exception(YAPI.IO_ERROR, "Device is gone");
+        }
+        UsbEndpoint endpointOUT = null;
+        for (int e = 0; e < _intf.getEndpointCount(); e++) {
+            UsbEndpoint endp = _intf.getEndpoint(e);
+            // out and in meaning is a bit strange
+            // USB_DIR_OUT Used to signify direction of data for a UsbEndpoint
+            // is OUT (host to device)
+            // USB_DIR_IN Used to signify direction of data for a UsbEndpoint is
+            // IN (device to host)
+            if (endp.getDirection() == UsbConstants.USB_DIR_OUT) {
+                endpointOUT = endp;
+            }
+        }
         if (endpointOUT == null) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Unable to get USB Out endpoint");
         }
 
-		int result;
-		byte outPkt[] = ypkt.getRawPkt();
-		int retry = 0;
-		do {
+        int result;
+        int retry = 0;
+        do {
             result = _connection.bulkTransfer(endpointOUT, outPkt,
-					outPkt.length, 1000);
-			retry++;
-		} while (result < 0 && retry < 15);
-	}
+                    outPkt.length, 1000);
+            retry++;
+        } while (result < 0 && retry < 15);
+    }
 
-	public void run() {
-		int nbSuccessiveError = 0;
-		UsbEndpoint endpointIN = null;
-		for (int e = 0; e < _intf.getEndpointCount(); e++) {
-			UsbEndpoint endp = _intf.getEndpoint(e);
-			// out and in meaning is a bit strange
-			// USB_DIR_OUT Used to signify direction of data for a UsbEndpoint
-			// is OUT (host to device)
-			// USB_DIR_IN Used to signify direction of data for a UsbEndpoint is
-			// IN (device to host)
-			if (endp.getDirection() == UsbConstants.USB_DIR_IN) {
-				endpointIN = endp;
-			}
-		}
+    public void run()
+    {
+        int nbSuccessiveError = 0;
+        UsbEndpoint endpointIN = null;
+        for (int e = 0; e < _intf.getEndpointCount(); e++) {
+            UsbEndpoint endp = _intf.getEndpoint(e);
+            // out and in meaning is a bit strange
+            // USB_DIR_OUT Used to signify direction of data for a UsbEndpoint
+            // is OUT (host to device)
+            // USB_DIR_IN Used to signify direction of data for a UsbEndpoint is
+            // IN (device to host)
+            if (endp.getDirection() == UsbConstants.USB_DIR_IN) {
+                endpointIN = endp;
+            }
+        }
         if (endpointIN == null) {
-            _yUsbDevice.ioError("Unable to get USB In endpoint");
+            _ioHandler.ioError("Unable to get USB In endpoint");
             return;
         }
-		// initialise both directions requests
-		UsbRequest d2h_r = new UsbRequest();
-		d2h_r.initialize(_connection, endpointIN);
+        // initialise both directions requests
+        UsbRequest d2h_r = new UsbRequest();
+        d2h_r.initialize(_connection, endpointIN);
         byte[] data = new byte[YUSBPkt.USB_PKT_SIZE];
-        data[0]= (byte) 0xde;
-        data[1]= (byte) 0xad;
-        data[2]= (byte) 0xbe;
-        data[3]= (byte) 0xef;
+        data[0] = (byte) 0xde;
+        data[1] = (byte) 0xad;
+        data[2] = (byte) 0xbe;
+        data[3] = (byte) 0xef;
         d2h_r.setClientData(data);
         ByteBuffer d2h_pkt = ByteBuffer.wrap(data);
-		d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
-		while (!mustBgThreadStop()) {
-			/*
+        d2h_pkt.order(ByteOrder.LITTLE_ENDIAN);
+        d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
+        while (!mustBgThreadStop()) {
+            /*
 			 * If the connection was closed, destroy the connections and
 			 * variables and exit this thread.
 			 */
-			if (_connection == null) {
-				break;
-			}
-			UsbRequest finished;
-			try {
-				finished = _connection.requestWait();
-			} catch (Exception e) {
-				finished = null;
-			}
-			if (finished != null) {
+            if (_connection == null) {
+                break;
+            }
+            UsbRequest finished;
+            try {
+                finished = _connection.requestWait();
+            } catch (Exception e) {
+                finished = null;
+            }
+            if (finished != null) {
                 UsbEndpoint endp = finished.getEndpoint();
-				nbSuccessiveError = 0;
-				if (endp != null && endp.getDirection() == UsbConstants.USB_DIR_IN) {
+                nbSuccessiveError = 0;
+                if (endp != null && endp.getDirection() == UsbConstants.USB_DIR_IN) {
                     // d2h request
-					_yUsbDevice.newPKT(ByteBuffer.wrap(data));
+                    ByteBuffer wraped = ByteBuffer.wrap(data);
+                    wraped.order(ByteOrder.LITTLE_ENDIAN);
+                    if (!mustBgThreadStop()) {
+                        _ioHandler.newPKT(wraped);
+                    }
+                    data[0] = (byte) 0xde;
+                    data[1] = (byte) 0xad;
+                    data[2] = (byte) 0xbe;
+                    data[3] = (byte) 0xef;
                     d2h_pkt.clear();
                     d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
-				}
-			} else {
-				if (nbSuccessiveError > 5) {
-					_yUsbDevice.ioError("Too may successive USB error");
-					break;
-				}
-			}
-            try {
-                _yUsbDevice.checkMetaUTC();
-            } catch (YAPI_Exception e) {
-                nbSuccessiveError++;
-                _yUsbDevice.ioError(e.getMessage());
+                }
+            } else {
+                if (nbSuccessiveError > 5) {
+                    _ioHandler.ioError("Too may successive USB error");
+                    break;
+                }
             }
+            //fixme: add checkmetaUTC
+//            try {
+//                _ioHandler.checkMetaUTC();
+//            } catch (YAPI_Exception e) {
+//                nbSuccessiveError++;
+//                _ioHandler.ioError(e.getMessage());
+//            }
 
         }
-	}
+    }
 
 }

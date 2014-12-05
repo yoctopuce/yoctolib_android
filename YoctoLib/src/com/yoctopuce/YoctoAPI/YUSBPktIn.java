@@ -9,11 +9,12 @@ public class YUSBPktIn extends YUSBPkt {
         super(dev, streams.get(0).getPktNumber(), streams);
     }
 
-    static YUSBPktIn Decode(YUSBDevice dev, ByteBuffer bb) throws YAPI_Exception {
-        ArrayList<YPktStreamHead> streams= new ArrayList<YPktStreamHead>();
-        while (bb.remaining()>0) {
+    static YUSBPktIn Decode(YUSBDevice dev, ByteBuffer bb) throws YAPI_Exception
+    {
+        ArrayList<YPktStreamHead> streams = new ArrayList<YPktStreamHead>();
+        while (bb.remaining() > 0) {
             YPktStreamHead s = YPktStreamHead.Decode(bb);
-            if (s == null){
+            if (s == null) {
                 break;
             }
             streams.add(s);
@@ -31,8 +32,8 @@ public class YUSBPktIn extends YUSBPkt {
 
     public ConfPktReset getConfPktReset() {
         if (!isConfPktReset())
-            return  null;
-        byte[] data =  _streams.get(0).getDataAsByteArray();
+            return null;
+        byte[] data = _streams.get(0).getDataAsByteArray();
         return ConfPktReset.Decode(data);
     }
 
@@ -41,6 +42,6 @@ public class YUSBPktIn extends YUSBPkt {
         if (_streams.size() < 1)
             return false;
         YPktStreamHead s = _streams.get(0);
-        return  s.isConfPktStart();
+        return s.isConfPktStart();
     }
 }

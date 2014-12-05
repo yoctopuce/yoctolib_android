@@ -1,0 +1,6 @@
+<resources>
+    <color name="error">#ff82271f</color>
+    <color name="warning">#ffd8941c</color>
+    <color name="success">#ff09910f</color>
+    <color name="lightGray">#ff808080</color>
+</resources>

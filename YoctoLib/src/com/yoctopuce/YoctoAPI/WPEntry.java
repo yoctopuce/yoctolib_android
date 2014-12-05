@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: WPEntry.java 15487 2014-03-19 10:17:22Z seb $
+ * $Id: WPEntry.java 18342 2014-11-12 10:14:51Z seb $
  *
  * White page implementation
  *
@@ -43,9 +43,9 @@ import org.json.JSONObject;
 
 class WPEntry {
 
-    private String _logicalName="";
-    private String _productName="";
-    private int _productId=-1;
+    private String _logicalName = "";
+    private String _productName = "";
+    private int _productId = -1;
     private final String _networkUrl;
     private int _beacon;
     private final int _index;

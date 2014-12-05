@@ -9,6 +9,10 @@
     <string name="last_hour">Last hour</string>
     <string name="graph_duration">Duration</string>
     <string name="plug_a_device">Plug a Yoctopuce device to the USB port</string>
-    <string name="loading">Loading...</string>
+    <string name="loading">Loading…</string>
+    <string name="about">About</string>
+    <string name="about_intro">If you have trouble with %1$s application please contact support@yoctopuce.com</string>
+    <string name="application_version">Application version:</string>
+    <string name="yapi_version">Yoctopuce API version:</string>
 
 </resources>

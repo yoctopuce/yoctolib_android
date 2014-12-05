@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWlanRecord.java 17569 2014-09-10 08:16:24Z seb $
+ * $Id: YWlanRecord.java 18342 2014-11-12 10:14:51Z seb $
  *
  * YWlanRecord Class: Description of a wireless network detected
  *
@@ -73,7 +73,7 @@ public class YWlanRecord
             throw new YAPI_Exception(YAPI.IO_ERROR, "invalid json struct for YWlanRecord");
         }
     }
-    
+
     //--- (generated code: YWlanRecord implementation)
 
     public String get_ssid()
