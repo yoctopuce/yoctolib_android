@@ -6,8 +6,13 @@
     <string name="title_activity_firmware_update">Firmware Update</string>
     <string name="action_settings">Settings</string>
     <string name="about">About</string>
-    <string name="about_intro">If you have trouble with %1$s application please contact support@yoctopuce.com</string>
     <string name="application_version">Application version:</string>
     <string name="yapi_version">Yoctopuce API version:</string>
+    <string name="about_text"><![CDATA[
+        If you have trouble with %1$s application please contact  <a href="mailto:support@yoctopuce.com">support@yoctopuce.com</a><br><br>
+        Application version: %2$s<br><br>
+        Yoctopuce API : %3$s<br><br>
+        <a href="http://www.yoctopuce.com">www.yoctopuce.com</a>
+    ]]></string>
 
 </resources>

@@ -76,48 +76,12 @@ public class RelayListFragment extends ListFragment
             getActivity().invalidateOptionsMenu();
             return true;
         case R.id.menu_about:
-            showAbout(getActivity());
+            AboutDialog.showAbout(getActivity());
             return true;
         default:
             return super.onOptionsItemSelected(item);
         }
     }
-
-
-
-
-    protected void showAbout(Context ctx) {
-        // Inflate the about message contents
-        @SuppressLint("InflateParams") View messageView = getActivity().getLayoutInflater().inflate(R.layout.about, null);
-
-        Resources resources = getResources();
-        // set application message
-        String app_name = resources.getString(R.string.app_name);
-        TextView textView = (TextView) messageView.findViewById(R.id.about_message);
-        String format = resources.getString(R.string.about_intro);
-        textView.setText(String.format(format,app_name));
-        String version = "0";
-        try {
-            PackageInfo pInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
-            version = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        textView = (TextView) messageView.findViewById(R.id.app_version);
-        textView.setText(version);
-
-        textView = (TextView) messageView.findViewById(R.id.yapi_version);
-        textView.setText(YAPI.GetAPIVersion());
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-        builder.setIcon(R.drawable.yoctorelay);
-        builder.setTitle(app_name);
-        builder.setView(messageView);
-        builder.create();
-        builder.show();
-    }
-
-
 
     @Override
     public void onPrepareOptionsMenu(Menu menu)

@@ -1,5 +1,6 @@
 package com.yoctopuce.examples.yocto_graph;
 
+import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,7 +22,6 @@ import org.achartengine.GraphicalView;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("deprecation")
 public class GraphListFragment extends ListFragment {
 
 

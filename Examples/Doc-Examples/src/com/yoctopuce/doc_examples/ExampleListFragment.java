@@ -20,6 +20,12 @@ public class ExampleListFragment extends ListFragment {
         mExampleList.add(new Example("Prog-EventBased", ProgEventBasedActivity.class, false));
         mExampleList.add(new Example("Prog-MODBUS", ProgModbus.class, false));
         /** generated start */
+        /** generated GettingStarted_Yocto_RS232 start */
+        mExampleList.add(new Example("Yocto-RS232", GettingStarted_Yocto_RS232.class, false));
+        /** generated GettingStarted_Yocto_RS232 stop */   
+        /** generated GettingStarted_Yocto_Buzzer start */
+        mExampleList.add(new Example("Yocto-Buzzer", GettingStarted_Yocto_Buzzer.class, false));
+        /** generated GettingStarted_Yocto_Buzzer stop */   
         /** generated GettingStarted_Yocto_MaxiPowerRelay start */
         mExampleList.add(new Example("Yocto-MaxiPowerRelay", GettingStarted_Yocto_MaxiPowerRelay.class, false));
         /** generated GettingStarted_Yocto_MaxiPowerRelay stop */

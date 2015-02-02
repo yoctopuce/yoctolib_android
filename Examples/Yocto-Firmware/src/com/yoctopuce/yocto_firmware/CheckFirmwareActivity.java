@@ -15,10 +15,8 @@ import com.yoctopuce.YoctoAPI.YModule;
 import java.util.ArrayList;
 
 
-public class CheckFirmwareActivity extends Activity implements CheckFirmwareFragment.OnFragmentInteractionListener, ConfirmUpdateFragment.ConfirmUpdateListener
-{
+public class CheckFirmwareActivity extends Activity implements CheckFirmwareFragment.OnFragmentInteractionListener, ConfirmUpdateFragment.ConfirmUpdateListener {
 
-    private static final String TAG = "CheckFirmwareActivity";
     private Handler _handler;
     private final ArrayList<Updatable> _updateables = new ArrayList<Updatable>();
     private YoctolibManager _yoctolibManager;
@@ -26,7 +24,6 @@ public class CheckFirmwareActivity extends Activity implements CheckFirmwareFrag
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        Log.i(TAG, "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_firmware_update);
         if (savedInstanceState == null) {
@@ -40,17 +37,9 @@ public class CheckFirmwareActivity extends Activity implements CheckFirmwareFrag
 
 
     @Override
-    protected void onNewIntent(Intent intent)
-    {
-        Log.i(TAG, "onNewIntent");
-        super.onNewIntent(intent);
-    }
-
-    @Override
     protected void onStart()
     {
         super.onStart();
-        Log.i(TAG, "onStart");
         try {
             _yoctolibManager.StartUsage();
         } catch (YAPI_Exception e) {
@@ -63,34 +52,10 @@ public class CheckFirmwareActivity extends Activity implements CheckFirmwareFrag
     @Override
     protected void onStop()
     {
-        Log.i(TAG, "onStop");
         _handler.removeCallbacks(r);
         _yoctolibManager.StopUsage();
         super.onStop();
     }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-        Log.i(TAG, "onResume");
-    }
-
-    @Override
-    protected void onPause()
-    {
-        Log.i(TAG, "onPause");
-        super.onPause();
-    }
-
-    @Override
-    protected void onDestroy()
-    {
-        Log.i(TAG, "onDestroy");
-        super.onDestroy();
-    }
-
-
 
     private boolean RefreshList()
     {
@@ -141,7 +106,7 @@ public class CheckFirmwareActivity extends Activity implements CheckFirmwareFrag
             }
         }
 
-        if (toSweep.size()>0) {
+        if (toSweep.size() > 0) {
             for (Updatable u : toSweep) {
                 _updateables.remove(u);
             }
@@ -164,7 +129,6 @@ public class CheckFirmwareActivity extends Activity implements CheckFirmwareFrag
             _handler.postDelayed(this, 1000);
         }
     };
-
 
 
     @Override

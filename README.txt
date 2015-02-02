@@ -38,7 +38,8 @@
 Content of this package:
 =======================
 Binaries/                       Precompiled Android application Examples (.apk files)
-                                and precompiled library (.aar file) to import into your project
+                                and precompiled library (.aar and .jar file) to import
+                                into your project
 Documentation/                  API Reference, in HTML and PDF format
 Examples/                       Source code Android applications that use the library
 YoctoLib/                       Source code of the high-level library (in Java)

@@ -66,7 +66,8 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
     private final static int PIC24FJ64GB004 = 0x0F;
 
     // Spansion Flash JEDEC id
-    private final static int JEDEC_SPANSION_4MB = 0x15;
+    private final static int JEDEC_SPANSION_4MB = 0x16;
+    private final static int JEDEC_SPANSION_8MB = 0x17;
 
 
     private final Object _stateLock = new Object();
@@ -343,7 +344,12 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
         int flashPage = _first_code_page;
         if (_ext_total_pages > 0) {
             // code on external flash -> erase page by pages
-            int maxpages = (_ext_jedec_id == JEDEC_SPANSION_4MB ? 16 : 128);
+            int maxpages;
+            if (_ext_jedec_id == JEDEC_SPANSION_4MB || _ext_jedec_id == JEDEC_SPANSION_8MB) {
+                maxpages = 16;
+            }else {
+                maxpages = 128;
+            }
             while (flashPage < _ext_total_pages) {
                 setNewState(FLASH_STATE.ERASE);
                 int npages = _ext_total_pages - flashPage;

@@ -2,6 +2,6 @@
 <lint>
     <!-- Ignore the ObsoleteLayoutParam issue in the given files -->
     <issue id="deprecation">
-        <ignore path="src/com/yoctopuce/examples/yocto_graph/GraphListFragment"/>
+        <ignore path="src/com/yoctopuce/examples/yocto_graph/GraphListFragment.java"/>
     </issue>
 </lint>

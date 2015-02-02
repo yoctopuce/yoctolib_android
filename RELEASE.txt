@@ -1,10 +1,8 @@
-- Add firmware update API (YFirmwareUpdate class and helper method of YModules class)
-- Add thermistor configuration functions
-- Add startDataLogger and stopDataLogger to YSensor object
-- Add YBuzzer class
-- Update SSDP discovery to run in background
-- Update gradle script to use SDK 21
-- Update README.txt
-- Fix handling of calibration parameters
-- Fix averaged timed reports
-- Fix 3 seconds timeout on YAPI.Free() (append only with network device)
+- Add Yocto-Buzzer example
+- Add RS232 examples
+- Add support for new type of flash memory
+- Fix occasional crash during SSDP discovery (exception: java.util.ConcurrentModificationException)
+- Fix YModule.checkFirmware that was not throwing exception on error
+- Fix overflow in decoding in malformed timed notifications
+- Do not unregister network hub if SSDP discovery expire
+- Fix RIGHT/REAR device mount position

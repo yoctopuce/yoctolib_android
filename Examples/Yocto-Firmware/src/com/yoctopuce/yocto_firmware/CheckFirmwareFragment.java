@@ -68,7 +68,6 @@ public class CheckFirmwareFragment extends ListFragment implements CheckFirmware
         _checkFirmwareOnlineThread.start();
         _checkFirmwareOnlineThread.getLooper();
         Log.i(TAG, "Background thread started");
-
     }
 
 
@@ -101,7 +100,7 @@ public class CheckFirmwareFragment extends ListFragment implements CheckFirmware
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.menu_about) {
-            showAbout(getActivity());
+            AboutDialog.showAbout(getActivity());
             return true;
         }
 
@@ -198,7 +197,7 @@ public class CheckFirmwareFragment extends ListFragment implements CheckFirmware
             String text = String.format(res.getString(R.string.module_description), u.getProduct(), u.getSerial());
             serialTextView.setText(text);
             TextView firmwareTextView = (TextView) convertView.findViewById(R.id.firmware);
-            firmwareTextView.setText("checking...");
+            firmwareTextView.setText(res.getString(R.string.checking));
             _checkFirmwareOnlineThread.queueThumbnail(firmwareTextView, u);
             ImageView icon2dImageView = (ImageView) convertView.findViewById(R.id.icon2d);
             byte[] icon2d = u.getIcon2d();
@@ -248,7 +247,7 @@ public class CheckFirmwareFragment extends ListFragment implements CheckFirmware
             // no need to update dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(R.string.title_dialog_no_need_update);
-            builder.setNeutralButton(R.string.dialog_ok, null);
+            builder.setNeutralButton(android.R.string.ok, null);
             AlertDialog dialog = builder.create();
             dialog.show();
         } else {
@@ -267,40 +266,6 @@ public class CheckFirmwareFragment extends ListFragment implements CheckFirmware
         DialogFragment newFragment = ConfirmUpdateFragment.newInstance(serial,
                 product, latestFirmwarePath, latestFirmwareRev);
         newFragment.show(ft, "dialog");
-    }
-
-
-    protected void showAbout(Context ctx)
-    {
-        // Inflate the about message contents
-        @SuppressLint("InflateParams") View messageView = getActivity().getLayoutInflater().inflate(R.layout.about, null, false);
-
-        Resources resources = getResources();
-        // set application message
-        String app_name = resources.getString(R.string.app_name);
-        TextView textView = (TextView) messageView.findViewById(R.id.about_message);
-        String format = resources.getString(R.string.about_intro);
-        textView.setText(String.format(format, app_name));
-        String version = "0";
-        PackageInfo pInfo;
-        try {
-            pInfo = ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0);
-            version = pInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        textView = (TextView) messageView.findViewById(R.id.app_version);
-        textView.setText(version);
-
-        textView = (TextView) messageView.findViewById(R.id.yapi_version);
-        textView.setText(YAPI.GetAPIVersion());
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
-        builder.setIcon(R.drawable.ic_launcher);
-        builder.setTitle(app_name);
-        builder.setView(messageView);
-        builder.create();
-        builder.show();
     }
 
 

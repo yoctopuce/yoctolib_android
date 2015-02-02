@@ -69,8 +69,9 @@ public class YCallbackHub extends YGenericHub
     }
 
     @Override
-    public ArrayList<String> getBootloaders() {
-        return null;
+    public ArrayList<String> getBootloaders() throws YAPI_Exception
+    {
+        throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Firmware update is not supported in HTTP callback");
     }
 
     @Override

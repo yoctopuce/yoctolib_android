@@ -62,6 +62,24 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_RS232 start -->
+        <activity
+            android:name=".GettingStarted_Yocto_RS232"
+            android:label="Yocto-RS232">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+        </activity>
+        <!-- generated GettingStarted_Yocto_RS232 stop -->   
+        <!-- generated GettingStarted_Yocto_Buzzer start -->
+        <activity
+            android:name=".GettingStarted_Yocto_Buzzer"
+            android:label="Yocto-Buzzer">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+        </activity>
+        <!-- generated GettingStarted_Yocto_Buzzer stop -->   
         <!-- generated GettingStarted_Yocto_MaxiPowerRelay start -->
         <activity
             android:name=".GettingStarted_Yocto_MaxiPowerRelay"

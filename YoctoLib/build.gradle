@@ -1,4 +1,4 @@
-apply plugin: 'android-library'
+apply plugin: 'com.android.library'
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
@@ -6,7 +6,7 @@ dependencies {
 
 android {
     compileSdkVersion 21
-    buildToolsVersion "20.0.0"
+    buildToolsVersion "21.1.1"
 
     sourceSets {
         main {
@@ -36,3 +36,16 @@ android {
     }
 
 }
+
+task clearJar(type: Delete) {
+    delete 'build/libs/YoctoAPI.jar'
+}
+
+task makeJar(type: Copy) {
+    from('build/intermediates/bundles/release/')
+    into('../Binaries/')
+    include('classes.jar')
+    rename ('classes.jar', 'YoctoAPI.jar')
+}
+
+makeJar.dependsOn(clearJar, build)
