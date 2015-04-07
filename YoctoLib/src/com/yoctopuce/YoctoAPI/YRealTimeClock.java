@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRealTimeClock.java 18482 2014-11-21 16:52:18Z seb $
+ * $Id: YRealTimeClock.java 19323 2015-02-17 17:21:32Z seb $
  *
  * Implements FindRealTimeClock(), the high-level API for RealTimeClock functions
  *

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPressure.java 18482 2014-11-21 16:52:18Z seb $
+ * $Id: YPressure.java 19580 2015-03-04 10:57:18Z seb $
  *
  * Implements FindPressure(), the high-level API for Pressure functions
  *
@@ -48,8 +48,9 @@ import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 /**
  * YPressure Class: Pressure function interface
  *
- * The Yoctopuce application programming interface allows you to read an instant
- * measure of the sensor, as well as the minimal and maximal values observed.
+ * The Yoctopuce class YPressure allows you to read and configure Yoctopuce pressure
+ * sensors. It inherits from YSensor class the core functions to read measurements,
+ * register callback functions, access to the autonomous datalogger.
  */
  @SuppressWarnings("UnusedDeclaration")
 public class YPressure extends YSensor

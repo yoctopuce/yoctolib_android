@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 18638 2014-12-04 13:52:51Z seb $
+ * $Id: YUSBHub.java 19323 2015-02-17 17:21:32Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *

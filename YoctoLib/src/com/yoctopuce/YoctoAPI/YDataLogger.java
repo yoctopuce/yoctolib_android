@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataLogger.java 18342 2014-11-12 10:14:51Z seb $
+ * $Id: YDataLogger.java 19323 2015-02-17 17:21:32Z seb $
  *
  * Implements yFindDataLogger(), the high-level API for DataLogger functions
  *
@@ -148,7 +148,7 @@ public class YDataLogger extends YFunction
         String result;
         YDevice dev = SafeYAPI().getDevice(devid);
         try {
-            result = new String(dev.requestHTTPSync(httpreq, null));
+            result = dev.requestHTTPSyncAsString(httpreq, null);
         } catch (YAPI_Exception ex) {
             if (!_dataLoggerURL.equals("/dataLogger.json")) {
                 _dataLoggerURL = "/dataLogger.json";

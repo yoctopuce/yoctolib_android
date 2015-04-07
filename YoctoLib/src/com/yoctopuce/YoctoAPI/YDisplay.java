@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDisplay.java 18342 2014-11-12 10:14:51Z seb $
+ * $Id: YDisplay.java 19323 2015-02-17 17:21:32Z seb $
  *
  * Implements yFindDisplay(), the high-level API for Display functions
  *

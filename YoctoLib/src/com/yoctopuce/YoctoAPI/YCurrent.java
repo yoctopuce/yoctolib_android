@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCurrent.java 18482 2014-11-21 16:52:18Z seb $
+ * $Id: YCurrent.java 19580 2015-03-04 10:57:18Z seb $
  *
  * Implements FindCurrent(), the high-level API for Current functions
  *
@@ -48,8 +48,9 @@ import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 /**
  * YCurrent Class: Current function interface
  *
- * The Yoctopuce application programming interface allows you to read an instant
- * measure of the sensor, as well as the minimal and maximal values observed.
+ * The Yoctopuce class YCurrent allows you to read and configure Yoctopuce current
+ * sensors. It inherits from YSensor class the core functions to read measurements,
+ * register callback functions, access to the autonomous datalogger.
  */
  @SuppressWarnings("UnusedDeclaration")
 public class YCurrent extends YSensor

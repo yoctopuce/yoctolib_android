@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YNetwork.java 18482 2014-11-21 16:52:18Z seb $
+ * $Id: YNetwork.java 19323 2015-02-17 17:21:32Z seb $
  *
  * Implements FindNetwork(), the high-level API for Network functions
  *

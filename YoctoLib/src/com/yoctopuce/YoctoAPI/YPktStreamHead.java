@@ -1,11 +1,12 @@
 package com.yoctopuce.YoctoAPI;
 
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 
-class YPktStreamHead
-{
+class YPktStreamHead {
     protected static final int USB_PKT_STREAM_HEAD = 2;
     // pkt type definitions
     protected static final int YPKT_STREAM = 0;
@@ -21,6 +22,7 @@ class YPktStreamHead
     protected static final int YSTREAM_REPORT = 4;
     protected static final int YSTREAM_META = 5;
     protected static final int YSTREAM_REPORT_V2 = 6;
+    protected static final int YSTREAM_NOTICE_V2 = 7;
 
     private int _pktNumber;
     private int _streamType;
@@ -123,6 +125,9 @@ class YPktStreamHead
                     case YSTREAM_REPORT_V2:
                         stream = "REPORT_V2";
                         break;
+                    case YSTREAM_NOTICE_V2:
+                        stream = "NOTICE_v2 ";
+                        break;
                     default:
                         stream = "INVALID!";
                         break;
@@ -181,19 +186,32 @@ class YPktStreamHead
     }
 
 
-    NotificationStreams decodeAsNotification(YUSBDevice dev) throws YAPI_Exception {
+    NotificationStreams decodeAsNotification(YUSBDevice dev, boolean isV2) throws YAPI_Exception {
         try {
-            return new NotificationStreams(dev, _data);
+            return new NotificationStreams(dev, _data, isV2);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Invlalid USB packet");
         }
     }
 
-    static class NotificationStreams {
+
+    /**
+    * Created by seb on 27.02.2015.
+    */
+    static class NotificationStreams
+    {
 
         //notifications type
-        protected static final int NOTIFY_1STBYTE_MAXTINY = 63;
-        protected static final int NOTIFY_1STBYTE_MINSMALL = 128;
+        private static final int NOTIFY_1STBYTE_MAXTINY = 63;
+        private static final int NOTIFY_1STBYTE_MINSMALL = 128;
+
+        private static final int NOTIFY_V2_FUNYDX_MASK = 0xF;
+        private static final int NOTIFY_V2_TYPE_MASK = 0X3;
+        private static final int NOTIFY_V2_TYPE_OFS = 4;
+        private static final int NOTIFY_V2_IS_SMALL_FLAG = 0x80;
+
+
+
         protected static final int NOTIFY_PKT_NAME = 0;
         protected static final int NOTIFY_PKT_PRODNAME = 1;
         protected static final int NOTIFY_PKT_CHILD = 2;
@@ -206,14 +224,14 @@ class YPktStreamHead
 
 
         public enum NotType {
-            NAME, PRODNAME, CHILD, FIRMWARE, FUNCNAME, FUNCVAL, STREAMREADY, LOG, FUNCNAMEYDX
+            NAME, PRODNAME, CHILD, FIRMWARE, FUNCNAME, FUNCVAL, FUNCVALFLUSH, STREAMREADY, LOG, FUNCNAMEYDX
         }
-
 
         private final NotType _notType;
         private final String _serial;
         private String _functionId;
         private String _funcval;
+        private int _funcvalType;
         private String _logicalname;
         private byte _beacon;
         private String _product;
@@ -250,22 +268,25 @@ class YPktStreamHead
 
         }
 
-        public NotificationStreams(YUSBDevice dev, byte[] data) throws YAPI_Exception {
+        public NotificationStreams(YUSBDevice dev, byte[] data, boolean isV2) throws YAPI_Exception {
             int firstByte = data[0];
-            if (firstByte <= NOTIFY_1STBYTE_MAXTINY) {
-                _notType = NotType.FUNCVAL;
+            if (isV2 || firstByte <= NOTIFY_1STBYTE_MAXTINY || firstByte >= NOTIFY_1STBYTE_MINSMALL) {
+                _funcvalType = (firstByte >> NOTIFY_V2_TYPE_OFS) & NOTIFY_V2_TYPE_MASK;
                 _serial = dev.getSerial();
-                _functionId = dev.getFuncidFromYdx(_serial, firstByte);
-                if (_functionId == null)
-                    throw new YAPI_Exception(YAPI.IO_ERROR, "too early tiny notification");
-                _funcval = new String(data, 1, data.length - 1);
-            } else if (firstByte >= NOTIFY_1STBYTE_MINSMALL) {
-                _notType = NotType.FUNCVAL;
-                _serial = dev.getSerialFromYdx(data[1]);
-                _functionId = dev.getFuncidFromYdx(_serial, firstByte - NOTIFY_1STBYTE_MINSMALL);
-                if (_functionId == null || _serial == null)
-                    throw new YAPI_Exception(YAPI.IO_ERROR, "too early small notification");
-                _funcval = new String(data, 2, data.length - 2);
+                _functionId = dev.getFuncidFromYdx(_serial, firstByte & NOTIFY_V2_FUNYDX_MASK);
+                if (_funcvalType == YGenericHub.NOTIFY_V2_FLUSHGROUP) {
+                    _notType = NotType.FUNCVALFLUSH;
+                } else {
+                    _notType = NotType.FUNCVAL;
+                    if ((firstByte & NOTIFY_V2_IS_SMALL_FLAG) != 0) {
+                        // added on 2015-02-25, remove code below when confirmed dead code
+                        throw new YAPI_Exception(YAPI.IO_ERROR, "Hub Should not fwd notification");
+                    }
+                    _funcval = YGenericHub.decodePubVal(_funcvalType, data, 1, data.length - 1);
+                    Log.d("bug", String.format(" new val %s for %s.%s", _funcval, _serial, _functionId));
+                    if (_functionId == null)
+                        throw new YAPI_Exception(YAPI.IO_ERROR, "too early notification");
+                }
             } else {
                 _serial = arrayToString(data, 0, YAPI.YOCTO_SERIAL_LEN);
                 int p = YAPI.YOCTO_SERIAL_LEN;
@@ -328,6 +349,7 @@ class YPktStreamHead
             }
         }
 
+
         public NotType getNotType() {
             return _notType;
         }
@@ -381,6 +403,4 @@ class YPktStreamHead
         }
 
     }
-
-
 }

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBDevice.java 18451 2014-11-20 16:17:56Z seb $
+ * $Id: YUSBDevice.java 19526 2015-02-27 17:43:15Z seb $
  *
  * YUSBDevice Class: 
  *
@@ -111,15 +111,16 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
         return _usbIdx2Funcid.get(serial + i);
     }
 
-    private YPEntry getYPEntryFromNotification(YPktStreamHead.NotificationStreams not) throws YAPI_Exception
+    private YPEntry getYPEntry(String serial, String functionId) throws YAPI_Exception
     {
         YPEntry yp;
+        String hwid = serial + "." + functionId;
         synchronized (_usbYP) {
-            if (!_usbYP.containsKey(not.getHardwareId())) {
-                yp = new YPEntry(not.getSerial(), not.getFunctionId());
-                _usbYP.put(not.getHardwareId(), yp);
+            if (!_usbYP.containsKey(hwid)) {
+                yp = new YPEntry(serial, functionId);
+                _usbYP.put(hwid, yp);
             } else {
-                yp = _usbYP.get(not.getHardwareId());
+                yp = _usbYP.get(hwid);
             }
         }
         return yp;
@@ -455,19 +456,22 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
                 wp.setProductId(not.getDeviceid());
                 break;
             case FUNCNAME:
-                yp = getYPEntryFromNotification(not);
+                yp = getYPEntry(not.getSerial(), not.getFunctionId());
                 yp.setLogicalName(not.getFuncname());
                 break;
             case FUNCNAMEYDX:
                 _usbIdx2Funcid.put(not.getSerial() + not.getFunydx(), not.getFunctionId());
-                yp = getYPEntryFromNotification(not);
+                yp = getYPEntry(not.getSerial(), not.getFunctionId());
                 yp.setLogicalName(not.getFuncname());
                 yp.setIndex(not.getFunydx());
                 yp.setBaseclass(not.getFunclass());
                 break;
             case FUNCVAL:
-                yp = getYPEntryFromNotification(not);
+                yp = getYPEntry(not.getSerial(), not.getFunctionId());
                 SafeYAPI().setFunctionValue(yp.getHardwareId(), not.getFuncval());
+                break;
+            case FUNCVALFLUSH:
+                // To be implemented later
                 break;
             case LOG:
                 break;
@@ -562,10 +566,12 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     private void streamHandler(ArrayList<YPktStreamHead> streams)
     {
         for (YPktStreamHead s : streams) {
-            switch (s.getStreamType()) {
+            final int streamType = s.getStreamType();
+            switch (streamType) {
                 case YPktStreamHead.YSTREAM_NOTICE:
+                case YPktStreamHead.YSTREAM_NOTICE_V2:
                     try {
-                        YPktStreamHead.NotificationStreams not = s.decodeAsNotification(this);
+                        YPktStreamHead.NotificationStreams not = s.decodeAsNotification(this, streamType==YPktStreamHead.YSTREAM_NOTICE_V2);
                         handleNotifcation(not);
                     } catch (YAPI_Exception ignore) {
                         YAPI.SafeYAPI()._Log("drop invalid notification");
@@ -677,9 +683,8 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     {
         _rawDev = yusbRawDevice;
         _serial = yusbRawDevice.getSerial();
-        if (_rawDev.isUsable())
-        sendConfReset();
+        if (_rawDev.isUsable()) {
+            sendConfReset();
+        }
     }
-
-
 }

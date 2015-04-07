@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWlanRecord.java 18342 2014-11-12 10:14:51Z seb $
+ * $Id: YWlanRecord.java 19323 2015-02-17 17:21:32Z seb $
  *
  * YWlanRecord Class: Description of a wireless network detected
  *

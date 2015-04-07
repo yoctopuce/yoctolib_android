@@ -1,5 +1,7 @@
 package com.yoctopuce.YoctoAPI;
 
+import android.util.Log;
+
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 

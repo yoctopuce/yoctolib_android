@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBPkt.java 18317 2014-11-10 09:25:47Z seb $
+ * $Id: YUSBPkt.java 19323 2015-02-17 17:21:32Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *

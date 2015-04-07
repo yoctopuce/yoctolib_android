@@ -1,0 +1,86 @@
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="1">
+
+    <TableRow
+        android:id="@+id/tableRow1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Module to use:"
+            tools:ignore="HardcodedText" />
+
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </TableRow>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please enter the MODBUS slave address (1...255)"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/slavefield"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Please select a Coil No (>=1), Input Bit No (>=10001+), Register No (>=30001) or Input Register No (>=40001)"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/registerfield"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint=""
+        android:inputType="number"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Value to set (optional)"
+        tools:ignore="HardcodedText" />
+
+    <EditText
+        android:id="@+id/valuefield"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Result:"
+        tools:ignore="HardcodedText" />
+
+    <TextView
+        android:id="@+id/resultvalue"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        tools:ignore="HardcodedText" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="refreshInfo"
+        android:text="Refresh:"
+        tools:ignore="HardcodedText" />
+
+</TableLayout>

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBRawDevice.java 18638 2014-12-04 13:52:51Z seb $
+ * $Id: YUSBRawDevice.java 19323 2015-02-17 17:21:32Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *

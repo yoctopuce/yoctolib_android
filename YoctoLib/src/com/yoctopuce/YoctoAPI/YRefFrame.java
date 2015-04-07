@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRefFrame.java 19211 2015-02-02 13:18:41Z mvuilleu $
+ * $Id: YRefFrame.java 19323 2015-02-17 17:21:32Z seb $
  *
  * Implements FindRefFrame(), the high-level API for RefFrame functions
  *

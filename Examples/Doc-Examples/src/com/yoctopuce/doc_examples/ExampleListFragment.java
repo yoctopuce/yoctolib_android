@@ -20,6 +20,21 @@ public class ExampleListFragment extends ListFragment {
         mExampleList.add(new Example("Prog-EventBased", ProgEventBasedActivity.class, false));
         mExampleList.add(new Example("Prog-MODBUS", ProgModbus.class, false));
         /** generated start */
+        /** generated GettingStarted_Yocto_Light_V3 start */
+        mExampleList.add(new Example("Yocto-Light-V3", GettingStarted_Yocto_Light_V3.class, false));
+        /** generated GettingStarted_Yocto_Light_V3 stop */   
+        /** generated GettingStarted_Yocto_Thermistor_C start */
+        mExampleList.add(new Example("Yocto-Thermistor-C", GettingStarted_Yocto_Thermistor_C.class, false));
+        /** generated GettingStarted_Yocto_Thermistor_C stop */   
+        /** generated GettingStarted_Yocto_RS485 start */
+        mExampleList.add(new Example("Yocto-RS485", GettingStarted_Yocto_RS485.class, false));
+        /** generated GettingStarted_Yocto_RS485 stop */   
+        /** generated GettingStarted_Yocto_Serial start */
+        mExampleList.add(new Example("Yocto-Serial", GettingStarted_Yocto_Serial.class, false));
+        /** generated GettingStarted_Yocto_Serial stop */   
+        /** generated GettingStarted_Yocto_GPS start */
+        mExampleList.add(new Example("Yocto-GPS", GettingStarted_Yocto_GPS.class, false));
+        /** generated GettingStarted_Yocto_GPS stop */   
         /** generated GettingStarted_Yocto_RS232 start */
         mExampleList.add(new Example("Yocto-RS232", GettingStarted_Yocto_RS232.class, false));
         /** generated GettingStarted_Yocto_RS232 stop */   

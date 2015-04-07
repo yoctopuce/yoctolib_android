@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YOsControl.java 18482 2014-11-21 16:52:18Z seb $
+ * $Id: YOsControl.java 19323 2015-02-17 17:21:32Z seb $
  *
  * Implements FindOsControl(), the high-level API for OsControl functions
  *
