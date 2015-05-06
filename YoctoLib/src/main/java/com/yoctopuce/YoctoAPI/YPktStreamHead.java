@@ -1,6 +1,5 @@
 package com.yoctopuce.YoctoAPI;
 
-import android.util.Log;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -283,7 +282,6 @@ class YPktStreamHead {
                         throw new YAPI_Exception(YAPI.IO_ERROR, "Hub Should not fwd notification");
                     }
                     _funcval = YGenericHub.decodePubVal(_funcvalType, data, 1, data.length - 1);
-                    Log.d("bug", String.format(" new val %s for %s.%s", _funcval, _serial, _functionId));
                     if (_functionId == null)
                         throw new YAPI_Exception(YAPI.IO_ERROR, "too early notification");
                 }

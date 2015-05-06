@@ -1,41 +1,111 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+// This is the library version used when deploying the artifact
+version = "1.10.20255"
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "21.1.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 22
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
 
 dependencies {
     compile fileTree(dir: 'libs', include: '*.jar')
 }
 
-android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
 
-    sourceSets {
-        main {
-            manifest.srcFile 'AndroidManifest.xml'
-            java.srcDirs = ['src']
-            resources.srcDirs = ['src']
-            aidl.srcDirs = ['src']
-            renderscript.srcDirs = ['src']
-            res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
+
+def siteUrl = 'http://www.yoctopuce.com'      // Homepage URL of the library
+def gitUrl = 'https://github.com/yoctopuce/yoctolib_android'   // Git repository URL
+group = "com.yoctopuce.android"                                        // Maven Group ID for the artifact
+
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+
+                // Add your description here
+                name 'Yoctopuce Library for Android'
+                description = 'Yoctopuce Library for Android'
+                url siteUrl
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'Yoctopuce License'
+                        url 'http://www.yoctopuce.com/EN/cg.php'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'yoctopuce'
+                        name 'Yoctopuce'
+                        email 'dev@yoctopuce.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+
+                }
+            }
         }
-
-        // Move the tests to tests/java, tests/res, etc...
-        instrumentTest.setRoot('tests')
-
-        // Move the build types to build-types/<type>
-        // For instance, build-types/debug/java, build-types/debug/AndroidManifest.xml, ...
-        // This moves them out of them default location under src/<type>/... which would
-        // conflict with src/ being used by the main source set.
-        // Adding new build types or product flavors should be accompanied
-        // by a similar customization.
-        debug.setRoot('build-types/debug')
-        release.setRoot('build-types/release')
     }
-    lintOptions {
-        abortOnError false
-    }
-
 }
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+
+
+bintray {
+    user System.getenv("BINTRAY_USER")
+    key System.getenv("BINTRAY_APIKEY")
+
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "yoctolib"
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["BSD 2-Clause"]
+        publish = false
+    }
+}
+
 
 task clearJar(type: Delete) {
     delete 'build/libs/YoctoAPI.jar'

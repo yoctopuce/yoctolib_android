@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 19323 2015-02-17 17:21:32Z seb $
+ * $Id: YUSBHub.java 20060 2015-04-15 21:08:47Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -277,6 +277,11 @@ class YUSBHub extends YGenericHub
                 res.add(bootloader.getSerial());
         }
         return res;
+    }
+
+    @Override
+    public int ping(int mstimeout) throws YAPI_Exception {
+        return YAPI.SUCCESS;
     }
 
     @Override

@@ -1,1 +1,3 @@
-- Fix bug that corrupt calibration during firmware update
+- Fix invalid notification value for YGenericDevices
+- Fix race condition that drop setXXX on network devices
+- Remove debug logs message

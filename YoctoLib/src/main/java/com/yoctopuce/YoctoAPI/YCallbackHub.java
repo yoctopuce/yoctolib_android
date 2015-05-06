@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCallbackHub.java 19323 2015-02-17 17:21:32Z seb $
+ * $Id: YCallbackHub.java 20060 2015-04-15 21:08:47Z seb $
  *
  * YUSBHub stub (native usb is only supported in Android)
  *
@@ -70,6 +70,12 @@ public class YCallbackHub extends YGenericHub
 
     @Override
     public ArrayList<String> getBootloaders() throws YAPI_Exception
+    {
+        throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Firmware update is not supported in HTTP callback");
+    }
+
+    @Override
+    public int ping(int mstimeout) throws YAPI_Exception
     {
         throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Firmware update is not supported in HTTP callback");
     }
