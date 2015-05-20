@@ -1,63 +1,63 @@
-/*********************************************************************
+/**
+ * ******************************************************************
  *
- * $Id: YUSBPkt.java 19323 2015-02-17 17:21:32Z seb $
+ * $Id: YUSBPkt.java 20374 2015-05-19 10:15:25Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ * non-exclusive license to use, modify, copy and integrate this
+ * file into your software for the sole purpose of interfacing
+ * with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
- *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
- *  this notice in the distributed source file.
+ * You may reproduce and distribute copies of this file in
+ * source or object form, as long as the sole purpose of this
+ * code is to interface with Yoctopuce products. You must retain
+ * this notice in the distributed source file.
  *
- *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
- *  obligations.
+ * You should refer to Yoctopuce General Terms and Conditions
+ * for additional information regarding your rights and
+ * obligations.
  *
- *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
- *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
- *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- *  WARRANTY, OR OTHERWISE.
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
+ * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ * WARRANTY, OR OTHERWISE.
  *
- *********************************************************************/
+ * *******************************************************************
+ */
 
 package com.yoctopuce.YoctoAPI;
 
-import java.util.ArrayList;
-
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+import java.util.LinkedList;
 
 
-public class YUSBPkt {
+public class YUSBPkt
+{
 
 
     // generic pkt definitions
-    protected static final int YPKT_USB_VERSION_BCD = 0x0206;
+    protected static final int YPKT_USB_LEGACY_VERSION_BCD = 0x0207;
+    protected static final int YPKT_USB_VERSION_BCD = 0x0208;
     public static final int USB_PKT_SIZE = 64;
-    private final YUSBDevice _dev;
     protected int _pktno = 0;
-    protected ArrayList<YPktStreamHead> _streams;
+    protected LinkedList<YPktStreamHead> _streams;
 
 
-    YUSBPkt(YUSBDevice dev, int pktno, ArrayList<YPktStreamHead> streams)
+    YUSBPkt(int pktno, LinkedList<YPktStreamHead> streams)
     {
-        _dev = dev;
         _streams = streams;
         _pktno = pktno;
     }
@@ -68,37 +68,14 @@ public class YUSBPkt {
         return _pktno;
     }
 
-    public ArrayList<YPktStreamHead> getStreams()
+    public LinkedList<YPktStreamHead> getStreams()
     {
         return _streams;
     }
 
-    protected static boolean isCompatibe(int version, String serial) throws YAPI_Exception
-    {
-
-        if ((version & 0xff00) != (YPKT_USB_VERSION_BCD & 0xff00)) {
-            // major version change
-            if ((version & 0xff00) > (YPKT_USB_VERSION_BCD & 0xff00)) {
-                SafeYAPI()._Log(String.format("Yoctopuce library is too old (using 0x%x need 0x%x) to handle device %s, please upgrade your Yoctopuce library\n", YPKT_USB_VERSION_BCD, version, serial));
-                throw new YAPI_Exception(YAPI.IO_ERROR, "Library is too old to handle this device");
-            } else {
-                // implement backward compatibility when implementing a new protocol
-                throw new YAPI_Exception(YAPI.IO_ERROR, "implement backward compatibility when implementing a new protocol");
-            }
-        } else if (version != YPKT_USB_VERSION_BCD) {
-            if (version > YPKT_USB_VERSION_BCD) {
-                SafeYAPI()._Log(String.format("Device %s is using an newer protocol, consider upgrading your Yoctopuce library\n", serial));
-            } else {
-                SafeYAPI()._Log(String.format("Device %s is using an older protocol, consider upgrading the device firmware\n", serial));
-            }
-            return false;
-        }
-        return true;
-    }
-
     public String toString()
     {
-        String dump = String.format("pktno:%d with %d ystream", _pktno, _streams.size());
+        String dump = String.format("pktno:%d with %d ystream\n", _pktno, _streams.size());
         for (YPktStreamHead s : _streams) {
             dump += "\n" + s.toString();
         }
@@ -106,7 +83,8 @@ public class YUSBPkt {
     }
 
 
-    protected static class ConfPktReset {
+    protected static class ConfPktReset
+    {
         private int _api;
         private int _ok;
         private int _ifaceNo;
@@ -156,31 +134,43 @@ public class YUSBPkt {
         }
     }
 
-    protected static class ConfPktStart {
-        private int _nbIface;
+    protected static class ConfPktStart
+    {
 
-        public ConfPktStart(int nbiface)
+        private final int _nbIface;
+        private final int _ack_delay;
+
+        public ConfPktStart(int nbiface, int ack_delay)
         {
-            this._nbIface = nbiface;
+            _nbIface = nbiface;
+            _ack_delay = ack_delay;
         }
 
-        public int getNbIface()
-        {
-            return _nbIface;
-        }
 
         static public ConfPktStart Decode(byte[] data)
         {
-            return new ConfPktStart(data[0]);
+            int nbiface = data[0] & 0xff;
+            int ackDelay;
+            if (data.length >= 2) {
+                ackDelay = data[1] & 0xff;
+            } else {
+                ackDelay = 0;
+            }
+            return new ConfPktStart(nbiface, ackDelay);
         }
 
         public YPktStreamHead getAsStream()
         {
             byte[] data = new byte[USB_PKT_SIZE - YPktStreamHead.USB_PKT_STREAM_HEAD];
             data[0] = (byte) _nbIface;
+            data[1] = (byte) _ack_delay;
             return new YPktStreamHead(0, YPktStreamHead.YPKT_CONF, YPktStreamHead.USB_CONF_START, data, 0, data.length);
         }
 
+        public int getAckDelay()
+        {
+            return _ack_delay;
+        }
     }
 
 }

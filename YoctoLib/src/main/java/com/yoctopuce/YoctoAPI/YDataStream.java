@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataStream.java 19323 2015-02-17 17:21:32Z seb $
+ * $Id: YDataStream.java 20365 2015-05-19 07:45:42Z seb $
  *
  * YDataStream Class: Sequence of measured data, stored by the data logger
  *
@@ -39,9 +39,9 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
-
 import java.util.ArrayList;
+
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 //--- (generated code: YDataStream class start)
 /**

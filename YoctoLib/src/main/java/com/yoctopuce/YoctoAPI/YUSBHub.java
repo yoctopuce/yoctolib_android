@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 20060 2015-04-15 21:08:47Z seb $
+ * $Id: YUSBHub.java 20374 2015-05-19 10:15:25Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -256,7 +256,7 @@ class YUSBHub extends YGenericHub
         HashMap<String, ArrayList<YPEntry>> yellowPages = new HashMap<String, ArrayList<YPEntry>>();
         ArrayList<WPEntry> whitePages = new ArrayList<WPEntry>();
         for (YUSBDevice d : _devsFromAndroidRef.values()) {
-            if (d.isAllowed() && d.waitEndOfInit(500)) {
+            if (d.isAllowed() && d.waitEndOfInit(2000)) {
                 d.updateWhitesPages(whitePages);
                 d.updateYellowPages(yellowPages);
             }

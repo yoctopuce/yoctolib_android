@@ -1,7 +1,6 @@
 package com.yoctopuce.YoctoAPI;
 
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.LinkedList;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
@@ -9,9 +8,11 @@ import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 public class YUSBPktOut extends YUSBPkt {
 
     private static final int USB_META_UTCTIME = 1;
+    private static final int USB_META_DLFLUSH = 2;
+    private static final int USB_META_ACK_D2H_PACKET = 3;
 
-    YUSBPktOut(YUSBDevice dev) {
-        super(dev, 0, new ArrayList<YPktStreamHead>());
+    YUSBPktOut() {
+        super(0, new LinkedList<YPktStreamHead>());
     }
 
     public byte[] getRawPkt() throws YAPI_Exception
@@ -74,18 +75,32 @@ public class YUSBPktOut extends YUSBPkt {
         addStream(s);
     }
 
+    public void pushPktAck(int pktno) {
+        byte[] pktdata = new byte[2];
+        pktdata[0] = USB_META_ACK_D2H_PACKET;
+        pktdata[1] = (byte) (pktno & 0xff);
+        YPktStreamHead s = new YPktStreamHead(0, YPktStreamHead.YPKT_STREAM, YPktStreamHead.YSTREAM_META, pktdata, 0, pktdata.length);
+        addStream(s);
+    }
 
-    public static YUSBPktOut ResetPkt(YUSBDevice dev) {
+
+    public static YUSBPktOut ResetPkt() {
         ConfPktReset reset = new ConfPktReset(YPKT_USB_VERSION_BCD, 1, 0, 0);
-        YUSBPktOut pkt = new YUSBPktOut(dev);
+        YUSBPktOut pkt = new YUSBPktOut();
         pkt.addStream(reset.getAsStream());
         return pkt;
     }
 
-    public static YUSBPktOut StartPkt(YUSBDevice dev) {
-        ConfPktStart reset = new ConfPktStart(1);
-        YUSBPktOut pkt = new YUSBPktOut(dev);
-        pkt.addStream(reset.getAsStream());
+    public static YUSBPktOut StartPkt(int pktAckDelay) {
+        ConfPktStart start = new ConfPktStart(1, pktAckDelay);
+        YUSBPktOut pkt = new YUSBPktOut();
+        pkt.addStream(start.getAsStream());
+        return pkt;
+    }
+
+    public static YUSBPktOut AckPkt(int pktno) {
+        YUSBPktOut pkt = new YUSBPktOut();
+        pkt.pushPktAck(pktno);
         return pkt;
     }
 }

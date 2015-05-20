@@ -1,43 +1,46 @@
-/*********************************************************************
+/**
+ * ******************************************************************
  *
- * $Id: YUSBDevice.java 19526 2015-02-27 17:43:15Z seb $
+ * $Id: YUSBDevice.java 20376 2015-05-19 14:18:47Z seb $
  *
- * YUSBDevice Class: 
+ * YUSBDevice Class:
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ * non-exclusive license to use, modify, copy and integrate this
+ * file into your software for the sole purpose of interfacing
+ * with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
- *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
- *  this notice in the distributed source file.
+ * You may reproduce and distribute copies of this file in
+ * source or object form, as long as the sole purpose of this
+ * code is to interface with Yoctopuce products. You must retain
+ * this notice in the distributed source file.
  *
- *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
- *  obligations.
+ * You should refer to Yoctopuce General Terms and Conditions
+ * for additional information regarding your rights and
+ * obligations.
  *
- *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
- *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
- *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- *  WARRANTY, OR OTHERWISE.
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
+ * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ * WARRANTY, OR OTHERWISE.
  *
- *********************************************************************/
+ * *******************************************************************
+ */
 package com.yoctopuce.YoctoAPI;
 
+import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -45,16 +48,23 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
+import static com.yoctopuce.YoctoAPI.YAPI.YOCTO_API_VERSION_BCD;
 
-public class YUSBDevice implements YUSBRawDevice.IOHandler {
+public class YUSBDevice implements YUSBRawDevice.IOHandler
+{
 
     private static final long META_UTC_DELAY = 1800000;
+    private static final String TAG = "YUSBDevice";
+    private int _pktAckDelay = YAPI.pktAckDelay;
+    private int _devVersion;
 
     public boolean isAllowed()
     {
-        return _rawDev!=null && _rawDev.isUsable();
+        return _rawDev != null && _rawDev.isUsable();
     }
 
     public String getSerial()
@@ -62,9 +72,11 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
         return _serial;
     }
 
-    private enum PKT_State {
+
+    private enum PKT_State
+    {
         Plugged,
-        Authorize,
+        Authorized,
         ResetSend,
         ResetReceived,
         StartSend,
@@ -73,26 +85,32 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
         IOError
     }
 
-    private enum TCP_State {
+
+    private enum TCP_State
+    {
         Closed, Opened, Close_by_dev, Close_by_API
     }
 
     // USB communication data
     private String _serial = null;
+
     private int _lastpktno;
     private YUSBRawDevice _rawDev;
     private long _lastMetaUTC = -1;
     // internal whites pages updated form notifications
-    private final HashMap<String, WPEntry> _usbWP = new HashMap<String, WPEntry>();
-    // internal yellow  pages updated form notifications
-    private final HashMap<String, YPEntry> _usbYP = new HashMap<String, YPEntry>();
-    private HashMap<String, String> _usbIdx2Funcid = new HashMap<String, String>();
+    private final HashMap<String, WPEntry> _usbWP = new HashMap<>();
+    // internal yellow  pages updated from notifications
+    private final HashMap<String, YPEntry> _usbYP = new HashMap<>();
+    private HashMap<String, String> _usbIdx2Funcid = new HashMap<>();
+
     // mapping for ydx<serial> of potential subdevice for this USB device
-    private ArrayList<String> _usbIdx2Serial = new ArrayList<String>();
+    private ArrayList<String> _usbIdx2Serial = new ArrayList<>();
+
 
     private final Object _stateLock = new Object();
-    private PKT_State _pkt_state = PKT_State.Plugged;
-    private TCP_State _tcp_state = TCP_State.Closed;
+    private volatile PKT_State _pkt_state = PKT_State.Plugged;
+    private volatile TCP_State _tcp_state = TCP_State.Closed;
+    private String _ioErrorMessage = null;
 
     // async request related
     private YGenericHub.RequestAsyncResult _asyncResult;
@@ -101,12 +119,8 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     private long _currentRequestTimeout;
 
 
-    String getSerialFromYdx(int ydx)
-    {
-        return _usbIdx2Serial.get(ydx);
-    }
-
-    public String getFuncidFromYdx(String serial, int i)
+    //todo: look if we need to make it private
+    String getFuncidFromYdx(String serial, int i)
     {
         return _usbIdx2Funcid.get(serial + i);
     }
@@ -166,6 +180,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
             if (new_tcp_State != null) {
                 _tcp_state = TCP_State.Closed;
             }
+            _ioErrorMessage = null;
             _stateLock.notify();
         }
     }
@@ -173,8 +188,9 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     private boolean testState(PKT_State pkt_state, TCP_State tcp_State)
     {
         synchronized (_stateLock) {
-            if (_pkt_state != pkt_state)
+            if (_pkt_state != pkt_state) {
                 return false;
+            }
             if (tcp_State != null && _tcp_state != tcp_State)
                 return false;
         }
@@ -216,7 +232,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
                 }
             }
             if (_pkt_state == PKT_State.IOError) {
-                throw new YAPI_Exception(YAPI.IO_ERROR, "Device " + _serial + " " + message + " (io error)");
+                throw new YAPI_Exception(YAPI.IO_ERROR, "Device " + _serial + " " + _ioErrorMessage);
             }
             if (_pkt_state != wanted) {
                 throw new YAPI_Exception(YAPI.TIMEOUT, "Device " + _serial + " " + message + " (" + _pkt_state + ")");
@@ -232,10 +248,10 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     {
         // ensure that the device is started
         // send reset packet
-        YUSBPktOut ypkt_reset = YUSBPktOut.ResetPkt(this);
+        YUSBPktOut ypkt_reset = YUSBPktOut.ResetPkt();
         try {
-            _rawDev.sendPkt(ypkt_reset.getRawPkt());
             setNewState(PKT_State.ResetSend, TCP_State.Closed);
+            _rawDev.sendPkt(ypkt_reset.getRawPkt());
         } catch (YAPI_Exception e) {
             e.printStackTrace();
             ioError("Unable to send reset pkt:" + e.getLocalizedMessage());
@@ -247,17 +263,30 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
 
         if (testState(PKT_State.ResetSend, null)) {
             YUSBPkt.ConfPktReset reset = newpkt.getConfPktReset();
-            try {
-                YUSBPkt.isCompatibe(reset.getApi(), _serial);
-            } catch (YAPI_Exception e) {
-                ioError(e.getLocalizedMessage());
-                return;
+            _devVersion = reset.getApi();
+            if (_devVersion != YUSBPkt.YPKT_USB_VERSION_BCD) {
+                if ((_devVersion & 0xff00) != (YUSBPkt.YPKT_USB_VERSION_BCD & 0xff00)) {
+                    // major dev_version change
+                    if ((_devVersion & 0xff00) > (YUSBPkt.YPKT_USB_VERSION_BCD & 0xff00)) {
+                        SafeYAPI()._Log(String.format("Yoctopuce library is too old (using 0x%x need 0x%x) to handle device %s, please upgrade your Yoctopuce library\n", YUSBPkt.YPKT_USB_VERSION_BCD, _devVersion, _serial));
+                        ioError("Library is too old to handle this device");
+                    } else {
+                        // implement backward compatibility when implementing a new protocol
+                        ioError("implement backward compatibility when implementing a new protocol");
+                    }
+                    return;
+                } else {
+                    if (_devVersion > YUSBPkt.YPKT_USB_VERSION_BCD) {
+                        SafeYAPI()._Log(String.format("Device %s is using an newer protocol, consider upgrading your Yoctopuce library\n", _serial));
+                    } else {
+                        SafeYAPI()._Log(String.format("Device %s is using an older protocol, consider upgrading the device firmware\n", _serial));
+                    }
+                }
             }
-            // send startIO pkt
-            YUSBPktOut ypkt_start = YUSBPktOut.StartPkt(this);
+            YUSBPktOut ypkt_start = YUSBPktOut.StartPkt(YAPI.pktAckDelay);
             try {
-                _rawDev.sendPkt(ypkt_start.getRawPkt());
                 setNewState(PKT_State.StartSend, null);
+                _rawDev.sendPkt(ypkt_start.getRawPkt());
             } catch (YAPI_Exception e) {
                 e.printStackTrace();
                 ioError("Unable to send start pkt:" + e.getLocalizedMessage());
@@ -267,9 +296,28 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
         }
     }
 
+    private void ackInPkt(int pktno)
+    {
+        if (_pktAckDelay > 0) {
+            YUSBPktOut ypkt_start = YUSBPktOut.AckPkt(pktno);
+            try {
+                _rawDev.sendPkt(ypkt_start.getRawPkt());
+            } catch (YAPI_Exception e) {
+                ioError("Unable to send start pkt:" + e.getLocalizedMessage());
+            }
+        }
+
+    }
+
     private void receiveConfStart(YUSBPktIn newpkt)
     {
         if (testState(PKT_State.StartSend, null)) {
+            YUSBPkt.ConfPktStart pktStart = newpkt.getConfPktStart();
+            if (_devVersion >=  YUSBPkt.YPKT_USB_VERSION_BCD) {
+                _pktAckDelay = pktStart.getAckDelay();
+            } else {
+                _pktAckDelay = 0;
+            }
             _lastpktno = newpkt.getPktno();
             setNewState(PKT_State.StartReceived, null);
         } else {
@@ -305,15 +353,19 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
                 }
                 return;
             }
-            while (_tcp_state == TCP_State.Opened && _currentRequestTimeout > YAPI.GetTickCount()) {
+            while (_pkt_state != PKT_State.IOError && _tcp_state == TCP_State.Opened && _currentRequestTimeout > YAPI.GetTickCount()) {
                 try {
                     _stateLock.wait(_currentRequestTimeout - YAPI.GetTickCount());
                 } catch (InterruptedException e) {
                     throw new YAPI_Exception(YAPI.TIMEOUT, "HTTP request on " + _serial + " did not finished correctly", e);
                 }
             }
+            if (_pkt_state == PKT_State.IOError) {
+                throw new YAPI_Exception(YAPI.IO_ERROR, "IO error: " + _ioErrorMessage);
+            }
+
             // send API close
-            ypkt = new YUSBPktOut(this);
+            ypkt = new YUSBPktOut();
             ypkt.pushTCPClose();
             _rawDev.sendPkt(ypkt.getRawPkt());
             if (_tcp_state == TCP_State.Close_by_dev) {
@@ -341,8 +393,8 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
 
     private void sendRequest(String firstLine, byte[] rest_of_request, YGenericHub.RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception
     {
-        // first enssure that last request has finished
-        waitForTcpState(PKT_State.StreamReadyReceived, null, 10, "Device not ready");
+        // first ensure that last request has finished
+        waitForTcpState(PKT_State.StreamReadyReceived, null, 100, "Device not ready");
         finishLastRequest(true);
         synchronized (_req_result) {
             _req_result.reset();
@@ -362,7 +414,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
         _currentRequestTimeout = YAPI.GetTickCount() + 10000;// 10 sec
         int pos = 0;
         while (pos < currentRequest.length) {
-            YUSBPktOut ypkt = new YUSBPktOut(this);
+            YUSBPktOut ypkt = new YUSBPktOut();
             pos += ypkt.pushTCP(currentRequest, pos, currentRequest.length - pos);
             _rawDev.sendPkt(ypkt.getRawPkt());
         }
@@ -392,7 +444,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     public void checkMetaUTC()
     {
         if (_lastMetaUTC + META_UTC_DELAY < YAPI.GetTickCount()) {
-            YUSBPktOut ypkt = new YUSBPktOut(this);
+            YUSBPktOut ypkt = new YUSBPktOut();
             ypkt.pushMetaUTC();
             try {
                 _rawDev.sendPkt(ypkt.getRawPkt());
@@ -563,7 +615,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     }
 
 
-    private void streamHandler(ArrayList<YPktStreamHead> streams)
+    private void streamHandler(List<YPktStreamHead> streams)
     {
         for (YPktStreamHead s : streams) {
             final int streamType = s.getStreamType();
@@ -571,7 +623,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
                 case YPktStreamHead.YSTREAM_NOTICE:
                 case YPktStreamHead.YSTREAM_NOTICE_V2:
                     try {
-                        YPktStreamHead.NotificationStreams not = s.decodeAsNotification(this, streamType==YPktStreamHead.YSTREAM_NOTICE_V2);
+                        YPktStreamHead.NotificationStreams not = s.decodeAsNotification(this, streamType == YPktStreamHead.YSTREAM_NOTICE_V2);
                         handleNotifcation(not);
                     } catch (YAPI_Exception ignore) {
                         YAPI.SafeYAPI()._Log("drop invalid notification");
@@ -636,12 +688,13 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     {
         YUSBPktIn newpkt;
         try {
-            newpkt = YUSBPktIn.Decode(this, android_raw_pkt);
+            newpkt = YUSBPktIn.Decode(android_raw_pkt);
         } catch (YAPI_Exception e) {
             SafeYAPI()._Log("Drop invalid packet:" + e.getLocalizedMessage());
             e.printStackTrace();
             return;
         }
+        ackInPkt(newpkt.getPktno());
         if (newpkt.isConfPktReset()) {
             receiveConfReset(newpkt);
         } else if (newpkt.isConfPktStart()) {
@@ -654,16 +707,22 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
                 }
             }
             if (use) {
+                if (_pktAckDelay > 0 && _lastpktno == newpkt.getPktno()) {
+                    //late retry : drop it since we allready have the packet.
+                    return;
+                }
                 int expectedPktNo = (_lastpktno + 1) & 7;
                 if (newpkt.getPktno() != expectedPktNo) {
                     String message = "Missing packet (look of pkt " + expectedPktNo + " but get " + newpkt.getPktno() + ")";
                     SafeYAPI()._Log(message + "\n");
+                    SafeYAPI()._Log("Set YAPI.RESEND_MISSING_PKT on YAPI.InitAPI()\n");
                     ioError(message);
                     return;
                 }
                 _lastpktno = newpkt.getPktno();
-                ArrayList<YPktStreamHead> streams = newpkt.getStreams();
+                LinkedList<YPktStreamHead> streams = newpkt.getStreams();
                 streamHandler(streams);
+                checkMetaUTC();
             } else {
                 SafeYAPI()._Log("Drop non-config pkt:" + newpkt.toString());
             }
@@ -674,8 +733,15 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler {
     @Override
     public void ioError(String errorMessage)
     {
-        SafeYAPI()._Log("USB IO Error:" + errorMessage);
-        setNewState(PKT_State.IOError, TCP_State.Closed);
+        String msg = "USB IO error:" + errorMessage;
+        SafeYAPI()._Log(msg);
+        Log.e(TAG, msg);
+        synchronized (_stateLock) {
+            _pkt_state = PKT_State.IOError;
+            _tcp_state = TCP_State.Closed;
+            _ioErrorMessage = errorMessage;
+            _stateLock.notify();
+        }
     }
 
     @Override

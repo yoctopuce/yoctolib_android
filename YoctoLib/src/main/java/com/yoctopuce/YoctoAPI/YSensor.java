@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSensor.java 19580 2015-03-04 10:57:18Z seb $
+ * $Id: YSensor.java 20365 2015-05-19 07:45:42Z seb $
  *
  * Implements yFindSensor(), the high-level API for Sensor functions
  *
@@ -39,12 +39,12 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 //--- (generated code: YSensor class start)
 /**

@@ -1,19 +1,19 @@
 package com.yoctopuce.YoctoAPI;
 
-import android.util.Log;
-
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
+import java.util.LinkedList;
 
-public class YUSBPktIn extends YUSBPkt {
+public class YUSBPktIn extends YUSBPkt
+{
 
-    YUSBPktIn(YUSBDevice dev, ArrayList<YPktStreamHead> streams) {
-        super(dev, streams.get(0).getPktNumber(), streams);
+    YUSBPktIn(LinkedList<YPktStreamHead> streams)
+    {
+        super(streams.get(0).getPktNumber(), streams);
     }
 
-    static YUSBPktIn Decode(YUSBDevice dev, ByteBuffer bb) throws YAPI_Exception
+    static YUSBPktIn Decode(ByteBuffer bb) throws YAPI_Exception
     {
-        ArrayList<YPktStreamHead> streams = new ArrayList<YPktStreamHead>();
+        LinkedList<YPktStreamHead> streams = new LinkedList<>();
         while (bb.remaining() > 0) {
             YPktStreamHead s = YPktStreamHead.Decode(bb);
             if (s == null) {
@@ -21,10 +21,11 @@ public class YUSBPktIn extends YUSBPkt {
             }
             streams.add(s);
         }
-        return new YUSBPktIn(dev, streams);
+        return new YUSBPktIn(streams);
     }
 
-    public boolean isConfPktReset() {
+    public boolean isConfPktReset()
+    {
         if (_streams.size() < 1)
             return false;
         YPktStreamHead s = _streams.get(0);
@@ -32,7 +33,8 @@ public class YUSBPktIn extends YUSBPkt {
     }
 
 
-    public ConfPktReset getConfPktReset() {
+    public ConfPktReset getConfPktReset()
+    {
         if (!isConfPktReset())
             return null;
         byte[] data = _streams.get(0).getDataAsByteArray();
@@ -40,10 +42,20 @@ public class YUSBPktIn extends YUSBPkt {
     }
 
 
-    public boolean isConfPktStart() {
+    public boolean isConfPktStart()
+    {
         if (_streams.size() < 1)
             return false;
         YPktStreamHead s = _streams.get(0);
         return s.isConfPktStart();
     }
+
+    public ConfPktStart getConfPktStart()
+    {
+        if (!isConfPktStart())
+            return null;
+        byte[] data = _streams.get(0).getDataAsByteArray();
+        return ConfPktStart.Decode(data);
+    }
+
 }

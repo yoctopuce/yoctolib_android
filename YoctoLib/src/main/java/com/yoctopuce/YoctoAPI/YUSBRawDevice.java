@@ -1,41 +1,43 @@
-/*********************************************************************
+/**
+ * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 19323 2015-02-17 17:21:32Z seb $
+ * $Id: YUSBRawDevice.java 20374 2015-05-19 10:15:25Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ * non-exclusive license to use, modify, copy and integrate this
+ * file into your software for the sole purpose of interfacing
+ * with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
- *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
- *  this notice in the distributed source file.
+ * You may reproduce and distribute copies of this file in
+ * source or object form, as long as the sole purpose of this
+ * code is to interface with Yoctopuce products. You must retain
+ * this notice in the distributed source file.
  *
- *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
- *  obligations.
+ * You should refer to Yoctopuce General Terms and Conditions
+ * for additional information regarding your rights and
+ * obligations.
  *
- *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
- *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
- *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- *  WARRANTY, OR OTHERWISE.
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
+ * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ * WARRANTY, OR OTHERWISE.
  *
- *********************************************************************/
+ * *******************************************************************
+ */
 
 package com.yoctopuce.YoctoAPI;
 
@@ -47,10 +49,13 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbRequest;
 
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class YUSBRawDevice implements Runnable {
+public class YUSBRawDevice implements Runnable
+{
+    private static final String TAG = "YPKT";
     private State _state;
     private YUSBHub _usbHub;
     private String _serial;
@@ -65,7 +70,8 @@ public class YUSBRawDevice implements Runnable {
         return _state == State.ACCEPTED;
     }
 
-    enum State {
+    enum State
+    {
         UNPLUGGED,
         PLUGGED,
         ACCEPTED,
@@ -75,8 +81,8 @@ public class YUSBRawDevice implements Runnable {
     final private UsbDevice _device;
     final private UsbManager _manager;
     final private IOHandler _ioHandler;
-    private UsbDeviceConnection _connection;
-    private UsbInterface _intf;
+    private volatile UsbDeviceConnection _connection;
+    private volatile UsbInterface _intf;
     private boolean _muststop = false;
     private final Object _threadLock = new Object();
     private Thread thread;
@@ -105,11 +111,11 @@ public class YUSBRawDevice implements Runnable {
     }
 
 
+    public interface IOHandler
+    {
+        void newPKT(ByteBuffer android_raw_pkt) throws InterruptedException;
 
-    public interface IOHandler {
-        public void newPKT(ByteBuffer android_raw_pkt);
-
-        public void ioError(String msg);
+        void ioError(String msg);
 
         void rawDeviceUpdateState(YUSBRawDevice yusbRawDevice);
     }
@@ -163,8 +169,23 @@ public class YUSBRawDevice implements Runnable {
         thread = new Thread(this);
         thread.setName("IOusb_" + _serial);
         thread.start();
-        _ioStarted = true;
 
+        synchronized (this) {
+            if (!_ioStarted) {
+                try {
+                    this.wait(500);
+                } catch (InterruptedException e) {
+                    YAPI.SafeYAPI()._Log("unable to start IOhTread: " + e.getLocalizedMessage());
+                    release();
+                    return false;
+                }
+            }
+            if (!_ioStarted) {
+                YAPI.SafeYAPI()._Log("unable to start IOhTread ");
+                release();
+                return false;
+            }
+        }
         _ioHandler.rawDeviceUpdateState(this);
         return true;
     }
@@ -223,13 +244,26 @@ public class YUSBRawDevice implements Runnable {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Unable to get USB Out endpoint");
         }
 
-        int result;
-        int retry = 0;
+        int result = 0;
+        int attempt = 0;
         do {
+            if (result < 0) {
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    throw new YAPI_Exception(YAPI.IO_ERROR, "InterruptedException ont pkt sent");
+                }
+            }
             result = _connection.bulkTransfer(endpointOUT, outPkt,
                     outPkt.length, 1000);
-            retry++;
-        } while (result < 0 && retry < 15);
+            attempt++;
+        } while (result < 0 && attempt < 15);
+        if (result < 0) {
+            throw new YAPI_Exception(YAPI.IO_ERROR,
+                    String.format("Unable to send USB packet after %d attempt (res=%d)",
+                            attempt, result));
+
+        }
     }
 
     public void run()
@@ -253,60 +287,71 @@ public class YUSBRawDevice implements Runnable {
         }
         // initialise both directions requests
         UsbRequest d2h_r = new UsbRequest();
-        d2h_r.initialize(_connection, endpointIN);
-        byte[] data = new byte[YUSBPkt.USB_PKT_SIZE];
-        data[0] = (byte) 0xde;
-        data[1] = (byte) 0xad;
-        data[2] = (byte) 0xbe;
-        data[3] = (byte) 0xef;
-        d2h_r.setClientData(data);
-        ByteBuffer d2h_pkt = ByteBuffer.wrap(data);
+        boolean initializeed = d2h_r.initialize(_connection, endpointIN);
+        if (!initializeed) {
+            String msg = "Unable to initialize USB request for " + _device.toString();
+            _ioHandler.ioError(msg);
+            return;
+        }
+
+        // init the packet with some garbage to detect errors
+        ByteBuffer d2h_pkt = ByteBuffer.allocateDirect(YUSBPkt.USB_PKT_SIZE);
         d2h_pkt.order(ByteOrder.LITTLE_ENDIAN);
-        d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
+        boolean d2h_request_queued = d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
+        synchronized (YUSBRawDevice.this) {
+            _ioStarted = true;
+            YUSBRawDevice.this.notifyAll();
+        }
+
         while (!mustBgThreadStop()) {
-            /*
-			 * If the connection was closed, destroy the connections and
-			 * variables and exit this thread.
-			 */
+            //If the connection was closed, destroy the connections and
+            //variables and exit this thread.
             if (_connection == null) {
                 break;
             }
-            UsbRequest finished;
-            try {
-                finished = _connection.requestWait();
-            } catch (Exception e) {
-                finished = null;
+            UsbRequest finished = null;
+            if (d2h_request_queued) {
+                try {
+                    finished = _connection.requestWait();
+                } catch (Exception e) {
+                    _ioHandler.ioError("USB requestWait():" + e.getLocalizedMessage());
+                    break;
+                }
             }
             if (finished != null) {
                 UsbEndpoint endp = finished.getEndpoint();
                 nbSuccessiveError = 0;
                 if (endp != null && endp.getDirection() == UsbConstants.USB_DIR_IN) {
-                    // d2h request
-                    ByteBuffer wraped = ByteBuffer.wrap(data);
-                    wraped.order(ByteOrder.LITTLE_ENDIAN);
-                    if (!mustBgThreadStop()) {
-                        _ioHandler.newPKT(wraped);
+                    d2h_pkt.rewind();
+                    if (d2h_pkt.limit() == YUSBPkt.USB_PKT_SIZE) {
+                        if (!mustBgThreadStop()) {
+                            try {
+                                _ioHandler.newPKT(d2h_pkt);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                break;
+                            }
+                        }
+                    } else {
+                        //Log.d(TAG, "drop invalid packet" + d2h_pkt.toString());
                     }
-                    data[0] = (byte) 0xde;
-                    data[1] = (byte) 0xad;
-                    data[2] = (byte) 0xbe;
-                    data[3] = (byte) 0xef;
                     d2h_pkt.clear();
-                    d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
+                    d2h_request_queued = d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
+
                 }
             } else {
                 if (nbSuccessiveError > 5) {
                     _ioHandler.ioError("Too may successive USB error");
                     break;
                 }
+                nbSuccessiveError++;
+                // let Android breath a bit
+                try {
+                    Thread.sleep(500, 0);
+                } catch (InterruptedException e) {
+                    break;
+                }
             }
-            //fixme: add checkmetaUTC
-//            try {
-//                _ioHandler.checkMetaUTC();
-//            } catch (YAPI_Exception e) {
-//                nbSuccessiveError++;
-//                _ioHandler.ioError(e.getMessage());
-//            }
 
         }
     }
