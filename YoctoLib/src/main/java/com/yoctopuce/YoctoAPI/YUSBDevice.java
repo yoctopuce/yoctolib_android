@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 20376 2015-05-19 14:18:47Z seb $
+ * $Id: YUSBDevice.java 20584 2015-06-05 12:48:02Z seb $
  *
  * YUSBDevice Class:
  *
@@ -52,14 +52,13 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
-import static com.yoctopuce.YoctoAPI.YAPI.YOCTO_API_VERSION_BCD;
 
 public class YUSBDevice implements YUSBRawDevice.IOHandler
 {
 
     private static final long META_UTC_DELAY = 1800000;
-    private static final String TAG = "YUSBDevice";
-    private int _pktAckDelay = YAPI.pktAckDelay;
+    private static final String TAG = "YAPI";
+    private int _pktAckDelay = 0;
     private int _devVersion;
 
     public boolean isAllowed()
@@ -313,7 +312,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     {
         if (testState(PKT_State.StartSend, null)) {
             YUSBPkt.ConfPktStart pktStart = newpkt.getConfPktStart();
-            if (_devVersion >=  YUSBPkt.YPKT_USB_VERSION_BCD) {
+            if (_devVersion >= YUSBPkt.YPKT_USB_VERSION_BCD) {
                 _pktAckDelay = pktStart.getAckDelay();
             } else {
                 _pktAckDelay = 0;
@@ -708,7 +707,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
             }
             if (use) {
                 if (_pktAckDelay > 0 && _lastpktno == newpkt.getPktno()) {
-                    //late retry : drop it since we allready have the packet.
+                    //late retry : drop it since we already have the packet.
                     return;
                 }
                 int expectedPktNo = (_lastpktno + 1) & 7;

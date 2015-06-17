@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAPI.java 20376 2015-05-19 14:18:47Z seb $
+ * $Id: YAPI.java 20508 2015-06-01 16:32:48Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -61,7 +61,7 @@ public class YAPI {
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "1.10";
-    public static final String YOCTO_API_BUILD_STR = "20384";
+    public static final String YOCTO_API_BUILD_STR = "20652";
     public static final int YOCTO_API_VERSION_BCD = 0x0110;
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
@@ -548,6 +548,29 @@ public class YAPI {
         return ret;
     }
 
+    public static int _atoi(String str)
+    {
+        str = str.trim();
+        if (str.length() == 0) {
+            return 0;
+        }
+        int i = 0;
+        if (str.charAt(i) == '-' || str.charAt(i) == '+') {
+            i++;
+        }
+        for (; i < str.length(); i++) {
+
+            //If we find a non-digit character we return false.
+            if (!Character.isDigit(str.charAt(i)))
+                break;
+        }
+        if (i == 0) {
+            return 0;
+        }
+        str = str.substring(0, i);
+        return Integer.valueOf(str);
+    }
+
     final protected static char[] _hexArray = "0123456789abcdef".toCharArray();
 
     static String _bytesToHexStr(byte[] bytes, int offset, int len)
@@ -671,7 +694,8 @@ public class YAPI {
                     if (yp.getBaseclass().equals(baseType)) {
                         return yp;
                     }
-                } catch (YAPI_Exception ignore){}
+                } catch (YAPI_Exception ignore) {
+                }
             }
         }
         throw new YAPI_Exception(YAPI.DEVICE_NOT_FOUND, "No function of type " + className + " found");
@@ -857,7 +881,6 @@ public class YAPI {
     }
 
 
-
     void _UpdateValueCallbackList(YFunction func, boolean add)
     {
         if (add) {
@@ -882,7 +905,8 @@ public class YAPI {
                     if (func.getHardwareId().equals(hwid)) {
                         return func;
                     }
-                } catch (YAPI_Exception ignore) {}
+                } catch (YAPI_Exception ignore) {
+                }
             }
         }
         return null;
@@ -913,7 +937,8 @@ public class YAPI {
                     if (func.getHardwareId().equals(hwid)) {
                         return func;
                     }
-                } catch (YAPI_Exception ignore) {}
+                } catch (YAPI_Exception ignore) {
+                }
             }
         }
         return null;
@@ -1126,7 +1151,8 @@ public class YAPI {
         }
         try {
             _TriggerHubDiscovery();
-        } catch (YAPI_Exception ignore) {}
+        } catch (YAPI_Exception ignore) {
+        }
     }
 
     public void _RegisterLogFunction(YAPI.LogCallback logfun)
@@ -1162,7 +1188,7 @@ public class YAPI {
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".20384";
+        return YOCTO_API_VERSION_STR + ".20652";
     }
 
     /**
