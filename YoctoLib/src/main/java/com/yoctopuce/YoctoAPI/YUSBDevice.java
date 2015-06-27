@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 20584 2015-06-05 12:48:02Z seb $
+ * $Id: YUSBDevice.java 20771 2015-06-26 16:55:16Z seb $
  *
  * YUSBDevice Class:
  *
@@ -56,10 +56,11 @@ import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 public class YUSBDevice implements YUSBRawDevice.IOHandler
 {
 
-    private static final long META_UTC_DELAY = 1800000;
+    private static final long META_UTC_DELAY = 60000;
     private static final String TAG = "YAPI";
     private int _pktAckDelay = 0;
     private int _devVersion;
+    private int _retry = 0;
 
     public boolean isAllowed()
     {
@@ -155,15 +156,22 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         return yp;
     }
 
-    public boolean waitEndOfInit(int wait)
+    public boolean waitEndOfInit()
     {
-        try {
-            waitForTcpState(PKT_State.StreamReadyReceived, null, wait, "Device not ready");
-        } catch (YAPI_Exception e) {
-            e.printStackTrace();
-            return false;
+        boolean ready = false;
+        while (!ready && _retry < 5) {
+
+            try {
+                waitForTcpState(PKT_State.StreamReadyReceived, null, 200, "Device not ready");
+                _retry = 0;
+                ready = true;
+            } catch (YAPI_Exception e) {
+                e.printStackTrace();
+                _retry++;
+                sendConfReset();
+            }
         }
-        return true;
+        return ready;
     }
 
 

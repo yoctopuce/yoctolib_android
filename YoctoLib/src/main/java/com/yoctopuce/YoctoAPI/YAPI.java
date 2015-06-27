@@ -1,40 +1,38 @@
 /*********************************************************************
- *
- * $Id: YAPI.java 20508 2015-06-01 16:32:48Z seb $
+ * $Id: YAPI.java 20772 2015-06-26 17:07:25Z seb $
  *
  * High-level programming interface, common to all modules
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing
- *  with Yoctopuce products.
+ * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ * non-exclusive license to use, modify, copy and integrate this
+ * file into your software for the sole purpose of interfacing
+ * with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in
- *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain
- *  this notice in the distributed source file.
+ * You may reproduce and distribute copies of this file in
+ * source or object form, as long as the sole purpose of this
+ * code is to interface with Yoctopuce products. You must retain
+ * this notice in the distributed source file.
  *
- *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and
- *  obligations.
+ * You should refer to Yoctopuce General Terms and Conditions
+ * for additional information regarding your rights and
+ * obligations.
  *
- *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
- *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
- *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- *  WARRANTY, OR OTHERWISE.
- *
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
+ * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ * WARRANTY, OR OTHERWISE.
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
@@ -51,7 +49,8 @@ import java.util.Queue;
 /**
  *
  */
-public class YAPI {
+public class YAPI
+{
 
 
     // Return value for invalid strings
@@ -61,7 +60,7 @@ public class YAPI {
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "1.10";
-    public static final String YOCTO_API_BUILD_STR = "20652";
+    public static final String YOCTO_API_BUILD_STR = "20773";
     public static final int YOCTO_API_VERSION_BCD = 0x0110;
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
@@ -114,7 +113,8 @@ public class YAPI {
     static int pktAckDelay = DEFAULT_PKT_RESEND_DELAY;
 
 
-    private final YSSDP.YSSDPReportInterface _ssdpCallback = new YSSDP.YSSDPReportInterface() {
+    private final YSSDP.YSSDPReportInterface _ssdpCallback = new YSSDP.YSSDPReportInterface()
+    {
         @Override
         public void HubDiscoveryCallback(String serial, String urlToRegister, String urlToUnregister)
         {
@@ -139,30 +139,36 @@ public class YAPI {
         }
     };
 
+
     /**
      *
      */
-    public interface DeviceArrivalCallback {
+    public interface DeviceArrivalCallback
+    {
 
         void yDeviceArrival(YModule module);
     }
 
-    public interface DeviceRemovalCallback {
+    public interface DeviceRemovalCallback
+    {
 
         void yDeviceRemoval(YModule module);
     }
 
-    public interface DeviceChangeCallback {
+    public interface DeviceChangeCallback
+    {
 
         void yDeviceChange(YModule module);
     }
 
-    public interface LogCallback {
+    public interface LogCallback
+    {
 
         void yLog(String line);
     }
 
-    public interface CalibrationHandlerCallback {
+    public interface CalibrationHandlerCallback
+    {
 
         double yCalibrationHandler(double rawValue, int calibType,
                                    ArrayList<Integer> params, ArrayList<Double> rawValues, ArrayList<Double> refValues);
@@ -177,7 +183,8 @@ public class YAPI {
     }
 
 
-    private final static CalibrationHandlerCallback linearCalibrationHandler = new CalibrationHandlerCallback() {
+    private final static CalibrationHandlerCallback linearCalibrationHandler = new CalibrationHandlerCallback()
+    {
 
         @Override
         public double yCalibrationHandler(double rawValue, int calibType, ArrayList<Integer> params, ArrayList<Double> rawValues, ArrayList<Double> refValues)
@@ -241,7 +248,8 @@ public class YAPI {
     // YDevice cache
     //public static ArrayList<YDevice> _devCache = new ArrayList<YDevice>();// Device cache entries
 
-    public interface HubDiscoveryCallback {
+    public interface HubDiscoveryCallback
+    {
         /**
          * @param serial : the serial number of the discovered Hub
          * @param url    : the URL (with port number) of the discoveredHub
@@ -250,7 +258,8 @@ public class YAPI {
     }
 
 
-    static class DataEvent {
+    static class DataEvent
+    {
 
         private final YFunction _fun;
         private final String _value;
@@ -287,9 +296,11 @@ public class YAPI {
 
     }
 
-    static class PlugEvent {
+    static class PlugEvent
+    {
 
-        public static enum Event {
+        public static enum Event
+        {
 
             PLUG, UNPLUG, CHANGE
         }
@@ -584,6 +595,25 @@ public class YAPI {
         return new String(hexChars);
     }
 
+    public static byte[] _hexStrToBin(String hex_str)
+    {
+        int len = hex_str.length() / 2;
+        byte[] res = new byte[len];
+        for (int i = 0; i < len; i++) {
+            res[i] = (byte) ((Character.digit(hex_str.charAt(i * 2), 16) << 4)
+                    + Character.digit(hex_str.charAt(i * 2 + 1), 16));
+        }
+        return res;
+    }
+
+    public static byte[] _bytesMerge(byte[] array_a, byte[] array_b)
+    {
+        byte[] res = new byte[array_a.length + array_b.length];
+        System.arraycopy(array_a, 0, res, 0, array_a.length);
+        System.arraycopy(array_b, 0, res, array_a.length, array_b.length);
+        return res;
+    }
+
     // Return a Device object for a specified URL, serial number or logical
     // device name
     // This function will not cause any network access
@@ -840,7 +870,10 @@ public class YAPI {
         // Add hub to known list
         if (url.equals("usb")) {
             YUSBHub.CheckUSBAcces();
-            newhub = new YUSBHub(_hubs.size());
+            newhub = new YUSBHub(_hubs.size(), true);
+        } else if (url.equals("usb_silent")) {
+            YUSBHub.CheckUSBAcces();
+            newhub = new YUSBHub(_hubs.size(), false);
         } else if (url.equals("net")) {
             if ((_apiMode & DETECT_NET) == 0) {
                 if (YUSBHub.RegisterLocalhost()) {
@@ -869,7 +902,7 @@ public class YAPI {
         // Add hub to known list
         if (url.equals("usb")) {
             YUSBHub.CheckUSBAcces();
-            newhub = new YUSBHub(0);
+            newhub = new YUSBHub(0, true);
         } else if (url.equals("net")) {
             return SUCCESS;
         } else if (parsedurl.getHost().equals("callback")) {
@@ -1033,7 +1066,7 @@ public class YAPI {
     }
 
 
-    public int _RegisterHub(String url) throws YAPI_Exception
+    public synchronized int _RegisterHub(String url) throws YAPI_Exception
     {
         _AddNewHub(url, true, null, null);
         // Register device list
@@ -1042,7 +1075,7 @@ public class YAPI {
     }
 
 
-    public int _RegisterHub(String url, InputStream request, OutputStream response) throws YAPI_Exception
+    public synchronized int _RegisterHub(String url, InputStream request, OutputStream response) throws YAPI_Exception
     {
         _AddNewHub(url, true, request, response);
         // Register device list
@@ -1051,13 +1084,13 @@ public class YAPI {
     }
 
 
-    public int _PreregisterHub(String url) throws YAPI_Exception
+    public synchronized int _PreregisterHub(String url) throws YAPI_Exception
     {
         _AddNewHub(url, false, null, null);
         return SUCCESS;
     }
 
-    public void _UnregisterHub(String url)
+    public synchronized void _UnregisterHub(String url)
     {
         if (url.equals("net")) {
             _apiMode &= ~DETECT_NET;
@@ -1077,7 +1110,7 @@ public class YAPI {
         }
     }
 
-    public int _UpdateDeviceList() throws YAPI_Exception
+    public synchronized int _UpdateDeviceList() throws YAPI_Exception
     {
         _updateDeviceList_internal(false, true);
         return SUCCESS;
@@ -1188,7 +1221,7 @@ public class YAPI {
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".20652";
+        return YOCTO_API_VERSION_STR + ".20773";
     }
 
     /**

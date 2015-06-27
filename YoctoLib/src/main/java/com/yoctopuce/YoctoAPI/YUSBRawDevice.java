@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 20374 2015-05-19 10:15:25Z seb $
+ * $Id: YUSBRawDevice.java 20772 2015-06-26 17:07:25Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -139,10 +139,10 @@ public class YUSBRawDevice implements Runnable
         if (!_manager.hasPermission(_device)) {
             if (_state == State.REJECTED && _device.getProductId() != YAPI.YOCTO_DEVID_BOOTLOADER) {
                 // if the user has rejected the authorisation we do not ask it again
-                // (except for bootloaders)
+                // (except for bootloader)
                 return;
             }
-            _usbHub.triggerPermissionRequest(this);
+            _usbHub.requestUSBPermission(this);
         } else {
             permissionAccepted();
         }

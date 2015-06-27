@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 20374 2015-05-19 10:15:25Z seb $
+ * $Id: YUSBHub.java 20772 2015-06-26 17:07:25Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -64,6 +64,7 @@ class YUSBHub extends YGenericHub
     private final HashMap<String, YUSBDevice> _devsFromAndroidRef = new HashMap<String, YUSBDevice>(2);
     private final HashMap<String, YUSBBootloader> _bootloadersFromAndroidRef = new HashMap<String, YUSBBootloader>(2);
     private final UsbManager _manager;
+    public final boolean _requestPermission;
 
 
     private final BroadcastReceiver _usbBroadcastReceiver = new BroadcastReceiver()
@@ -118,19 +119,21 @@ class YUSBHub extends YGenericHub
      * Constuctor
 	 */
 
-    YUSBHub(int idx) throws YAPI_Exception
+    YUSBHub(int idx, boolean requestPermission) throws YAPI_Exception
     {
         super(idx, true);
         _manager = (UsbManager) sAppContext.getSystemService(Context.USB_SERVICE);
         if (_manager == null) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Unable to get Android USB manager");
         }
+        _requestPermission = requestPermission;
         //Create a new filter to detect USB device events
         IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_USB_PERMISSION);
+        if (_requestPermission) {
+            filter.addAction(ACTION_USB_PERMISSION);
+        }
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-
         sAppContext.registerReceiver(_usbBroadcastReceiver, filter);
     }
 
@@ -160,22 +163,28 @@ class YUSBHub extends YGenericHub
 
     private final Queue<YUSBRawDevice> _permissionPending = new LinkedList<YUSBRawDevice>();
 
-    public void triggerPermissionRequest(YUSBRawDevice device)
+    public void requestUSBPermission(YUSBRawDevice device)
     {
-        boolean doRequest = false;
-        synchronized (_permissionPending) {
-            if (_permissionPending.contains(device)) {
-                return;
+        if (_requestPermission) {
+            boolean doRequest = false;
+            synchronized (_permissionPending) {
+                if (_permissionPending.contains(device)) {
+                    return;
+                }
+                if (_permissionPending.size() == 0) {
+                    doRequest = true;
+                }
+                _permissionPending.add(device);
             }
-            if (_permissionPending.size() == 0) {
-                doRequest = true;
+            SafeYAPI()._Log("HUB_USB: trigger request permission for " + device.getUsbDevice().getDeviceName() + "\n");
+            if (doRequest) {
+                UsbDevice usbDevice = device.getUsbDevice();
+                doPermissionRequest(usbDevice);
             }
-            _permissionPending.add(device);
-        }
-        SafeYAPI()._Log("HUB_USB: trigger request permission for " + device.getUsbDevice().getDeviceName() + "\n");
-        if (doRequest) {
-            UsbDevice usbDevice = device.getUsbDevice();
-            doPermissionRequest(usbDevice);
+        } else {
+            //fixme: notifiy user
+
+            device.permissionRejected();
         }
     }
 
@@ -200,7 +209,7 @@ class YUSBHub extends YGenericHub
         for (Map.Entry<String, UsbDevice> entry : connectedDevices.entrySet()) {
             String key = entry.getKey();
             UsbDevice usbdevice = entry.getValue();
-            if (usbdevice.getInterfaceCount()<1)
+            if (usbdevice.getInterfaceCount() < 1)
                 continue;
             int deviceid = usbdevice.getProductId();
             if (usbdevice.getVendorId() == YAPI.YOCTO_VENDORID && deviceid != YAPI.YOCTO_DEVID_FACTORYBOOT) {
@@ -226,7 +235,7 @@ class YUSBHub extends YGenericHub
         }
         for (String devname : toRemove) {
             YUSBRawDevice yusbRawDevice = _usbDevices.get(devname);
-            if (yusbRawDevice!=null) {
+            if (yusbRawDevice != null) {
                 yusbRawDevice.release();
             }
             if (_devsFromAndroidRef.containsKey(devname)) {
@@ -256,7 +265,7 @@ class YUSBHub extends YGenericHub
         HashMap<String, ArrayList<YPEntry>> yellowPages = new HashMap<String, ArrayList<YPEntry>>();
         ArrayList<WPEntry> whitePages = new ArrayList<WPEntry>();
         for (YUSBDevice d : _devsFromAndroidRef.values()) {
-            if (d.isAllowed() && d.waitEndOfInit(2000)) {
+            if (d.isAllowed() && d.waitEndOfInit()) {
                 d.updateWhitesPages(whitePages);
                 d.updateYellowPages(yellowPages);
             }
@@ -280,7 +289,8 @@ class YUSBHub extends YGenericHub
     }
 
     @Override
-    public int ping(int mstimeout) throws YAPI_Exception {
+    public int ping(int mstimeout) throws YAPI_Exception
+    {
         return YAPI.SUCCESS;
     }
 
@@ -386,7 +396,7 @@ class YUSBHub extends YGenericHub
     @Override
     boolean isSameRootUrl(String url)
     {
-        return url.equals("usb");
+        return url.startsWith("usb");
     }
 
     public static boolean RegisterLocalhost()
