@@ -389,7 +389,13 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
         } else {
             pkt = new YUSBProgPkt(YUSBProgPkt.PROG_REBOOT, false);
         }
-        _rawdev.sendPkt(pkt.getRawPkt());
+        byte[] rawPkt = pkt.getRawPkt();
+        try {
+            _rawdev.sendPkt(rawPkt);
+        }catch (YAPI_Exception ignore)
+        {
+            //device reboot so fast that usually tablet report an error
+        }
     }
 
     enum FLASH_ZONE_STATE

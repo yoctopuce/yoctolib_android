@@ -1,40 +1,38 @@
 /*********************************************************************
- *
- * $Id: YModule.java 20468 2015-05-29 10:24:28Z seb $
+ * $Id: YModule.java 20916 2015-07-23 08:54:20Z seb $
  *
  * YModule Class: Module control interface
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ * non-exclusive license to use, modify, copy and integrate this
+ * file into your software for the sole purpose of interfacing
+ * with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
- *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
- *  this notice in the distributed source file.
+ * You may reproduce and distribute copies of this file in
+ * source or object form, as long as the sole purpose of this
+ * code is to interface with Yoctopuce products. You must retain
+ * this notice in the distributed source file.
  *
- *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
- *  obligations.
+ * You should refer to Yoctopuce General Terms and Conditions
+ * for additional information regarding your rights and
+ * obligations.
  *
- *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
- *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
- *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- *  WARRANTY, OR OTHERWISE.
- *
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
+ * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ * WARRANTY, OR OTHERWISE.
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
@@ -203,6 +201,14 @@ public class YModule extends YFunction
     {
         YDevice dev = _getDev();
         return dev.getYPEntry(functionIndex).getFuncId();
+    }
+
+
+    // Retrieve the function type of the nth function (beside "module") in the device
+    public String functionType(int functionIndex) throws YAPI_Exception
+    {
+        YDevice dev = _getDev();
+        return dev.getYPEntry(functionIndex).getClassname();
     }
 
     // Retrieve the name of the nth function (beside "module") in the device
@@ -993,6 +999,43 @@ public class YModule extends YFunction
     public byte[] get_allSettings() throws YAPI_Exception
     {
         return _download("api.json");
+    }
+
+    public boolean hasFunction(String funcId) throws YAPI_Exception
+    {
+        int count;
+        int i;
+        String fid;
+        // may throw an exception
+        count  = functionCount();
+        i = 0;
+        while (i < count) {
+            fid  = functionId(i);
+            if (fid.equals(funcId)) {
+                return true;
+            }
+            i = i + 1;
+        }
+        return false;
+    }
+
+    public ArrayList<String> get_functionIds(String funType) throws YAPI_Exception
+    {
+        int count;
+        int i;
+        String ftype;
+        ArrayList<String> res = new ArrayList<String>();
+        // may throw an exception
+        count = functionCount();
+        i = 0;
+        while (i < count) {
+            ftype  = functionType(i);
+            if (ftype.equals(funType)) {
+                res.add(functionId(i));
+            }
+            i = i + 1;
+        }
+        return res;
     }
 
     //cannot be generated for Java:

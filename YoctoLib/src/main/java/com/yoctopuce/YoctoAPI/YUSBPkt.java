@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBPkt.java 20374 2015-05-19 10:15:25Z seb $
+ * $Id: YUSBPkt.java 20956 2015-07-31 12:26:31Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
@@ -82,6 +82,16 @@ public class YUSBPkt
         return dump;
     }
 
+    public String[] toStringARR()
+    {
+        String[] dump = new String[_streams.size() + 1];
+        dump[0] = String.format("pktno:%d with %d ystream\n", _pktno, _streams.size());
+        int pos = 1;
+        for (YPktStreamHead s : _streams) {
+            dump[pos++] = s.toString();
+        }
+        return dump;
+    }
 
     protected static class ConfPktReset
     {

@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YAPI.java 20772 2015-06-26 17:07:25Z seb $
+ * $Id: YAPI.java 20830 2015-07-15 15:19:33Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -60,7 +60,7 @@ public class YAPI
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "1.10";
-    public static final String YOCTO_API_BUILD_STR = "20773";
+    public static final String YOCTO_API_BUILD_STR = "20971";
     public static final int YOCTO_API_VERSION_BCD = 0x0110;
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
@@ -582,14 +582,14 @@ public class YAPI
         return Integer.valueOf(str);
     }
 
-    final protected static char[] _hexArray = "0123456789abcdef".toCharArray();
+    final protected static char[] _hexArray = "0123456789ABCDEF".toCharArray();
 
     static String _bytesToHexStr(byte[] bytes, int offset, int len)
     {
         char[] hexChars = new char[len * 2];
         for (int j = 0; j < len; j++) {
             int v = bytes[offset + j] & 0xFF;
-            hexChars[j * 2] = _hexArray[v >>> 4];
+            hexChars[j * 2] = _hexArray[v >> 4];
             hexChars[j * 2 + 1] = _hexArray[v & 0x0F];
         }
         return new String(hexChars);
@@ -1221,7 +1221,7 @@ public class YAPI
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".20773";
+        return YOCTO_API_VERSION_STR + ".20971";
     }
 
     /**

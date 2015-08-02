@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 20771 2015-06-26 16:55:16Z seb $
+ * $Id: YUSBDevice.java 20956 2015-07-31 12:26:31Z seb $
  *
  * YUSBDevice Class:
  *
@@ -299,7 +299,11 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 ioError("Unable to send start pkt:" + e.getLocalizedMessage());
             }
         } else {
-            SafeYAPI()._Log("Drop late reset packet:" + newpkt.toString());
+            SafeYAPI()._Log("Drop late reset packet:");
+            String[] lines = newpkt.toStringARR();
+            for (String s : lines) {
+                SafeYAPI()._Log(s);
+            }
         }
     }
 
@@ -328,7 +332,12 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
             _lastpktno = newpkt.getPktno();
             setNewState(PKT_State.StartReceived, null);
         } else {
-            SafeYAPI()._Log("Drop late start packet:" + newpkt.toString());
+            SafeYAPI()._Log("Drop late start packet:");
+            String[] lines = newpkt.toStringARR();
+            for (String s : lines) {
+                SafeYAPI()._Log(s);
+            }
+
         }
     }
 
@@ -731,7 +740,11 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 streamHandler(streams);
                 checkMetaUTC();
             } else {
-                SafeYAPI()._Log("Drop non-config pkt:" + newpkt.toString());
+                SafeYAPI()._Log("Drop non-config pkt:");
+                String[] lines = newpkt.toStringARR();
+                for (String s : lines) {
+                    SafeYAPI()._Log(s);
+                }
             }
         }
     }

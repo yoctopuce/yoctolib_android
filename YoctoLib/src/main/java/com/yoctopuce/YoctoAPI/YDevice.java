@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDevice.java 20365 2015-05-19 07:45:42Z seb $
+ * $Id: YDevice.java 20956 2015-07-31 12:26:31Z seb $
  *
  * Internal YDevice class
  *
@@ -327,7 +327,7 @@ public class YDevice
         _logIsPulling = true;
         String request = "GET logs.txt?pos=" + _logpos;
         try {
-            requestHTTPAsync(request, null, _logCallbackHandler, new Integer(_logpos));
+            requestHTTPAsync(request, null, _logCallbackHandler, _logpos);
         } catch (YAPI_Exception ex) {
             SafeYAPI()._Log("LOG error:" + ex.getLocalizedMessage());
         }

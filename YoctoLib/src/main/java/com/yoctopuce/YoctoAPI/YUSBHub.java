@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 20772 2015-06-26 17:07:25Z seb $
+ * $Id: YUSBHub.java 20867 2015-07-17 10:17:47Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -199,7 +199,12 @@ class YUSBHub extends YGenericHub
 
     void refreshUsableDeviceList()
     {
-        HashMap<String, UsbDevice> connectedDevices = _manager.getDeviceList();
+        HashMap<String, UsbDevice> connectedDevices;
+        try {
+            connectedDevices = _manager.getDeviceList();
+        }catch (Exception ignore) {
+            return;
+        }
         if (connectedDevices == null) {
             return;
         }
