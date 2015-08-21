@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCurrent.java 19580 2015-03-04 10:57:18Z seb $
+ * $Id: YCurrent.java 21116 2015-08-17 12:36:25Z seb $
  *
  * Implements FindCurrent(), the high-level API for Current functions
  *
@@ -63,7 +63,8 @@ public class YCurrent extends YSensor
     /**
      * Deprecated UpdateCallback for Current
      */
-    public interface UpdateCallback {
+    public interface UpdateCallback
+    {
         /**
          *
          * @param function      : the function object of which the value has changed
@@ -75,7 +76,8 @@ public class YCurrent extends YSensor
     /**
      * TimedReportCallback for Current
      */
-    public interface TimedReportCallback {
+    public interface TimedReportCallback
+    {
         /**
          *
          * @param function : the function object of which the value has changed

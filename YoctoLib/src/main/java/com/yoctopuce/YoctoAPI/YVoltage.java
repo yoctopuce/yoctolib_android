@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YVoltage.java 19580 2015-03-04 10:57:18Z seb $
+ * $Id: YVoltage.java 21116 2015-08-17 12:36:25Z seb $
  *
  * Implements FindVoltage(), the high-level API for Voltage functions
  *
@@ -63,7 +63,8 @@ public class YVoltage extends YSensor
     /**
      * Deprecated UpdateCallback for Voltage
      */
-    public interface UpdateCallback {
+    public interface UpdateCallback
+    {
         /**
          *
          * @param function      : the function object of which the value has changed
@@ -75,7 +76,8 @@ public class YVoltage extends YSensor
     /**
      * TimedReportCallback for Voltage
      */
-    public interface TimedReportCallback {
+    public interface TimedReportCallback
+    {
         /**
          *
          * @param function : the function object of which the value has changed

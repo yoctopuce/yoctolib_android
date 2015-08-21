@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPressure.java 19580 2015-03-04 10:57:18Z seb $
+ * $Id: YPressure.java 21116 2015-08-17 12:36:25Z seb $
  *
  * Implements FindPressure(), the high-level API for Pressure functions
  *
@@ -63,7 +63,8 @@ public class YPressure extends YSensor
     /**
      * Deprecated UpdateCallback for Pressure
      */
-    public interface UpdateCallback {
+    public interface UpdateCallback
+    {
         /**
          *
          * @param function      : the function object of which the value has changed
@@ -75,7 +76,8 @@ public class YPressure extends YSensor
     /**
      * TimedReportCallback for Pressure
      */
-    public interface TimedReportCallback {
+    public interface TimedReportCallback
+    {
         /**
          *
          * @param function : the function object of which the value has changed
