@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 20956 2015-07-31 12:26:31Z seb $
+ * $Id: YUSBDevice.java 21750 2015-10-13 15:14:31Z seb $
  *
  * YUSBDevice Class:
  *
@@ -61,6 +61,18 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     private int _pktAckDelay = 0;
     private int _devVersion;
     private int _retry = 0;
+    // USB communication data
+    private String _serial = null;
+    private String _logicalname;
+    private byte _beacon;
+    private String _productName;
+    private int _deviceid;
+
+
+    private final YUSBHub _usbHub;
+    private WPEntry _wp;
+    private final HashMap<String, YPEntry> _usbYP = new HashMap<>();
+    private HashMap<Integer, String> _usbIdx2Funcid = new HashMap<>();
 
     public boolean isAllowed()
     {
@@ -71,7 +83,6 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     {
         return _serial;
     }
-
 
     private enum PKT_State
     {
@@ -91,20 +102,10 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         Closed, Opened, Close_by_dev, Close_by_API
     }
 
-    // USB communication data
-    private String _serial = null;
 
     private int _lastpktno;
     private YUSBRawDevice _rawDev;
     private long _lastMetaUTC = -1;
-    // internal whites pages updated form notifications
-    private final HashMap<String, WPEntry> _usbWP = new HashMap<>();
-    // internal yellow  pages updated from notifications
-    private final HashMap<String, YPEntry> _usbYP = new HashMap<>();
-    private HashMap<String, String> _usbIdx2Funcid = new HashMap<>();
-
-    // mapping for ydx<serial> of potential subdevice for this USB device
-    private ArrayList<String> _usbIdx2Serial = new ArrayList<>();
 
 
     private final Object _stateLock = new Object();
@@ -119,42 +120,17 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     private long _currentRequestTimeout;
 
 
-    //todo: look if we need to make it private
-    String getFuncidFromYdx(String serial, int i)
+    private YPEntry getYPEntryFromYdx(int funIdx)
     {
-        return _usbIdx2Funcid.get(serial + i);
+        String functionId = _usbIdx2Funcid.get(funIdx);
+        if (functionId == null)
+            return null;
+        if (_usbYP.containsKey(functionId)) {
+            return _usbYP.get(functionId);
+        }
+        return null;
     }
 
-    private YPEntry getYPEntry(String serial, String functionId) throws YAPI_Exception
-    {
-        YPEntry yp;
-        String hwid = serial + "." + functionId;
-        synchronized (_usbYP) {
-            if (!_usbYP.containsKey(hwid)) {
-                yp = new YPEntry(serial, functionId);
-                _usbYP.put(hwid, yp);
-            } else {
-                yp = _usbYP.get(hwid);
-            }
-        }
-        return yp;
-    }
-
-    private YPEntry getYPEntryFromYdx(String serial, int funIdx)
-    {
-        YPEntry yp;
-        String functionId = getFuncidFromYdx(serial, funIdx);
-        String hwid = serial + "." + functionId;
-        synchronized (_usbYP) {
-            if (!_usbYP.containsKey(hwid)) {
-                yp = new YPEntry(serial, functionId);
-                _usbYP.put(hwid, yp);
-            } else {
-                yp = _usbYP.get(hwid);
-            }
-        }
-        return yp;
-    }
 
     public boolean waitEndOfInit()
     {
@@ -162,7 +138,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         while (!ready && _retry < 5) {
 
             try {
-                waitForTcpState(PKT_State.StreamReadyReceived, null, 200, "Device not ready");
+                waitForTcpState(PKT_State.StreamReadyReceived, null, 500, "Device not ready");
                 _retry = 0;
                 ready = true;
             } catch (YAPI_Exception e) {
@@ -175,8 +151,9 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    public YUSBDevice()
+    public YUSBDevice(YUSBHub yusbHub)
     {
+        _usbHub = yusbHub;
     }
 
 
@@ -345,6 +322,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     {
         synchronized (_stateLock) {
             if (_pkt_state == PKT_State.StartReceived) {
+                _wp = new WPEntry(_logicalname, _productName, _deviceid, "", _beacon, _serial);
                 _pkt_state = PKT_State.StreamReadyReceived;
                 _stateLock.notify();
             } else {
@@ -473,24 +451,18 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    public void updateWhitesPages(ArrayList<WPEntry> publicWP)
+    public WPEntry getWhitesPagesEntry()
     {
-        synchronized (_usbWP) {
-            for (WPEntry wp : _usbWP.values()) {
-                if (wp.isValid())
-                    publicWP.add(wp);
-            }
-        }
+        return _wp;
     }
 
     public void updateYellowPages(HashMap<String, ArrayList<YPEntry>> publicYP)
     {
-        synchronized (_usbYP) {
-            for (YPEntry yp : _usbYP.values()) {
-                if (!publicYP.containsKey(yp.getCateg()))
-                    publicYP.put(yp.getCateg(), new ArrayList<YPEntry>());
-                publicYP.get(yp.getCateg()).add(yp);
-            }
+        for (YPEntry yp : _usbYP.values()) {
+            String classname = yp.getClassname();
+            if (!publicYP.containsKey(classname))
+                publicYP.put(classname, new ArrayList<YPEntry>());
+            publicYP.get(classname).add(yp);
         }
     }
 
@@ -505,38 +477,50 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
      */
     private void handleNotifcation(YPktStreamHead.NotificationStreams not) throws YAPI_Exception
     {
-        WPEntry wp;
         YPEntry yp;
-        synchronized (_usbWP) {
-            if (!_usbWP.containsKey(not.getSerial())) {
-                wp = new WPEntry(_usbWP.size(), not.getSerial(), "");
-                _usbWP.put(not.getSerial(), wp);
-            } else {
-                wp = _usbWP.get(not.getSerial());
-            }
+        if (!_serial.equals(not.getSerial())) {
+            return;
         }
+
+        String functionId = not.getFunctionId();
 
         switch (not.getNotType()) {
             case CHILD:
-                _usbIdx2Serial.add(not.getDevydy(), not.getChildserial());
                 break;
             case FIRMWARE:
-                wp.setProductId(not.getDeviceid());
+                _deviceid = not.getDeviceid();
                 break;
             case FUNCNAME:
-                yp = getYPEntry(not.getSerial(), not.getFunctionId());
+                yp = _usbYP.get(functionId);
+                if (yp == null) {
+                    yp = new YPEntry(_serial, functionId, not.getFunclass());
+                    _usbYP.put(functionId, yp);
+                }
                 yp.setLogicalName(not.getFuncname());
                 break;
             case FUNCNAMEYDX:
-                _usbIdx2Funcid.put(not.getSerial() + not.getFunydx(), not.getFunctionId());
-                yp = getYPEntry(not.getSerial(), not.getFunctionId());
-                yp.setLogicalName(not.getFuncname());
+                yp = _usbYP.get(functionId);
+                if (yp == null) {
+                    yp = new YPEntry(_serial, functionId, not.getFunclass());
+                    _usbYP.put(functionId, yp);
+                }
+                int funydx = not.getFunydx();
+                // update ydx
+                _usbIdx2Funcid.put(funydx, functionId);
                 yp.setIndex(not.getFunydx());
-                yp.setBaseclass(not.getFunclass());
+                yp.setLogicalName(not.getFuncname());
                 break;
             case FUNCVAL:
-                yp = getYPEntry(not.getSerial(), not.getFunctionId());
-                SafeYAPI().setFunctionValue(yp.getHardwareId(), not.getFuncval());
+                yp = _usbYP.get(functionId);
+                if (yp != null) {
+                    _usbHub.handleValueNotification(not.getSerial(), functionId, not.getFuncval());
+                }
+                break;
+            case FUNCVAL_TINY:
+                yp = getYPEntryFromYdx(not.getFunydx());
+                if (yp != null) {
+                    _usbHub.handleValueNotification(not.getSerial(), yp.getFuncId(), not.getFuncval());
+                }
                 break;
             case FUNCVALFLUSH:
                 // To be implemented later
@@ -544,17 +528,14 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
             case LOG:
                 break;
             case NAME:
-                wp.setLogicalName(not.getLogicalname());
-                wp.setBeacon(not.getBeacon());
+                _logicalname = not.getLogicalname();
+                _beacon = not.getBeacon();
                 break;
             case PRODNAME:
-                wp.setProductName(not.getProduct());
+                _productName = not.getProduct();
                 break;
             case STREAMREADY:
-                wp.validate();
-                if (_serial.equals(not.getSerial())) {
-                    setStreamReady();
-                }
+                setStreamReady();
                 break;
         }
     }
@@ -562,7 +543,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     public void handleTimedNotification(byte[] data)
     {
         int pos = 0;
-        YDevice ydev = SafeYAPI().getDevice(_serial);
+        YDevice ydev = SafeYAPI()._yHash.getDevice(_serial);
         if (ydev == null) {
             // device has not been registered;
             return;
@@ -583,14 +564,16 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 }
                 ydev.setDeviceTime(intData);
             } else {
-                YPEntry yp = getYPEntryFromYdx(_serial, funYdx);
-                ArrayList<Integer> report = new ArrayList<Integer>(len + 1);
-                report.add(isAvg ? 1 : 0);
-                for (int i = 0; i < len; i++) {
-                    int b = data[pos + i] & 0xff;
-                    report.add(b);
+                YPEntry yp = getYPEntryFromYdx(funYdx);
+                if (yp != null) {
+                    ArrayList<Integer> report = new ArrayList<Integer>(len + 1);
+                    report.add(isAvg ? 1 : 0);
+                    for (int i = 0; i < len; i++) {
+                        int b = data[pos + i] & 0xff;
+                        report.add(b);
+                    }
+                    _usbHub.handleTimedNotification(yp.getSerial(), yp.getFuncId(), ydev.getDeviceTime(), report);
                 }
-                SafeYAPI().setTimedReport(yp.getHardwareId(), ydev.getDeviceTime(), report);
             }
             pos += len;
         }
@@ -600,7 +583,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     public void handleTimedNotificationV2(byte[] data)
     {
         int pos = 0;
-        YDevice ydev = SafeYAPI().getDevice(_serial);
+        YDevice ydev = SafeYAPI()._yHash.getDevice(_serial);
         if (ydev == null) {
             // device has not been registered;
             return;
@@ -617,14 +600,16 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 }
                 ydev.setDeviceTime(intData);
             } else {
-                YPEntry yp = getYPEntryFromYdx(_serial, funYdx);
-                ArrayList<Integer> report = new ArrayList<Integer>(len + 1);
-                report.add(2);
-                for (int i = 0; i < len; i++) {
-                    int b = data[pos + i] & 0xff;
-                    report.add(b);
+                YPEntry yp = getYPEntryFromYdx(funYdx);
+                if (yp != null) {
+                    ArrayList<Integer> report = new ArrayList<Integer>(len + 1);
+                    report.add(2);
+                    for (int i = 0; i < len; i++) {
+                        int b = data[pos + i] & 0xff;
+                        report.add(b);
+                    }
+                    _usbHub.handleTimedNotification(yp.getSerial(), yp.getFuncId(), ydev.getDeviceTime(), report);
                 }
-                SafeYAPI().setTimedReport(yp.getHardwareId(), ydev.getDeviceTime(), report);
             }
             pos += len;
         }
@@ -639,10 +624,10 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 case YPktStreamHead.YSTREAM_NOTICE:
                 case YPktStreamHead.YSTREAM_NOTICE_V2:
                     try {
-                        YPktStreamHead.NotificationStreams not = s.decodeAsNotification(this, streamType == YPktStreamHead.YSTREAM_NOTICE_V2);
+                        YPktStreamHead.NotificationStreams not = s.decodeAsNotification(_serial, streamType == YPktStreamHead.YSTREAM_NOTICE_V2);
                         handleNotifcation(not);
                     } catch (YAPI_Exception ignore) {
-                        YAPI.SafeYAPI()._Log("drop invalid notification");
+                        YAPI.SafeYAPI()._Log("drop invalid notification" + ignore.getLocalizedMessage());
                     }
                     break;
                 case YPktStreamHead.YSTREAM_TCP:

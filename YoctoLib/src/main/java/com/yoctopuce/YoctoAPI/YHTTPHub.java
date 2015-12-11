@@ -1,40 +1,38 @@
 /*********************************************************************
- *
- * $Id: YHTTPHub.java 20365 2015-05-19 07:45:42Z seb $
+ * $Id: YHTTPHub.java 22039 2015-11-18 16:17:47Z seb $
  *
  * Internal YHTTPHUB object
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ * non-exclusive license to use, modify, copy and integrate this
+ * file into your software for the sole purpose of interfacing
+ * with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
- *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
- *  this notice in the distributed source file.
+ * You may reproduce and distribute copies of this file in
+ * source or object form, as long as the sole purpose of this
+ * code is to interface with Yoctopuce products. You must retain
+ * this notice in the distributed source file.
  *
- *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
- *  obligations.
+ * You should refer to Yoctopuce General Terms and Conditions
+ * for additional information regarding your rights and
+ * obligations.
  *
- *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
- *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
- *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- *  WARRANTY, OR OTHERWISE.
- *
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
+ * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ * WARRANTY, OR OTHERWISE.
  *********************************************************************/
 package com.yoctopuce.YoctoAPI;
 
@@ -52,7 +50,8 @@ import java.util.Random;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
-class YHTTPHub extends YGenericHub {
+class YHTTPHub extends YGenericHub
+{
     private final static char NOTIFY_NETPKT_NAME = '0';
     private final static char NOTIFY_NETPKT_CHILD = '2';
     private final static char NOTIFY_NETPKT_FUNCNAME = '4';
@@ -194,13 +193,6 @@ class YHTTPHub extends YGenericHub {
         }
     }
 
-    synchronized String getSerialFromYDX(int devydx)
-    {
-        if (_serialByYdx.containsKey(devydx)) {
-            return _serialByYdx.get(devydx);
-        }
-        return null;
-    }
 
     @Override
     synchronized void startNotifications() throws YAPI_Exception
@@ -249,7 +241,8 @@ class YHTTPHub extends YGenericHub {
         return params.getUrl().equals(_http_params.getUrl());
     }
 
-    private class NotificationHandler implements Runnable {
+    private class NotificationHandler implements Runnable
+    {
         private static final int NET_HUB_NOT_CONNECTION_TIMEOUT = 6000;
         private long _notifyPos = -1;
         private int _notifRetryCount = 0;
@@ -325,17 +318,17 @@ class YHTTPHub extends YGenericHub {
                     devydx += 128;
                 }
                 String value = ev.substring(3);
-                String serial = getSerialFromYDX(devydx);
+                String serial = _serialByYdx.get(devydx);
                 String funcid;
                 if (serial != null) {
-                    YDevice ydev = SafeYAPI().getDevice(serial);
+                    YDevice ydev = SafeYAPI()._yHash.getDevice(serial);
                     if (ydev != null) {
                         switch (ev.charAt(0)) {
                             case NOTIFY_NETPKT_FUNCVALYDX:
                                 funcid = ydev.getYPEntry(funydx).getFuncId();
                                 if (!funcid.equals("")) {
                                     // function value ydx (tiny notification)
-                                    SafeYAPI().setFunctionValue(serial + "." + funcid, value);
+                                    handleValueNotification(serial, funcid, value);
                                 }
                                 break;
                             case NOTIFY_NETPKT_DEVLOGYDX:
@@ -362,7 +355,7 @@ class YHTTPHub extends YGenericHub {
                                             int intval = Integer.parseInt(value.substring(pos, pos + 2), 16);
                                             report.add(intval);
                                         }
-                                        SafeYAPI().setTimedReport(serial + "." + funcid, ydev.getDeviceTime(), report);
+                                        handleTimedNotification(serial, funcid, ydev.getDeviceTime(), report);
                                     }
                                 }
                                 break;
@@ -373,7 +366,7 @@ class YHTTPHub extends YGenericHub {
                                     if (rawval != null) {
                                         String decodedval = decodePubVal(rawval[0], rawval, 1, 6);
                                         // function value ydx (tiny notification)
-                                        SafeYAPI().setFunctionValue(serial + "." + funcid, decodedval);
+                                        handleValueNotification(serial, funcid, decodedval);
                                     }
                                 }
                                 break;
@@ -403,8 +396,7 @@ class YHTTPHub extends YGenericHub {
                             break;
                         case NOTIFY_NETPKT_FUNCVAL: // function value (long notification)
                             String[] parts = ev.substring(5).split(",");
-                            SafeYAPI().setFunctionValue(parts[0] + "." + parts[1],
-                                    parts[2]);
+                            handleValueNotification(parts[0], parts[1], parts[2]);
                             break;
                     }
                 }
@@ -532,14 +524,12 @@ class YHTTPHub extends YGenericHub {
             Iterator<?> keys = yellowPages_json.keys();
             while (keys.hasNext()) {
                 String classname = keys.next().toString();
-                YFunctionType ftype = SafeYAPI().getFnByType(classname);
                 JSONArray yprecs_json = yellowPages_json.getJSONArray(classname);
                 ArrayList<YPEntry> yprecs_arr = new ArrayList<YPEntry>(
                         yprecs_json.length());
                 for (int i = 0; i < yprecs_json.length(); i++) {
                     YPEntry yprec = new YPEntry(yprecs_json.getJSONObject(i));
                     yprecs_arr.add(yprec);
-                    ftype.reindexFunction(yprec);
                 }
                 yellowPages.put(classname, yprecs_arr);
             }
@@ -547,8 +537,10 @@ class YHTTPHub extends YGenericHub {
             _serialByYdx.clear();
             // Reindex all devices from white pages
             for (int i = 0; i < whitePages_json.length(); i++) {
-                WPEntry devinfo = new WPEntry(whitePages_json.getJSONObject(i));
-                _serialByYdx.put(devinfo.getIndex(), devinfo.getSerialNumber());
+                JSONObject jsonObject = whitePages_json.getJSONObject(i);
+                WPEntry devinfo = new WPEntry(jsonObject);
+                int index = jsonObject.getInt("index");
+                _serialByYdx.put(index, devinfo.getSerialNumber());
                 whitePages.add(devinfo);
             }
         } catch (JSONException e) {

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPwmOutput.java 21199 2015-08-19 13:06:55Z seb $
+ * $Id: YPwmOutput.java 22180 2015-11-30 21:45:56Z mvuilleu $
  *
  * Implements FindPwmOutput(), the high-level API for PwmOutput functions
  *
@@ -774,8 +774,8 @@ public class YPwmOutput extends YFunction
     {
         String next_hwid;
         try {
-            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
-            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+            String hwid = SafeYAPI()._yHash.resolveHwID(_className, _func);
+            next_hwid = SafeYAPI()._yHash.getNextHardwareId(_className, hwid);
         } catch (YAPI_Exception ignored) {
             next_hwid = null;
         }
@@ -794,7 +794,7 @@ public class YPwmOutput extends YFunction
      */
     public static YPwmOutput FirstPwmOutput()
     {
-        String next_hwid = SafeYAPI().getFirstHardwareId("PwmOutput");
+        String next_hwid = SafeYAPI()._yHash.getFirstHardwareId("PwmOutput");
         if (next_hwid == null)  return null;
         return FindPwmOutput(next_hwid);
     }

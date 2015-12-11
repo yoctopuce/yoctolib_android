@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDevice.java 20956 2015-07-31 12:26:31Z seb $
+ * $Id: YDevice.java 21750 2015-10-13 15:14:31Z seb $
  *
  * Internal YDevice class
  *
@@ -42,10 +42,7 @@ package com.yoctopuce.YoctoAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
+import java.util.*;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
@@ -69,7 +66,7 @@ public class YDevice
     private WPEntry _wpRec;
     private long _cache_expiration;
     private String _cache_json;
-    private HashMap<Integer, YPEntry> _ypRecs;
+    private final HashMap<Integer, YPEntry> _ypRecs;
     private double _deviceTime;
     private YPEntry _moduleYPEntry;
     private YModule.LogCallback _logCallback = null;
@@ -84,10 +81,11 @@ public class YDevice
         _wpRec = wpRec;
         _cache_expiration = 0;
         _cache_json = "";
-        _moduleYPEntry = new YPEntry(wpRec.getSerialNumber(), "module");
+        _moduleYPEntry = new YPEntry(wpRec.getSerialNumber(), "module", YPEntry.BaseClass.Function);
         _moduleYPEntry.setLogicalName(wpRec.getLogicalName());
         _ypRecs = new HashMap<Integer, YPEntry>();
-        for (String categ : ypRecs.keySet()) {
+        Set<String> keySet = ypRecs.keySet();
+        for (String categ : keySet) {
             for (YPEntry rec : ypRecs.get(categ)) {
                 if (rec.getSerial().equals(wpRec.getSerialNumber())) {
                     int funydx = rec.getIndex();
@@ -95,7 +93,6 @@ public class YDevice
                 }
             }
         }
-        SafeYAPI().reindexDevice(this);
     }
 
     YGenericHub getHub()
@@ -138,13 +135,6 @@ public class YDevice
         return _wpRec.getBeacon();
     }
 
-    // Return the hub-specific devYdx of the device, as found during discovery
-    public int getDevYdx()
-    {
-        return _wpRec.getIndex();
-    }
-
-
     // Get the whole REST API string for a device, from cache if possible
     public String requestAPI() throws YAPI_Exception
     {
@@ -152,7 +142,7 @@ public class YDevice
             return _cache_json;
         }
         String yreq = requestHTTPSyncAsString("GET /api.json", null);
-        this._cache_expiration = YAPI.GetTickCount() + SafeYAPI().DefaultCacheValidity;
+        this._cache_expiration = YAPI.GetTickCount() + YAPI.DefaultCacheValidity;
         this._cache_json = yreq;
         return yreq;
     }
@@ -168,7 +158,7 @@ public class YDevice
             loadval = new JSONObject(result);
 
 
-            _cache_expiration = YAPI.GetTickCount() + SafeYAPI().DefaultCacheValidity;
+            _cache_expiration = YAPI.GetTickCount() + YAPI.DefaultCacheValidity;
             _cache_json = result;
 
             // parse module and refresh names if needed
@@ -193,7 +183,7 @@ public class YDevice
                     }
                     if (func.has("advertisedValue")) {
                         String pubval = func.getString("advertisedValue");
-                        SafeYAPI().setFunctionValue(_wpRec.getSerialNumber(), pubval);
+                        SafeYAPI()._yHash.setFunctionValue(_wpRec.getSerialNumber(), pubval);
                     }
                     for (int f = 0; f < _ypRecs.size(); f++) {
                         if (_ypRecs.get(f).getFuncId().equals(key)) {
@@ -211,13 +201,13 @@ public class YDevice
         }
 
         if (reindex) {
-            SafeYAPI().reindexDevice(this);
+            SafeYAPI()._yHash.reindexDevice(this);
         }
         return YAPI.SUCCESS;
     }
 
     // Force the REST API string in cache to expire immediately
-    public void dropCache()
+    public void clearCache()
     {
         _cache_expiration = 0;
     }
@@ -228,7 +218,6 @@ public class YDevice
         return _ypRecs.size();
     }
 
-
     YPEntry getYPEntry(int idx)
     {
         if (idx < _ypRecs.size()) {
@@ -236,7 +225,6 @@ public class YDevice
         }
         return null;
     }
-
 
     byte[] requestHTTPSync(String request, byte[] rest_of_request) throws YAPI_Exception
     {
@@ -338,7 +326,6 @@ public class YDevice
         _logCallback = callback;
         triggerLogPull();
     }
-
 
     static byte[] formatHTTPUpload(String path, byte[] content) throws YAPI_Exception
     {

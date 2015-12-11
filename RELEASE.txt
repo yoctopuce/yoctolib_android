@@ -1,4 +1,6 @@
-- Detect invalid settings before updating firmware
-- Add clearCache() method to YFunctions object
-- Fix loadThermistorResponseTable() method
-- Save thermistor response table during firmware update
+- Add YCurrentLoopOutput class
+- Add doc example for Yocto-4-20mA-Tx
+- Improve Library performance
+- Free callback reference on YAPI.FreeAPI
+- Fix timeout in YAPI.FreeAPI()
+- Fix get_functionsIds() method that was not working with "Sensor" as argument

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCurrent.java 21116 2015-08-17 12:36:25Z seb $
+ * $Id: YCurrent.java 22180 2015-11-30 21:45:56Z mvuilleu $
  *
  * Implements FindCurrent(), the high-level API for Current functions
  *
@@ -226,8 +226,8 @@ public class YCurrent extends YSensor
     {
         String next_hwid;
         try {
-            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
-            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+            String hwid = SafeYAPI()._yHash.resolveHwID(_className, _func);
+            next_hwid = SafeYAPI()._yHash.getNextHardwareId(_className, hwid);
         } catch (YAPI_Exception ignored) {
             next_hwid = null;
         }
@@ -246,7 +246,7 @@ public class YCurrent extends YSensor
      */
     public static YCurrent FirstCurrent()
     {
-        String next_hwid = SafeYAPI().getFirstHardwareId("Current");
+        String next_hwid = SafeYAPI()._yHash.getFirstHardwareId("Current");
         if (next_hwid == null)  return null;
         return FindCurrent(next_hwid);
     }

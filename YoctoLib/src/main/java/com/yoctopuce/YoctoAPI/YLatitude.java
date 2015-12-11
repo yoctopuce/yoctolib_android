@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YLatitude.java 21116 2015-08-17 12:36:25Z seb $
+ * $Id: YLatitude.java 22180 2015-11-30 21:45:56Z mvuilleu $
  *
  * Implements FindLatitude(), the high-level API for Latitude functions
  *
@@ -227,8 +227,8 @@ public class YLatitude extends YSensor
     {
         String next_hwid;
         try {
-            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
-            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+            String hwid = SafeYAPI()._yHash.resolveHwID(_className, _func);
+            next_hwid = SafeYAPI()._yHash.getNextHardwareId(_className, hwid);
         } catch (YAPI_Exception ignored) {
             next_hwid = null;
         }
@@ -247,7 +247,7 @@ public class YLatitude extends YSensor
      */
     public static YLatitude FirstLatitude()
     {
-        String next_hwid = SafeYAPI().getFirstHardwareId("Latitude");
+        String next_hwid = SafeYAPI()._yHash.getFirstHardwareId("Latitude");
         if (next_hwid == null)  return null;
         return FindLatitude(next_hwid);
     }

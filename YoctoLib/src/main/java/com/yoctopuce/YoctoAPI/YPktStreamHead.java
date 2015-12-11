@@ -5,7 +5,8 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 
-class YPktStreamHead {
+class YPktStreamHead
+{
     protected static final int USB_PKT_STREAM_HEAD = 2;
     // pkt type definitions
     protected static final int YPKT_STREAM = 0;
@@ -29,39 +30,47 @@ class YPktStreamHead {
     private byte[] _data;
 
 
-    int getPktNumber() {
+    int getPktNumber()
+    {
         return _pktNumber;
     }
 
-    int getStreamType() {
+    int getStreamType()
+    {
         return _streamType;
     }
 
-    int getPktType() {
+    int getPktType()
+    {
         return _pktType;
     }
 
-    int getContentSize() {
+    int getContentSize()
+    {
         return _data.length;
     }
 
-    int getFullSize() {
+    int getFullSize()
+    {
         return _data.length + USB_PKT_STREAM_HEAD;
     }
 
-    byte getDataByte(int ofs) {
+    byte getDataByte(int ofs)
+    {
         return _data[ofs];
     }
 
 
-    byte[] getDataAsByteArray() {
+    byte[] getDataAsByteArray()
+    {
         return _data;
     }
 
 
     // content of the stream is initialised with data_size byte of the bb (starting at current position)
     // note : data_size bytes in bb are consumed
-    public YPktStreamHead(int pktNumber, int pktType, int streamType, byte[] data, int offset, int len) {
+    public YPktStreamHead(int pktNumber, int pktType, int streamType, byte[] data, int offset, int len)
+    {
         _pktNumber = pktNumber;
         _streamType = streamType;
         _pktType = pktType;
@@ -73,7 +82,8 @@ class YPktStreamHead {
     }
 
 
-    public YPktStreamHead(int pktNumber, int pktType, int streamType, ByteBuffer pkt, int dataLen) {
+    public YPktStreamHead(int pktNumber, int pktType, int streamType, ByteBuffer pkt, int dataLen)
+    {
         _pktNumber = pktNumber;
         _streamType = streamType;
         _pktType = pktType;
@@ -83,7 +93,8 @@ class YPktStreamHead {
 
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         String type, stream;
         switch (_pktType) {
             case YPKT_CONF:
@@ -142,7 +153,8 @@ class YPktStreamHead {
     }
 
     //decode
-    public static YPktStreamHead Decode(ByteBuffer pkt) throws YAPI_Exception {
+    public static YPktStreamHead Decode(ByteBuffer pkt) throws YAPI_Exception
+    {
         if (pkt.remaining() < USB_PKT_STREAM_HEAD) {
             return null;
         }
@@ -159,7 +171,8 @@ class YPktStreamHead {
     }
 
 
-    public int getRawStream(byte[] res, int pos) {
+    public int getRawStream(byte[] res, int pos)
+    {
         res[pos++] = (byte) ((_pktNumber & 7) | ((_streamType & 0x1f) << 3));
         res[pos++] = (byte) (_pktType | ((_data.length & 0x3f) << 2));
         if (_data.length > 0) {
@@ -168,7 +181,8 @@ class YPktStreamHead {
         return _data.length + USB_PKT_STREAM_HEAD;
     }
 
-    public static void PadWithEmpty(byte[] res, int pos, int usbPktSize) {
+    public static void PadWithEmpty(byte[] res, int pos, int usbPktSize)
+    {
         int remaining = usbPktSize - pos - USB_PKT_STREAM_HEAD;
         if (remaining >= 0) {
             res[pos++] = (byte) ((YSTREAM_EMPTY & 0x1f) << 3);
@@ -176,18 +190,21 @@ class YPktStreamHead {
         }
     }
 
-    public boolean isConfPktReset() {
+    public boolean isConfPktReset()
+    {
         return (_pktType == YPKT_CONF && _streamType == USB_CONF_RESET);
     }
 
-    public boolean isConfPktStart() {
+    public boolean isConfPktStart()
+    {
         return (_pktType == YPKT_CONF && _streamType == USB_CONF_START);
     }
 
 
-    NotificationStreams decodeAsNotification(YUSBDevice dev, boolean isV2) throws YAPI_Exception {
+    NotificationStreams decodeAsNotification(String serial, boolean isV2) throws YAPI_Exception
+    {
         try {
-            return new NotificationStreams(dev, _data, isV2);
+            return new NotificationStreams(serial, _data, isV2);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Invlalid USB packet");
         }
@@ -195,8 +212,8 @@ class YPktStreamHead {
 
 
     /**
-    * Created by seb on 27.02.2015.
-    */
+     * Created by seb on 27.02.2015.
+     */
     static class NotificationStreams
     {
 
@@ -210,7 +227,6 @@ class YPktStreamHead {
         private static final int NOTIFY_V2_IS_SMALL_FLAG = 0x80;
 
 
-
         protected static final int NOTIFY_PKT_NAME = 0;
         protected static final int NOTIFY_PKT_PRODNAME = 1;
         protected static final int NOTIFY_PKT_CHILD = 2;
@@ -222,8 +238,9 @@ class YPktStreamHead {
         protected static final int NOTIFY_PKT_FUNCNAMEYDX = 8;
 
 
-        public enum NotType {
-            NAME, PRODNAME, CHILD, FIRMWARE, FUNCNAME, FUNCVAL, FUNCVALFLUSH, STREAMREADY, LOG, FUNCNAMEYDX
+        public enum NotType
+        {
+            NAME, PRODNAME, CHILD, FIRMWARE, FUNCNAME, FUNCVAL, FUNCVAL_TINY, FUNCVALFLUSH, STREAMREADY, LOG, FUNCNAMEYDX
         }
 
         private final NotType _notType;
@@ -241,11 +258,12 @@ class YPktStreamHead {
         private int _vendorid;
         private int _deviceid;
         private String _funcname;
-        private byte _funydx;
+        private int _funydx;
         private byte _funclass;
 
 
-        static String arrayToString(byte[] data, int ofs, int maxlen) {
+        static String arrayToString(byte[] data, int ofs, int maxlen)
+        {
             if (data == null)
                 return "";
             int pos = ofs;
@@ -258,7 +276,8 @@ class YPktStreamHead {
             return new String(data, pos, len);
         }
 
-        public YPEntry.BaseClass getFunclass() {
+        public YPEntry.BaseClass getFunclass()
+        {
             if (_funclass >= YPEntry.BaseClass.values().length) {
                 // Unknown subclass, use YFunction instead
                 return YPEntry.BaseClass.Function;
@@ -267,23 +286,22 @@ class YPktStreamHead {
 
         }
 
-        public NotificationStreams(YUSBDevice dev, byte[] data, boolean isV2) throws YAPI_Exception {
+        public NotificationStreams(String serial, byte[] data, boolean isV2) throws YAPI_Exception
+        {
             int firstByte = data[0];
             if (isV2 || firstByte <= NOTIFY_1STBYTE_MAXTINY || firstByte >= NOTIFY_1STBYTE_MINSMALL) {
                 _funcvalType = (firstByte >> NOTIFY_V2_TYPE_OFS) & NOTIFY_V2_TYPE_MASK;
-                _serial = dev.getSerial();
-                _functionId = dev.getFuncidFromYdx(_serial, firstByte & NOTIFY_V2_FUNYDX_MASK);
+                _serial = serial;
+                _funydx = firstByte & NOTIFY_V2_FUNYDX_MASK;
                 if (_funcvalType == YGenericHub.NOTIFY_V2_FLUSHGROUP) {
                     _notType = NotType.FUNCVALFLUSH;
                 } else {
-                    _notType = NotType.FUNCVAL;
+                    _notType = NotType.FUNCVAL_TINY;
                     if ((firstByte & NOTIFY_V2_IS_SMALL_FLAG) != 0) {
                         // added on 2015-02-25, remove code below when confirmed dead code
                         throw new YAPI_Exception(YAPI.IO_ERROR, "Hub Should not fwd notification");
                     }
                     _funcval = YGenericHub.decodePubVal(_funcvalType, data, 1, data.length - 1);
-                    if (_functionId == null)
-                        throw new YAPI_Exception(YAPI.IO_ERROR, "too early notification");
                 }
             } else {
                 _serial = arrayToString(data, 0, YAPI.YOCTO_SERIAL_LEN);
@@ -347,56 +365,63 @@ class YPktStreamHead {
             }
         }
 
-
-        public NotType getNotType() {
+        public NotType getNotType()
+        {
             return _notType;
         }
 
-        public String getSerial() {
+        public String getSerial()
+        {
             return _serial;
         }
 
-        public String getFuncval() {
+        public String getFuncval()
+        {
             return _funcval;
         }
 
-        public String getLogicalname() {
+        public String getLogicalname()
+        {
             return _logicalname;
         }
 
-        public byte getBeacon() {
+        public byte getBeacon()
+        {
             return _beacon;
         }
 
-        public String getProduct() {
+        public String getProduct()
+        {
             return _product;
         }
 
-        public String getChildserial() {
-            return _childserial;
-        }
-
-        public byte getDevydy() {
+        public byte getDevydy()
+        {
             return _devydy;
         }
 
-        public int getDeviceid() {
+        public int getDeviceid()
+        {
             return _deviceid;
         }
 
-        public String getFuncname() {
+        public String getFuncname()
+        {
             return _funcname;
         }
 
-        public byte getFunydx() {
+        public int getFunydx()
+        {
             return _funydx;
         }
 
-        public String getFunctionId() {
+        public String getFunctionId()
+        {
             return _functionId;
         }
 
-        public String getHardwareId() {
+        public String getHardwareId()
+        {
             return _serial + "." + _functionId;
         }
 

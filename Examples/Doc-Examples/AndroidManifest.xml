@@ -62,6 +62,15 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_4_20mA_Tx start -->
+        <activity
+            android:name=".GettingStarted_Yocto_4_20mA_Tx"
+            android:label="Yocto-4-20mA-Tx">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+        </activity>
+        <!-- generated GettingStarted_Yocto_4_20mA_Tx stop -->   
         <!-- generated GettingStarted_Yocto_Light_V3 start -->
         <activity
             android:name=".GettingStarted_Yocto_Light_V3"

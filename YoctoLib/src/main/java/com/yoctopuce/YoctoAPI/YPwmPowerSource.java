@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPwmPowerSource.java 21199 2015-08-19 13:06:55Z seb $
+ * $Id: YPwmPowerSource.java 22180 2015-11-30 21:45:56Z mvuilleu $
  *
  * Implements FindPwmPowerSource(), the high-level API for PwmPowerSource functions
  *
@@ -280,8 +280,8 @@ public class YPwmPowerSource extends YFunction
     {
         String next_hwid;
         try {
-            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
-            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+            String hwid = SafeYAPI()._yHash.resolveHwID(_className, _func);
+            next_hwid = SafeYAPI()._yHash.getNextHardwareId(_className, hwid);
         } catch (YAPI_Exception ignored) {
             next_hwid = null;
         }
@@ -300,7 +300,7 @@ public class YPwmPowerSource extends YFunction
      */
     public static YPwmPowerSource FirstPwmPowerSource()
     {
-        String next_hwid = SafeYAPI().getFirstHardwareId("PwmPowerSource");
+        String next_hwid = SafeYAPI()._yHash.getFirstHardwareId("PwmPowerSource");
         if (next_hwid == null)  return null;
         return FindPwmPowerSource(next_hwid);
     }

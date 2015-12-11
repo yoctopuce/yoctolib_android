@@ -1,40 +1,38 @@
 /*********************************************************************
- *
- * $Id: YGenericHub.java 20373 2015-05-19 09:45:58Z seb $
+ * $Id: YGenericHub.java 22039 2015-11-18 16:17:47Z seb $
  *
  * Internal YGenericHub object
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ * non-exclusive license to use, modify, copy and integrate this
+ * file into your software for the sole purpose of interfacing
+ * with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
- *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
- *  this notice in the distributed source file.
+ * You may reproduce and distribute copies of this file in
+ * source or object form, as long as the sole purpose of this
+ * code is to interface with Yoctopuce products. You must retain
+ * this notice in the distributed source file.
  *
- *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
- *  obligations.
+ * You should refer to Yoctopuce General Terms and Conditions
+ * for additional information regarding your rights and
+ * obligations.
  *
- *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
- *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
- *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- *  WARRANTY, OR OTHERWISE.
- *
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
+ * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ * WARRANTY, OR OTHERWISE.
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
@@ -45,6 +43,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
@@ -73,7 +72,7 @@ abstract class YGenericHub
     protected Object _notifyHandle = null;
     protected volatile long _devListValidity = 500;
     protected long _devListExpires = 0;
-    protected HashMap<Integer, String> _serialByYdx = new HashMap<Integer, String>();
+    protected final ConcurrentHashMap<Integer, String> _serialByYdx = new ConcurrentHashMap <Integer, String>();
     protected HashMap<String, YDevice> _devices = new HashMap<String, YDevice>();
     protected final boolean _reportConnnectionLost;
 
@@ -129,9 +128,9 @@ abstract class YGenericHub
                 case PUBVAL_YOCTO_FLOAT_E3:
                     // 32bit integer in little endian format or Yoctopuce 10-3 format
                     int numVal = funcval[ofs++] & 0xff;
-                    numVal += (int)(funcval[ofs++] & 0xff) << 8;
-                    numVal += (int)(funcval[ofs++] & 0xff) << 16;
-                    numVal += (int)(funcval[ofs++] & 0xff) << 24;
+                    numVal += (int) (funcval[ofs++] & 0xff) << 8;
+                    numVal += (int) (funcval[ofs++] & 0xff) << 16;
+                    numVal += (int) (funcval[ofs++] & 0xff) << 24;
                     if (funcValType == PUBVAL_C_LONG) {
                         return String.format("%d", numVal);
                     } else {
@@ -140,7 +139,7 @@ abstract class YGenericHub
                         while (endp > 0 && buffer.charAt(endp - 1) == '0') {
                             --endp;
                         }
-                        if (endp > 0  && buffer.charAt(endp - 1) == '.') {
+                        if (endp > 0 && buffer.charAt(endp - 1) == '.') {
                             --endp;
                             buffer = buffer.substring(0, endp);
                         }
@@ -154,7 +153,7 @@ abstract class YGenericHub
                     while (endp > 0 && buffer.charAt(endp - 1) == '0') {
                         --endp;
                     }
-                    if (endp > 0  && buffer.charAt(endp - 1) == '.') {
+                    if (endp > 0 && buffer.charAt(endp - 1) == '.') {
                         --endp;
                         buffer = buffer.substring(0, endp);
                     }
@@ -177,9 +176,11 @@ abstract class YGenericHub
 
     protected void updateFromWpAndYp(ArrayList<WPEntry> whitePages, HashMap<String, ArrayList<YPEntry>> yellowPages) throws YAPI_Exception
     {
+
         // by default consider all known device as unplugged
         ArrayList<YDevice> toRemove = new ArrayList<YDevice>(_devices.values());
 
+        YAPI yapi = SafeYAPI();
         for (WPEntry wp : whitePages) {
             String serial = wp.getSerialNumber();
             if (_devices.containsKey(serial)) {
@@ -188,24 +189,61 @@ abstract class YGenericHub
                 if (!currdev.getLogicalName().equals(wp.getLogicalName())) {
                     // Reindex device from its own data
                     currdev.refresh();
-                    SafeYAPI().pushPlugEvent(Event.CHANGE, serial);
+                    yapi.pushPlugEvent(Event.CHANGE, serial);
                 } else if (currdev.getBeacon() > 0 != wp.getBeacon() > 0) {
                     currdev.refresh();
                 }
                 toRemove.remove(currdev);
             } else {
                 YDevice dev = new YDevice(this, wp, yellowPages);
+                yapi._yHash.reindexDevice(dev);
                 _devices.put(serial, dev);
-                SafeYAPI().pushPlugEvent(Event.PLUG, serial);
-                SafeYAPI()._Log("HUB: device " + serial + " has been plugged\n");
+                yapi.pushPlugEvent(Event.PLUG, serial);
+                yapi._Log("HUB: device " + serial + " has been plugged\n");
             }
         }
 
         for (YDevice dev : toRemove) {
             String serial = dev.getSerialNumber();
-            SafeYAPI().pushPlugEvent(Event.UNPLUG, serial);
-            SafeYAPI()._Log("HUB: device " + serial + " has been unplugged\n");
+            yapi.pushPlugEvent(Event.UNPLUG, serial);
+            yapi._Log("HUB: device " + serial + " has been unplugged\n");
             _devices.remove(serial);
+        }
+
+        yapi._yHash.reindexYellowPages(yellowPages);
+
+    }
+
+    protected void handleValueNotification(String serial, String funcid, String value)
+    {
+        String hwid = serial + "." + funcid;
+        SafeYAPI()._yHash.setFunctionValue(hwid, value);
+        YAPI yapi = SafeYAPI();
+        YFunction conn_fn = yapi._GetValueCallback(hwid);
+        if (conn_fn != null) {
+            yapi._PushDataEvent(new YAPI.DataEvent(conn_fn, value));
+        }
+
+    }
+
+    //called from Jni
+    protected void handleTimedNotification(String serial, String funcid, double deviceTime, byte[] report)
+    {
+        ArrayList<Integer> arrayList = new ArrayList<Integer>(report.length);
+        for (byte b : report) {
+            int i = b & 0xff;
+            arrayList.add(i);
+        }
+        handleTimedNotification(serial,funcid,deviceTime,arrayList);
+    }
+
+
+    protected void handleTimedNotification(String serial, String funcid, double deviceTime, ArrayList<Integer> report)
+    {
+        String hwid = serial + "." + funcid;
+        YFunction func = SafeYAPI()._GetTimedReportCallback(hwid);
+        if (func != null) {
+            SafeYAPI()._PushDataEvent(new YAPI.DataEvent(func, deviceTime, report));
         }
     }
 
@@ -214,6 +252,11 @@ abstract class YGenericHub
     public abstract ArrayList<String> getBootloaders() throws YAPI_Exception;
 
     abstract int ping(int mstimeout) throws YAPI_Exception;
+
+    public static String getAPIVersion()
+    {
+        return "";
+    }
 
     interface UpdateProgress
     {

@@ -1,38 +1,40 @@
 /*********************************************************************
- * $Id: YModule.java 21587 2015-09-22 15:45:27Z seb $
+ *
+ * $Id: YModule.java 21937 2015-11-06 10:57:10Z seb $
  *
  * YModule Class: Module control interface
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- * non-exclusive license to use, modify, copy and integrate this
- * file into your software for the sole purpose of interfacing
- * with Yoctopuce products.
+ *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ *  non-exclusive license to use, modify, copy and integrate this
+ *  file into your software for the sole purpose of interfacing 
+ *  with Yoctopuce products. 
  *
- * You may reproduce and distribute copies of this file in
- * source or object form, as long as the sole purpose of this
- * code is to interface with Yoctopuce products. You must retain
- * this notice in the distributed source file.
+ *  You may reproduce and distribute copies of this file in 
+ *  source or object form, as long as the sole purpose of this
+ *  code is to interface with Yoctopuce products. You must retain 
+ *  this notice in the distributed source file.
  *
- * You should refer to Yoctopuce General Terms and Conditions
- * for additional information regarding your rights and
- * obligations.
+ *  You should refer to Yoctopuce General Terms and Conditions
+ *  for additional information regarding your rights and 
+ *  obligations.
  *
- * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
- * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
- * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
- * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
- * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
- * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- * WARRANTY, OR OTHERWISE.
+ *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
+ *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
+ *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
+ *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
+ *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
+ *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ *  WARRANTY, OR OTHERWISE.
+ *
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
@@ -172,7 +174,7 @@ public class YModule extends YFunction
         String devid = _func;
         int dotidx = devid.indexOf('.');
         if (dotidx >= 0) devid = devid.substring(0, dotidx);
-        YDevice dev = SafeYAPI().getDevice(devid);
+        YDevice dev = SafeYAPI()._yHash.getDevice(devid);
         if (dev == null) {
             throw new YAPI_Exception(YAPI.DEVICE_NOT_FOUND, "Device [" + devid + "] is not online");
         }
@@ -213,6 +215,13 @@ public class YModule extends YFunction
         return dev.getYPEntry(functionIndex).getClassname();
     }
 
+    // Retrieve the function base type of the nth function (beside "module") in the device
+    public String functionBaseType(int functionIndex) throws YAPI_Exception
+    {
+        YDevice dev = _getDev();
+        return dev.getYPEntry(functionIndex).getBaseType();
+    }
+
     // Retrieve the name of the nth function (beside "module") in the device
     public String functionName(int functionIndex) throws YAPI_Exception
     {
@@ -238,7 +247,7 @@ public class YModule extends YFunction
     public void registerLogCallback(LogCallback callback)
     {
         _logCallback = callback;
-        YDevice ydev = SafeYAPI().getDevice(_serial);
+        YDevice ydev = SafeYAPI()._yHash.getDevice(_serial);
         if (ydev != null) {
             ydev.registerLogCallback(callback);
         }
@@ -1205,9 +1214,14 @@ public class YModule extends YFunction
         count = functionCount();
         i = 0;
         while (i < count) {
-            ftype  = functionType(i);
+            ftype = functionType(i);
             if (ftype.equals(funType)) {
                 res.add(functionId(i));
+            } else {
+                ftype = functionBaseType(i);
+                if (ftype.equals(funType)) {
+                    res.add(functionId(i));
+                }
             }
             i = i + 1;
         }
@@ -1761,8 +1775,8 @@ public class YModule extends YFunction
     {
         String next_hwid;
         try {
-            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
-            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+            String hwid = SafeYAPI()._yHash.resolveHwID(_className, _func);
+            next_hwid = SafeYAPI()._yHash.getNextHardwareId(_className, hwid);
         } catch (YAPI_Exception ignored) {
             next_hwid = null;
         }
@@ -1781,7 +1795,7 @@ public class YModule extends YFunction
      */
     public static YModule FirstModule()
     {
-        String next_hwid = SafeYAPI().getFirstHardwareId("Module");
+        String next_hwid = SafeYAPI()._yHash.getFirstHardwareId("Module");
         if (next_hwid == null)  return null;
         return FindModule(next_hwid);
     }

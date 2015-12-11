@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRealTimeClock.java 21199 2015-08-19 13:06:55Z seb $
+ * $Id: YRealTimeClock.java 22180 2015-11-30 21:45:56Z mvuilleu $
  *
  * Implements FindRealTimeClock(), the high-level API for RealTimeClock functions
  *
@@ -174,7 +174,6 @@ public class YRealTimeClock extends YFunction
 
     /**
      * Changes the current time. Time is specifid in Unix format (number of elapsed seconds since Jan 1st, 1970).
-     * If current UTC time is known, utcOffset will be automatically adjusted for the new specified time.
      *
      * @param newval : an integer corresponding to the current time
      *
@@ -192,7 +191,6 @@ public class YRealTimeClock extends YFunction
 
     /**
      * Changes the current time. Time is specifid in Unix format (number of elapsed seconds since Jan 1st, 1970).
-     * If current UTC time is known, utcOffset will be automatically adjusted for the new specified time.
      *
      * @param newval : an integer corresponding to the current time
      *
@@ -266,8 +264,6 @@ public class YRealTimeClock extends YFunction
     /**
      * Changes the number of seconds between current time and UTC time (time zone).
      * The timezone is automatically rounded to the nearest multiple of 15 minutes.
-     *  If current UTC time is known, the current time will automatically be updated according to the
-     * selected time zone.
      *
      * @param newval : an integer corresponding to the number of seconds between current time and UTC time (time zone)
      *
@@ -286,8 +282,6 @@ public class YRealTimeClock extends YFunction
     /**
      * Changes the number of seconds between current time and UTC time (time zone).
      * The timezone is automatically rounded to the nearest multiple of 15 minutes.
-     *  If current UTC time is known, the current time will automatically be updated according to the
-     * selected time zone.
      *
      * @param newval : an integer corresponding to the number of seconds between current time and UTC time (time zone)
      *
@@ -417,8 +411,8 @@ public class YRealTimeClock extends YFunction
     {
         String next_hwid;
         try {
-            String hwid = SafeYAPI().resolveFunction(_className, _func).getHardwareId();
-            next_hwid = SafeYAPI().getNextHardwareId(_className, hwid);
+            String hwid = SafeYAPI()._yHash.resolveHwID(_className, _func);
+            next_hwid = SafeYAPI()._yHash.getNextHardwareId(_className, hwid);
         } catch (YAPI_Exception ignored) {
             next_hwid = null;
         }
@@ -437,7 +431,7 @@ public class YRealTimeClock extends YFunction
      */
     public static YRealTimeClock FirstRealTimeClock()
     {
-        String next_hwid = SafeYAPI().getFirstHardwareId("RealTimeClock");
+        String next_hwid = SafeYAPI()._yHash.getFirstHardwareId("RealTimeClock");
         if (next_hwid == null)  return null;
         return FindRealTimeClock(next_hwid);
     }

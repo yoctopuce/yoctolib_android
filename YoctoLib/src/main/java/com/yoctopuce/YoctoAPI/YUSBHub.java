@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YUSBHub.java 20867 2015-07-17 10:17:47Z seb $
+ * $Id: YUSBHub.java 21750 2015-10-13 15:14:31Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -229,7 +229,7 @@ class YUSBHub extends YGenericHub
                     rawDevice = new YUSBRawDevice(this, usbdevice, _manager, bootloader);
                     _bootloadersFromAndroidRef.put(key, bootloader);
                 } else {
-                    YUSBDevice device = new YUSBDevice();
+                    YUSBDevice device = new YUSBDevice(this);
                     rawDevice = new YUSBRawDevice(this, usbdevice, _manager, device);
                     _devsFromAndroidRef.put(key, device);
                 }
@@ -271,7 +271,7 @@ class YUSBHub extends YGenericHub
         ArrayList<WPEntry> whitePages = new ArrayList<WPEntry>();
         for (YUSBDevice d : _devsFromAndroidRef.values()) {
             if (d.isAllowed() && d.waitEndOfInit()) {
-                d.updateWhitesPages(whitePages);
+                whitePages.add(d.getWhitesPagesEntry());
                 d.updateYellowPages(yellowPages);
             }
         }
