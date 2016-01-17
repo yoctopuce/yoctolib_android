@@ -1,6 +1,1 @@
-- Add YCurrentLoopOutput class
-- Add doc example for Yocto-4-20mA-Tx
-- Improve Library performance
-- Free callback reference on YAPI.FreeAPI
-- Fix timeout in YAPI.FreeAPI()
-- Fix get_functionsIds() method that was not working with "Sensor" as argument
+- Add get_subDevices(), get_parentHub() and get_url() methods to YModule class

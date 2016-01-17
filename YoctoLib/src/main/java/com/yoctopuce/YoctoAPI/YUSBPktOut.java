@@ -2,7 +2,6 @@ package com.yoctopuce.YoctoAPI;
 
 import java.util.LinkedList;
 
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 
 public class YUSBPktOut extends YUSBPkt {
@@ -29,7 +28,7 @@ public class YUSBPktOut extends YUSBPkt {
 
     private void addStream(YPktStreamHead stream) {
         if (getFreeSize() < stream.getFullSize()) {
-            SafeYAPI()._Log("USB Out packet overflow");
+            // fixme: _usbHub._yctx._Log("USB Out packet overflow");
             return;
         }
         _streams.add(stream);

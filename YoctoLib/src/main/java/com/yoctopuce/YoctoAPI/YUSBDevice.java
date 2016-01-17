@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 21750 2015-10-13 15:14:31Z seb $
+ * $Id: YUSBDevice.java 22679 2016-01-12 17:07:55Z seb $
  *
  * YUSBDevice Class:
  *
@@ -51,7 +51,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 public class YUSBDevice implements YUSBRawDevice.IOHandler
 {
@@ -192,7 +191,8 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                     break;
                 case Close_by_dev:
                 case Closed:
-                    SafeYAPI()._Log("Drop unexpected close from device\n");
+                    
+                    _usbHub._yctx._Log("Drop unexpected close from device\n");
                     break;
                 case Opened:
                     _tcp_state = TCP_State.Close_by_dev;
@@ -252,7 +252,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 if ((_devVersion & 0xff00) != (YUSBPkt.YPKT_USB_VERSION_BCD & 0xff00)) {
                     // major dev_version change
                     if ((_devVersion & 0xff00) > (YUSBPkt.YPKT_USB_VERSION_BCD & 0xff00)) {
-                        SafeYAPI()._Log(String.format("Yoctopuce library is too old (using 0x%x need 0x%x) to handle device %s, please upgrade your Yoctopuce library\n", YUSBPkt.YPKT_USB_VERSION_BCD, _devVersion, _serial));
+                        _usbHub._yctx._Log(String.format("Yoctopuce library is too old (using 0x%x need 0x%x) to handle device %s, please upgrade your Yoctopuce library\n", YUSBPkt.YPKT_USB_VERSION_BCD, _devVersion, _serial));
                         ioError("Library is too old to handle this device");
                     } else {
                         // implement backward compatibility when implementing a new protocol
@@ -261,9 +261,9 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                     return;
                 } else {
                     if (_devVersion > YUSBPkt.YPKT_USB_VERSION_BCD) {
-                        SafeYAPI()._Log(String.format("Device %s is using an newer protocol, consider upgrading your Yoctopuce library\n", _serial));
+                        _usbHub._yctx._Log(String.format("Device %s is using an newer protocol, consider upgrading your Yoctopuce library\n", _serial));
                     } else {
-                        SafeYAPI()._Log(String.format("Device %s is using an older protocol, consider upgrading the device firmware\n", _serial));
+                        _usbHub._yctx._Log(String.format("Device %s is using an older protocol, consider upgrading the device firmware\n", _serial));
                     }
                 }
             }
@@ -276,10 +276,10 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 ioError("Unable to send start pkt:" + e.getLocalizedMessage());
             }
         } else {
-            SafeYAPI()._Log("Drop late reset packet:");
+            _usbHub._yctx._Log("Drop late reset packet:");
             String[] lines = newpkt.toStringARR();
             for (String s : lines) {
-                SafeYAPI()._Log(s);
+                _usbHub._yctx._Log(s);
             }
         }
     }
@@ -309,10 +309,10 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
             _lastpktno = newpkt.getPktno();
             setNewState(PKT_State.StartReceived, null);
         } else {
-            SafeYAPI()._Log("Drop late start packet:");
+            _usbHub._yctx._Log("Drop late start packet:");
             String[] lines = newpkt.toStringARR();
             for (String s : lines) {
-                SafeYAPI()._Log(s);
+                _usbHub._yctx._Log(s);
             }
 
         }
@@ -326,7 +326,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 _pkt_state = PKT_State.StreamReadyReceived;
                 _stateLock.notify();
             } else {
-                SafeYAPI()._Log("Streamready to early! :" + _pkt_state);
+                _usbHub._yctx._Log("Streamready to early! :" + _pkt_state);
             }
         }
     }
@@ -375,7 +375,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                     }
                 }
                 if (_tcp_state != TCP_State.Closed) {
-                    SafeYAPI()._Log("USB Close without device ack\n");
+                    _usbHub._yctx._Log("USB Close without device ack\n");
                     _tcp_state = TCP_State.Closed;
                 }
             }
@@ -427,7 +427,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         synchronized (_req_result) {
             result = _req_result.toByteArray();
         }
-        int hpos = YAPI._find_in_bytes(result, "\r\n\r\n".getBytes());
+        int hpos = YAPIContext._find_in_bytes(result, "\r\n\r\n".getBytes());
         if (hpos >= 0) {
             return Arrays.copyOfRange(result, hpos + 4, result.length);
         }
@@ -543,7 +543,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     public void handleTimedNotification(byte[] data)
     {
         int pos = 0;
-        YDevice ydev = SafeYAPI()._yHash.getDevice(_serial);
+        YDevice ydev = _usbHub._yctx._yHash.getDevice(_serial);
         if (ydev == null) {
             // device has not been registered;
             return;
@@ -554,7 +554,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
             int len = 1 + ((data[pos] >> 4) & 0x7);
             pos++;
             if (data.length < pos + len) {
-                SafeYAPI()._Log("drop invalid timedNotification");
+                _usbHub._yctx._Log("drop invalid timedNotification");
                 return;
             }
             if (funYdx == 0xf) {
@@ -583,7 +583,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     public void handleTimedNotificationV2(byte[] data)
     {
         int pos = 0;
-        YDevice ydev = SafeYAPI()._yHash.getDevice(_serial);
+        YDevice ydev = _usbHub._yctx._yHash.getDevice(_serial);
         if (ydev == null) {
             // device has not been registered;
             return;
@@ -627,7 +627,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                         YPktStreamHead.NotificationStreams not = s.decodeAsNotification(_serial, streamType == YPktStreamHead.YSTREAM_NOTICE_V2);
                         handleNotifcation(not);
                     } catch (YAPI_Exception ignore) {
-                        YAPI.SafeYAPI()._Log("drop invalid notification" + ignore.getLocalizedMessage());
+                        _usbHub._yctx._Log("drop invalid notification" + ignore.getLocalizedMessage());
                     }
                     break;
                 case YPktStreamHead.YSTREAM_TCP:
@@ -669,7 +669,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                     }
                     break;
                 default:
-                    SafeYAPI()._Log("drop unknown ystream:" + s.toString());
+                    _usbHub._yctx._Log("drop unknown ystream:" + s.toString());
                     break;
             }
         }
@@ -691,7 +691,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         try {
             newpkt = YUSBPktIn.Decode(android_raw_pkt);
         } catch (YAPI_Exception e) {
-            SafeYAPI()._Log("Drop invalid packet:" + e.getLocalizedMessage());
+            _usbHub._yctx._Log("Drop invalid packet:" + e.getLocalizedMessage());
             e.printStackTrace();
             return;
         }
@@ -715,8 +715,8 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 int expectedPktNo = (_lastpktno + 1) & 7;
                 if (newpkt.getPktno() != expectedPktNo) {
                     String message = "Missing packet (look of pkt " + expectedPktNo + " but get " + newpkt.getPktno() + ")";
-                    SafeYAPI()._Log(message + "\n");
-                    SafeYAPI()._Log("Set YAPI.RESEND_MISSING_PKT on YAPI.InitAPI()\n");
+                    _usbHub._yctx._Log(message + "\n");
+                    _usbHub._yctx._Log("Set YAPI.RESEND_MISSING_PKT on YAPI.InitAPI()\n");
                     ioError(message);
                     return;
                 }
@@ -725,10 +725,10 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 streamHandler(streams);
                 checkMetaUTC();
             } else {
-                SafeYAPI()._Log("Drop non-config pkt:");
+                _usbHub._yctx._Log("Drop non-config pkt:");
                 String[] lines = newpkt.toStringARR();
                 for (String s : lines) {
-                    SafeYAPI()._Log(s);
+                    _usbHub._yctx._Log(s);
                 }
             }
         }
@@ -739,7 +739,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     public void ioError(String errorMessage)
     {
         String msg = "USB IO error:" + errorMessage;
-        SafeYAPI()._Log(msg);
+        _usbHub._yctx._Log(msg);
         Log.e(TAG, msg);
         synchronized (_stateLock) {
             _pkt_state = PKT_State.IOError;

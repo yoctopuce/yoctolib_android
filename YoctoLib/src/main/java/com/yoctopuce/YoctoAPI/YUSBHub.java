@@ -1,40 +1,38 @@
 /*********************************************************************
- *
- * $Id: YUSBHub.java 21750 2015-10-13 15:14:31Z seb $
+ * $Id: YUSBHub.java 22751 2016-01-14 16:15:47Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
- *  Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
+ * Copyright (C) 2011 and beyond by Yoctopuce Sarl, Switzerland.
  *
- *  Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
- *  non-exclusive license to use, modify, copy and integrate this
- *  file into your software for the sole purpose of interfacing 
- *  with Yoctopuce products. 
+ * Yoctopuce Sarl (hereafter Licensor) grants to you a perpetual
+ * non-exclusive license to use, modify, copy and integrate this
+ * file into your software for the sole purpose of interfacing
+ * with Yoctopuce products.
  *
- *  You may reproduce and distribute copies of this file in 
- *  source or object form, as long as the sole purpose of this
- *  code is to interface with Yoctopuce products. You must retain 
- *  this notice in the distributed source file.
+ * You may reproduce and distribute copies of this file in
+ * source or object form, as long as the sole purpose of this
+ * code is to interface with Yoctopuce products. You must retain
+ * this notice in the distributed source file.
  *
- *  You should refer to Yoctopuce General Terms and Conditions
- *  for additional information regarding your rights and 
- *  obligations.
+ * You should refer to Yoctopuce General Terms and Conditions
+ * for additional information regarding your rights and
+ * obligations.
  *
- *  THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
- *  WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING 
- *  WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS 
- *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
- *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
- *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA, 
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
- *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
- *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
- *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
- *  WARRANTY, OR OTHERWISE.
- *
+ * THE SOFTWARE AND DOCUMENTATION ARE PROVIDED 'AS IS' WITHOUT
+ * WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING
+ * WITHOUT LIMITATION, ANY WARRANTY OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
+ * INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
+ * COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ * SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
+ * LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
+ * CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
+ * BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
+ * WARRANTY, OR OTHERWISE.
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
@@ -53,7 +51,6 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-import static com.yoctopuce.YoctoAPI.YAPI.SafeYAPI;
 
 class YUSBHub extends YGenericHub
 {
@@ -82,12 +79,12 @@ class YUSBHub extends YGenericHub
 
             if (ACTION_USB_PERMISSION.equals(action)) {
                 if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-                    SafeYAPI()._Log("HUB_USB: permission granted for device " + deviceName + "\n");
+                    _yctx._Log("HUB_USB: permission granted for device " + deviceName + "\n");
                     if (yusbRawDevice != null) {
                         yusbRawDevice.permissionAccepted();
                     }
                 } else {
-                    SafeYAPI()._Log("HUB_USB: permission denied for device " + deviceName + "\n");
+                    _yctx._Log("HUB_USB: permission denied for device " + deviceName + "\n");
                     if (yusbRawDevice != null) {
                         yusbRawDevice.permissionRejected();
                     }
@@ -106,7 +103,7 @@ class YUSBHub extends YGenericHub
                 //fixme:Log.e("HUB_USB", "device plugged");
                 return;
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                SafeYAPI()._Log("HUB_USB: uplug of device " + deviceName + "\n");
+                _yctx._Log("HUB_USB: uplug of device " + deviceName + "\n");
                 if (yusbRawDevice != null) {
                     yusbRawDevice.unplug();
                 }
@@ -114,14 +111,27 @@ class YUSBHub extends YGenericHub
         }
     };
 
-
-	/*
-     * Constuctor
-	 */
-
-    YUSBHub(int idx, boolean requestPermission) throws YAPI_Exception
+    @Override
+    String getSerialNumber()
     {
-        super(idx, true);
+        return "";
+    }
+
+    @Override
+    public String get_urlOf(String serialNumber)
+    {
+        return "usb";
+    }
+
+    @Override
+    public ArrayList<String> get_subDeviceOf(String serialNumber)
+    {
+        return new ArrayList<>();
+    }
+
+    YUSBHub(YAPIContext yctx, int idx, boolean requestPermission) throws YAPI_Exception
+    {
+        super(yctx, new HTTPParams("usb://"), idx, true);
         _manager = (UsbManager) sAppContext.getSystemService(Context.USB_SERVICE);
         if (_manager == null) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Unable to get Android USB manager");
@@ -176,7 +186,7 @@ class YUSBHub extends YGenericHub
                 }
                 _permissionPending.add(device);
             }
-            SafeYAPI()._Log("HUB_USB: trigger request permission for " + device.getUsbDevice().getDeviceName() + "\n");
+            _yctx._Log("HUB_USB: trigger request permission for " + device.getUsbDevice().getDeviceName() + "\n");
             if (doRequest) {
                 UsbDevice usbDevice = device.getUsbDevice();
                 doPermissionRequest(usbDevice);
@@ -191,7 +201,7 @@ class YUSBHub extends YGenericHub
     private void doPermissionRequest(UsbDevice device)
     {
         Intent intent = new Intent(ACTION_USB_PERMISSION);
-        SafeYAPI()._Log("HUB_USB: request permission for " + device.getDeviceName() + "\n");
+        _yctx._Log("HUB_USB: request permission for " + device.getDeviceName() + "\n");
         PendingIntent askPermissionIntent = PendingIntent.getBroadcast(sAppContext, 0, intent, 0);
         _manager.requestPermission(device, askPermissionIntent);
     }
@@ -202,7 +212,7 @@ class YUSBHub extends YGenericHub
         HashMap<String, UsbDevice> connectedDevices;
         try {
             connectedDevices = _manager.getDeviceList();
-        }catch (Exception ignore) {
+        } catch (Exception ignore) {
             return;
         }
         if (connectedDevices == null) {
@@ -374,7 +384,6 @@ class YUSBHub extends YGenericHub
 
     static void SetContextType(Object ctx) throws YAPI_Exception
     {
-        SafeYAPI()._Log("HUB_USB:context type=" + ctx.getClass().getName() + "\n");
         if (!(ctx instanceof Context)) {
             throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Object is not a valid Android Application Context");
         }

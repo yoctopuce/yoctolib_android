@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 20772 2015-06-26 17:07:25Z seb $
+ * $Id: YUSBRawDevice.java 22679 2016-01-12 17:07:55Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -154,14 +154,14 @@ public class YUSBRawDevice implements Runnable
         /* Open a connection to the USB device */
         _connection = _manager.openDevice(_device);
         if (_connection == null) {
-            YAPI.SafeYAPI()._Log("unable to open connection to device " + _device.getDeviceName());
+            _usbHub._yctx._Log("unable to open connection to device " + _device.getDeviceName());
             release();
             return false;
         }
 
 		/* Claim the required interface to gain access to it */
         if (!_connection.claimInterface(_intf, true)) {
-            YAPI.SafeYAPI()._Log("unable to claim interface 0 for device " + _device.getDeviceName());
+            _usbHub._yctx._Log("unable to claim interface 0 for device " + _device.getDeviceName());
             release();
             return false;
         }
@@ -175,13 +175,13 @@ public class YUSBRawDevice implements Runnable
                 try {
                     this.wait(500);
                 } catch (InterruptedException e) {
-                    YAPI.SafeYAPI()._Log("unable to start IOhTread: " + e.getLocalizedMessage());
+                    _usbHub._yctx._Log("unable to start IOhTread: " + e.getLocalizedMessage());
                     release();
                     return false;
                 }
             }
             if (!_ioStarted) {
-                YAPI.SafeYAPI()._Log("unable to start IOhTread ");
+                _usbHub._yctx._Log("unable to start IOhTread ");
                 release();
                 return false;
             }
