@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGenericSensor.java 22692 2016-01-12 23:10:00Z seb $
+ * $Id: YGenericSensor.java 23528 2016-03-18 21:51:08Z mvuilleu $
  *
  * Implements FindGenericSensor(), the high-level API for GenericSensor functions
  *
@@ -28,8 +28,8 @@
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
  *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
+ *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
  *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
  *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
  *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
@@ -205,9 +205,10 @@ public class YGenericSensor extends YSensor
     }
 
     /**
-     * Returns the measured value of the electrical signal used by the sensor.
+     * Returns the current value of the electrical signal measured by the sensor.
      *
-     * @return a floating point number corresponding to the measured value of the electrical signal used by the sensor
+     *  @return a floating point number corresponding to the current value of the electrical signal
+     * measured by the sensor
      *
      * @throws YAPI_Exception on error
      */
@@ -222,9 +223,10 @@ public class YGenericSensor extends YSensor
     }
 
     /**
-     * Returns the measured value of the electrical signal used by the sensor.
+     * Returns the current value of the electrical signal measured by the sensor.
      *
-     * @return a floating point number corresponding to the measured value of the electrical signal used by the sensor
+     *  @return a floating point number corresponding to the current value of the electrical signal
+     * measured by the sensor
      *
      * @throws YAPI_Exception on error
      */

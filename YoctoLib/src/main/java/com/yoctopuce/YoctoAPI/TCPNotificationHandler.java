@@ -84,17 +84,17 @@ public class TCPNotificationHandler extends NotificationHandler
     byte[] hubRequestSync(String req_first_line, byte[] req_head_and_body, int mstimeout) throws YAPI_Exception
     {
         yHTTPRequest req = new yHTTPRequest(_hub, "request to " + _hub.getHost());
-        return req.RequestSync(req_first_line, req_head_and_body, yHTTPRequest.YIO_DEFAULT_TCP_TIMEOUT);
+        return req.RequestSync(req_first_line, req_head_and_body, mstimeout);
     }
 
     @Override
-    byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body, int mstimeout) throws YAPI_Exception
+    byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body, int mstimeout, YGenericHub.RequestProgress progress, Object context) throws YAPI_Exception
     {
         if (!_httpReqByDev.containsKey(device)) {
             _httpReqByDev.put(device, new yHTTPRequest(_hub, "Device " + device.getSerialNumber()));
         }
         yHTTPRequest req = _httpReqByDev.get(device);
-        return req.RequestSync(req_first_line, req_head_and_body, yHTTPRequest.YIO_DEFAULT_TCP_TIMEOUT);
+        return req.RequestSync(req_first_line, req_head_and_body, mstimeout);
     }
 
     @Override
@@ -104,9 +104,6 @@ public class TCPNotificationHandler extends NotificationHandler
             _httpReqByDev.put(device, new yHTTPRequest(_hub, "Device " + device.getSerialNumber()));
         }
         yHTTPRequest req = _httpReqByDev.get(device);
-        if (_hub._writeProtected && !_hub._http_params.geUser().equals("admin")) {
-            throw new YAPI_Exception(YAPI.UNAUTHORIZED, "Access denied: admin credentials required");
-        }
         req.RequestAsync(req_first_line, req_head_and_body, asyncResult, asyncContext);
     }
 
@@ -122,5 +119,11 @@ public class TCPNotificationHandler extends NotificationHandler
     public boolean isConnected()
     {
         return !_sendPingNotification || _connected;
+    }
+
+    @Override
+    public boolean hasRwAccess()
+    {
+        return _hub._http_params.getUser().equals("admin");
     }
 }

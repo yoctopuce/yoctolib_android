@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPwmInput.java 22692 2016-01-12 23:10:00Z seb $
+ * $Id: YPwmInput.java 23238 2016-02-23 14:06:30Z seb $
  *
  * Implements FindPwmInput(), the high-level API for PwmInput functions
  *
@@ -28,8 +28,8 @@
  *  FOR A PARTICULAR PURPOSE, TITLE AND NON-INFRINGEMENT. IN NO
  *  EVENT SHALL LICENSOR BE LIABLE FOR ANY INCIDENTAL, SPECIAL,
  *  INDIRECT OR CONSEQUENTIAL DAMAGES, LOST PROFITS OR LOST DATA,
- *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR 
- *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT 
+ *  COST OF PROCUREMENT OF SUBSTITUTE GOODS, TECHNOLOGY OR
+ *  SERVICES, ANY CLAIMS BY THIRD PARTIES (INCLUDING BUT NOT
  *  LIMITED TO ANY DEFENSE THEREOF), ANY CLAIMS FOR INDEMNITY OR
  *  CONTRIBUTION, OR OTHER SIMILAR COSTS, WHETHER ASSERTED ON THE
  *  BASIS OF CONTRACT, TORT (INCLUDING NEGLIGENCE), BREACH OF
@@ -342,7 +342,7 @@ public class YPwmInput extends YSensor
     }
 
     /**
-     * Returns the timer of the pulses counter (ms)
+     * Returns the timer of the pulses counter (ms).
      *
      * @return an integer corresponding to the timer of the pulses counter (ms)
      *
@@ -359,7 +359,7 @@ public class YPwmInput extends YSensor
     }
 
     /**
-     * Returns the timer of the pulses counter (ms)
+     * Returns the timer of the pulses counter (ms).
      *
      * @return an integer corresponding to the timer of the pulses counter (ms)
      *

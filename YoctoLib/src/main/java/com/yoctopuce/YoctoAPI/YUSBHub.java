@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 22751 2016-01-14 16:15:47Z seb $
+ * $Id: YUSBHub.java 23924 2016-04-14 15:25:47Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -375,7 +375,7 @@ class YUSBHub extends YGenericHub
     }
 
     @Override
-    byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body) throws YAPI_Exception
+    byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body, RequestProgress progress, Object context) throws YAPI_Exception
     {
         String serial = device.getSerialNumber();
         YUSBDevice d = devFromSerial(serial);
@@ -408,7 +408,7 @@ class YUSBHub extends YGenericHub
     }
 
     @Override
-    boolean isSameRootUrl(String url)
+    boolean isSameHub(String url, Object request, Object response, Object session)
     {
         return url.startsWith("usb");
     }

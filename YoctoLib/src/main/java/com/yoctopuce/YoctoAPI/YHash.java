@@ -101,7 +101,7 @@ public class YHash
     }
 
     // Find the best known identifier (hardware Id) for a given function
-    private synchronized YPEntry resolveFunction(String className, String func)
+    synchronized YPEntry resolveFunction(String className, String func)
             throws YAPI_Exception
     {
         if (!YAPI._BaseType.containsKey(className)) {

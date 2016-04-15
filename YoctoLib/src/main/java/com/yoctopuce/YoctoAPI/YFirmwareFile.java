@@ -217,12 +217,12 @@ public class YFirmwareFile {
         return _product;
     }
 
-    public String getFirmwareRelase()
+    public String getFirmwareRelease()
     {
         return _firmware;
     }
 
-    public int getFirmwareRelaseAsInt()
+    public int getFirmwareReleaseAsInt()
     {
         try {
             return Integer.parseInt(_firmware);

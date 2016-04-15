@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YCallbackHub.java 22751 2016-01-14 16:15:47Z seb $
+ * $Id: YCallbackHub.java 23924 2016-04-14 15:25:47Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -84,10 +84,11 @@ public class YCallbackHub extends YGenericHub
     }
 
     @Override
-    synchronized boolean isSameRootUrl(String url)
+    synchronized boolean isSameHub(String url, Object request, Object response, Object session)
     {
         HTTPParams params = new HTTPParams(url);
-        return params.getUrl().equals(_http_params.getUrl());
+        OutputStream tmp = (OutputStream)response;
+        return params.getUrl().equals(_http_params.getUrl()) && tmp == _out;
     }
 
     @Override
@@ -340,7 +341,7 @@ public class YCallbackHub extends YGenericHub
     }
 
     @Override
-    byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body) throws YAPI_Exception
+    byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body, RequestProgress progress, Object context) throws YAPI_Exception
     {
         try {
             return cachedRequest(req_first_line, req_head_and_body);

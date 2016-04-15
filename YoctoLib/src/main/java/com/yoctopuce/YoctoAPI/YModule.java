@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YModule.java 22751 2016-01-14 16:15:47Z seb $
+ * $Id: YModule.java 23882 2016-04-12 08:38:50Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -300,7 +300,7 @@ public class YModule extends YFunction
     public void registerLogCallback(LogCallback callback)
     {
         _logCallback = callback;
-        YDevice ydev = _yapi._yHash.getDevice(_serial);
+        YDevice ydev = _yapi._yHash.getDevice(_serialNumber);
         if (ydev != null) {
             ydev.registerLogCallback(callback);
         }
@@ -350,10 +350,9 @@ public class YModule extends YFunction
 
 
     /**
-     * Returns a list of all the modules that are plugged into the current module. This
-     * method is only useful on a YoctoHub/VirtualHub. This method return the serial number of all
-     * module connected to a YoctoHub. Calling this method on a standard device is not an
-     * error, and an empty array will be returned.
+     * Returns a list of all the modules that are plugged into the current module.
+     * This method only makes sense when called for a YoctoHub/VirtualHub.
+     * Otherwise, an empty array will be returned.
      *
      * @return an array of strings containing the sub modules.
      */
@@ -367,7 +366,7 @@ public class YModule extends YFunction
 
     /**
      * Returns the serial number of the YoctoHub on which this module is connected.
-     * If the module is connected by USB or if the module is the root YoctoHub an
+     * If the module is connected by USB, or if the module is the root YoctoHub, an
      * empty string is returned.
      *
      * @return a string with the serial number of the YoctoHub or an empty string
@@ -384,7 +383,7 @@ public class YModule extends YFunction
 
 
     /**
-     * Returns the URL used to access the module. If the module is connected by USB the
+     * Returns the URL used to access the module. If the module is connected by USB, the
      * string 'usb' is returned.
      *
      * @return a string with the URL of the module.
@@ -536,7 +535,7 @@ public class YModule extends YFunction
      */
     public int get_productRelease() throws YAPI_Exception
     {
-        if (_cacheExpiration == 0) {
+        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
             if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
                 return PRODUCTRELEASE_INVALID;
             }
@@ -1087,14 +1086,13 @@ public class YModule extends YFunction
      * needs to be updated.
      *  It is possible to pass a directory as argument instead of a file. In this case, this method returns
      * the path of the most recent
-     *  appropriate byn file. If the parameter onlynew is true, the function discards firmware that are
-     * older or equal to
-     * the installed firmware.
+     * appropriate .byn file. If the parameter onlynew is true, the function discards firmwares that are older or
+     * equal to the installed firmware.
      *
      * @param path : the path of a byn file or a directory that contains byn files
      * @param onlynew : returns only files that are strictly newer
      *
-     * @return : the path of the byn file to use or a empty string if no byn files matches the requirement
+     * @return the path of the byn file to use or a empty string if no byn files matches the requirement
      *
      * @throws YAPI_Exception on error
      */
@@ -1121,11 +1119,12 @@ public class YModule extends YFunction
      * Prepares a firmware update of the module. This method returns a YFirmwareUpdate object which
      * handles the firmware update process.
      *
-     * @param path : the path of the byn file to use.
+     * @param path : the path of the .byn file to use.
+     * @param force : true to force the firmware update even if some prerequisites appear not to be met
      *
-     * @return : A YFirmwareUpdate object or NULL on error.
+     * @return a YFirmwareUpdate object or NULL on error.
      */
-    public YFirmwareUpdate updateFirmware(String path) throws YAPI_Exception
+    public YFirmwareUpdate updateFirmwareEx(String path,boolean force) throws YAPI_Exception
     {
         String serial;
         byte[] settings;
@@ -1134,15 +1133,27 @@ public class YModule extends YFunction
         settings = get_allSettings();
         if ((settings).length == 0) {
             _throw(YAPI.IO_ERROR, "Unable to get device settings");
-            settings = "error:Unable to get device settings".getBytes();
+            settings = ("error:Unable to get device settings").getBytes();
         }
-        return new YFirmwareUpdate(_yapi, serial, path, settings);
+        return new YFirmwareUpdate(_yapi, serial, path, settings, force);
     }
 
     /**
-     *  Returns all the settings and uploaded files of the module. Useful to backup all the logical names,
-     * calibrations parameters,
-     * and uploaded files of a connected module.
+     * Prepares a firmware update of the module. This method returns a YFirmwareUpdate object which
+     * handles the firmware update process.
+     *
+     * @param path : the path of the .byn file to use.
+     *
+     * @return a YFirmwareUpdate object or NULL on error.
+     */
+    public YFirmwareUpdate updateFirmware(String path) throws YAPI_Exception
+    {
+        return updateFirmwareEx(path, false);
+    }
+
+    /**
+     * Returns all the settings and uploaded files of the module. Useful to backup all the
+     * logical names, calibrations parameters, and uploaded files of a device.
      *
      * @return a binary buffer with all the settings.
      *
@@ -1189,7 +1200,7 @@ public class YModule extends YFunction
                 }
             }
         }
-        ext_settings =  ext_settings + "],\n\"files\":[";
+        ext_settings = ext_settings + "],\n\"files\":[";
         if (hasFunction("files")) {
             json = _download("files.json?a=dir&f=");
             if ((json).length == 0) {
@@ -1198,19 +1209,17 @@ public class YModule extends YFunction
             filelist = _json_get_array(json);
             sep = "";
             for (String ii: filelist) {
-                name = _json_get_key(ii.getBytes(), "name");
-                if ((name).length() == 0) {
-                    return name.getBytes();
+                name = _json_get_key((ii).getBytes(), "name");
+                if (((name).length() > 0) && !(name.equals("startupConf.json"))) {
+                    file_data_bin = _download(_escapeAttr(name));
+                    file_data = YAPIContext._bytesToHexStr(file_data_bin, 0, file_data_bin.length);
+                    item = String.format("%s{\"name\":\"%s\", \"data\":\"%s\"}\n", sep, name,file_data);
+                    ext_settings = ext_settings + item;
+                    sep = ",";
                 }
-                file_data_bin = _download(_escapeAttr(name));
-                file_data = YAPIContext._bytesToHexStr(file_data_bin, 0, file_data_bin.length);
-                item = String.format("%s{\"name\":\"%s\", \"data\":\"%s\"}\n", sep, name,file_data);
-                ext_settings = ext_settings + item;
-                sep = ",";
             }
         }
-        ext_settings = ext_settings + "]}";
-        res = YAPIContext._bytesMerge("{ \"api\":".getBytes(), YAPIContext._bytesMerge(settings, ext_settings.getBytes()));
+        res = ("{ \"api\":" + new String(settings) + ext_settings + "]}").getBytes();
         return res;
     }
 
@@ -1226,7 +1235,7 @@ public class YModule extends YFunction
         // may throw an exception
         _download(url);
         // add records in growing resistance value
-        values = _json_get_array(jsonExtra.getBytes());
+        values = _json_get_array((jsonExtra).getBytes());
         ofs = 0;
         size = values.size();
         while (ofs + 1 < size) {
@@ -1244,7 +1253,7 @@ public class YModule extends YFunction
         ArrayList<String> extras = new ArrayList<String>();
         String functionId;
         String data;
-        extras = _json_get_array(jsonExtra.getBytes());
+        extras = _json_get_array((jsonExtra).getBytes());
         for (String ii: extras) {
             functionId = _get_json_path(ii, "fid");
             functionId = _decode_json_string(functionId);
@@ -1257,9 +1266,10 @@ public class YModule extends YFunction
     }
 
     /**
-     *  Restores all the settings and uploaded files of the module. Useful to restore all the logical names
-     * and calibrations parameters, uploaded
-     * files etc.. of a module from a backup.Remember to call the saveToFlash() method of the module if the
+     * Restores all the settings and uploaded files to the module.
+     * This method is useful to restore all the logical names and calibrations parameters,
+     * uploaded files etc. of a device from a backup.
+     * Remember to call the saveToFlash() method of the module if the
      * modifications must be kept.
      *
      * @param settings : a binary buffer with all the settings.
@@ -1284,7 +1294,7 @@ public class YModule extends YFunction
         if (!(json_extra.equals(""))) {
             set_extraSettings(json_extra);
         }
-        set_allSettings(json_api.getBytes());
+        set_allSettings((json_api).getBytes());
         if (hasFunction("files")) {
             ArrayList<String> files = new ArrayList<String>();
             String res;
@@ -1295,7 +1305,7 @@ public class YModule extends YFunction
             res = _decode_json_string(res);
             if (!(res.equals("ok"))) { throw new YAPI_Exception( YAPI.IO_ERROR,  "format failed");}
             json_files = _get_json_path(json, "files");
-            files = _json_get_array(json_files.getBytes());
+            files = _json_get_array((json_files).getBytes());
             for (String ii: files) {
                 name = _get_json_path(ii, "name");
                 name = _decode_json_string(name);
@@ -1308,12 +1318,12 @@ public class YModule extends YFunction
     }
 
     /**
-     * Test if the device has a specific function. This method took an function identifier
-     * and return a boolean.
+     * Tests if the device includes a specific function. This method takes a function identifier
+     * and returns a boolean.
      *
      * @param funcId : the requested function identifier
      *
-     * @return : true if the device has the function identifier
+     * @return true if the device has the function identifier
      */
     public boolean hasFunction(String funcId) throws YAPI_Exception
     {
@@ -1338,7 +1348,7 @@ public class YModule extends YFunction
      *
      * @param funType : The type of function (Relay, LightSensor, Voltage,...)
      *
-     * @return : A array of string.
+     * @return an array of strings.
      */
     public ArrayList<String> get_functionIds(String funType) throws YAPI_Exception
     {
@@ -1578,7 +1588,7 @@ public class YModule extends YFunction
     }
 
     /**
-     * Restores all the settings of the module. Useful to restore all the logical names and calibrations parameters
+     * Restores all the settings of the device. Useful to restore all the logical names and calibrations parameters
      * of a module from a backup.Remember to call the saveToFlash() method of the module if the
      * modifications must be kept.
      *
@@ -1625,21 +1635,21 @@ public class YModule extends YFunction
         tmp = new String(settings);
         tmp = _get_json_path(tmp, "api");
         if (!(tmp.equals(""))) {
-            settings = tmp.getBytes();
+            settings = (tmp).getBytes();
         }
         oldval = "";
         newval = "";
         old_json_flat = _flattenJsonStruct(settings);
         old_dslist = _json_get_array(old_json_flat);
         for (String ii:old_dslist) {
-            each_str = _json_get_string(ii.getBytes());
+            each_str = _json_get_string((ii).getBytes());
             leng = (each_str).length();
             eqpos = (each_str).indexOf("=");
             if ((eqpos < 0) || (leng == 0)) {
                 _throw(YAPI.INVALID_ARGUMENT, "Invalid settings");
                 return YAPI.INVALID_ARGUMENT;
             }
-            jpath = (each_str).substring( 0,  0 + eqpos);
+            jpath = (each_str).substring(0, eqpos);
             eqpos = eqpos + 1;
             value = (each_str).substring( eqpos,  eqpos + leng - eqpos);
             old_jpath.add(jpath);
@@ -1651,14 +1661,14 @@ public class YModule extends YFunction
         actualSettings = _flattenJsonStruct(actualSettings);
         new_dslist = _json_get_array(actualSettings);
         for (String ii:new_dslist) {
-            each_str = _json_get_string(ii.getBytes());
+            each_str = _json_get_string((ii).getBytes());
             leng = (each_str).length();
             eqpos = (each_str).indexOf("=");
             if ((eqpos < 0) || (leng == 0)) {
                 _throw(YAPI.INVALID_ARGUMENT, "Invalid settings");
                 return YAPI.INVALID_ARGUMENT;
             }
-            jpath = (each_str).substring( 0,  0 + eqpos);
+            jpath = (each_str).substring(0, eqpos);
             eqpos = eqpos + 1;
             value = (each_str).substring( eqpos,  eqpos + leng - eqpos);
             new_jpath.add(jpath);
@@ -1673,7 +1683,7 @@ public class YModule extends YFunction
             if ((cpos < 0) || (leng == 0)) {
                 continue;
             }
-            fun = (njpath).substring( 0,  0 + cpos);
+            fun = (njpath).substring(0, cpos);
             cpos = cpos + 1;
             attr = (njpath).substring( cpos,  cpos + leng - cpos);
             do_update = true;
@@ -1898,6 +1908,22 @@ public class YModule extends YFunction
         // may throw an exception
         content = _download("logs.txt");
         return new String(content);
+    }
+
+    /**
+     * Adds a text message to the device logs. This function is useful in
+     * particular to trace the execution of HTTP callbacks. If a newline
+     * is desired after the message, it must be included in the string.
+     *
+     * @param text : the string to append to the logs.
+     *
+     * @return YAPI.SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int log(String text) throws YAPI_Exception
+    {
+        return _upload("logs.txt", (text).getBytes());
     }
 
     //cannot be generated for Java:

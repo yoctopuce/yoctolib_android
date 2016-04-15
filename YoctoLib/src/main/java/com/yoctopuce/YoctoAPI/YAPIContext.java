@@ -568,7 +568,7 @@ public class YAPIContext
     private synchronized int _AddNewHub(String url, boolean reportConnnectionLost, InputStream request, OutputStream response, Object session) throws YAPI_Exception
     {
         for (YGenericHub h : _hubs) {
-            if (h.isSameRootUrl(url)) {
+            if (h.isSameHub(url, request, response, session)) {
                 return YAPI.SUCCESS;
             }
         }
@@ -595,7 +595,7 @@ public class YAPIContext
             return YAPI.SUCCESS;
         } else if (parsedurl.getHost().equals("callback")) {
             if (session != null) {
-                newhub = new YHTTPHub(this, _hubs.size(), parsedurl, reportConnnectionLost,session);
+                newhub = new YHTTPHub(this, _hubs.size(), parsedurl, reportConnnectionLost, session);
             } else {
                 newhub = new YCallbackHub(this, _hubs.size(), parsedurl, request, response);
             }
@@ -816,12 +816,34 @@ public class YAPIContext
     /**
      *
      */
-    public int RegisterHubWebSocketCallback(Object session) throws YAPI_Exception
+    public int PreregisterHubWebSocketCallback(Object session) throws YAPI_Exception
     {
-        _AddNewHub("ws://callback", true, null, null, session);
-        // Register device list
-        _updateDeviceList_internal(true, false);
+        return PreregisterHubWebSocketCallback(session, null, null);
+    }
+
+    /**
+     *
+     */
+    public int PreregisterHubWebSocketCallback(Object session, String user, String pass) throws YAPI_Exception
+    {
+        if (user == null) {
+            user = "";
+        }
+        if (pass != null) {
+            user += ":" + pass;
+        }
+        String url = "ws://" + user + "@callback";
+        _AddNewHub(url, true, null, null, session);
         return YAPI.SUCCESS;
+    }
+
+
+    /**
+     *
+     */
+    public void UnregisterHubWebSocketCallback(Object session)
+    {
+        unregisterHubEx("ws://callback", null, null, session);
     }
 
 
@@ -870,9 +892,13 @@ public class YAPIContext
             _apiMode &= ~YAPI.DETECT_NET;
             return;
         }
+        unregisterHubEx(url, null, null, null);
+    }
 
+    private void unregisterHubEx(String url, InputStream request, OutputStream response, Object session)
+    {
         for (YGenericHub h : _hubs) {
-            if (h.isSameRootUrl(url)) {
+            if (h.isSameHub(url, request, response, session)) {
                 h.stopNotifications();
                 for (String serial : h._serialByYdx.values()) {
                     _yHash.forgetDevice(serial);

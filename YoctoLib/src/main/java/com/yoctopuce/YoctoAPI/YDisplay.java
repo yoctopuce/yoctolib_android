@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDisplay.java 22679 2016-01-12 17:07:55Z seb $
+ * $Id: YDisplay.java 23250 2016-02-23 16:20:08Z seb $
  *
  * Implements yFindDisplay(), the high-level API for Display functions
  *
@@ -849,7 +849,7 @@ public class YDisplay extends YFunction
     {
         flushLayers();
         _recording = false;
-        _upload(sequenceName, _sequence.getBytes());
+        _upload(sequenceName, (_sequence).getBytes());
         //We need to use YPRINTF("") for Objective-C
         _sequence = String.format("");
         return YAPI.SUCCESS;

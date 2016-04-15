@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YGenericHub.java 22751 2016-01-14 16:15:47Z seb $
+ * $Id: YGenericHub.java 23924 2016-04-14 15:25:47Z seb $
  *
  * Internal YGenericHub object
  *
@@ -63,6 +63,33 @@ abstract class YGenericHub
     static final int YSTREAM_REPORT_V2 = 6;
     static final int YSTREAM_NOTICE_V2 = 7;
     static final int YSTREAM_TCP_NOTIF = 8;
+    static final int YSTREAM_TCP_ASYNCCLOSE = 9;
+
+
+    static final int USB_META_UTCTIME = 1;
+    static final int USB_META_DLFLUSH = 2;
+    static final int USB_META_ACK_D2H_PACKET = 3;
+    static final int USB_META_WS_ANNOUNCE = 4;
+    static final int USB_META_WS_AUTHENTICATION = 5;
+    static final int USB_META_WS_ERROR = 6;
+    static final int USB_META_ACK_UPLOAD = 7;
+
+    static final int USB_META_UTCTIME_SIZE = 5;
+    static final int USB_META_DLFLUSH_SIZE = 1;
+    static final int USB_META_ACK_D2H_PACKET_SIZE = 2;
+    static final int USB_META_WS_ANNOUNCE_SIZE = 8 + YAPI.YOCTO_SERIAL_LEN;
+    static final int USB_META_WS_AUTHENTICATION_SIZE = 28;
+    static final int USB_META_WS_ERROR_SIZE = 6;
+    static final int USB_META_ACK_UPLOAD_SIZE = 6;
+
+    static final int USB_META_WS_PROTO_V1 = 1;  // adding authentication support
+    static final int USB_META_WS_PROTO_V2 = 2;  // adding API packets throttling
+    static final int VERSION_SUPPORT_ASYNC_CLOSE = 1;
+
+
+    static final int USB_META_WS_VALID_SHA1 = 1;
+    static final int USB_META_WS_AUTH_FLAGS_RW = 2;
+
 
     private static final int PUBVAL_LEGACY = 0;   // 0-6 ASCII characters (normally sent as YSTREAM_NOTICE)
     private static final int PUBVAL_1RAWBYTE = 1;   // 1 raw byte  (=2 characters)
@@ -101,7 +128,7 @@ abstract class YGenericHub
 
     abstract String getRootUrl();
 
-    abstract boolean isSameRootUrl(String url);
+    abstract boolean isSameHub(String url, Object request, Object response, Object session);
 
     abstract void startNotifications() throws YAPI_Exception;
 
@@ -319,15 +346,19 @@ abstract class YGenericHub
 
     abstract ArrayList<String> firmwareUpdate(String serial, YFirmwareFile firmware, byte[] settings, UpdateProgress progress) throws YAPI_Exception, InterruptedException;
 
-
     interface RequestAsyncResult
     {
         void RequestAsyncDone(Object context, byte[] result, int error, String errmsg);
     }
 
+    interface RequestProgress
+    {
+        void RequestProgress(Object context, int acked, int total);
+    }
+
     abstract void devRequestAsync(YDevice device, String req_first_line, byte[] req_head_and_body, RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception, InterruptedException;
 
-    abstract byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body) throws YAPI_Exception, InterruptedException;
+    abstract byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body, RequestProgress progress, Object context) throws YAPI_Exception, InterruptedException;
 
 
     protected static class HTTPParams
@@ -364,6 +395,9 @@ abstract class YGenericHub
                 _user = "";
                 _pass = "";
             }
+            if (url.length() > pos && url.charAt(pos) == '@') {
+                pos++;
+            }
             int end_url = url.indexOf('/', pos);
             if (end_url < 0) {
                 end_url = url.length();
@@ -393,7 +427,7 @@ abstract class YGenericHub
             return _port;
         }
 
-        String geUser()
+        String getUser()
         {
             return _user;
         }
@@ -427,6 +461,11 @@ abstract class YGenericHub
         public boolean isWebSocket()
         {
             return _proto.equals("ws");
+        }
+
+        public boolean hasAuthParam()
+        {
+            return !_user.equals("");
         }
     }
 }

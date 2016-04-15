@@ -15,7 +15,7 @@ import com.yoctopuce.YoctoAPI.YAPI_Exception;
 import com.yoctopuce.YoctoAPI.YModule;
 import com.yoctopuce.YoctoAPI.YTemperature;
 
-public class GettingStarted_Yocto_Thermistor_C extends Activity implements OnItemSelectedListener
+public class GettingStarted_Yocto_MaxiThermistor extends Activity implements OnItemSelectedListener
 {
 
     private ArrayAdapter<String> aa;
@@ -26,7 +26,7 @@ public class GettingStarted_Yocto_Thermistor_C extends Activity implements OnIte
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gettingstarted_yocto_thermistor_c);
+        setContentView(R.layout.gettingstarted_yocto_maxithermistor);
         Spinner my_spin = (Spinner) findViewById(R.id.spinner1);
         my_spin.setOnItemSelectedListener(this);
         aa = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -45,7 +45,7 @@ public class GettingStarted_Yocto_Thermistor_C extends Activity implements OnIte
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-Thermistor-C")) {
+                if (module.get_productName().equals("Yocto-MaxiThermistor")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

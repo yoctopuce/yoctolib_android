@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YPEntry.java 22679 2016-01-12 17:07:55Z seb $
+ * $Id: YPEntry.java 23415 2016-03-04 15:47:30Z seb $
  *
  * Yellow page implementation
  *
@@ -195,5 +195,26 @@ class YPEntry
         return _classname;
     }
 
+    // Find the exact Hardware Id of the specified function, if currently connected
+    // If device is not known as connected, return a clean error
+    // This function will not cause any network access
+    public String getFriendlyName(YAPIContext ctx) throws YAPI_Exception
+    {
+        if (_classname.equals("Module")) {
+            if (_logicalName.equals(""))
+                return _serial + ".module";
+            else
+                return _logicalName + ".module";
+        } else {
+            YPEntry moduleYP = ctx._yHash.resolveFunction("Module", _serial);
+            String module = moduleYP.getFriendlyName(ctx);
+            int pos = module.indexOf(".");
+            module = module.substring(0, pos);
+            if (_logicalName.equals(""))
+                return module + "." + _funcId;
+            else
+                return module + "." + _logicalName;
+        }
+    }
 
 }

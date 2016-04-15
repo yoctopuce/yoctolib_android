@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YFunction.java 22679 2016-01-12 17:07:55Z seb $
+ * $Id: YFunction.java 23415 2016-03-04 15:47:30Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -569,25 +569,9 @@ public class YFunction
      */
     public String get_friendlyName() throws YAPI_Exception
     {
-        _yapi._yHash.resolveHwID(_className, _func);
+        YPEntry yp = _yapi._yHash.resolveFunction(_className, _func);
+        return yp.getFriendlyName(_yapi);
 
-        if (_className.equals("Module")) {
-            if (_logicalName.equals(""))
-                return _serial + ".module";
-            else
-                return _logicalName + ".module";
-        } else {
-            String moduleHwId = _yapi._yHash.resolveHwID("Module", _serial);
-            YModule module = YModule.FindModuleInContext(_yapi, moduleHwId);
-            String modname = module.get_logicalName();
-            if (modname.equals("")) {
-                modname = module.get_serialNumber();
-            }
-            if (_logicalName.equals(""))
-                return modname + "." + _funId;
-            else
-                return modname + "." + _logicalName;
-        }
     }
 
     public String getFriendlyName() throws YAPI_Exception

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: yHTTPRequest.java 22679 2016-01-12 17:07:55Z seb $
+ * $Id: yHTTPRequest.java 23169 2016-02-12 14:34:58Z seb $
  *
  * internal yHTTPRequest object
  *
@@ -47,7 +47,6 @@ import java.net.*;
 
 class yHTTPRequest implements Runnable
 {
-    public static final int YIO_DEFAULT_TCP_TIMEOUT = 20000;
     public static final int MAX_REQUEST_MS = 5000;
     private static final int YIO_IDLE_TCP_TIMEOUT = 5000;
 
@@ -411,7 +410,7 @@ class yHTTPRequest implements Runnable
     {
         _requestReserve();
         try {
-            _requestStart(req_first_line, req_head_and_body, yHTTPRequest.YIO_DEFAULT_TCP_TIMEOUT, context, callback);
+            _requestStart(req_first_line, req_head_and_body, YHTTPHub.YIO_DEFAULT_TCP_TIMEOUT, context, callback);//fixme
             Thread t = new Thread(this);
             t.setName(_dbglabel);
             t.start();

@@ -20,6 +20,9 @@ public class ExampleListFragment extends ListFragment {
         mExampleList.add(new Example("Prog-EventBased", ProgEventBasedActivity.class, false));
         mExampleList.add(new Example("Prog-MODBUS", ProgModbus.class, false));
         /** generated start */
+        /** generated GettingStarted_Yocto_MaxiThermistor start */
+        mExampleList.add(new Example("Yocto-MaxiThermistor", GettingStarted_Yocto_MaxiThermistor.class, false));
+        /** generated GettingStarted_Yocto_MaxiThermistor stop */   
         /** generated GettingStarted_Yocto_4_20mA_Tx start */
         mExampleList.add(new Example("Yocto-4-20mA-Tx", GettingStarted_Yocto_4_20mA_Tx.class, false));
         /** generated GettingStarted_Yocto_4_20mA_Tx stop */   

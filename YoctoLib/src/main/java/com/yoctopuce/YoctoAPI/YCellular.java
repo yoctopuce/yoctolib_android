@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCellular.java 22679 2016-01-12 17:07:55Z seb $
+ * $Id: YCellular.java 23715 2016-04-01 15:48:53Z mvuilleu $
  *
  * Implements FindCellular(), the high-level API for Cellular functions
  *
@@ -72,6 +72,16 @@ public class YCellular extends YFunction
      */
     public static final String CELLIDENTIFIER_INVALID = YAPI.INVALID_STRING;
     /**
+     * invalid cellType value
+     */
+    public static final int CELLTYPE_GPRS = 0;
+    public static final int CELLTYPE_EGPRS = 1;
+    public static final int CELLTYPE_WCDMA = 2;
+    public static final int CELLTYPE_HSDPA = 3;
+    public static final int CELLTYPE_NONE = 4;
+    public static final int CELLTYPE_CDMA = 5;
+    public static final int CELLTYPE_INVALID = -1;
+    /**
      * invalid imsi value
      */
     public static final String IMSI_INVALID = YAPI.INVALID_STRING;
@@ -87,6 +97,12 @@ public class YCellular extends YFunction
      * invalid lockedOperator value
      */
     public static final String LOCKEDOPERATOR_INVALID = YAPI.INVALID_STRING;
+    /**
+     * invalid airplaneMode value
+     */
+    public static final int AIRPLANEMODE_OFF = 0;
+    public static final int AIRPLANEMODE_ON = 1;
+    public static final int AIRPLANEMODE_INVALID = -1;
     /**
      * invalid enableData value
      */
@@ -109,10 +125,12 @@ public class YCellular extends YFunction
     protected int _linkQuality = LINKQUALITY_INVALID;
     protected String _cellOperator = CELLOPERATOR_INVALID;
     protected String _cellIdentifier = CELLIDENTIFIER_INVALID;
+    protected int _cellType = CELLTYPE_INVALID;
     protected String _imsi = IMSI_INVALID;
     protected String _message = MESSAGE_INVALID;
     protected String _pin = PIN_INVALID;
     protected String _lockedOperator = LOCKEDOPERATOR_INVALID;
+    protected int _airplaneMode = AIRPLANEMODE_INVALID;
     protected int _enableData = ENABLEDATA_INVALID;
     protected String _apn = APN_INVALID;
     protected String _apnSecret = APNSECRET_INVALID;
@@ -178,6 +196,9 @@ public class YCellular extends YFunction
         if (json_val.has("cellIdentifier")) {
             _cellIdentifier = json_val.getString("cellIdentifier");
         }
+        if (json_val.has("cellType")) {
+            _cellType = json_val.getInt("cellType");
+        }
         if (json_val.has("imsi")) {
             _imsi = json_val.getString("imsi");
         }
@@ -189,6 +210,9 @@ public class YCellular extends YFunction
         }
         if (json_val.has("lockedOperator")) {
             _lockedOperator = json_val.getString("lockedOperator");
+        }
+        if (json_val.has("airplaneMode")) {
+            _airplaneMode = json_val.getInt("airplaneMode") > 0 ? 1 : 0;
         }
         if (json_val.has("enableData")) {
             _enableData = json_val.getInt("enableData");
@@ -292,6 +316,37 @@ public class YCellular extends YFunction
     public String getCellIdentifier() throws YAPI_Exception
     {
         return get_cellIdentifier();
+    }
+
+    /**
+     * Active cellular connection type.
+     *
+     *  @return a value among YCellular.CELLTYPE_GPRS, YCellular.CELLTYPE_EGPRS, YCellular.CELLTYPE_WCDMA,
+     * YCellular.CELLTYPE_HSDPA, YCellular.CELLTYPE_NONE and YCellular.CELLTYPE_CDMA
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int get_cellType() throws YAPI_Exception
+    {
+        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return CELLTYPE_INVALID;
+            }
+        }
+        return _cellType;
+    }
+
+    /**
+     * Active cellular connection type.
+     *
+     *  @return a value among Y_CELLTYPE_GPRS, Y_CELLTYPE_EGPRS, Y_CELLTYPE_WCDMA, Y_CELLTYPE_HSDPA,
+     * Y_CELLTYPE_NONE and Y_CELLTYPE_CDMA
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int getCellType() throws YAPI_Exception
+    {
+        return get_cellType();
     }
 
     /**
@@ -518,6 +573,70 @@ public class YCellular extends YFunction
     public int setLockedOperator(String newval)  throws YAPI_Exception
     {
         return set_lockedOperator(newval);
+    }
+
+    /**
+     * Returns true if the airplane mode is active (radio turned off).
+     *
+     *  @return either YCellular.AIRPLANEMODE_OFF or YCellular.AIRPLANEMODE_ON, according to true if the
+     * airplane mode is active (radio turned off)
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int get_airplaneMode() throws YAPI_Exception
+    {
+        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return AIRPLANEMODE_INVALID;
+            }
+        }
+        return _airplaneMode;
+    }
+
+    /**
+     * Returns true if the airplane mode is active (radio turned off).
+     *
+     *  @return either Y_AIRPLANEMODE_OFF or Y_AIRPLANEMODE_ON, according to true if the airplane mode is
+     * active (radio turned off)
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int getAirplaneMode() throws YAPI_Exception
+    {
+        return get_airplaneMode();
+    }
+
+    /**
+     * Changes the activation state of airplane mode (radio turned off).
+     *
+     *  @param newval : either YCellular.AIRPLANEMODE_OFF or YCellular.AIRPLANEMODE_ON, according to the
+     * activation state of airplane mode (radio turned off)
+     *
+     * @return YAPI.SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int set_airplaneMode(int  newval)  throws YAPI_Exception
+    {
+        String rest_val;
+        rest_val = (newval > 0 ? "1" : "0");
+        _setAttr("airplaneMode",rest_val);
+        return YAPI.SUCCESS;
+    }
+
+    /**
+     * Changes the activation state of airplane mode (radio turned off).
+     *
+     *  @param newval : either Y_AIRPLANEMODE_OFF or Y_AIRPLANEMODE_ON, according to the activation state
+     * of airplane mode (radio turned off)
+     *
+     * @return YAPI_SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int setAirplaneMode(int newval)  throws YAPI_Exception
+    {
+        return set_airplaneMode(newval);
     }
 
     /**
@@ -920,19 +1039,19 @@ public class YCellular extends YFunction
         cmdLen = (cmd).length();
         chrPos = (cmd).indexOf("#");
         while (chrPos >= 0) {
-            cmd = String.format("%s%c23%s", (cmd).substring( 0,  0 + chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
+            cmd = String.format("%s%c23%s", (cmd).substring(0, chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
             cmdLen = cmdLen + 2;
             chrPos = (cmd).indexOf("#");
         }
         chrPos = (cmd).indexOf("+");
         while (chrPos >= 0) {
-            cmd = String.format("%s%c2B%s", (cmd).substring( 0,  0 + chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
+            cmd = String.format("%s%c2B%s", (cmd).substring(0, chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
             cmdLen = cmdLen + 2;
             chrPos = (cmd).indexOf("+");
         }
         chrPos = (cmd).indexOf("=");
         while (chrPos >= 0) {
-            cmd = String.format("%s%c3D%s", (cmd).substring( 0,  0 + chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
+            cmd = String.format("%s%c3D%s", (cmd).substring(0, chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
             cmdLen = cmdLen + 2;
             chrPos = (cmd).indexOf("=");
         }
@@ -952,7 +1071,7 @@ public class YCellular extends YFunction
             if (buff[idx] == 64) {
                 suffixlen = bufflen - idx;
                 cmd = String.format("at.txt?cmd=%s",(buffstr).substring( buffstrlen - suffixlen,  buffstrlen - suffixlen + suffixlen));
-                buffstr = (buffstr).substring( 0,  0 + buffstrlen - suffixlen);
+                buffstr = (buffstr).substring(0, buffstrlen - suffixlen);
                 waitMore = waitMore - 1;
             } else {
                 waitMore = 0;
@@ -991,7 +1110,7 @@ public class YCellular extends YFunction
                 cops = (cops).substring( idx+1,  idx+1 + slen);
                 idx = (cops).indexOf("\"");
                 if (idx > 0) {
-                    res.add((cops).substring( 0,  0 + idx));
+                    res.add((cops).substring(0, idx));
                 }
             }
             idx = (cops).indexOf("(");
@@ -1027,18 +1146,18 @@ public class YCellular extends YFunction
         // may throw an exception
         moni = _AT("+CCED=0;#MONI=7;#MONI");
         mccs = (moni).substring(7, 7 + 3);
-        if ((mccs).substring(0, 0 + 1).equals("0")) {
+        if ((mccs).substring(0, 1).equals("0")) {
             mccs = (mccs).substring(1, 1 + 2);
         }
-        if ((mccs).substring(0, 0 + 1).equals("0")) {
+        if ((mccs).substring(0, 1).equals("0")) {
             mccs = (mccs).substring(1, 1 + 1);
         }
         mcc = YAPIContext._atoi(mccs);
         mncs = (moni).substring(11, 11 + 3);
         if ((mncs).substring(2, 2 + 1).equals(",")) {
-            mncs = (mncs).substring(0, 0 + 2);
+            mncs = (mncs).substring(0, 2);
         }
-        if ((mncs).substring(0, 0 + 1).equals("0")) {
+        if ((mncs).substring(0, 1).equals("0")) {
             mncs = (mncs).substring(1, 1 + (mncs).length()-1);
         }
         mnc = YAPIContext._atoi(mncs);
@@ -1052,13 +1171,13 @@ public class YCellular extends YFunction
                     lac = Integer.valueOf((ii).substring(16, 16 + 4),16);
                     cellId = Integer.valueOf((ii).substring(23, 23 + 4),16);
                     dbms = (ii).substring(37, 37 + 4);
-                    if ((dbms).substring(0, 0 + 1).equals(" ")) {
+                    if ((dbms).substring(0, 1).equals(" ")) {
                         dbms = (dbms).substring(1, 1 + 3);
                     }
                     dbm = YAPIContext._atoi(dbms);
                     if (llen > 66) {
                         tads = (ii).substring(54, 54 + 2);
-                        if ((tads).substring(0, 0 + 1).equals(" ")) {
+                        if ((tads).substring(0, 1).equals(" ")) {
                             tads = (tads).substring(1, 1 + 3);
                         }
                         tad = YAPIContext._atoi(tads);

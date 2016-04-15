@@ -1,1 +1,8 @@
-- Add get_subDevices(), get_parentHub() and get_url() methods to YModule class
+- Add YModule.updateFirmwareEx method
+- Add Doc GettingStarted example for Yocto-Thermistor-C
+- Add Doc GettingStarted example for Yocto-MaxiThermistor
+- Fix files that were not preserved during firmware update
+- Fix HTTP authentication with YoctoHub
+- Fix gradle script to work with Android Studio 2.0
+- Fix YModule.registerLogCallback() that was not working if it's used on a callback
+- small fixes

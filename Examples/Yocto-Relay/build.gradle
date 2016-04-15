@@ -6,14 +6,14 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion 23
+    buildToolsVersion "21.1.2"
 
     defaultConfig {
-        versionCode 22835
-        versionName "1.10.22835"
+        versionCode 23948
+        versionName "1.10.23948"
         minSdkVersion 14
-        targetSdkVersion 21
+        targetSdkVersion 23
     }
 
     signingConfigs {
