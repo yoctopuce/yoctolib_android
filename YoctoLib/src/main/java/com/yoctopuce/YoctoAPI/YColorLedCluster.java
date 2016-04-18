@@ -547,13 +547,28 @@ public class YColorLedCluster extends YFunction
     }
 
     /**
-     * Links adjacent LED to a specific sequence. these LED will stat to execute
+     * Adds a mirror ending to a sequence. When the sequence will reach the end of the last
+     * transition, its running speed will automatically be reverted so that the sequence plays
+     * in the reverse direction, like in a mirror. When the first transition of the sequence
+     * will be played at the end of the reverse execution, the sequence will start again in
+     * the initial direction.
+     *
+     * @param seqIndex : sequence index.
+     * @throws YAPI_Exception on error
+     */
+    public int addMirrorToBlinkSeq(int seqIndex) throws YAPI_Exception
+    {
+        return sendCommand(String.format("AC%d,0,0",seqIndex));
+    }
+
+    /**
+     * Links adjacent LEDs to a specific sequence. these LED will start to execute
      * the sequence as soon as  startBlinkSeq is called. It is possible to add an offset
      * in the execution: that way we  can have several groups of LED executing the same
      * sequence, with a  temporal offset. A LED cannot be linked to more than one LED.
      *
-     * @param ledIndex  :  index of the first affected LED.
-     * @param count     :  affected LED count.
+     * @param ledIndex :  index of the first affected LED.
+     * @param count    :  affected LED count.
      * @param seqIndex :  sequence index.
      * @param offset   :  execution offset in ms.
      * @throws YAPI_Exception on error
@@ -561,6 +576,23 @@ public class YColorLedCluster extends YFunction
     public int linkLedToBlinkSeq(int ledIndex,int count,int seqIndex,int offset) throws YAPI_Exception
     {
         return sendCommand(String.format("LS%d,%d,%d,%d",ledIndex,count,seqIndex,offset));
+    }
+
+    /**
+     * Links adjacent LEDs to a specific sequence. these LED will start to execute
+     * the sequence as soon as  startBlinkSeq is called. This function automatically
+     * introduce a shift between LEDs so that the specified number of sequence periods
+     * appears on the group of LEDs (wave effect).
+     *
+     * @param ledIndex :  index of the first affected LED.
+     * @param count    :  affected LED count.
+     * @param seqIndex :  sequence index.
+     * @param periods  :  number of periods to show on LEDs.
+     * @throws YAPI_Exception on error
+     */
+    public int linkLedToPeriodicBlinkSeq(int ledIndex,int count,int seqIndex,int periods) throws YAPI_Exception
+    {
+        return sendCommand(String.format("LP%d,%d,%d,%d",ledIndex,count,seqIndex,periods));
     }
 
     /**
@@ -612,9 +644,22 @@ public class YColorLedCluster extends YFunction
     }
 
     /**
+     * Change the execution speed of a sequence. The natural execution speed is 1000 per
+     * thousand. If you configure a slower speed, you can play the sequence in slow-motion.
+     * If you set a negative speed, you can play the sequence in reverse direction.
+     *
+     * @param seqIndex :  index of the sequence to start.
+     * @param speed :     sequence running speed (-1000...1000).
+     * @throws YAPI_Exception on error
+     */
+    public int changeBlinkSeqSpeed(int seqIndex,int speed) throws YAPI_Exception
+    {
+        return sendCommand(String.format("CS%d",seqIndex));
+    }
+
+    /**
      * Save the current state of all LEDs as the initial startup state.
      * The initial startup state includes the choice of sequence linked to each LED.
-     * Remember to call the saveToFlash() method of the module after this one.
      * @throws YAPI_Exception on error
      */
     public int saveLedsState() throws YAPI_Exception
