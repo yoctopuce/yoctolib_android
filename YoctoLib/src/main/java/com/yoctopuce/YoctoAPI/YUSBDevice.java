@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 22679 2016-01-12 17:07:55Z seb $
+ * $Id: YUSBDevice.java 24158 2016-04-22 08:59:22Z seb $
  *
  * YUSBDevice Class:
  *
@@ -400,7 +400,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
             firstLine += "\r\n";
             int len = firstLine.length() + rest_of_request.length;
             currentRequest = new byte[len];
-            System.arraycopy(firstLine.getBytes(), 0, currentRequest, 0, len);
+            System.arraycopy(firstLine.getBytes(), 0, currentRequest, 0, firstLine.length());
             System.arraycopy(rest_of_request, 0, currentRequest, firstLine.length(), rest_of_request.length);
         }
         _asyncResult = asyncResult;

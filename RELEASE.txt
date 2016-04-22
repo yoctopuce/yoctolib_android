@@ -1,1 +1,2 @@
 - Update gradle script to support Instant Run feature of Android Studio
+- Fix upload on USB devices

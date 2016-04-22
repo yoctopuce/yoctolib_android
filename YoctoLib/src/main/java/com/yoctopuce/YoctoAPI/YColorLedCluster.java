@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: pic24config.php 23551 2016-03-21 15:37:41Z mvuilleu $
+ * $Id: YColorLedCluster.java 24149 2016-04-22 07:02:18Z mvuilleu $
  *
  * Implements FindColorLedCluster(), the high-level API for ColorLedCluster functions
  *
@@ -941,26 +941,26 @@ public class YColorLedCluster extends YFunction
     }
 
     /**
-     * Returns a list on boolean with the started state for specified blinking sequences.
+     * Returns a list of integers with the started state for specified blinking sequences.
      *
      * @param seqIndex : index of the first blinking sequence which should be returned
      * @param count    : number of blinking sequences which should be returned
      *
-     * @return a list of booleans
+     * @return a list of integers, 0 for sequences turned off and 1 for sequences running
      * @throws YAPI_Exception on error
      */
-    public ArrayList<Boolean> get_blinkSeqState(int seqIndex,int count) throws YAPI_Exception
+    public ArrayList<Integer> get_blinkSeqState(int seqIndex,int count) throws YAPI_Exception
     {
         byte[] buff;
-        ArrayList<Boolean> res = new ArrayList<Boolean>();
+        ArrayList<Integer> res = new ArrayList<Integer>();
         int idx;
-        boolean started;
+        int started;
         // may throw an exception
         buff = _download(String.format("rgb.bin?typ=3&pos=%d&len=%d",seqIndex,count));
         res.clear();
         idx = 0;
         while (idx < count) {
-            started = (buff[idx] != 0);
+            started = buff[idx];
             res.add(started);
             idx = idx + 1;
         }
