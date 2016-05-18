@@ -1,2 +1,3 @@
-- Update gradle script to support Instant Run feature of Android Studio
-- Fix upload on USB devices
+- Update grade script to prevent Android Studio 2.1 warning on open
+- Add missing methods in YColorledCluster
+- Fix YCellular.sendPUK() method

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: yHTTPRequest.java 23169 2016-02-12 14:34:58Z seb $
+ * $Id: yHTTPRequest.java 24281 2016-04-29 09:40:53Z seb $
  *
  * internal yHTTPRequest object
  *
@@ -272,7 +272,8 @@ class yHTTPRequest implements Runnable
                 } else if (duration > (_requestTimeout - _requestTimeout / 4)) {
                     _hub._yctx._Log(String.format("Slow TCP request on %s (%dms)\n", _hub.getHost(), duration));
                 }
-                throw new YAPI_Exception(YAPI.TIMEOUT, String.format("Hub did not send data during %dms", nowTime - _lastReceiveTime));
+                retry = true;
+                continue;
             } catch (IOException e) {
                 throw new YAPI_Exception(YAPI.IO_ERROR, e.getLocalizedMessage());
             }
