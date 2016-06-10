@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 24158 2016-04-22 08:59:22Z seb $
+ * $Id: YUSBDevice.java 24765 2016-06-09 15:55:02Z seb $
  *
  * YUSBDevice Class:
  *
@@ -191,7 +191,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                     break;
                 case Close_by_dev:
                 case Closed:
-                    
+
                     _usbHub._yctx._Log("Drop unexpected close from device\n");
                     break;
                 case Opened:
@@ -590,7 +590,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         }
         while (pos < data.length) {
             int funYdx = data[pos] & 0xf;
-            int extralen = (data[pos] >> 4);
+            int extralen = (data[pos] >> 4) & 0xf;
             int len = extralen + 1;
             pos++; // consume generic header
             if (funYdx == 0xf) {

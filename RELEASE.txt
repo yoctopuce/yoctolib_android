@@ -1,3 +1,1 @@
-- Fix documentation of YCorlorLedCluster methods
-- Rename some methods in YColrLedCluster. Some of these changes may break
-the backward compatibility. Update Yocto-Color-V2 to firmware 24699 or higher
+- Fix timed notification with average that where not decoded correctly
