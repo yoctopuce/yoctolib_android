@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YFunction.java 23415 2016-03-04 15:47:30Z seb $
+ * $Id: YFunction.java 25134 2016-08-05 13:47:25Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -141,7 +141,7 @@ public class YFunction
 
     public YFunction(String func)
     {
-        _yapi = YAPI.GetYCtx();
+        _yapi = YAPI.GetYCtx(false);
         _className = "Function";
         _func = func;
         _lastErrorType = YAPI.SUCCESS;
@@ -165,7 +165,7 @@ public class YFunction
 
     protected static YFunction _FindFromCache(String className, String func)
     {
-        YAPIContext ctx = YAPI.GetYCtx();
+        YAPIContext ctx = YAPI.GetYCtx(true);
         return ctx._yHash.getFunction(className, func);
     }
 
@@ -471,7 +471,8 @@ public class YFunction
      */
     public static YFunction FirstFunction()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Function");
         if (next_hwid == null)  return null;
         return FindFunctionInContext(yctx, next_hwid);
@@ -588,7 +589,6 @@ public class YFunction
 
     protected void _parse(JSONObject json, long msValidity) throws YAPI_Exception
     {
-        _cacheExpiration = YAPI.GetTickCount() + msValidity;
         try {
             _parseAttr(json);
         } catch (JSONException e) {
@@ -845,9 +845,8 @@ public class YFunction
         if (extra.equals("")) {
             // use a cached API string, without reloading unless module is
             // requested
-            String yreq = dev.requestAPI();
+            JSONObject jsonval = dev.requestAPI();
             try {
-                JSONObject jsonval = new JSONObject(yreq);
                 loadval = jsonval.getJSONObject(_funId);
             } catch (JSONException ex) {
                 throw new YAPI_Exception(YAPI.IO_ERROR,
@@ -1019,6 +1018,7 @@ public class YFunction
     {
         JSONObject json_obj = _devRequest("");
         _parse(json_obj, msValidity);
+        _cacheExpiration = YAPI.GetTickCount() + msValidity;
         return YAPI.SUCCESS;
     }
 

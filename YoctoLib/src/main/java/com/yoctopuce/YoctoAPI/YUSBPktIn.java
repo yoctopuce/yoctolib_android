@@ -1,61 +1,73 @@
 package com.yoctopuce.YoctoAPI;
 
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
+import java.util.Locale;
 
 public class YUSBPktIn extends YUSBPkt
 {
 
-    YUSBPktIn(LinkedList<YPktStreamHead> streams)
+    public YUSBPktIn()
     {
-        super(streams.get(0).getPktNumber(), streams);
+        super();
+        for (int i = 0; i < _streams.length; i++) {
+            _streams[i] = new YPktStreamHead();
+        }
+
     }
 
-    static YUSBPktIn Decode(ByteBuffer bb) throws YAPI_Exception
+    public int getStreamType()
     {
-        LinkedList<YPktStreamHead> streams = new LinkedList<>();
-        while (bb.remaining() > 0) {
-            YPktStreamHead s = YPktStreamHead.Decode(bb);
-            if (s == null) {
+        return _streams[0].getStreamType();
+    }
+
+    public boolean isConfPkt()
+    {
+        return _streams[0].getPktType() == YPKT_CONF;
+    }
+
+    int getPktno()
+    {
+        return _streams[0].getPktNumber();
+    }
+
+    public void decode(ByteBuffer pkt) throws YAPI_Exception
+    {
+        int stream_idx = 0;
+        pkt.get(_raw, 0, USB_PKT_SIZE);
+        int ofs = 0;
+        while (ofs < USB_PKT_SIZE && stream_idx < _streams.length) {
+            if (ofs + USB_PKT_STREAM_HEAD_SIZE > USB_PKT_SIZE) {
                 break;
             }
-            streams.add(s);
+            // decode stream head
+            int b = _raw[ofs++] & 0xff;
+            int pktNumber = b & 7;
+            int streamType = (b >> 3);
+            b = _raw[ofs++] & 0xff;
+            int pktType = b & 3;
+            int dataLen = b >> 2;
+            if (dataLen + ofs > USB_PKT_SIZE) {
+                throw new YAPI_Exception(YAPI.IO_ERROR, String.format(Locale.US, "invalid ystream header (invalid length %d+%d)", ofs, dataLen));
+            }
+            if (pktType == YPKT_STREAM && streamType == YGenericHub.YSTREAM_EMPTY)
+                break;
+            _streams[stream_idx].update(pktNumber, pktType, streamType, _raw, ofs, dataLen);
+            ofs += dataLen;
+            stream_idx++;
         }
-        return new YUSBPktIn(streams);
+        _streamCount = stream_idx;
     }
 
-    public boolean isConfPktReset()
+
+    public ConfPktReset asConfPktReset()
     {
-        if (_streams.size() < 1)
-            return false;
-        YPktStreamHead s = _streams.get(0);
-        return s.isConfPktReset();
+        return ConfPktReset.Decode(_streams[0]);
     }
 
-
-    public ConfPktReset getConfPktReset()
+    public ConfPktStart asConfPktStart()
     {
-        if (!isConfPktReset())
-            return null;
-        byte[] data = _streams.get(0).getDataAsByteArray();
-        return ConfPktReset.Decode(data);
+        return ConfPktStart.Decode(_streams[0]);
     }
 
-
-    public boolean isConfPktStart()
-    {
-        if (_streams.size() < 1)
-            return false;
-        YPktStreamHead s = _streams.get(0);
-        return s.isConfPktStart();
-    }
-
-    public ConfPktStart getConfPktStart()
-    {
-        if (!isConfPktStart())
-            return null;
-        byte[] data = _streams.get(0).getDataAsByteArray();
-        return ConfPktStart.Decode(data);
-    }
 
 }

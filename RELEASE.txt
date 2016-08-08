@@ -1,1 +1,9 @@
-- Fix timed notification with average that where not decoded correctly
+- Add Yocto-3D-V2 support (new calibration instructions)
+- Fix timed notification in minutes or hours that where not decoded correctly
+- Fix potential null pointer exception
+- Fix potential duplicate YAPIContext allocation
+- Fix Yocto-3d example
+- Improve performance of API
+- Improve USB IO access (less memory allocation)
+- Change default cache validity to 50ms.
+- Change packet ack delay to 0

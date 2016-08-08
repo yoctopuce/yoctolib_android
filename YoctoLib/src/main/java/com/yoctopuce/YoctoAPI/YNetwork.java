@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YNetwork.java 23924 2016-04-14 15:25:47Z seb $
+ * $Id: YNetwork.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindNetwork(), the high-level API for Network functions
  *
@@ -238,7 +238,7 @@ public class YNetwork extends YFunction
      */
     protected YNetwork(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YNetwork implementation)
@@ -1879,7 +1879,8 @@ public class YNetwork extends YFunction
      */
     public static YNetwork FirstNetwork()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Network");
         if (next_hwid == null)  return null;
         return FindNetworkInContext(yctx, next_hwid);

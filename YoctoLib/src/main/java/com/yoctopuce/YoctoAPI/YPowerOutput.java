@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPowerOutput.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YPowerOutput.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindPowerOutput(), the high-level API for PowerOutput functions
  *
@@ -111,7 +111,7 @@ public class YPowerOutput extends YFunction
      */
     protected YPowerOutput(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YPowerOutput implementation)
@@ -339,7 +339,8 @@ public class YPowerOutput extends YFunction
      */
     public static YPowerOutput FirstPowerOutput()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("PowerOutput");
         if (next_hwid == null)  return null;
         return FindPowerOutputInContext(yctx, next_hwid);

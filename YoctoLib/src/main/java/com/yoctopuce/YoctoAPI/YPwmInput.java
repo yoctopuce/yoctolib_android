@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPwmInput.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YPwmInput.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindPwmInput(), the high-level API for PwmInput functions
  *
@@ -146,7 +146,7 @@ public class YPwmInput extends YSensor
      */
     protected YPwmInput(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YPwmInput implementation)
@@ -634,7 +634,8 @@ public class YPwmInput extends YSensor
      */
     public static YPwmInput FirstPwmInput()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("PwmInput");
         if (next_hwid == null)  return null;
         return FindPwmInputInContext(yctx, next_hwid);

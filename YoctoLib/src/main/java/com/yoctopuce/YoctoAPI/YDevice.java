@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YDevice.java 23924 2016-04-14 15:25:47Z seb $
+ * $Id: YDevice.java 25136 2016-08-08 10:09:47Z seb $
  *
  * Internal YDevice class
  *
@@ -37,6 +37,7 @@
 
 package com.yoctopuce.YoctoAPI;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -62,7 +63,7 @@ public class YDevice
     private YGenericHub _hub;
     WPEntry _wpRec;
     private long _cache_expiration;
-    private String _cache_json;
+    private JSONObject _cache_json;
     private final HashMap<Integer, YPEntry> _ypRecs;
     private double _deviceTime;
     private YPEntry _moduleYPEntry;
@@ -77,7 +78,7 @@ public class YDevice
         _hub = hub;
         _wpRec = wpRec;
         _cache_expiration = 0;
-        _cache_json = "";
+        _cache_json = null;
         _moduleYPEntry = new YPEntry(wpRec.getSerialNumber(), "module", YPEntry.BaseClass.Function);
         _moduleYPEntry.setLogicalName(wpRec.getLogicalName());
         _ypRecs = new HashMap<Integer, YPEntry>();
@@ -133,31 +134,32 @@ public class YDevice
     }
 
     // Get the whole REST API string for a device, from cache if possible
-    public String requestAPI() throws YAPI_Exception
+    public JSONObject requestAPI() throws YAPI_Exception
     {
-        if (_cache_expiration > YAPI.GetTickCount()) {
+        long tickCount = YAPI.GetTickCount();
+        if (_cache_expiration > tickCount) {
             return _cache_json;
         }
         String yreq = requestHTTPSyncAsString("GET /api.json", null);
+        JSONObject cache_json;
+        try {
+            cache_json = new JSONObject(yreq);
+        } catch (JSONException ex) {
+            throw new YAPI_Exception(YAPI.IO_ERROR,
+                    "Request failed, could not parse API result for " + this);
+        }
         this._cache_expiration = YAPI.GetTickCount() + YAPI.DefaultCacheValidity;
-        this._cache_json = yreq;
-        return yreq;
+        this._cache_json = cache_json;
+        return cache_json;
     }
 
     // Reload a device API (store in cache), and update YAPI function lists accordingly
     // Intended to be called within UpdateDeviceList only
     public int refresh() throws YAPI_Exception
     {
-        String result = this.requestAPI();
-        JSONObject loadval;
+        JSONObject loadval = requestAPI();
         Boolean reindex = false;
         try {
-            loadval = new JSONObject(result);
-
-
-            _cache_expiration = YAPI.GetTickCount() + YAPI.DefaultCacheValidity;
-            _cache_json = result;
-
             // parse module and refresh names if needed
             Iterator<?> keys = loadval.keys();
             while (keys.hasNext()) {

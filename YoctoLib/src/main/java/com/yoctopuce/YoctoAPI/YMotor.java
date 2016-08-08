@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YMotor.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YMotor.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindMotor(), the high-level API for Motor functions
  *
@@ -159,7 +159,7 @@ public class YMotor extends YFunction
      */
     protected YMotor(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YMotor implementation)
@@ -998,7 +998,8 @@ public class YMotor extends YFunction
      */
     public static YMotor FirstMotor()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Motor");
         if (next_hwid == null)  return null;
         return FindMotorInContext(yctx, next_hwid);

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAltitude.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YAltitude.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindAltitude(), the high-level API for Altitude functions
  *
@@ -117,7 +117,7 @@ public class YAltitude extends YSensor
      */
     protected YAltitude(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YAltitude implementation)
@@ -447,7 +447,8 @@ public class YAltitude extends YSensor
      */
     public static YAltitude FirstAltitude()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Altitude");
         if (next_hwid == null)  return null;
         return FindAltitudeInContext(yctx, next_hwid);

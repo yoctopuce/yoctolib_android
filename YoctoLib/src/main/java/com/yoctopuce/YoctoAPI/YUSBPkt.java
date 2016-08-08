@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBPkt.java 20956 2015-07-31 12:26:31Z seb $
+ * $Id: YUSBPkt.java 25135 2016-08-08 10:09:26Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
@@ -41,57 +41,53 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import java.util.LinkedList;
+import java.util.Locale;
 
 
-public class YUSBPkt
+abstract class YUSBPkt
 {
-
-
     // generic pkt definitions
     protected static final int YPKT_USB_LEGACY_VERSION_BCD = 0x0207;
     protected static final int YPKT_USB_VERSION_BCD = 0x0208;
     public static final int USB_PKT_SIZE = 64;
-    protected int _pktno = 0;
-    protected LinkedList<YPktStreamHead> _streams;
 
 
-    YUSBPkt(int pktno, LinkedList<YPktStreamHead> streams)
+    protected static final int USB_PKT_STREAM_HEAD_SIZE = 2;
+    // pkt type definitions
+    protected static final int YPKT_STREAM = 0;
+    protected static final int YPKT_CONF = 1;
+    // pkt config type
+    protected static final int USB_CONF_RESET = 0;
+    protected static final int USB_CONF_START = 1;
+
+
+    protected int _streamCount = 0;
+    protected YPktStreamHead[] _streams = new YPktStreamHead[8];
+    protected byte[] _raw = new byte[USB_PKT_SIZE];
+
+    public YUSBPkt()
     {
-        _streams = streams;
-        _pktno = pktno;
-    }
-
-
-    int getPktno()
-    {
-        return _pktno;
-    }
-
-    public LinkedList<YPktStreamHead> getStreams()
-    {
-        return _streams;
     }
 
     public String toString()
     {
-        String dump = String.format("pktno:%d with %d ystream\n", _pktno, _streams.size());
-        for (YPktStreamHead s : _streams) {
-            dump += "\n" + s.toString();
+        String dump = String.format(Locale.US, "YUSBPkt with %d streams:\n", _streamCount);
+        for (int i = 0; i < _streamCount && i < _streams.length; i++) {
+            dump += "\n" + _streams[i].toString();
         }
         return dump;
     }
 
-    public String[] toStringARR()
+    public int getStreamCount()
     {
-        String[] dump = new String[_streams.size() + 1];
-        dump[0] = String.format("pktno:%d with %d ystream\n", _pktno, _streams.size());
-        int pos = 1;
-        for (YPktStreamHead s : _streams) {
-            dump[pos++] = s.toString();
-        }
-        return dump;
+        return _streamCount;
     }
+
+    public YPktStreamHead getStream(int i)
+    {
+        return _streams[i];
+    }
+
 
     protected static class ConfPktReset
     {
@@ -128,19 +124,18 @@ public class YUSBPkt
             return _nbIface;
         }
 
-        static public ConfPktReset Decode(byte[] data)
+
+        static public ConfPktReset Decode(YPktStreamHead data)
         {
-            int api = data[0] + ((int) data[1] << 8);
-            return new ConfPktReset(api, data[2], data[3], data[4]);
+            int api = data.getByte(0) + ((int) data.getByte(1) << 8);
+            return new ConfPktReset(api, data.getByte(2), data.getByte(3), data.getByte(4));
         }
 
-        public YPktStreamHead getAsStream()
+        public void write(byte[] data, int ofs)
         {
-            byte[] data = new byte[USB_PKT_SIZE - YPktStreamHead.USB_PKT_STREAM_HEAD];
-            data[0] = (byte) (_api & 0xff);
-            data[1] = (byte) ((_api >> 8) & 0xff);
-            data[2] = 1;
-            return new YPktStreamHead(0, YPktStreamHead.YPKT_CONF, YPktStreamHead.USB_CONF_RESET, data, 0, data.length);
+            data[ofs] = (byte) (_api & 0xff);
+            data[ofs + 1] = (byte) ((_api >> 8) & 0xff);
+            data[ofs + 2] = 1;
         }
     }
 
@@ -157,24 +152,22 @@ public class YUSBPkt
         }
 
 
-        static public ConfPktStart Decode(byte[] data)
+        static public ConfPktStart Decode(YPktStreamHead data)
         {
-            int nbiface = data[0] & 0xff;
+            int nbiface = data.getByte(0) & 0xff;
             int ackDelay;
-            if (data.length >= 2) {
-                ackDelay = data[1] & 0xff;
+            if (data.getContentSize() >= 2) {
+                ackDelay = data.getByte(1) & 0xff;
             } else {
                 ackDelay = 0;
             }
             return new ConfPktStart(nbiface, ackDelay);
         }
 
-        public YPktStreamHead getAsStream()
+        public void write(byte[] data, int ofs)
         {
-            byte[] data = new byte[USB_PKT_SIZE - YPktStreamHead.USB_PKT_STREAM_HEAD];
-            data[0] = (byte) _nbIface;
-            data[1] = (byte) _ack_delay;
-            return new YPktStreamHead(0, YPktStreamHead.YPKT_CONF, YPktStreamHead.USB_CONF_START, data, 0, data.length);
+            data[ofs] = (byte) _nbIface;
+            data[ofs + 1] = (byte) _ack_delay;
         }
 
         public int getAckDelay()

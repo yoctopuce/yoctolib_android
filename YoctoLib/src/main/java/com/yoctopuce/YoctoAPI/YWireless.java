@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWireless.java 22679 2016-01-12 17:07:55Z seb $
+ * $Id: YWireless.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements yFindWireless(), the high-level API for Wireless functions
  *
@@ -135,7 +135,7 @@ public class YWireless extends YFunction
 
     protected YWireless(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
 
@@ -580,7 +580,8 @@ public class YWireless extends YFunction
      */
     public static YWireless FirstWireless()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Wireless");
         if (next_hwid == null)  return null;
         return FindWirelessInContext(yctx, next_hwid);

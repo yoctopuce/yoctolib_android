@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDigitalIO.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YDigitalIO.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindDigitalIO(), the high-level API for DigitalIO functions
  *
@@ -143,7 +143,7 @@ public class YDigitalIO extends YFunction
      */
     protected YDigitalIO(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YDigitalIO implementation)
@@ -895,7 +895,8 @@ public class YDigitalIO extends YFunction
      */
     public static YDigitalIO FirstDigitalIO()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("DigitalIO");
         if (next_hwid == null)  return null;
         return FindDigitalIOInContext(yctx, next_hwid);

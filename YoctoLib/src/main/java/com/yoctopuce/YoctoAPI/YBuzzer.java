@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YBuzzer.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YBuzzer.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindBuzzer(), the high-level API for Buzzer functions
  *
@@ -134,7 +134,7 @@ public class YBuzzer extends YFunction
      */
     protected YBuzzer(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YBuzzer implementation)
@@ -678,7 +678,8 @@ public class YBuzzer extends YFunction
      */
     public static YBuzzer FirstBuzzer()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Buzzer");
         if (next_hwid == null)  return null;
         return FindBuzzerInContext(yctx, next_hwid);

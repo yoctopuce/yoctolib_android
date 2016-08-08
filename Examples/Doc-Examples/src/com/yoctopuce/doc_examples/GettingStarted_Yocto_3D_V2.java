@@ -19,7 +19,7 @@ import com.yoctopuce.YoctoAPI.YModule;
 import com.yoctopuce.YoctoAPI.YSensor;
 import com.yoctopuce.YoctoAPI.YTilt;
 
-public class GettingStarted_Yocto_3D extends Activity implements OnItemSelectedListener
+public class GettingStarted_Yocto_3D_V2 extends Activity implements OnItemSelectedListener
 {
 
     private ArrayAdapter<String> aa;
@@ -30,7 +30,7 @@ public class GettingStarted_Yocto_3D extends Activity implements OnItemSelectedL
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gettingstarted_yocto_3d);
+        setContentView(R.layout.gettingstarted_yocto_3d_v2);
         Spinner my_spin = (Spinner) findViewById(R.id.spinner1);
         my_spin.setOnItemSelectedListener(this);
         aa = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item);
@@ -49,7 +49,7 @@ public class GettingStarted_Yocto_3D extends Activity implements OnItemSelectedL
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-3D")) {
+                if (module.get_productName().equals("Yocto-3D-V2")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPwmOutput.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YPwmOutput.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindPwmOutput(), the high-level API for PwmOutput functions
  *
@@ -146,7 +146,7 @@ public class YPwmOutput extends YFunction
      */
     protected YPwmOutput(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YPwmOutput implementation)
@@ -837,7 +837,8 @@ public class YPwmOutput extends YFunction
      */
     public static YPwmOutput FirstPwmOutput()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("PwmOutput");
         if (next_hwid == null)  return null;
         return FindPwmOutputInContext(yctx, next_hwid);

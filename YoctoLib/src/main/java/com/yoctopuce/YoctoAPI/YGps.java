@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGps.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YGps.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindGps(), the high-level API for Gps functions
  *
@@ -176,7 +176,7 @@ public class YGps extends YFunction
      */
     protected YGps(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YGps implementation)
@@ -834,7 +834,8 @@ public class YGps extends YFunction
      */
     public static YGps FirstGps()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Gps");
         if (next_hwid == null)  return null;
         return FindGpsInContext(yctx, next_hwid);

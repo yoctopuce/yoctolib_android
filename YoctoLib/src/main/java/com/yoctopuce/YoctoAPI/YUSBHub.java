@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 23924 2016-04-14 15:25:47Z seb $
+ * $Id: YUSBHub.java 24909 2016-06-28 12:02:43Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -48,6 +48,7 @@ import android.hardware.usb.UsbManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 
@@ -192,9 +193,8 @@ class YUSBHub extends YGenericHub
                 doPermissionRequest(usbDevice);
             }
         } else {
-            //fixme: notifiy user
-
-            device.permissionRejected();
+            _yctx._Log("HUB_USB: hub is working in silent mode. Ignore request permission for " + device.getUsbDevice().getDeviceName() + "\n");
+            device.permissionIngore();
         }
     }
 
@@ -352,7 +352,7 @@ class YUSBHub extends YGenericHub
 
     protected YUSBDevice devFromSerial(String serial) throws YAPI_Exception
     {
-        //todo: test if we spent too much time here (alternatively use tow hashmap)
+        //todo: test if we spent too much time here (alternatively use two hashmap)
         for (Map.Entry<String, YUSBDevice> entry : _devsFromAndroidRef.entrySet()) {
             YUSBDevice yusbDevice = entry.getValue();
             if (serial.equals(yusbDevice.getSerial())) {

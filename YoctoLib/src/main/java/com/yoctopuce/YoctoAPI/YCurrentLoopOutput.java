@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCurrentLoopOutput.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YCurrentLoopOutput.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindCurrentLoopOutput(), the high-level API for CurrentLoopOutput functions
  *
@@ -126,7 +126,7 @@ public class YCurrentLoopOutput extends YFunction
      */
     protected YCurrentLoopOutput(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YCurrentLoopOutput implementation)
@@ -508,7 +508,8 @@ public class YCurrentLoopOutput extends YFunction
      */
     public static YCurrentLoopOutput FirstCurrentLoopOutput()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("CurrentLoopOutput");
         if (next_hwid == null)  return null;
         return FindCurrentLoopOutputInContext(yctx, next_hwid);

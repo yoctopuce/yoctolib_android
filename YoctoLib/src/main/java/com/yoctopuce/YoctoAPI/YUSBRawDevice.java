@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 22679 2016-01-12 17:07:55Z seb $
+ * $Id: YUSBRawDevice.java 24909 2016-06-28 12:02:43Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -49,9 +49,9 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbRequest;
 
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Locale;
 
 public class YUSBRawDevice implements Runnable
 {
@@ -75,6 +75,7 @@ public class YUSBRawDevice implements Runnable
         UNPLUGGED,
         PLUGGED,
         ACCEPTED,
+        IGNORE,
         REJECTED
     }
 
@@ -139,10 +140,13 @@ public class YUSBRawDevice implements Runnable
         if (!_manager.hasPermission(_device)) {
             if (_state == State.REJECTED && _device.getProductId() != YAPI.YOCTO_DEVID_BOOTLOADER) {
                 // if the user has rejected the authorisation we do not ask it again
+                _usbHub._yctx._Log(String.format(Locale.getDefault(), "OS Plug: user has rejected the authorisation of %s -> devid: 0x%x (%d)", _device.getDeviceName(), _device.getDeviceId(), _device.getProductId()));
                 // (except for bootloader)
                 return;
             }
-            _usbHub.requestUSBPermission(this);
+            if (_state != State.IGNORE) {
+                _usbHub.requestUSBPermission(this);
+            }
         } else {
             permissionAccepted();
         }
@@ -150,7 +154,6 @@ public class YUSBRawDevice implements Runnable
 
     boolean permissionAccepted()
     {
-        _state = State.ACCEPTED;
         /* Open a connection to the USB device */
         _connection = _manager.openDevice(_device);
         if (_connection == null) {
@@ -165,9 +168,21 @@ public class YUSBRawDevice implements Runnable
             release();
             return false;
         }
-        _serial = _connection.getSerial();
+        String serial = _connection.getSerial();
+        if (serial == null) {
+            if (_serial == null) {
+                _usbHub._yctx._Log("unable to get serial for device " + _device.getDeviceName());
+                release();
+                return false;
+            }
+            _usbHub._yctx._Log("unable to get serial for device " + _device.getDeviceName() + " reuse old one (" + _serial + ")");
+        } else {
+            _serial = serial;
+        }
+
+        _state = State.ACCEPTED;
         thread = new Thread(this);
-        thread.setName("IOusb_" + _serial);
+        thread.setName("IOUsb_" + _serial);
         thread.start();
 
         synchronized (this) {
@@ -175,13 +190,13 @@ public class YUSBRawDevice implements Runnable
                 try {
                     this.wait(500);
                 } catch (InterruptedException e) {
-                    _usbHub._yctx._Log("unable to start IOhTread: " + e.getLocalizedMessage());
+                    _usbHub._yctx._Log("unable to start IOThread: " + e.getLocalizedMessage());
                     release();
                     return false;
                 }
             }
             if (!_ioStarted) {
-                _usbHub._yctx._Log("unable to start IOhTread ");
+                _usbHub._yctx._Log("unable to start IOThread ");
                 release();
                 return false;
             }
@@ -193,6 +208,12 @@ public class YUSBRawDevice implements Runnable
     public void permissionRejected()
     {
         _state = State.REJECTED;
+
+    }
+
+    public void permissionIngore()
+    {
+        _state = State.IGNORE;
 
     }
 
@@ -260,7 +281,7 @@ public class YUSBRawDevice implements Runnable
         } while (result < 0 && attempt < 15);
         if (result < 0) {
             throw new YAPI_Exception(YAPI.IO_ERROR,
-                    String.format("Unable to send USB packet after %d attempt (res=%d)",
+                    String.format(Locale.getDefault(), "Unable to send USB packet after %d attempt (res=%d)",
                             attempt, result));
 
         }

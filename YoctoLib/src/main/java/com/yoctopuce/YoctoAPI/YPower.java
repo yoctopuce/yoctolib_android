@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPower.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YPower.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindPower(), the high-level API for Power functions
  *
@@ -121,7 +121,7 @@ public class YPower extends YSensor
      */
     protected YPower(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YPower implementation)
@@ -436,7 +436,8 @@ public class YPower extends YSensor
      */
     public static YPower FirstPower()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Power");
         if (next_hwid == null)  return null;
         return FindPowerInContext(yctx, next_hwid);

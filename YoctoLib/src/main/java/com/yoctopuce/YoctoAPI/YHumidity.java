@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YHumidity.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YHumidity.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindHumidity(), the high-level API for Humidity functions
  *
@@ -115,7 +115,7 @@ public class YHumidity extends YSensor
      */
     protected YHumidity(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YHumidity implementation)
@@ -408,7 +408,8 @@ public class YHumidity extends YSensor
      */
     public static YHumidity FirstHumidity()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("Humidity");
         if (next_hwid == null)  return null;
         return FindHumidityInContext(yctx, next_hwid);

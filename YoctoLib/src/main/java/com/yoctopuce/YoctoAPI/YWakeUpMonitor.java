@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWakeUpMonitor.java 23238 2016-02-23 14:06:30Z seb $
+ * $Id: YWakeUpMonitor.java 24888 2016-06-23 14:55:23Z seb $
  *
  * Implements FindWakeUpMonitor(), the high-level API for WakeUpMonitor functions
  *
@@ -142,7 +142,7 @@ public class YWakeUpMonitor extends YFunction
      */
     protected YWakeUpMonitor(String func)
     {
-        this(YAPI.GetYCtx(), func);
+        this(YAPI.GetYCtx(true), func);
     }
 
     //--- (YWakeUpMonitor implementation)
@@ -676,7 +676,8 @@ public class YWakeUpMonitor extends YFunction
      */
     public static YWakeUpMonitor FirstWakeUpMonitor()
     {
-        YAPIContext yctx = YAPI.GetYCtx();
+        YAPIContext yctx = YAPI.GetYCtx(false);
+        if (yctx == null)  return null;
         String next_hwid = yctx._yHash.getFirstHardwareId("WakeUpMonitor");
         if (next_hwid == null)  return null;
         return FindWakeUpMonitorInContext(yctx, next_hwid);
