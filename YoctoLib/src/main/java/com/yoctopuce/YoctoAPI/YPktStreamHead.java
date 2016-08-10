@@ -101,7 +101,7 @@ class YPktStreamHead
     NotificationStreams decodeAsNotification(String serial, boolean isV2) throws YAPI_Exception
     {
         try {
-            return new NotificationStreams(serial, _content, _contentOfs, isV2);
+            return new NotificationStreams(serial, _content, _contentOfs, _contentSize, isV2);
         } catch (ArrayIndexOutOfBoundsException ex) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Invalid USB packet");
         }
@@ -184,14 +184,13 @@ class YPktStreamHead
         {
             if (data == null)
                 return "";
-            int pos = ofs;
             int len = 0;
             while (len < maxlen && ofs + len < data.length) {
-                if (data[pos + len] == 0)
+                if (data[ofs + len] == 0)
                     break;
                 len++;
             }
-            return new String(data, pos, len);
+            return new String(data, ofs, len);
         }
 
         public YPEntry.BaseClass getFunclass()
@@ -204,7 +203,7 @@ class YPktStreamHead
 
         }
 
-        public NotificationStreams(String serial, byte[] data, int ofs, boolean isV2) throws YAPI_Exception
+        public NotificationStreams(String serial, byte[] data, int ofs, int size, boolean isV2) throws YAPI_Exception
         {
             int firstByte = data[ofs];
             if (isV2 || firstByte <= NOTIFY_1STBYTE_MAXTINY || firstByte >= NOTIFY_1STBYTE_MINSMALL) {
@@ -219,7 +218,7 @@ class YPktStreamHead
                         // added on 2015-02-25, remove code below when confirmed dead code
                         throw new YAPI_Exception(YAPI.IO_ERROR, "Hub Should not fwd notification");
                     }
-                    _funcval = YGenericHub.decodePubVal(_funcvalType, data, ofs + 1, data.length - 1);
+                    _funcval = YGenericHub.decodePubVal(_funcvalType, data, ofs + 1, size - 1);
                 }
             } else {
                 _serial = arrayToString(data, ofs, YAPI.YOCTO_SERIAL_LEN);

@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 25135 2016-08-08 10:09:26Z seb $
+ * $Id: YUSBDevice.java 25154 2016-08-10 16:05:11Z seb $
  *
  * YUSBDevice Class:
  *
@@ -40,7 +40,6 @@
  */
 package com.yoctopuce.YoctoAPI;
 
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
@@ -749,7 +748,6 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     {
         String msg = "USB IO error:" + errorMessage;
         _usbHub._yctx._Log(msg);
-        Log.e(TAG, msg);
         synchronized (_stateLock) {
             _pkt_state = PKT_State.IOError;
             _tcp_state = TCP_State.Closed;
