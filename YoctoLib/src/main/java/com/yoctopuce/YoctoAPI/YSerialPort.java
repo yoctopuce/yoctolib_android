@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSerialPort.java 25085 2016-07-26 16:38:36Z mvuilleu $
+ * $Id: YSerialPort.java 25248 2016-08-22 15:51:04Z seb $
  *
  * Implements FindSerialPort(), the high-level API for SerialPort functions
  *
@@ -1977,9 +1977,6 @@ public class YSerialPort extends YFunction
         ArrayList<Integer> reply = new ArrayList<Integer>();
         int res;
         res = 0;
-        if (value != 0) {
-            value = 0xff;
-        }
         pdu.add(0x06);
         pdu.add(((pduAddr) >> (8)));
         pdu.add(((pduAddr) & (0xff)));

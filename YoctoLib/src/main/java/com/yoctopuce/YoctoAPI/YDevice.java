@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YDevice.java 25136 2016-08-08 10:09:47Z seb $
+ * $Id: YDevice.java 25234 2016-08-22 12:40:35Z seb $
  *
  * Internal YDevice class
  *
@@ -182,7 +182,7 @@ public class YDevice
                     }
                     if (func.has("advertisedValue")) {
                         String pubval = func.getString("advertisedValue");
-                        _hub._yctx._yHash.setFunctionValue(_wpRec.getSerialNumber(), pubval);
+                        _hub._yctx._yHash.setFunctionValue(_wpRec.getSerialNumber()+"."+key, pubval);
                     }
                     for (int f = 0; f < _ypRecs.size(); f++) {
                         if (_ypRecs.get(f).getFuncId().equals(key)) {
@@ -275,8 +275,8 @@ public class YDevice
 
     public void setDeviceTime(Integer[] data)
     {
-        double time = data[0] + 0x100 * data[1] + 0x10000 * data[2] + 0x1000000 * data[3];
-        _deviceTime = time + data[4] / 250.0;
+        double time = (data[0] & 0xff) + 0x100 * (data[1] & 0xff) + 0x10000 * (data[2] & 0xff) + 0x1000000 * (data[3] & 0xff);
+        _deviceTime = time + (data[4] & 0xff) / 250.0;
     }
 
     YPEntry getModuleYPEntry()
