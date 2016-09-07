@@ -1,12 +1,1 @@
-- Improve performance of API
-- Improve USB IO access (less memory allocation)
-- Change default cache validity to 50ms. Disbable packet ack
-- Add roaming neutrality support for YoctoHub-GSM
-- Add Yocto-3D-V2 support (new calibration instructions)
-- Add read-ahead buffer for readByte function
-- Fix timed notification in minutes or hours that where not decoded correctly
-- Fix potential null pointer exception
-- Fix potential duplicate YAPIContext allocation
-- Fix Yocto-3d example
-- Fix YMeasure with wrong timestamp
-- Fix MODBUS write register command
+- Fix automatic time update for USB devices

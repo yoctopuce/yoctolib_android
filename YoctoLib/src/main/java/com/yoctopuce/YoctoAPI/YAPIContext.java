@@ -578,10 +578,10 @@ public class YAPIContext
         // Add hub to known list
         if (url.equals("usb")) {
             YUSBHub.CheckUSBAcces();
-            newhub = new YUSBHub(this, _hubs.size(), true);
+            newhub = new YUSBHub(this, _hubs.size(), true, YAPI.DEFAULT_PKT_RESEND_DELAY);
         } else if (url.equals("usb_silent")) {
             YUSBHub.CheckUSBAcces();
-            newhub = new YUSBHub(this, _hubs.size(), false);
+            newhub = new YUSBHub(this, _hubs.size(), false, YAPI.DEFAULT_PKT_RESEND_DELAY);
         } else if (url.equals("net")) {
             if ((_apiMode & YAPI.DETECT_NET) == 0) {
                 if (YUSBHub.RegisterLocalhost()) {
@@ -931,7 +931,7 @@ public class YAPIContext
         // Add hub to known list
         if (url.equals("usb")) {
             YUSBHub.CheckUSBAcces();
-            newhub = new YUSBHub(this, 0, true);
+            newhub = new YUSBHub(this, 0, true, YAPI.DEFAULT_PKT_RESEND_DELAY);
         } else if (url.equals("net")) {
             return YAPI.SUCCESS;
         } else if (parsedurl.getHost().equals("callback")) {

@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 25154 2016-08-10 16:05:11Z seb $
+ * $Id: YUSBDevice.java 25292 2016-09-02 13:01:06Z seb $
  *
  * YUSBDevice Class:
  *
@@ -46,7 +46,6 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 
 
 public class YUSBDevice implements YUSBRawDevice.IOHandler
@@ -54,7 +53,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
 
     private static final long META_UTC_DELAY = 60000;
     private static final String TAG = "YAPI";
-    private int _pktAckDelay = 0;
+    private int _pktAckDelay;
     private int _devVersion;
     private int _retry = 0;
     // USB communication data
@@ -69,11 +68,6 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     private WPEntry _wp;
     private final HashMap<String, YPEntry> _usbYP = new HashMap<>();
     private HashMap<Integer, String> _usbIdx2Funcid = new HashMap<>();
-    private long total_sth = 0;
-    private long count_sth = 0;
-    private long total_dec = 0;
-    private int count_dec = 0;
-
 
     public boolean isAllowed()
     {
@@ -152,9 +146,10 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    public YUSBDevice(YUSBHub yusbHub)
+    public YUSBDevice(YUSBHub yusbHub, int pktAckDelay)
     {
         _usbHub = yusbHub;
+        _pktAckDelay = pktAckDelay;
     }
 
 
@@ -579,7 +574,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
             } else {
                 YPEntry yp = getYPEntryFromYdx(funYdx);
                 if (yp != null) {
-                    ArrayList<Integer> report = new ArrayList<Integer>(len + 1);
+                    ArrayList<Integer> report = new ArrayList<>(len + 1);
                     report.add(isAvg ? 1 : 0);
                     for (int i = 0; i < len; i++) {
                         int b = data.getByte(pos + i) & 0xff;
@@ -615,7 +610,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
             } else {
                 YPEntry yp = getYPEntryFromYdx(funYdx);
                 if (yp != null) {
-                    ArrayList<Integer> report = new ArrayList<Integer>(len + 1);
+                    ArrayList<Integer> report = new ArrayList<>(len + 1);
                     report.add(2);
                     for (int i = 0; i < len; i++) {
                         int b = data.getByte(pos + i) & 0xff;

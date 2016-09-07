@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBPkt.java 25135 2016-08-08 10:09:26Z seb $
+ * $Id: YUSBPkt.java 25291 2016-09-02 09:38:48Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
@@ -71,7 +71,7 @@ abstract class YUSBPkt
 
     public String toString()
     {
-        String dump = String.format(Locale.US, "YUSBPkt with %d streams:\n", _streamCount);
+        String dump = String.format(Locale.US, "YUSBPkt with %d streams:", _streamCount);
         for (int i = 0; i < _streamCount && i < _streams.length; i++) {
             dump += "\n" + _streams[i].toString();
         }

@@ -67,19 +67,19 @@ public class YUSBPktOut extends YUSBPkt
     {
         writeStreamHead(0, YPKT_STREAM, YGenericHub.YSTREAM_META, 5);
         // Meta UTC packet are hand forged
-        _raw[_writeOfs] = USB_META_UTCTIME;
+        _raw[_writeOfs++] = USB_META_UTCTIME;
         long currUtcTime = System.currentTimeMillis() / 1000;
-        _raw[_writeOfs + 1] = (byte) (currUtcTime & 0xff);
-        _raw[_writeOfs + 2] = (byte) ((currUtcTime >> 8) & 0xff);
-        _raw[_writeOfs + 3] = (byte) ((currUtcTime >> 16) & 0xff);
-        _raw[_writeOfs + 4] = (byte) ((currUtcTime >> 24) & 0xff);
+        _raw[_writeOfs++] = (byte) (currUtcTime & 0xff);
+        _raw[_writeOfs++] = (byte) ((currUtcTime >> 8) & 0xff);
+        _raw[_writeOfs++] = (byte) ((currUtcTime >> 16) & 0xff);
+        _raw[_writeOfs++] = (byte) ((currUtcTime >> 24) & 0xff);
     }
 
     public void pushPktAck(int pktno)
     {
         writeStreamHead(0, YPKT_STREAM, YGenericHub.YSTREAM_META, 2);
-        _raw[_writeOfs] = USB_META_ACK_D2H_PACKET;
-        _raw[_writeOfs + 1] = (byte) (pktno & 0xff);
+        _raw[_writeOfs++] = USB_META_ACK_D2H_PACKET;
+        _raw[_writeOfs++] = (byte) (pktno & 0xff);
     }
 
     public void push(ConfPktStart reset)

@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 24909 2016-06-28 12:02:43Z seb $
+ * $Id: YUSBHub.java 25292 2016-09-02 13:01:06Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -62,6 +62,7 @@ class YUSBHub extends YGenericHub
     private final HashMap<String, YUSBDevice> _devsFromAndroidRef = new HashMap<String, YUSBDevice>(2);
     private final HashMap<String, YUSBBootloader> _bootloadersFromAndroidRef = new HashMap<String, YUSBBootloader>(2);
     private final UsbManager _manager;
+    private final int _pktAckDelay;
     public final boolean _requestPermission;
 
 
@@ -130,9 +131,10 @@ class YUSBHub extends YGenericHub
         return new ArrayList<>();
     }
 
-    YUSBHub(YAPIContext yctx, int idx, boolean requestPermission) throws YAPI_Exception
+    YUSBHub(YAPIContext yctx, int idx, boolean requestPermission, int pktAckDelay) throws YAPI_Exception
     {
         super(yctx, new HTTPParams("usb://"), idx, true);
+        _pktAckDelay = pktAckDelay;
         _manager = (UsbManager) sAppContext.getSystemService(Context.USB_SERVICE);
         if (_manager == null) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Unable to get Android USB manager");
@@ -239,7 +241,7 @@ class YUSBHub extends YGenericHub
                     rawDevice = new YUSBRawDevice(this, usbdevice, _manager, bootloader);
                     _bootloadersFromAndroidRef.put(key, bootloader);
                 } else {
-                    YUSBDevice device = new YUSBDevice(this);
+                    YUSBDevice device = new YUSBDevice(this, _pktAckDelay);
                     rawDevice = new YUSBRawDevice(this, usbdevice, _manager, device);
                     _devsFromAndroidRef.put(key, device);
                 }
