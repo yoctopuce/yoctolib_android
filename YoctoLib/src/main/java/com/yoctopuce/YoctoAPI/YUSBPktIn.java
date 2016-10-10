@@ -3,7 +3,7 @@ package com.yoctopuce.YoctoAPI;
 import java.nio.ByteBuffer;
 import java.util.Locale;
 
-public class YUSBPktIn extends YUSBPkt
+class YUSBPktIn extends YUSBPkt
 {
 
     public YUSBPktIn()

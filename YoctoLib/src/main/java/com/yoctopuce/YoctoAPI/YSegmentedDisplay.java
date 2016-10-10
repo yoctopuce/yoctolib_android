@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSegmentedDisplay.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YSegmentedDisplay.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindSegmentedDisplay(), the high-level API for SegmentedDisplay functions
  *
@@ -49,7 +49,7 @@ import org.json.JSONObject;
  *
  * The SegmentedDisplay class allows you to drive segmented displays.
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YSegmentedDisplay extends YFunction
 {
 //--- (end of YSegmentedDisplay class start)
@@ -120,6 +120,7 @@ public class YSegmentedDisplay extends YFunction
     }
 
     //--- (YSegmentedDisplay implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

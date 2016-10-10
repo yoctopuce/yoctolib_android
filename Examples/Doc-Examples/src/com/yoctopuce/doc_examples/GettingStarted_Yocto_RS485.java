@@ -100,9 +100,9 @@ public class GettingStarted_Yocto_RS485 extends Activity implements OnItemSelect
 
             int val;
             if(reg >= 40001) {
-                val = serialPort.modbusReadInputRegisters(slave, reg-40001, 1).get(0);
+                val = serialPort.modbusReadRegisters(slave, reg-40001, 1).get(0);
             } else if(reg >= 30001) {
-                val = serialPort.modbusReadRegisters(slave, reg-30001, 1).get(0);
+                val = serialPort.modbusReadInputRegisters(slave, reg-30001, 1).get(0);
             } else if(reg >= 10001) {
                 val = serialPort.modbusReadInputBits(slave, reg-10001, 1).get(0);
             } else {

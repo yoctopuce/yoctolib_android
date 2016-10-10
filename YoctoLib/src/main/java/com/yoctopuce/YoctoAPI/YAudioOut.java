@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAudioOut.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YAudioOut.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindAudioOut(), the high-level API for AudioOut functions
  *
@@ -49,7 +49,7 @@ import org.json.JSONObject;
  *
  * The Yoctopuce application programming interface allows you to configure the volume of the outout.
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YAudioOut extends YFunction
 {
 //--- (end of YAudioOut class start)
@@ -133,6 +133,7 @@ public class YAudioOut extends YFunction
     }
 
     //--- (YAudioOut implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

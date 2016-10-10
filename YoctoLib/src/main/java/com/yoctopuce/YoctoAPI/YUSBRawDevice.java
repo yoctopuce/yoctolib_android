@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 24909 2016-06-28 12:02:43Z seb $
+ * $Id: YUSBRawDevice.java 25361 2016-09-16 08:23:13Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -114,7 +114,7 @@ public class YUSBRawDevice implements Runnable
 
     public interface IOHandler
     {
-        void newPKT(ByteBuffer android_raw_pkt) throws InterruptedException;
+        void newPKT(ByteBuffer android_raw_pkt);
 
         void ioError(String msg);
 
@@ -346,15 +346,8 @@ public class YUSBRawDevice implements Runnable
                     d2h_pkt.rewind();
                     if (d2h_pkt.limit() == YUSBPkt.USB_PKT_SIZE) {
                         if (!mustBgThreadStop()) {
-                            try {
-                                _ioHandler.newPKT(d2h_pkt);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                                break;
-                            }
+                            _ioHandler.newPKT(d2h_pkt);
                         }
-                    } else {
-                        //Log.d(TAG, "drop invalid packet" + d2h_pkt.toString());
                     }
                     d2h_pkt.clear();
                     d2h_request_queued = d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);

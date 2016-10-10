@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGroundSpeed.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YGroundSpeed.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindGroundSpeed(), the high-level API for GroundSpeed functions
  *
@@ -52,7 +52,7 @@ import org.json.JSONObject;
  * read measurements, register callback functions, access the autonomous
  * datalogger.
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YGroundSpeed extends YSensor
 {
 //--- (end of YGroundSpeed class start)
@@ -110,6 +110,7 @@ public class YGroundSpeed extends YSensor
     }
 
     //--- (YGroundSpeed implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 25292 2016-09-02 13:01:06Z seb $
+ * $Id: YUSBDevice.java 25357 2016-09-16 07:22:41Z seb $
  *
  * YUSBDevice Class:
  *
@@ -441,7 +441,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    public void checkMetaUTC()
+    private void checkMetaUTC()
     {
         if (_lastMetaUTC + META_UTC_DELAY < YAPI.GetTickCount()) {
             YUSBPktOut ypkt = new YUSBPktOut();
@@ -483,7 +483,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     /*
      * Notification handler
      */
-    private void handleNotifcation(YPktStreamHead.NotificationStreams not) throws YAPI_Exception
+    private void handleNotifcation(YPktStreamHead.NotificationStreams not)
     {
         YPEntry yp;
         if (_serial != null && !_serial.equals(not.getSerial())) {
@@ -548,7 +548,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         }
     }
 
-    public void handleTimedNotification(YPktStreamHead data)
+    private void handleTimedNotification(YPktStreamHead data)
     {
         int pos = 0;
         YDevice ydev = _usbHub._yctx._yHash.getDevice(_serial);
@@ -588,7 +588,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    public void handleTimedNotificationV2(YPktStreamHead data)
+    private void handleTimedNotificationV2(YPktStreamHead data)
     {
         int pos = 0;
         YDevice ydev = _usbHub._yctx._yHash.getDevice(_serial);
@@ -679,7 +679,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
      */
 
 
-    YUSBPktIn newpkt = new YUSBPktIn();
+    private YUSBPktIn newpkt = new YUSBPktIn();
 
 
     /*

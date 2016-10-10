@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YQuadratureDecoder.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YQuadratureDecoder.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindQuadratureDecoder(), the high-level API for QuadratureDecoder functions
  *
@@ -51,7 +51,7 @@ import org.json.JSONObject;
  * quadrature encoder. It inherits from YSensor class the core functions to read measurements,
  * register callback functions, access to the autonomous datalogger.
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YQuadratureDecoder extends YSensor
 {
 //--- (end of YQuadratureDecoder class start)
@@ -121,6 +121,7 @@ public class YQuadratureDecoder extends YSensor
     }
 
     //--- (YQuadratureDecoder implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

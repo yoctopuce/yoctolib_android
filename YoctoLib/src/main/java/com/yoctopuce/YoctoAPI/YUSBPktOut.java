@@ -1,6 +1,6 @@
 package com.yoctopuce.YoctoAPI;
 
-public class YUSBPktOut extends YUSBPkt
+class YUSBPktOut extends YUSBPkt
 {
 
     private static final int USB_META_UTCTIME = 1;
@@ -38,7 +38,7 @@ public class YUSBPktOut extends YUSBPkt
         _raw[_writeOfs++] = (byte) (pktType | ((contentSize & 0x3f) << 2));
     }
 
-    public int pushTCP(byte[] bytes, int pos, int len) throws YAPI_Exception
+    public int pushTCP(byte[] bytes, int pos, int len)
     {
         int usable = USB_PKT_SIZE - _writeOfs;
         if (usable <= USB_PKT_STREAM_HEAD_SIZE) {
@@ -57,7 +57,7 @@ public class YUSBPktOut extends YUSBPkt
     }
 
 
-    public void pushTCPClose() throws YAPI_Exception
+    public void pushTCPClose()
     {
         writeStreamHead(0, YPKT_STREAM, YGenericHub.YSTREAM_TCP_CLOSE, 0);
     }

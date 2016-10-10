@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YPEntry.java 23415 2016-03-04 15:47:30Z seb $
+ * $Id: YPEntry.java 25339 2016-09-15 07:43:00Z seb $
  *
  * Yellow page implementation
  *
@@ -173,6 +173,11 @@ class YPEntry
     public BaseClass getBaseClass()
     {
         return _baseclass;
+    }
+
+    public boolean matchBaseType(BaseClass baseclass)
+    {
+        return baseclass.equals(BaseClass.Function) || baseclass.equals(_baseclass);
     }
 
     public String getBaseType()

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YBluetoothLink.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YBluetoothLink.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindBluetoothLink(), the high-level API for BluetoothLink functions
  *
@@ -50,7 +50,7 @@ import org.json.JSONObject;
  * BluetoothLink function provides control over bluetooth link
  * and status for devices that are bluetooth-enabled.
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YBluetoothLink extends YFunction
 {
 //--- (end of YBluetoothLink class start)
@@ -165,6 +165,7 @@ public class YBluetoothLink extends YFunction
     }
 
     //--- (YBluetoothLink implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

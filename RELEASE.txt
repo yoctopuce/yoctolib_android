@@ -1,1 +1,2 @@
-- Fix automatic time update for USB devices
+- Fix handling of calibration parameters if computer locale use ',' as decimal delimiter.
+- Fix YFunction.FirstFunction() method that was not returning all functions.

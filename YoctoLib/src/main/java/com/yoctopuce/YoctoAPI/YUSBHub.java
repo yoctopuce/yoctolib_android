@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 25292 2016-09-02 13:01:06Z seb $
+ * $Id: YUSBHub.java 25357 2016-09-16 07:22:41Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -48,7 +48,6 @@ import android.hardware.usb.UsbManager;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Queue;
 
@@ -58,12 +57,12 @@ class YUSBHub extends YGenericHub
     private static final String ACTION_USB_PERMISSION = "com.yoctopuce.YoctoAPI.USB_PERMISSION";
     private static final long YPROG_BOOTLOADER_TIMEOUT = 3600000;// 1 hour
     private static Context sAppContext = null;
-    private final HashMap<String, YUSBRawDevice> _usbDevices = new HashMap<String, YUSBRawDevice>(1);
-    private final HashMap<String, YUSBDevice> _devsFromAndroidRef = new HashMap<String, YUSBDevice>(2);
-    private final HashMap<String, YUSBBootloader> _bootloadersFromAndroidRef = new HashMap<String, YUSBBootloader>(2);
+    private final HashMap<String, YUSBRawDevice> _usbDevices = new HashMap<>(1);
+    private final HashMap<String, YUSBDevice> _devsFromAndroidRef = new HashMap<>(2);
+    private final HashMap<String, YUSBBootloader> _bootloadersFromAndroidRef = new HashMap<>(2);
     private final UsbManager _manager;
     private final int _pktAckDelay;
-    public final boolean _requestPermission;
+    private final boolean _requestPermission;
 
 
     private final BroadcastReceiver _usbBroadcastReceiver = new BroadcastReceiver()
@@ -101,9 +100,6 @@ class YUSBHub extends YGenericHub
                         doPermissionRequest(next.getUsbDevice());
                     }
                 }
-            } else if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-                //fixme:Log.e("HUB_USB", "device plugged");
-                return;
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
                 _yctx._Log("HUB_USB: uplug of device " + deviceName + "\n");
                 if (yusbRawDevice != null) {
@@ -174,7 +170,7 @@ class YUSBHub extends YGenericHub
     }
 
 
-    private final Queue<YUSBRawDevice> _permissionPending = new LinkedList<YUSBRawDevice>();
+    private final Queue<YUSBRawDevice> _permissionPending = new LinkedList<>();
 
     public void requestUSBPermission(YUSBRawDevice device)
     {
@@ -209,7 +205,7 @@ class YUSBHub extends YGenericHub
     }
 
 
-    void refreshUsableDeviceList()
+    private void refreshUsableDeviceList()
     {
         HashMap<String, UsbDevice> connectedDevices;
         try {
@@ -222,7 +218,7 @@ class YUSBHub extends YGenericHub
         }
         //todo: trap unplug event instead of active pooling,
         // mark all device as to remove
-        ArrayList<String> toRemove = new ArrayList<String>(_usbDevices.keySet());
+        ArrayList<String> toRemove = new ArrayList<>(_usbDevices.keySet());
         for (Map.Entry<String, UsbDevice> entry : connectedDevices.entrySet()) {
             String key = entry.getKey();
             UsbDevice usbdevice = entry.getValue();
@@ -279,8 +275,8 @@ class YUSBHub extends YGenericHub
         }
         refreshUsableDeviceList();
         //todo: we could be more efficient
-        HashMap<String, ArrayList<YPEntry>> yellowPages = new HashMap<String, ArrayList<YPEntry>>();
-        ArrayList<WPEntry> whitePages = new ArrayList<WPEntry>();
+        HashMap<String, ArrayList<YPEntry>> yellowPages = new HashMap<>();
+        ArrayList<WPEntry> whitePages = new ArrayList<>();
         for (YUSBDevice d : _devsFromAndroidRef.values()) {
             if (d.isAllowed() && d.waitEndOfInit()) {
                 whitePages.add(d.getWhitesPagesEntry());
@@ -296,7 +292,7 @@ class YUSBHub extends YGenericHub
     @Override
     public ArrayList<String> getBootloaders()
     {
-        ArrayList<String> res = new ArrayList<String>(_bootloadersFromAndroidRef.size());
+        ArrayList<String> res = new ArrayList<>(_bootloadersFromAndroidRef.size());
         refreshUsableDeviceList();
         for (YUSBBootloader bootloader : _bootloadersFromAndroidRef.values()) {
             if (bootloader.isReady())
@@ -352,7 +348,7 @@ class YUSBHub extends YGenericHub
     }
 
 
-    protected YUSBDevice devFromSerial(String serial) throws YAPI_Exception
+    private YUSBDevice devFromSerial(String serial) throws YAPI_Exception
     {
         //todo: test if we spent too much time here (alternatively use two hashmap)
         for (Map.Entry<String, YUSBDevice> entry : _devsFromAndroidRef.entrySet()) {

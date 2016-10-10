@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YLed.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YLed.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindLed(), the high-level API for Led functions
  *
@@ -51,7 +51,7 @@ import org.json.JSONObject;
  * allows you not only to drive the intensity of the LED, but also to
  * have it blink at various preset frequencies.
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YLed extends YFunction
 {
 //--- (end of YLed class start)
@@ -131,6 +131,7 @@ public class YLed extends YFunction
     }
 
     //--- (YLed implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

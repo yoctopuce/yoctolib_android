@@ -3,13 +3,13 @@ package com.yoctopuce.YoctoAPI;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-public class YUSBProgPkt {
+class YUSBProgPkt {
     private static final int USB_PKT_SIZE = 64;
     //
     // PROG packets are only used in bootloader (USB DeviceID=0001/0002)
     //
-    static final int PROG_INVALID = -1; // invalid packet
-    static final int PROG_NOP = 0;      // nothing to do
+    private static final int PROG_INVALID = -1; // invalid packet
+    private static final int PROG_NOP = 0;      // nothing to do
     static final int PROG_REBOOT = 1;   // reset the device
     static final int PROG_ERASE = 2;    // erase completely the device
     static final int PROG_PROG = 3;     // program the device

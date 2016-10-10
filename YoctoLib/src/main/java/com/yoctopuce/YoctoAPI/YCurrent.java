@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCurrent.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YCurrent.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindCurrent(), the high-level API for Current functions
  *
@@ -51,7 +51,7 @@ import org.json.JSONObject;
  * sensors. It inherits from YSensor class the core functions to read measurements,
  * register callback functions, access to the autonomous datalogger.
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YCurrent extends YSensor
 {
 //--- (end of YCurrent class start)
@@ -109,6 +109,7 @@ public class YCurrent extends YSensor
     }
 
     //--- (YCurrent implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

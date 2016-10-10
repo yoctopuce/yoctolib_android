@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGps.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YGps.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindGps(), the high-level API for Gps functions
  *
@@ -53,7 +53,7 @@ import org.json.JSONObject;
  * whish to define callbacks on position changes, you
  * should use the YLatitude et YLongitude classes.
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YGps extends YFunction
 {
 //--- (end of YGps class start)
@@ -180,6 +180,7 @@ public class YGps extends YFunction
     }
 
     //--- (YGps implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

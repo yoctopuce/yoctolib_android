@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBPkt.java 25291 2016-09-02 09:38:48Z seb $
+ * $Id: YUSBPkt.java 25357 2016-09-16 07:22:41Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
@@ -48,24 +48,24 @@ abstract class YUSBPkt
 {
     // generic pkt definitions
     protected static final int YPKT_USB_LEGACY_VERSION_BCD = 0x0207;
-    protected static final int YPKT_USB_VERSION_BCD = 0x0208;
+    static final int YPKT_USB_VERSION_BCD = 0x0208;
     public static final int USB_PKT_SIZE = 64;
 
 
-    protected static final int USB_PKT_STREAM_HEAD_SIZE = 2;
+    static final int USB_PKT_STREAM_HEAD_SIZE = 2;
     // pkt type definitions
-    protected static final int YPKT_STREAM = 0;
-    protected static final int YPKT_CONF = 1;
+    static final int YPKT_STREAM = 0;
+    static final int YPKT_CONF = 1;
     // pkt config type
-    protected static final int USB_CONF_RESET = 0;
-    protected static final int USB_CONF_START = 1;
+    static final int USB_CONF_RESET = 0;
+    static final int USB_CONF_START = 1;
 
 
-    protected int _streamCount = 0;
-    protected YPktStreamHead[] _streams = new YPktStreamHead[8];
-    protected byte[] _raw = new byte[USB_PKT_SIZE];
+    int _streamCount = 0;
+    YPktStreamHead[] _streams = new YPktStreamHead[8];
+    byte[] _raw = new byte[USB_PKT_SIZE];
 
-    public YUSBPkt()
+    YUSBPkt()
     {
     }
 

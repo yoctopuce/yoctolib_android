@@ -145,15 +145,15 @@ class YPktStreamHead
         private static final int NOTIFY_V2_IS_SMALL_FLAG = 0x80;
 
 
-        protected static final int NOTIFY_PKT_NAME = 0;
-        protected static final int NOTIFY_PKT_PRODNAME = 1;
-        protected static final int NOTIFY_PKT_CHILD = 2;
-        protected static final int NOTIFY_PKT_FIRMWARE = 3;
-        protected static final int NOTIFY_PKT_FUNCNAME = 4;
-        protected static final int NOTIFY_PKT_FUNCVAL = 5;
-        protected static final int NOTIFY_PKT_STREAMREADY = 6;
-        protected static final int NOTIFY_PKT_LOG = 7;
-        protected static final int NOTIFY_PKT_FUNCNAMEYDX = 8;
+        static final int NOTIFY_PKT_NAME = 0;
+        static final int NOTIFY_PKT_PRODNAME = 1;
+        static final int NOTIFY_PKT_CHILD = 2;
+        static final int NOTIFY_PKT_FIRMWARE = 3;
+        static final int NOTIFY_PKT_FUNCNAME = 4;
+        static final int NOTIFY_PKT_FUNCVAL = 5;
+        static final int NOTIFY_PKT_STREAMREADY = 6;
+        static final int NOTIFY_PKT_LOG = 7;
+        static final int NOTIFY_PKT_FUNCNAMEYDX = 8;
 
 
         public enum NotType

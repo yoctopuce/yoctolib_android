@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDualPower.java 24888 2016-06-23 14:55:23Z seb $
+ * $Id: YDualPower.java 25360 2016-09-16 07:38:53Z seb $
  *
  * Implements FindDualPower(), the high-level API for DualPower functions
  *
@@ -53,7 +53,7 @@ import org.json.JSONObject;
  * when a voltage drop is observed on the external power source
  * (external battery running out of power).
  */
- @SuppressWarnings("UnusedDeclaration")
+@SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YDualPower extends YFunction
 {
 //--- (end of YDualPower class start)
@@ -132,6 +132,7 @@ public class YDualPower extends YFunction
     }
 
     //--- (YDualPower implementation)
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {

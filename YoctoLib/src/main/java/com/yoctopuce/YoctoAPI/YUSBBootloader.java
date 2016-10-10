@@ -2,6 +2,7 @@ package com.yoctopuce.YoctoAPI;
 
 
 import java.nio.ByteBuffer;
+import java.util.Locale;
 
 public class YUSBBootloader implements YUSBRawDevice.IOHandler
 {
@@ -272,7 +273,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
     }
 
 
-    String getCPUName(int devid_family, int devid_model)
+    private String getCPUName(int devid_family, int devid_model)
     {
         String res;
         switch (devid_family) {
@@ -425,7 +426,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
             int block_addr = _bz.addr_page;
             int inst_in_block = 0;
             while (nbInstrInZone > 0) {
-                uLogProgress(10 + 80 * file_ofs / _firmware.getData().length, String.format("Write flash memory zone %d (0x%x)", cur_zone,_bz.addr_page));
+                uLogProgress(10 + 80 * file_ofs / _firmware.getData().length, String.format(Locale.US, "Write flash memory zone %d (0x%x)", cur_zone,_bz.addr_page));
                 while (inst_in_block < _pr_blk_size) {
                     int nb_instructions = (nbInstrInZone < YUSBProgPkt.MAX_INSTR_IN_PACKET ? nbInstrInZone : YUSBProgPkt.MAX_INSTR_IN_PACKET);
                     //uLogProgress(4 + 92 * file_ofs / _firmware.getData().length,
@@ -486,16 +487,16 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
                         datasize = _bz.len - zone_ofs;
                     }
                     if ((datasize & 1) != 0) {
-                        throw new YAPI_Exception(YAPI.IO_ERROR, String.format("Prog block not on a word boundary (%d+%d)", _addr_page, page_len));
+                        throw new YAPI_Exception(YAPI.IO_ERROR, String.format(Locale.US, "Prog block not on a word boundary (%d+%d)", _addr_page, page_len));
                     }
 
                     int page = addr / _ext_page_size;
                     int pos = (addr % _ext_page_size) / 4;
                     String msg;
                     if (curzone < _ROM_nb_zone) {
-                        msg = String.format("Write memory zone %d (0x%x)",curzone, page);
+                        msg = String.format(Locale.US, "Write memory zone %d (0x%x)",curzone, page);
                     } else {
-                        msg = String.format("Write memory zone %d (0x%x ext)",curzone, page);
+                        msg = String.format(Locale.US, "Write memory zone %d (0x%x ext)",curzone, page);
                     }
                     //= String.format("Flash at 0x%x:0x%x (%x bytes) found at 0x%x (%x more in zone)", page, pos*4,
                     //        datasize, _file_ofs + _flash_page_ofs, _bz.len - zone_ofs);
