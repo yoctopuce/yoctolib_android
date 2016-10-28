@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YGenericHub.java 25357 2016-09-16 07:22:41Z seb $
+ * $Id: YGenericHub.java 25588 2016-10-18 14:39:24Z seb $
  *
  * Internal YGenericHub object
  *
@@ -104,7 +104,7 @@ abstract class YGenericHub
     private static final int PUBVAL_YOCTO_FLOAT_E3 = 9;   // 32-bit Yocto fixed-point format (e-3)
     private static final int PUBVAL_YOCTO_FLOAT_E6 = 10;   // 32-bit Yocto fixed-point format (e-6)
 
-    static final long YPROG_BOOTLOADER_TIMEOUT = 10000;
+    static final long YPROG_BOOTLOADER_TIMEOUT = 20000;
     final YAPIContext _yctx;
     final HTTPParams _http_params;
     int _hubidx;
