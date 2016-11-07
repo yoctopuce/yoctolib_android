@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YAPI.java 25357 2016-09-16 07:22:41Z seb $
+ * $Id: YAPI.java 25817 2016-11-07 16:42:46Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -62,7 +62,7 @@ public class YAPI
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "1.10";
-    public static final String YOCTO_API_BUILD_STR = "25748";
+    public static final String YOCTO_API_BUILD_STR = "25817";
     public static final int YOCTO_API_VERSION_BCD = 0x0110;
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
@@ -110,8 +110,6 @@ public class YAPI
     public static final int DETECT_NET = 2;
     public static final int RESEND_MISSING_PKT = 4;
     public static final int DETECT_ALL = DETECT_USB | DETECT_NET;
-    public static int DEFAULT_PKT_RESEND_DELAY = 0;
-    static int pktAckDelay = DEFAULT_PKT_RESEND_DELAY;
 
 
     /**
@@ -201,6 +199,27 @@ public class YAPI
 
     //PUBLIC STATIC METHOD:
 
+
+    /**
+     * Enable the acknowledge of the USB packets by the library.
+     * This feature allow the API to be usable on phones that lose USB packets.
+     * By default this feature is disabled (delay set to 0ms). the ack of incoming USB packets
+     * must be enabled only on phone of tablet that loose USB packet, because it doubles the
+     * number of transmitted packets and slow down the API. A delay of 50 milliseconds is generally
+     * enough, if it does not work contact support.
+     * Note: this feature is only available on Android.
+     *
+     * @param pktAckDelay : then number of milliseconds before the module resend the last USB packet.
+     *
+     * @return nothing.
+     */
+    public static void SetUSBPacketAckMS(int pktAckDelay)
+    {
+        YAPIContext yctx = GetYCtx(true);
+        yctx.SetUSBPacketAckMS(pktAckDelay);
+    }
+
+
     /**
      * Returns the version identifier for the Yoctopuce library in use.
      * The version is a string in the form "Major.Minor.Build",
@@ -219,7 +238,7 @@ public class YAPI
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".25748" + YUSBHub.getAPIVersion();
+        return YOCTO_API_VERSION_STR + ".25817" + YUSBHub.getAPIVersion();
     }
 
     /**

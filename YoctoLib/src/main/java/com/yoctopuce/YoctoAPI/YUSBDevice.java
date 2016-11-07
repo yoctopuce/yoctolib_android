@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 25357 2016-09-16 07:22:41Z seb $
+ * $Id: YUSBDevice.java 25817 2016-11-07 16:42:46Z seb $
  *
  * YUSBDevice Class:
  *
@@ -271,7 +271,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
                 }
             }
 
-            YUSBPkt.ConfPktStart start = new YUSBPkt.ConfPktStart(1, YAPI.pktAckDelay);
+            YUSBPkt.ConfPktStart start = new YUSBPkt.ConfPktStart(1, _pktAckDelay);
             YUSBPktOut pkt = new YUSBPktOut();
             pkt.open();
             pkt.push(start);

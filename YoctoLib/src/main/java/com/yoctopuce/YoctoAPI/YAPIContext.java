@@ -14,7 +14,6 @@ import java.util.Queue;
 public class YAPIContext
 {
 
-
     static class DataEvent
     {
 
@@ -350,6 +349,9 @@ public class YAPIContext
     final YHash _yHash;
     private final ArrayList<YFunction> _ValueCallbackList = new ArrayList<>();
     private final ArrayList<YFunction> _TimedReportCallbackList = new ArrayList<>();
+    private int _pktAckDelay = 0;
+
+
 
     private final YSSDP.YSSDPReportInterface _ssdpCallback = new YSSDP.YSSDPReportInterface()
     {
@@ -584,10 +586,10 @@ public class YAPIContext
         // Add hub to known list
         if (url.equals("usb")) {
             YUSBHub.CheckUSBAcces();
-            newhub = new YUSBHub(this, _hubs.size(), true, YAPI.DEFAULT_PKT_RESEND_DELAY);
+            newhub = new YUSBHub(this, _hubs.size(), true, _pktAckDelay);
         } else if (url.equals("usb_silent")) {
             YUSBHub.CheckUSBAcces();
-            newhub = new YUSBHub(this, _hubs.size(), false, YAPI.DEFAULT_PKT_RESEND_DELAY);
+            newhub = new YUSBHub(this, _hubs.size(), false, _pktAckDelay);
         } else if (url.equals("net")) {
             if ((_apiMode & YAPI.DETECT_NET) == 0) {
                 //noinspection ConstantConditions
@@ -676,6 +678,29 @@ public class YAPIContext
 
     //PUBLIC METHOD:
 
+
+    /**
+     * Returns the version identifier for the Yoctopuce library in use.
+     * The version is a string in the form "Major.Minor.Build",
+     * for instance "1.01.5535". For languages using an external
+     * DLL (for instance C#, VisualBasic or Delphi), the character string
+     * includes as well the DLL version, for instance
+     * "1.01.5535 (1.01.5439)".
+     *
+     * If you want to verify in your code that the library version is
+     * compatible with the version that you have used during development,
+     * verify that the major number is strictly equal and that the minor
+     * number is greater or equal. The build number is not relevant
+     * with respect to the library compatibility.
+     *
+     * @return a character string describing the library version.
+     */
+    public void SetUSBPacketAckMS(int pktAckDelay)
+    {
+        this._pktAckDelay = pktAckDelay;
+    }
+
+
     /**
      * Returns the version identifier for the Yoctopuce library in use.
      * The version is a string in the form "Major.Minor.Build",
@@ -721,7 +746,7 @@ public class YAPIContext
             RegisterHub("net");
         }
         if ((mode & YAPI.RESEND_MISSING_PKT) != 0) {
-            YAPI.pktAckDelay = YAPI.DEFAULT_PKT_RESEND_DELAY;
+            _pktAckDelay = 50;
         }
         if ((mode & YAPI.DETECT_USB) != 0) {
             RegisterHub("usb");
@@ -938,7 +963,7 @@ public class YAPIContext
         // Add hub to known list
         if (url.equals("usb")) {
             YUSBHub.CheckUSBAcces();
-            newhub = new YUSBHub(this, 0, true, YAPI.DEFAULT_PKT_RESEND_DELAY);
+            newhub = new YUSBHub(this, 0, true, _pktAckDelay);
         } else if (url.equals("net")) {
             return YAPI.SUCCESS;
         } else if (parsedurl.getHost().equals("callback")) {

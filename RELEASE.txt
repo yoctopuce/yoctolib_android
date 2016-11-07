@@ -1,3 +1,1 @@
-- Fix possible timeout during firmware update of GSM hub
-- Fix method sendPUK of class YCellular
-- Fix Yocto-Graph example
+- Add YAPI.SetUSBPacketAckMS method that enable error recovery on lossy USB
