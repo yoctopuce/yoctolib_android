@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 25817 2016-11-07 16:42:46Z seb $
+ * $Id: YUSBDevice.java 25866 2016-11-15 09:53:22Z seb $
  *
  * YUSBDevice Class:
  *
@@ -235,7 +235,6 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         YUSBPkt.ConfPktReset reset = new YUSBPkt.ConfPktReset(YUSBPkt.YPKT_USB_VERSION_BCD, 1, 0, 0);
         pkt.push(reset);
         byte[] bytes = pkt.close();
-
         try {
             setNewState(PKT_State.ResetSend, TCP_State.Closed);
             _rawDev.sendPkt(bytes);

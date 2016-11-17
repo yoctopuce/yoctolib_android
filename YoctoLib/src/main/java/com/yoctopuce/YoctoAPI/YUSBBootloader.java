@@ -104,14 +104,12 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
 
     private void setErrorState(String error)
     {
-        uLogProgress(-1,error);
+        uLogProgress(-1, error);
         synchronized (_stateLock) {
             _flash_state = FLASH_STATE.FAILED;
             _stateLock.notify();
         }
     }
-
-
 
 
     private void waitForState(FLASH_STATE wanted, FLASH_STATE next, long mswait, String message) throws YAPI_Exception
@@ -348,7 +346,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
             int maxpages;
             if (_ext_jedec_id == JEDEC_SPANSION_4MB || _ext_jedec_id == JEDEC_SPANSION_8MB) {
                 maxpages = 16;
-            }else {
+            } else {
                 maxpages = 128;
             }
             while (flashPage < _ext_total_pages) {
@@ -393,8 +391,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
         byte[] rawPkt = pkt.getRawPkt();
         try {
             _rawdev.sendPkt(rawPkt);
-        }catch (YAPI_Exception ignore)
-        {
+        } catch (YAPI_Exception ignore) {
             //device reboot so fast that usually tablet report an error
         }
     }
@@ -426,7 +423,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
             int block_addr = _bz.addr_page;
             int inst_in_block = 0;
             while (nbInstrInZone > 0) {
-                uLogProgress(10 + 80 * file_ofs / _firmware.getData().length, String.format(Locale.US, "Write flash memory zone %d (0x%x)", cur_zone,_bz.addr_page));
+                uLogProgress(10 + 80 * file_ofs / _firmware.getData().length, String.format(Locale.US, "Write flash memory zone %d (0x%x)", cur_zone, _bz.addr_page));
                 while (inst_in_block < _pr_blk_size) {
                     int nb_instructions = (nbInstrInZone < YUSBProgPkt.MAX_INSTR_IN_PACKET ? nbInstrInZone : YUSBProgPkt.MAX_INSTR_IN_PACKET);
                     //uLogProgress(4 + 92 * file_ofs / _firmware.getData().length,
@@ -494,9 +491,9 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
                     int pos = (addr % _ext_page_size) / 4;
                     String msg;
                     if (curzone < _ROM_nb_zone) {
-                        msg = String.format(Locale.US, "Write memory zone %d (0x%x)",curzone, page);
+                        msg = String.format(Locale.US, "Write memory zone %d (0x%x)", curzone, page);
                     } else {
-                        msg = String.format(Locale.US, "Write memory zone %d (0x%x ext)",curzone, page);
+                        msg = String.format(Locale.US, "Write memory zone %d (0x%x ext)", curzone, page);
                     }
                     //= String.format("Flash at 0x%x:0x%x (%x bytes) found at 0x%x (%x more in zone)", page, pos*4,
                     //        datasize, _file_ofs + _flash_page_ofs, _bz.len - zone_ofs);

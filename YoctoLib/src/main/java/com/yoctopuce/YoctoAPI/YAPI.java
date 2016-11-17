@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YAPI.java 25817 2016-11-07 16:42:46Z seb $
+ * $Id: YAPI.java 25853 2016-11-11 16:56:13Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -62,7 +62,7 @@ public class YAPI
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "1.10";
-    public static final String YOCTO_API_BUILD_STR = "25817";
+    public static final String YOCTO_API_BUILD_STR = "25913";
     public static final int YOCTO_API_VERSION_BCD = 0x0110;
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
@@ -201,22 +201,20 @@ public class YAPI
 
 
     /**
-     * Enable the acknowledge of the USB packets by the library.
-     * This feature allow the API to be usable on phones that lose USB packets.
-     * By default this feature is disabled (delay set to 0ms). the ack of incoming USB packets
-     * must be enabled only on phone of tablet that loose USB packet, because it doubles the
-     * number of transmitted packets and slow down the API. A delay of 50 milliseconds is generally
-     * enough, if it does not work contact support.
-     * Note: this feature is only available on Android.
+     * Enables the acknowledge of every USB packet received by the Yoctopuce library.
+     * This function allows the library to run on Android phones that tend to loose USB packets.
+     * By default, this feature is disabled because it doubles the number of packets sent and slows
+     * down the API considerably. Therefore, the acknowledge of incoming USB packets should only be
+     * enabled on phones or tablets that loose USB packets. A delay of 50 milliseconds is generally
+     * enough. In case of doubt, contact Yoctopuce support. To disable USB packets acknowledge,
+     * call this function with the value 0. Note: this feature is only available on Android.
      *
      * @param pktAckDelay : then number of milliseconds before the module resend the last USB packet.
-     *
-     * @return nothing.
      */
-    public static void SetUSBPacketAckMS(int pktAckDelay)
+    public static void SetUSBPacketAckMs(int pktAckDelay)
     {
         YAPIContext yctx = GetYCtx(true);
-        yctx.SetUSBPacketAckMS(pktAckDelay);
+        yctx.SetUSBPacketAckMs(pktAckDelay);
     }
 
 
@@ -238,7 +236,7 @@ public class YAPI
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".25817" + YUSBHub.getAPIVersion();
+        return YOCTO_API_VERSION_STR + ".25913" + YUSBHub.getAPIVersion();
     }
 
     /**

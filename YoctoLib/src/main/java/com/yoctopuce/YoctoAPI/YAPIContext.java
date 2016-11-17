@@ -352,7 +352,6 @@ public class YAPIContext
     private int _pktAckDelay = 0;
 
 
-
     private final YSSDP.YSSDPReportInterface _ssdpCallback = new YSSDP.YSSDPReportInterface()
     {
         @Override
@@ -680,22 +679,17 @@ public class YAPIContext
 
 
     /**
-     * Returns the version identifier for the Yoctopuce library in use.
-     * The version is a string in the form "Major.Minor.Build",
-     * for instance "1.01.5535". For languages using an external
-     * DLL (for instance C#, VisualBasic or Delphi), the character string
-     * includes as well the DLL version, for instance
-     * "1.01.5535 (1.01.5439)".
+     * Enables the acknowledge of every USB packet received by the Yoctopuce library.
+     * This function allows the library to run on Android phones that tend to loose USB packets.
+     * By default, this feature is disabled because it doubles the number of packets sent and slows
+     * down the API considerably. Therefore, the acknowledge of incoming USB packets should only be
+     * enabled on phones or tablets that loose USB packets. A delay of 50 milliseconds is generally
+     * enough. In case of doubt, contact Yoctopuce support. To disable USB packets acknowledge,
+     * call this function with the value 0. Note: this feature is only available on Android.
      *
-     * If you want to verify in your code that the library version is
-     * compatible with the version that you have used during development,
-     * verify that the major number is strictly equal and that the minor
-     * number is greater or equal. The build number is not relevant
-     * with respect to the library compatibility.
-     *
-     * @return a character string describing the library version.
+     * @param pktAckDelay : then number of milliseconds before the module resend the last USB packet.
      */
-    public void SetUSBPacketAckMS(int pktAckDelay)
+    public void SetUSBPacketAckMs(int pktAckDelay)
     {
         this._pktAckDelay = pktAckDelay;
     }
@@ -734,10 +728,12 @@ public class YAPIContext
      * VirtualHub on which your devices are connected before trying to access them.
      *
      * @param mode : an integer corresponding to the type of automatic
-     *             device detection to use. Possible values are
-     *             YAPI.DETECT_NONE, YAPI.DETECT_USB, YAPI.DETECT_NET,
-     *             and YAPI.DETECT_ALL.
+     *         device detection to use. Possible values are
+     *         YAPI.DETECT_NONE, YAPI.DETECT_USB, YAPI.DETECT_NET,
+     *         and YAPI.DETECT_ALL.
+     *
      * @return YAPI.SUCCESS when the call succeeds.
+     *
      * @throws YAPI_Exception on error
      */
     public int InitAPI(int mode) throws YAPI_Exception
@@ -812,8 +808,10 @@ public class YAPIContext
      * You can call <i>RegisterHub</i> several times to connect to several machines.
      *
      * @param url : a string containing either "usb","callback" or the
-     *            root URL of the hub to monitor
+     *         root URL of the hub to monitor
+     *
      * @return YAPI.SUCCESS when the call succeeds.
+     *
      * @throws YAPI_Exception on error
      */
     public int RegisterHub(String url) throws YAPI_Exception
@@ -886,6 +884,7 @@ public class YAPIContext
      * It is not necessary to call this function to reach modules through the network.
      *
      * @param osContext : an object of class android.content.Context (or any subclass).
+     *
      * @throws YAPI_Exception on error
      */
     public void EnableUSBHost(Object osContext) throws YAPI_Exception
@@ -901,8 +900,10 @@ public class YAPIContext
      * connectivity, and to try to contact it only when a device is actively needed.
      *
      * @param url : a string containing either "usb","callback" or the
-     *            root URL of the hub to monitor
+     *         root URL of the hub to monitor
+     *
      * @return YAPI.SUCCESS when the call succeeds.
+     *
      * @throws YAPI_Exception on error
      */
     public int PreregisterHub(String url) throws YAPI_Exception
@@ -916,7 +917,7 @@ public class YAPIContext
      * registered machine with RegisterHub.
      *
      * @param url : a string containing either "usb" or the
-     *            root URL of the hub to monitor
+     *         root URL of the hub to monitor
      */
     public void UnregisterHub(String url)
     {
@@ -949,9 +950,10 @@ public class YAPIContext
      * method. This method is useful to verify the authentication parameters for a hub. It
      * is possible to force this method to return after mstimeout milliseconds.
      *
-     * @param url       : a string containing either "usb","callback" or the
-     *                  root URL of the hub to monitor
+     * @param url : a string containing either "usb","callback" or the
+     *         root URL of the hub to monitor
      * @param mstimeout : the number of millisecond available to test the connection.
+     *
      * @return YAPI.SUCCESS when the call succeeds.
      *
      * On failure returns a negative error code.
@@ -986,6 +988,7 @@ public class YAPIContext
      * and to make the application aware of hot-plug events.
      *
      * @return YAPI.SUCCESS when the call succeeds.
+     *
      * @throws YAPI_Exception on error
      */
     public int UpdateDeviceList() throws YAPI_Exception
@@ -1037,8 +1040,10 @@ public class YAPIContext
      * while contacting a module.
      *
      * @param ms_duration : an integer corresponding to the duration of the pause,
-     *                    in milliseconds.
+     *         in milliseconds.
+     *
      * @return YAPI.SUCCESS when the call succeeds.
+     *
      * @throws YAPI_Exception on error
      */
     public int Sleep(long ms_duration) throws YAPI_Exception
@@ -1093,6 +1098,7 @@ public class YAPIContext
      * the invalid characters are ignored.
      *
      * @param name : a string containing the name to check.
+     *
      * @return true if the name is valid, false otherwise.
      */
     public boolean CheckLogicalName(String name)
@@ -1106,7 +1112,7 @@ public class YAPIContext
      * is running. You will have to call this function on a regular basis.
      *
      * @param arrivalCallback : a procedure taking a YModule parameter, or null
-     *                        to unregister a previously registered  callback.
+     *         to unregister a previously registered  callback.
      */
     public void RegisterDeviceArrivalCallback(YAPI.DeviceArrivalCallback arrivalCallback)
     {
@@ -1124,7 +1130,7 @@ public class YAPIContext
      * is running. You will have to call this function on a regular basis.
      *
      * @param removalCallback : a procedure taking a YModule parameter, or null
-     *                        to unregister a previously registered  callback.
+     *         to unregister a previously registered  callback.
      */
     public void RegisterDeviceRemovalCallback(YAPI.DeviceRemovalCallback removalCallback)
     {
@@ -1139,7 +1145,7 @@ public class YAPIContext
      * while yUpdateDeviceList is running. You will have to call this function on a regular basis.
      *
      * @param hubDiscoveryCallback : a procedure taking two string parameter, or null
-     *                             to unregister a previously registered  callback.
+     *         to unregister a previously registered  callback.
      */
     public void RegisterHubDiscoveryCallback(YAPI.HubDiscoveryCallback hubDiscoveryCallback)
     {
@@ -1157,7 +1163,7 @@ public class YAPIContext
      * the API have something to say. Quite useful to debug the API.
      *
      * @param logfun : a procedure taking a string parameter, or null
-     *               to unregister a previously registered  callback.
+     *         to unregister a previously registered  callback.
      */
     public void RegisterLogFunction(YAPI.LogCallback logfun)
     {
