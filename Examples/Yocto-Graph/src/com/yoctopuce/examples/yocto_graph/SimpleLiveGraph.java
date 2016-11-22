@@ -15,23 +15,23 @@ import org.achartengine.renderer.XYSeriesRenderer;
 public class SimpleLiveGraph
 {
 
-	private XYSeries _serie;
+    private XYSeries _serie;
     private XYSeriesRenderer _serieRenderer;
     private XYMultipleSeriesDataset _multipleDataset;
-	private XYMultipleSeriesRenderer _multipleRenderer;
+    private XYMultipleSeriesRenderer _multipleRenderer;
 
-    private long _lastUpdateFrom=-1;
-    private long _lastUpdateTo=-1;
+    private long _lastUpdateFrom = -1;
+    private long _lastUpdateTo = -1;
 
     // The gesture threshold expressed in dp
     private static final float X_LABEL_SIZE_IN_DP = 16.0f;
 
     public SimpleLiveGraph(String name)
-	{
-		_serie = new TimeSeries(name);
+    {
+        _serie = new TimeSeries(name);
         _serieRenderer = new XYSeriesRenderer();
         _serieRenderer.setLineWidth(3);
-		// Add single dataset to multiple dataset
+        // Add single dataset to multiple dataset
         _multipleDataset = new XYMultipleSeriesDataset();
         _multipleDataset.addSeries(_serie);
         _multipleRenderer = new XYMultipleSeriesRenderer();
@@ -44,7 +44,7 @@ public class SimpleLiveGraph
         _multipleRenderer.setShowGridX(true);
         _multipleRenderer.setAxesColor(Color.TRANSPARENT);
         _multipleRenderer.setGridColor(Color.GRAY);
-        _multipleRenderer.setYAxisAlign(Paint.Align.RIGHT,0);
+        _multipleRenderer.setYAxisAlign(Paint.Align.RIGHT, 0);
 
     }
 
@@ -57,6 +57,27 @@ public class SimpleLiveGraph
         double fromS = (_lastUpdateTo / 1000);
         double toS = (toMs / 1000);
         sensor.fillGraphSerie(_serie, fromS, toS);
+        _lastUpdateTo = toMs;
+        _lastUpdateFrom = fromMs;
+        _multipleRenderer.setXAxisMin(fromMs);
+        _multipleRenderer.setXAxisMax(toMs);
+    }
+
+    public void updateFromSensor(ThreadSafeSensor sensor, long fromMs)
+    {
+        if (_lastUpdateTo < 0) {
+            _lastUpdateTo = fromMs;
+        }
+
+        double fromS;
+        if (_lastUpdateFrom > fromMs) {
+            _serie.clear();
+            fromS = fromMs / 1000;
+        } else {
+            fromS = (_lastUpdateTo / 1000);
+        }
+        sensor.fillGraphSerie(_serie, fromS);
+        long toMs = System.currentTimeMillis();
         _lastUpdateTo = toMs;
         _lastUpdateFrom = fromMs;
         _multipleRenderer.setXAxisMin(fromMs);

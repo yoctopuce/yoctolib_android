@@ -17,5 +17,6 @@
         Yoctopuce API : %3$s<br><br>
         <a href="http://www.yoctopuce.com">www.yoctopuce.com</a>
     ]]></string>
+    <string name="loading_val">Loading %d%%</string>
 
 </resources>

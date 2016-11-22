@@ -1,38 +1,39 @@
 package com.yoctopuce.examples.yocto_graph;
 
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
-import com.yoctopuce.YoctoAPI.YDataSet;
 import com.yoctopuce.YoctoAPI.YMeasure;
 import com.yoctopuce.YoctoAPI.YSensor;
 
 import org.achartengine.model.XYSeries;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
-public class ThreadSafeSensor {
+public class ThreadSafeSensor
+{
     @SuppressWarnings("UnusedDeclaration")
     private static final String TAG = "SENSOR";
     private final String _fuctionId;
     private final String _serial;
     private String _displayName;
     private String _unit;
-    private ArrayList<YMeasure> _measures=null;
+    private LinkedList<YMeasure> _measures = null;
     private double _lastValue = YSensor.CURRENTVALUE_INVALID;
     private double _resolution;
     private long _iresol;
-    private boolean _loading = true;
+    private int _loadingProgress = 0;
 
 
-    public ThreadSafeSensor(String serial, String functionId)
+    ThreadSafeSensor(String serial, String functionId)
     {
         _serial = serial;
         _fuctionId = functionId;
     }
 
 
-
-
-    public void updateFromYSensor(YSensor sensor) throws YAPI_Exception
+    void updateFromYSensor(YSensor sensor) throws YAPI_Exception
     {
         _displayName = sensor.getFriendlyName();
         _unit = sensor.getUnit();
@@ -41,17 +42,9 @@ public class ThreadSafeSensor {
         _iresol = Math.round(1.0 / _resolution);
     }
 
-    public void loadFromYSensorDatalogger(YSensor sensor) throws YAPI_Exception {
-        //data loading
-        YDataSet data = sensor.get_recordedData(0, 0);
-        int progress = data.loadMore();
-        while (progress < 100){
-            progress = data.loadMore();
-        }
-        //transfer into an array
-        synchronized(this){
-            _measures = data.get_measures();
-        }
+    synchronized void setMeasures(ArrayList<YMeasure> measures)
+    {
+        _measures = new LinkedList<YMeasure>(measures);
     }
 
     public String getFuctionId()
@@ -59,22 +52,22 @@ public class ThreadSafeSensor {
         return _fuctionId;
     }
 
-    public String getSerial()
+    String getSerial()
     {
         return _serial;
     }
 
-    public  String getHwId()
+    String getHwId()
     {
         return _serial + "." + _fuctionId;
     }
 
-    public String getDisplayName()
+    String getDisplayName()
     {
         return _displayName;
     }
 
-    public String getUnit()
+    String getUnit()
     {
         return _unit;
     }
@@ -88,18 +81,48 @@ public class ThreadSafeSensor {
     }
 
 
-    public synchronized int fillGraphSerie(XYSeries serie, double timestart, double timestop)
+    int fillGraphSerie(XYSeries serie, double timestart, double timestop)
     {
-        int count = 0;
-        if (_measures == null) {
-            return count;
+        List<YMeasure> myCopy;
+        synchronized (this) {
+            if (_measures == null) {
+                return 0;
+            }
+            myCopy = new LinkedList<YMeasure>(_measures);
+
         }
-        for (YMeasure m : _measures) {
+        int count = 0;
+        for (YMeasure m : myCopy) {
             double end = m.get_endTimeUTC();
             if (end >= timestart && end < timestop) {
                 //    double x = m.get_endTimeUTC() * 1000;
                 double y = m.get_averageValue();
-                serie.add(end * 1000, y);
+                double x = end * 1000;
+                //serie.add(x, y);
+                count++;
+            }
+        }
+        return count;
+    }
+
+    int fillGraphSerie(XYSeries serie, double timestart)
+    {
+        int count = 0;
+        synchronized (this) {
+            if (_measures == null) {
+                return 0;
+            }
+            Iterator lit = _measures.descendingIterator();
+            while (lit.hasNext()) {
+                YMeasure m = (YMeasure) lit.next();
+                double end = m.get_endTimeUTC();
+                if (end < timestart) {
+                    break;
+                }
+                //    double x = m.get_endTimeUTC() * 1000;
+                double y = m.get_averageValue();
+                double x = end * 1000;
+                serie.add(x, y);
                 count++;
             }
         }
@@ -107,11 +130,10 @@ public class ThreadSafeSensor {
     }
 
 
-
-
-    public synchronized void addMeasure(YMeasure measure) {
+    synchronized void addMeasure(YMeasure measure)
+    {
         if (_measures == null) {
-            _measures = new ArrayList<YMeasure>();
+            _measures = new LinkedList<YMeasure>();
         }
         _measures.add(measure);
         double roundvalue = measure.get_averageValue() * _iresol;
@@ -124,18 +146,24 @@ public class ThreadSafeSensor {
         return _displayName + " =  " + Double.toString(_lastValue);
     }
 
-    public double getLastValue() {
+    double getLastValue()
+    {
         return _lastValue;
     }
 
 
-    public boolean isLoading()
+    boolean isLoading()
     {
-        return _loading;
+        return _loadingProgress != 100;
     }
 
-    public void setLoading(boolean loading)
+    void setLoading(int loading)
     {
-        _loading = loading;
+        _loadingProgress = loading;
+    }
+
+    int getLoading()
+    {
+        return _loadingProgress;
     }
 }

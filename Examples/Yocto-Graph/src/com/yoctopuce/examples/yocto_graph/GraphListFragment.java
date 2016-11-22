@@ -1,6 +1,5 @@
 package com.yoctopuce.examples.yocto_graph;
 
-import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +8,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +21,16 @@ import android.widget.TextView;
 import org.achartengine.GraphicalView;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
-public class GraphListFragment extends ListFragment {
+public class GraphListFragment extends ListFragment
+{
 
 
     @SuppressWarnings("UnusedDeclaration")
     private static final String TAG = "GraphListFragment";
     private GraphAdapter _Adapter;
-    private long _graphRange = 10 * 60000;
+    private long _graphRange = 60000;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -47,7 +49,8 @@ public class GraphListFragment extends ListFragment {
                     android.R.layout.simple_spinner_dropdown_item);
 
             actionBar.setListNavigationCallbacks(graphDurationAdapter,
-                    new ActionBar.OnNavigationListener() {
+                    new ActionBar.OnNavigationListener()
+                    {
                         public boolean onNavigationItemSelected(int itemPosition,
                                                                 long itemId)
                         {
@@ -113,7 +116,8 @@ public class GraphListFragment extends ListFragment {
     }
 
 
-    private final BroadcastReceiver mNeedUpdateScreen = new BroadcastReceiver() {
+    private final BroadcastReceiver mNeedUpdateScreen = new BroadcastReceiver()
+    {
         @Override
         public void onReceive(Context context, Intent intent)
         {
@@ -121,7 +125,8 @@ public class GraphListFragment extends ListFragment {
         }
     };
 
-    private final BroadcastReceiver mNeedUpdateOneGraph = new BroadcastReceiver() {
+    private final BroadcastReceiver mNeedUpdateOneGraph = new BroadcastReceiver()
+    {
         @Override
         public void onReceive(Context context, Intent intent)
         {
@@ -151,7 +156,8 @@ public class GraphListFragment extends ListFragment {
     }
 
 
-    private class GraphAdapter extends BaseAdapter {
+    private class GraphAdapter extends BaseAdapter
+    {
 
         final Handler mHandler = new Handler();
         private ArrayList<ThreadSafeSensor> _sensors;
@@ -204,7 +210,8 @@ public class GraphListFragment extends ListFragment {
 
             if (sensor.isLoading()) {
                 TextView currentValueView = (TextView) convertView.findViewById(R.id.graph_list_item_currentvalue);
-                currentValueView.setText(getActivity().getString(R.string.loading));
+                String string = String.format(Locale.US, getString(R.string.loading_val), sensor.getLoading());
+                currentValueView.setText(string);
             } else {
                 TextView currentValueView = (TextView) convertView.findViewById(R.id.graph_list_item_currentvalue);
                 String value = Double.toString(sensor.getLastValue());
@@ -219,7 +226,7 @@ public class GraphListFragment extends ListFragment {
                 // compute live Graph
                 long to = System.currentTimeMillis();
                 long from = to - _graphRange;
-                liveGraph.updateFromSensor(sensor, from, to);
+                liveGraph.updateFromSensor(sensor, from);
                 int color;
                 if ((position & 1) == 0) {
                     color = getActivity().getResources().
@@ -245,7 +252,8 @@ public class GraphListFragment extends ListFragment {
         {
             // Enqueue work on mHandler to change the data on
             // the main thread.
-            mHandler.post(new Runnable() {
+            mHandler.post(new Runnable()
+            {
                 @Override
                 public void run()
                 {

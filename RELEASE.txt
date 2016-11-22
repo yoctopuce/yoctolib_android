@@ -1,4 +1,1 @@
-- Add README.md for Github
-- Add YAPI.SetUSBPacketAckMs method that enable error recovery on lossy USB Link
-- Fix typo in CO2 calibration function name
-- Fix comment of method set_portPolarity() of YDigitalIO class.
+- Improve responsiveness of Yocto-Graph App
