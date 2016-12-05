@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: pic24config.php 25793 2016-10-31 16:12:56Z seb $
+ * $Id: pic24config.php 25964 2016-11-21 15:30:59Z mvuilleu $
  *
  * Implements FindStepperMotor(), the high-level API for StepperMotor functions
  *
@@ -72,7 +72,7 @@ public class YStepperMotor extends YFunction
     /**
      * invalid stepPos value
      */
-    public static final long STEPPOS_INVALID = YAPI.INVALID_LONG;
+    public static final double STEPPOS_INVALID = YAPI.INVALID_DOUBLE;
     /**
      * invalid speed value
      */
@@ -124,7 +124,7 @@ public class YStepperMotor extends YFunction
     public static final String COMMAND_INVALID = YAPI.INVALID_STRING;
     protected int _motorState = MOTORSTATE_INVALID;
     protected int _diags = DIAGS_INVALID;
-    protected long _stepPos = STEPPOS_INVALID;
+    protected double _stepPos = STEPPOS_INVALID;
     protected double _speed = SPEED_INVALID;
     protected double _pullinSpeed = PULLINSPEED_INVALID;
     protected double _maxAccel = MAXACCEL_INVALID;
@@ -306,16 +306,16 @@ public class YStepperMotor extends YFunction
      * To trigger a motor move, use methods moveTo() or moveRel()
      * instead.
      *
-     * @param newval : an integer corresponding to the current logical motor position, measured in steps
+     * @param newval : a floating point number corresponding to the current logical motor position, measured in steps
      *
      * @return YAPI.SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
-    public int set_stepPos(long  newval)  throws YAPI_Exception
+    public int set_stepPos(double  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = Long.toString(Math.round(Math.round(newval * 100.0)/100.0));
+        rest_val = Double.toString(Math.round(newval * 100.0)/100.0);
         _setAttr("stepPos",rest_val);
         return YAPI.SUCCESS;
     }
@@ -328,13 +328,13 @@ public class YStepperMotor extends YFunction
      * To trigger a motor move, use methods moveTo() or moveRel()
      * instead.
      *
-     * @param newval : an integer corresponding to the current logical motor position, measured in steps
+     * @param newval : a floating point number corresponding to the current logical motor position, measured in steps
      *
      * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
-    public int setStepPos(long newval)  throws YAPI_Exception
+    public int setStepPos(double newval)  throws YAPI_Exception
     {
         return set_stepPos(newval);
     }
@@ -343,11 +343,11 @@ public class YStepperMotor extends YFunction
      * Returns the current logical motor position, measured in steps.
      * The value may include a fractional part when micro-stepping is in use.
      *
-     * @return an integer corresponding to the current logical motor position, measured in steps
+     * @return a floating point number corresponding to the current logical motor position, measured in steps
      *
      * @throws YAPI_Exception on error
      */
-    public long get_stepPos() throws YAPI_Exception
+    public double get_stepPos() throws YAPI_Exception
     {
         if (_cacheExpiration <= YAPIContext.GetTickCount()) {
             if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
@@ -361,11 +361,11 @@ public class YStepperMotor extends YFunction
      * Returns the current logical motor position, measured in steps.
      * The value may include a fractional part when micro-stepping is in use.
      *
-     * @return an integer corresponding to the current logical motor position, measured in steps
+     * @return a floating point number corresponding to the current logical motor position, measured in steps
      *
      * @throws YAPI_Exception on error
      */
-    public long getStepPos() throws YAPI_Exception
+    public double getStepPos() throws YAPI_Exception
     {
         return get_stepPos();
     }
@@ -1129,7 +1129,7 @@ public class YStepperMotor extends YFunction
      * position will depend on the acceleration and max speed parameters configured for
      * the motor.
      *
-     * @param absPos: absolute position, measured in steps from the origin.
+     * @param absPos : absolute position, measured in steps from the origin.
      *
      * @return YAPI_SUCCESS if the call succeeds.
      * @throws YAPI_Exception on error
@@ -1144,9 +1144,10 @@ public class YStepperMotor extends YFunction
      * position will depend on the acceleration and max speed parameters configured for
      * the motor.
      *
-     * @param relPos: relative position, measured in steps from the current position.
+     * @param relPos : relative position, measured in steps from the current position.
      *
      * @return YAPI_SUCCESS if the call succeeds.
+     *
      * @throws YAPI_Exception on error
      */
     public int moveRel(double relPos) throws YAPI_Exception
