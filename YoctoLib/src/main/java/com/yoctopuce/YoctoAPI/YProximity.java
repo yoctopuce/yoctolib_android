@@ -59,6 +59,10 @@ public class YProximity extends YSensor
 //--- (end of YProximity class start)
 //--- (YProximity definitions)
     /**
+     * invalid signalValue value
+     */
+    public static final double SIGNALVALUE_INVALID = YAPI.INVALID_DOUBLE;
+    /**
      * invalid detectionThreshold value
      */
     public static final int DETECTIONTHRESHOLD_INVALID = YAPI.INVALID_UINT;
@@ -84,12 +88,21 @@ public class YProximity extends YSensor
      * invalid pulseTimer value
      */
     public static final long PULSETIMER_INVALID = YAPI.INVALID_LONG;
+    /**
+     * invalid proximityReportMode value
+     */
+    public static final int PROXIMITYREPORTMODE_NUMERIC = 0;
+    public static final int PROXIMITYREPORTMODE_PRESENCE = 1;
+    public static final int PROXIMITYREPORTMODE_PULSECOUNT = 2;
+    public static final int PROXIMITYREPORTMODE_INVALID = -1;
+    protected double _signalValue = SIGNALVALUE_INVALID;
     protected int _detectionThreshold = DETECTIONTHRESHOLD_INVALID;
     protected int _isPresent = ISPRESENT_INVALID;
     protected long _lastTimeApproached = LASTTIMEAPPROACHED_INVALID;
     protected long _lastTimeRemoved = LASTTIMEREMOVED_INVALID;
     protected long _pulseCounter = PULSECOUNTER_INVALID;
     protected long _pulseTimer = PULSETIMER_INVALID;
+    protected int _proximityReportMode = PROXIMITYREPORTMODE_INVALID;
     protected UpdateCallback _valueCallbackProximity = null;
     protected TimedReportCallback _timedReportCallbackProximity = null;
 
@@ -147,6 +160,9 @@ public class YProximity extends YSensor
     @Override
     protected void  _parseAttr(JSONObject json_val) throws JSONException
     {
+        if (json_val.has("signalValue")) {
+            _signalValue = Math.round(json_val.getDouble("signalValue") * 1000.0 / 65536.0) / 1000.0;
+        }
         if (json_val.has("detectionThreshold")) {
             _detectionThreshold = json_val.getInt("detectionThreshold");
         }
@@ -165,7 +181,39 @@ public class YProximity extends YSensor
         if (json_val.has("pulseTimer")) {
             _pulseTimer = json_val.getLong("pulseTimer");
         }
+        if (json_val.has("proximityReportMode")) {
+            _proximityReportMode = json_val.getInt("proximityReportMode");
+        }
         super._parseAttr(json_val);
+    }
+
+    /**
+     * Returns the current value of signal measured by the proximity sensor.
+     *
+     * @return a floating point number corresponding to the current value of signal measured by the proximity sensor
+     *
+     * @throws YAPI_Exception on error
+     */
+    public double get_signalValue() throws YAPI_Exception
+    {
+        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return SIGNALVALUE_INVALID;
+            }
+        }
+        return (double)Math.round(_signalValue * 1000) / 1000;
+    }
+
+    /**
+     * Returns the current value of signal measured by the proximity sensor.
+     *
+     * @return a floating point number corresponding to the current value of signal measured by the proximity sensor
+     *
+     * @throws YAPI_Exception on error
+     */
+    public double getSignalValue() throws YAPI_Exception
+    {
+        return get_signalValue();
     }
 
     /**
@@ -417,6 +465,80 @@ public class YProximity extends YSensor
     public long getPulseTimer() throws YAPI_Exception
     {
         return get_pulseTimer();
+    }
+
+    /**
+     *  Returns the parameter (sensor value, presence or pulse count) returned by the get_currentValue
+     * function and callbacks.
+     *
+     *  @return a value among YProximity.PROXIMITYREPORTMODE_NUMERIC,
+     *  YProximity.PROXIMITYREPORTMODE_PRESENCE and YProximity.PROXIMITYREPORTMODE_PULSECOUNT corresponding
+     * to the parameter (sensor value, presence or pulse count) returned by the get_currentValue function and callbacks
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int get_proximityReportMode() throws YAPI_Exception
+    {
+        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return PROXIMITYREPORTMODE_INVALID;
+            }
+        }
+        return _proximityReportMode;
+    }
+
+    /**
+     *  Returns the parameter (sensor value, presence or pulse count) returned by the get_currentValue
+     * function and callbacks.
+     *
+     *  @return a value among Y_PROXIMITYREPORTMODE_NUMERIC, Y_PROXIMITYREPORTMODE_PRESENCE and
+     *  Y_PROXIMITYREPORTMODE_PULSECOUNT corresponding to the parameter (sensor value, presence or pulse
+     * count) returned by the get_currentValue function and callbacks
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int getProximityReportMode() throws YAPI_Exception
+    {
+        return get_proximityReportMode();
+    }
+
+    /**
+     *  Modifies the  parameter  type (sensor value, presence or pulse count) returned by the
+     * get_currentValue function and callbacks.
+     *  The edge count value is limited to the 6 lowest digits. For values greater than one million, use
+     * get_pulseCounter().
+     *
+     *  @param newval : a value among YProximity.PROXIMITYREPORTMODE_NUMERIC,
+     * YProximity.PROXIMITYREPORTMODE_PRESENCE and YProximity.PROXIMITYREPORTMODE_PULSECOUNT
+     *
+     * @return YAPI.SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int set_proximityReportMode(int  newval)  throws YAPI_Exception
+    {
+        String rest_val;
+        rest_val = Integer.toString(newval);
+        _setAttr("proximityReportMode",rest_val);
+        return YAPI.SUCCESS;
+    }
+
+    /**
+     *  Modifies the  parameter  type (sensor value, presence or pulse count) returned by the
+     * get_currentValue function and callbacks.
+     *  The edge count value is limited to the 6 lowest digits. For values greater than one million, use
+     * get_pulseCounter().
+     *
+     *  @param newval : a value among Y_PROXIMITYREPORTMODE_NUMERIC, Y_PROXIMITYREPORTMODE_PRESENCE and
+     * Y_PROXIMITYREPORTMODE_PULSECOUNT
+     *
+     * @return YAPI_SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int setProximityReportMode(int newval)  throws YAPI_Exception
+    {
+        return set_proximityReportMode(newval);
     }
 
     /**

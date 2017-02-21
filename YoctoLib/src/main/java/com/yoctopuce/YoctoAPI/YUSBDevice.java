@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 25866 2016-11-15 09:53:22Z seb $
+ * $Id: YUSBDevice.java 26610 2017-02-09 14:06:06Z seb $
  *
  * YUSBDevice Class:
  *
@@ -41,6 +41,8 @@
 package com.yoctopuce.YoctoAPI;
 
 
+import android.annotation.SuppressLint;
+
 import java.io.ByteArrayOutputStream;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -48,11 +50,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 
-public class YUSBDevice implements YUSBRawDevice.IOHandler
+class YUSBDevice implements YUSBRawDevice.IOHandler
 {
 
     private static final long META_UTC_DELAY = 60000;
-    private static final String TAG = "YAPI";
     private int _pktAckDelay;
     private int _devVersion;
     private int _retry = 0;
@@ -67,9 +68,10 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     private final YUSBHub _usbHub;
     private WPEntry _wp;
     private final HashMap<String, YPEntry> _usbYP = new HashMap<>();
+    @SuppressLint("UseSparseArrays")
     private HashMap<Integer, String> _usbIdx2Funcid = new HashMap<>();
 
-    public boolean isAllowed()
+    boolean isAllowed()
     {
         return _rawDev != null && _rawDev.isUsable();
     }
@@ -127,7 +129,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    public boolean waitEndOfInit()
+    boolean waitEndOfInit()
     {
         boolean ready = false;
         while (!ready && _retry < 5) {
@@ -146,7 +148,7 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    public YUSBDevice(YUSBHub yusbHub, int pktAckDelay)
+    YUSBDevice(YUSBHub yusbHub, int pktAckDelay)
     {
         _usbHub = yusbHub;
         _pktAckDelay = pktAckDelay;
@@ -419,12 +421,12 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
         }
     }
 
-    public synchronized void sendRequestAsync(String firstLine, byte[] rest_of_request, YGenericHub.RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception
+    synchronized void sendRequestAsync(String firstLine, byte[] rest_of_request, YGenericHub.RequestAsyncResult asyncResult, Object asyncContext) throws YAPI_Exception
     {
         sendRequest(firstLine, rest_of_request, asyncResult, asyncContext);
     }
 
-    public synchronized byte[] sendRequestSync(String firstLine, byte[] rest_of_request) throws YAPI_Exception
+    synchronized byte[] sendRequestSync(String firstLine, byte[] rest_of_request) throws YAPI_Exception
     {
         byte[] result;
         sendRequest(firstLine, rest_of_request, null, null);
@@ -458,12 +460,12 @@ public class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    public WPEntry getWhitesPagesEntry()
+    WPEntry getWhitesPagesEntry()
     {
         return _wp;
     }
 
-    public void updateYellowPages(HashMap<String, ArrayList<YPEntry>> publicYP)
+    void updateYellowPages(HashMap<String, ArrayList<YPEntry>> publicYP)
     {
         for (YPEntry yp : _usbYP.values()) {
             String classname = yp.getClassname();

@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 25361 2016-09-16 08:23:13Z seb $
+ * $Id: YUSBRawDevice.java 26581 2017-02-08 10:00:26Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -53,7 +53,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Locale;
 
-public class YUSBRawDevice implements Runnable
+class YUSBRawDevice implements Runnable
 {
     private static final String TAG = "YPKT";
     private State _state;
@@ -65,12 +65,12 @@ public class YUSBRawDevice implements Runnable
         return _serial;
     }
 
-    public boolean isUsable()
+    boolean isUsable()
     {
         return _state == State.ACCEPTED;
     }
 
-    enum State
+    private enum State
     {
         UNPLUGGED,
         PLUGGED,
@@ -106,13 +106,13 @@ public class YUSBRawDevice implements Runnable
         }
     }
 
-    public UsbDevice getUsbDevice()
+    UsbDevice getUsbDevice()
     {
         return _device;
     }
 
 
-    public interface IOHandler
+    interface IOHandler
     {
         void newPKT(ByteBuffer android_raw_pkt);
 
@@ -132,7 +132,7 @@ public class YUSBRawDevice implements Runnable
     }
 
 
-    public synchronized void ensureIOStarted()
+    synchronized void ensureIOStarted()
     {
         if (_ioStarted)
             return;
@@ -205,25 +205,25 @@ public class YUSBRawDevice implements Runnable
         return true;
     }
 
-    public void permissionRejected()
+    void permissionRejected()
     {
         _state = State.REJECTED;
 
     }
 
-    public void permissionIngore()
+    void permissionIngore()
     {
         _state = State.IGNORE;
 
     }
 
-    public void unplug()
+    void unplug()
     {
         _state = State.UNPLUGGED;
     }
 
 
-    public synchronized void release()
+    synchronized void release()
     {
         stopBgThread();
         if (_connection != null) {
@@ -244,7 +244,7 @@ public class YUSBRawDevice implements Runnable
         _intf = null;
     }
 
-    public synchronized void sendPkt(byte[] outPkt) throws YAPI_Exception
+    synchronized void sendPkt(byte[] outPkt) throws YAPI_Exception
     {
         if (_intf == null) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "Device is gone");

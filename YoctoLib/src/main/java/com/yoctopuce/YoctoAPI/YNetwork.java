@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YNetwork.java 25360 2016-09-16 07:38:53Z seb $
+ * $Id: YNetwork.java 26551 2017-02-03 15:18:17Z seb $
  *
  * Implements FindNetwork(), the high-level API for Network functions
  *
@@ -157,6 +157,10 @@ public class YNetwork extends YFunction
      */
     public static final int CALLBACKINITIALDELAY_INVALID = YAPI.INVALID_UINT;
     /**
+     * invalid callbackSchedule value
+     */
+    public static final String CALLBACKSCHEDULE_INVALID = YAPI.INVALID_STRING;
+    /**
      * invalid callbackMinDelay value
      */
     public static final int CALLBACKMINDELAY_INVALID = YAPI.INVALID_UINT;
@@ -188,6 +192,7 @@ public class YNetwork extends YFunction
     protected int _callbackEncoding = CALLBACKENCODING_INVALID;
     protected String _callbackCredentials = CALLBACKCREDENTIALS_INVALID;
     protected int _callbackInitialDelay = CALLBACKINITIALDELAY_INVALID;
+    protected String _callbackSchedule = CALLBACKSCHEDULE_INVALID;
     protected int _callbackMinDelay = CALLBACKMINDELAY_INVALID;
     protected int _callbackMaxDelay = CALLBACKMAXDELAY_INVALID;
     protected int _poeCurrent = POECURRENT_INVALID;
@@ -306,6 +311,9 @@ public class YNetwork extends YFunction
         }
         if (json_val.has("callbackInitialDelay")) {
             _callbackInitialDelay = json_val.getInt("callbackInitialDelay");
+        }
+        if (json_val.has("callbackSchedule")) {
+            _callbackSchedule = json_val.getString("callbackSchedule");
         }
         if (json_val.has("callbackMinDelay")) {
             _callbackMinDelay = json_val.getInt("callbackMinDelay");
@@ -1513,9 +1521,69 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * Returns the minimum waiting time between two callback notifications, in seconds.
+     * Returns the HTTP callback schedule strategy, as a text string.
      *
-     * @return an integer corresponding to the minimum waiting time between two callback notifications, in seconds
+     * @return a string corresponding to the HTTP callback schedule strategy, as a text string
+     *
+     * @throws YAPI_Exception on error
+     */
+    public String get_callbackSchedule() throws YAPI_Exception
+    {
+        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                return CALLBACKSCHEDULE_INVALID;
+            }
+        }
+        return _callbackSchedule;
+    }
+
+    /**
+     * Returns the HTTP callback schedule strategy, as a text string.
+     *
+     * @return a string corresponding to the HTTP callback schedule strategy, as a text string
+     *
+     * @throws YAPI_Exception on error
+     */
+    public String getCallbackSchedule() throws YAPI_Exception
+    {
+        return get_callbackSchedule();
+    }
+
+    /**
+     * Changes the HTTP callback schedule strategy, as a text string.
+     *
+     * @param newval : a string corresponding to the HTTP callback schedule strategy, as a text string
+     *
+     * @return YAPI.SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int set_callbackSchedule(String  newval)  throws YAPI_Exception
+    {
+        String rest_val;
+        rest_val = newval;
+        _setAttr("callbackSchedule",rest_val);
+        return YAPI.SUCCESS;
+    }
+
+    /**
+     * Changes the HTTP callback schedule strategy, as a text string.
+     *
+     * @param newval : a string corresponding to the HTTP callback schedule strategy, as a text string
+     *
+     * @return YAPI_SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int setCallbackSchedule(String newval)  throws YAPI_Exception
+    {
+        return set_callbackSchedule(newval);
+    }
+
+    /**
+     * Returns the minimum waiting time between two HTTP callbacks, in seconds.
+     *
+     * @return an integer corresponding to the minimum waiting time between two HTTP callbacks, in seconds
      *
      * @throws YAPI_Exception on error
      */
@@ -1530,9 +1598,9 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * Returns the minimum waiting time between two callback notifications, in seconds.
+     * Returns the minimum waiting time between two HTTP callbacks, in seconds.
      *
-     * @return an integer corresponding to the minimum waiting time between two callback notifications, in seconds
+     * @return an integer corresponding to the minimum waiting time between two HTTP callbacks, in seconds
      *
      * @throws YAPI_Exception on error
      */
@@ -1542,10 +1610,9 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * Changes the minimum waiting time between two callback notifications, in seconds.
+     * Changes the minimum waiting time between two HTTP callbacks, in seconds.
      *
-     *  @param newval : an integer corresponding to the minimum waiting time between two callback
-     * notifications, in seconds
+     * @param newval : an integer corresponding to the minimum waiting time between two HTTP callbacks, in seconds
      *
      * @return YAPI.SUCCESS if the call succeeds.
      *
@@ -1560,10 +1627,9 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * Changes the minimum waiting time between two callback notifications, in seconds.
+     * Changes the minimum waiting time between two HTTP callbacks, in seconds.
      *
-     *  @param newval : an integer corresponding to the minimum waiting time between two callback
-     * notifications, in seconds
+     * @param newval : an integer corresponding to the minimum waiting time between two HTTP callbacks, in seconds
      *
      * @return YAPI_SUCCESS if the call succeeds.
      *
@@ -1575,9 +1641,9 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * Returns the maximum waiting time between two callback notifications, in seconds.
+     * Returns the waiting time between two HTTP callbacks when there is nothing new.
      *
-     * @return an integer corresponding to the maximum waiting time between two callback notifications, in seconds
+     * @return an integer corresponding to the waiting time between two HTTP callbacks when there is nothing new
      *
      * @throws YAPI_Exception on error
      */
@@ -1592,9 +1658,9 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * Returns the maximum waiting time between two callback notifications, in seconds.
+     * Returns the waiting time between two HTTP callbacks when there is nothing new.
      *
-     * @return an integer corresponding to the maximum waiting time between two callback notifications, in seconds
+     * @return an integer corresponding to the waiting time between two HTTP callbacks when there is nothing new
      *
      * @throws YAPI_Exception on error
      */
@@ -1604,10 +1670,10 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * Changes the maximum waiting time between two callback notifications, in seconds.
+     * Changes the waiting time between two HTTP callbacks when there is nothing new.
      *
-     *  @param newval : an integer corresponding to the maximum waiting time between two callback
-     * notifications, in seconds
+     *  @param newval : an integer corresponding to the waiting time between two HTTP callbacks when there
+     * is nothing new
      *
      * @return YAPI.SUCCESS if the call succeeds.
      *
@@ -1622,10 +1688,10 @@ public class YNetwork extends YFunction
     }
 
     /**
-     * Changes the maximum waiting time between two callback notifications, in seconds.
+     * Changes the waiting time between two HTTP callbacks when there is nothing new.
      *
-     *  @param newval : an integer corresponding to the maximum waiting time between two callback
-     * notifications, in seconds
+     *  @param newval : an integer corresponding to the waiting time between two HTTP callbacks when there
+     * is nothing new
      *
      * @return YAPI_SUCCESS if the call succeeds.
      *

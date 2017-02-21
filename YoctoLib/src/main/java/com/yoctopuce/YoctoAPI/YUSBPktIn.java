@@ -6,7 +6,7 @@ import java.util.Locale;
 class YUSBPktIn extends YUSBPkt
 {
 
-    public YUSBPktIn()
+    YUSBPktIn()
     {
         super();
         for (int i = 0; i < _streams.length; i++) {
@@ -15,12 +15,12 @@ class YUSBPktIn extends YUSBPkt
 
     }
 
-    public int getStreamType()
+    int getStreamType()
     {
         return _streams[0].getStreamType();
     }
 
-    public boolean isConfPkt()
+    boolean isConfPkt()
     {
         return _streams[0].getPktType() == YPKT_CONF;
     }
@@ -30,7 +30,7 @@ class YUSBPktIn extends YUSBPkt
         return _streams[0].getPktNumber();
     }
 
-    public void decode(ByteBuffer pkt) throws YAPI_Exception
+    void decode(ByteBuffer pkt) throws YAPI_Exception
     {
         int stream_idx = 0;
         pkt.get(_raw, 0, USB_PKT_SIZE);
@@ -59,12 +59,12 @@ class YUSBPktIn extends YUSBPkt
     }
 
 
-    public ConfPktReset asConfPktReset()
+    ConfPktReset asConfPktReset()
     {
         return ConfPktReset.Decode(_streams[0]);
     }
 
-    public ConfPktStart asConfPktStart()
+    ConfPktStart asConfPktStart()
     {
         return ConfPktStart.Decode(_streams[0]);
     }

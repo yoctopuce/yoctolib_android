@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YModule.java 25360 2016-09-16 07:38:53Z seb $
+ * $Id: YModule.java 26571 2017-02-07 17:16:17Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -41,10 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.*;
 
 
 //--- (generated code: YModule class start)
@@ -193,7 +190,7 @@ public class YModule extends YFunction
 
     protected YModule(String func)
     {
-        this(YAPI.GetYCtx(false),func);
+        this(YAPI.GetYCtx(false), func);
     }
 
 
@@ -207,7 +204,7 @@ public class YModule extends YFunction
     public int functionCount() throws YAPI_Exception
     {
         YDevice dev = _getDev();
-        return dev.functionCount();
+        return dev.getFunctions().size();
     }
 
     /**
@@ -223,7 +220,14 @@ public class YModule extends YFunction
     public String functionId(int functionIndex) throws YAPI_Exception
     {
         YDevice dev = _getDev();
-        return dev.getYPEntry(functionIndex).getFuncId();
+        Collection<YPEntry> functions = dev.getFunctions();
+        int i = 0;
+        for (YPEntry yp : functions) {
+            if (i == functionIndex)
+                return yp.getFuncId();
+        }
+        _throw(YAPI.INVALID_ARGUMENT, String.format(Locale.US, "Invalid function index (%d/%d)", functionIndex, functions.size()));
+        return "";
     }
 
     /**
@@ -244,11 +248,10 @@ public class YModule extends YFunction
 
     /**
      * Retrieve the function base type of the nth function (beside "module") in the device
-     *  @param functionIndex : the index of the function for which the information is desired, starting at
-     * 0 for the first function.
      *
+     * @param functionIndex : the index of the function for which the information is desired, starting at
+     *                      0 for the first function.
      * @return a the type of the function
-     *
      * @throws YAPI_Exception on error
      */
     public String functionBaseType(int functionIndex) throws YAPI_Exception

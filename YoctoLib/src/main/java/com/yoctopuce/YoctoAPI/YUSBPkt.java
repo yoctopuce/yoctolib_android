@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBPkt.java 25357 2016-09-16 07:22:41Z seb $
+ * $Id: YUSBPkt.java 26580 2017-02-08 09:59:57Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
@@ -62,7 +62,7 @@ abstract class YUSBPkt
 
 
     int _streamCount = 0;
-    YPktStreamHead[] _streams = new YPktStreamHead[8];
+    YPktStreamHead[] _streams = new YPktStreamHead[32];
     byte[] _raw = new byte[USB_PKT_SIZE];
 
     YUSBPkt()
