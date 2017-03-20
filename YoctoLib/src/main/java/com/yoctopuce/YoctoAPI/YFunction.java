@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YFunction.java 26611 2017-02-09 14:08:58Z seb $
+ * $Id: YFunction.java 26826 2017-03-17 11:20:57Z mvuilleu $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -206,12 +206,16 @@ public class YFunction
      */
     public String get_logicalName() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return LOGICALNAME_INVALID;
+        String res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return LOGICALNAME_INVALID;
+                }
             }
+            res = _logicalName;
         }
-        return _logicalName;
+        return res;
     }
 
     /**
@@ -243,8 +247,10 @@ public class YFunction
         String rest_val;
         if (!YAPI.CheckLogicalName(newval))
             _throw(YAPI.INVALID_ARGUMENT,"Invalid name :" + newval);
-        rest_val = newval;
-        _setAttr("logicalName",rest_val);
+        synchronized (this) {
+            rest_val = newval;
+            _setAttr("logicalName",rest_val);
+        }
         return YAPI.SUCCESS;
     }
 
@@ -274,12 +280,16 @@ public class YFunction
      */
     public String get_advertisedValue() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return ADVERTISEDVALUE_INVALID;
+        String res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return ADVERTISEDVALUE_INVALID;
+                }
             }
+            res = _advertisedValue;
         }
-        return _advertisedValue;
+        return res;
     }
 
     /**
@@ -297,8 +307,10 @@ public class YFunction
     public int set_advertisedValue(String  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = newval;
-        _setAttr("advertisedValue",rest_val);
+        synchronized (this) {
+            rest_val = newval;
+            _setAttr("advertisedValue",rest_val);
+        }
         return YAPI.SUCCESS;
     }
 
@@ -333,10 +345,12 @@ public class YFunction
     public static YFunction FindFunction(String func)
     {
         YFunction obj;
-        obj = (YFunction) YFunction._FindFromCache("Function", func);
-        if (obj == null) {
-            obj = new YFunction(func);
-            YFunction._AddToCache("Function", func, obj);
+        synchronized (YAPI.class) {
+            obj = (YFunction) YFunction._FindFromCache("Function", func);
+            if (obj == null) {
+                obj = new YFunction(func);
+                YFunction._AddToCache("Function", func, obj);
+            }
         }
         return obj;
     }
@@ -368,10 +382,12 @@ public class YFunction
     public static YFunction FindFunctionInContext(YAPIContext yctx,String func)
     {
         YFunction obj;
-        obj = (YFunction) YFunction._FindFromCacheInContext(yctx, "Function", func);
-        if (obj == null) {
-            obj = new YFunction(yctx, func);
-            YFunction._AddToCache("Function", func, obj);
+        synchronized (yctx) {
+            obj = (YFunction) YFunction._FindFromCacheInContext(yctx, "Function", func);
+            if (obj == null) {
+                obj = new YFunction(yctx, func);
+                YFunction._AddToCache("Function", func, obj);
+            }
         }
         return obj;
     }
@@ -416,7 +432,7 @@ public class YFunction
     }
 
     /**
-     * Disable the propagation of every new advertised value to the parent hub.
+     * Disables the propagation of every new advertised value to the parent hub.
      * You can use this function to save bandwidth and CPU on computers with limited
      * resources, or to prevent unwanted invocations of the HTTP callback.
      * Remember to call the saveToFlash() method of the module if the
@@ -432,7 +448,7 @@ public class YFunction
     }
 
     /**
-     * Re-enable the propagation of every new advertised value to the parent hub.
+     * Re-enables the propagation of every new advertised value to the parent hub.
      * This function reverts the effect of a previous call to muteValueCallbacks().
      * Remember to call the saveToFlash() method of the module if the
      * modification must be kept.

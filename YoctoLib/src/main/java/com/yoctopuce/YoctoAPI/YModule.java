@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YModule.java 26571 2017-02-07 17:16:17Z seb $
+ * $Id: YModule.java 26666 2017-02-28 13:34:50Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -453,12 +453,16 @@ public class YModule extends YFunction
      */
     public String get_productName() throws YAPI_Exception
     {
-        if (_cacheExpiration == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return PRODUCTNAME_INVALID;
+        String res;
+        synchronized (this) {
+            if (_cacheExpiration == 0) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return PRODUCTNAME_INVALID;
+                }
             }
+            res = _productName;
         }
-        return _productName;
+        return res;
     }
 
     /**
@@ -482,12 +486,16 @@ public class YModule extends YFunction
      */
     public String get_serialNumber() throws YAPI_Exception
     {
-        if (_cacheExpiration == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return SERIALNUMBER_INVALID;
+        String res;
+        synchronized (this) {
+            if (_cacheExpiration == 0) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return SERIALNUMBER_INVALID;
+                }
             }
+            res = _serialNumber;
         }
-        return _serialNumber;
+        return res;
     }
 
     /**
@@ -511,12 +519,16 @@ public class YModule extends YFunction
      */
     public int get_productId() throws YAPI_Exception
     {
-        if (_cacheExpiration == 0) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return PRODUCTID_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration == 0) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return PRODUCTID_INVALID;
+                }
             }
+            res = _productId;
         }
-        return _productId;
+        return res;
     }
 
     /**
@@ -540,12 +552,16 @@ public class YModule extends YFunction
      */
     public int get_productRelease() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return PRODUCTRELEASE_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return PRODUCTRELEASE_INVALID;
+                }
             }
+            res = _productRelease;
         }
-        return _productRelease;
+        return res;
     }
 
     /**
@@ -569,12 +585,16 @@ public class YModule extends YFunction
      */
     public String get_firmwareRelease() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return FIRMWARERELEASE_INVALID;
+        String res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return FIRMWARERELEASE_INVALID;
+                }
             }
+            res = _firmwareRelease;
         }
-        return _firmwareRelease;
+        return res;
     }
 
     /**
@@ -599,12 +619,16 @@ public class YModule extends YFunction
      */
     public int get_persistentSettings() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return PERSISTENTSETTINGS_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return PERSISTENTSETTINGS_INVALID;
+                }
             }
+            res = _persistentSettings;
         }
-        return _persistentSettings;
+        return res;
     }
 
     /**
@@ -623,8 +647,10 @@ public class YModule extends YFunction
     public int set_persistentSettings(int  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = Integer.toString(newval);
-        _setAttr("persistentSettings",rest_val);
+        synchronized (this) {
+            rest_val = Integer.toString(newval);
+            _setAttr("persistentSettings",rest_val);
+        }
         return YAPI.SUCCESS;
     }
 
@@ -642,12 +668,16 @@ public class YModule extends YFunction
      */
     public int get_luminosity() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return LUMINOSITY_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return LUMINOSITY_INVALID;
+                }
             }
+            res = _luminosity;
         }
-        return _luminosity;
+        return res;
     }
 
     /**
@@ -677,8 +707,10 @@ public class YModule extends YFunction
     public int set_luminosity(int  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = Integer.toString(newval);
-        _setAttr("luminosity",rest_val);
+        synchronized (this) {
+            rest_val = Integer.toString(newval);
+            _setAttr("luminosity",rest_val);
+        }
         return YAPI.SUCCESS;
     }
 
@@ -708,12 +740,16 @@ public class YModule extends YFunction
      */
     public int get_beacon() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return BEACON_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return BEACON_INVALID;
+                }
             }
+            res = _beacon;
         }
-        return _beacon;
+        return res;
     }
 
     /**
@@ -740,8 +776,10 @@ public class YModule extends YFunction
     public int set_beacon(int  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = (newval > 0 ? "1" : "0");
-        _setAttr("beacon",rest_val);
+        synchronized (this) {
+            rest_val = (newval > 0 ? "1" : "0");
+            _setAttr("beacon",rest_val);
+        }
         return YAPI.SUCCESS;
     }
 
@@ -768,12 +806,16 @@ public class YModule extends YFunction
      */
     public long get_upTime() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return UPTIME_INVALID;
+        long res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return UPTIME_INVALID;
+                }
             }
+            res = _upTime;
         }
-        return _upTime;
+        return res;
     }
 
     /**
@@ -797,12 +839,16 @@ public class YModule extends YFunction
      */
     public int get_usbCurrent() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return USBCURRENT_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return USBCURRENT_INVALID;
+                }
             }
+            res = _usbCurrent;
         }
-        return _usbCurrent;
+        return res;
     }
 
     /**
@@ -828,12 +874,16 @@ public class YModule extends YFunction
      */
     public int get_rebootCountdown() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return REBOOTCOUNTDOWN_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return REBOOTCOUNTDOWN_INVALID;
+                }
             }
+            res = _rebootCountdown;
         }
-        return _rebootCountdown;
+        return res;
     }
 
     /**
@@ -853,8 +903,10 @@ public class YModule extends YFunction
     public int set_rebootCountdown(int  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = Integer.toString(newval);
-        _setAttr("rebootCountdown",rest_val);
+        synchronized (this) {
+            rest_val = Integer.toString(newval);
+            _setAttr("rebootCountdown",rest_val);
+        }
         return YAPI.SUCCESS;
     }
 
@@ -873,12 +925,16 @@ public class YModule extends YFunction
      */
     public int get_userVar() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return USERVAR_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return USERVAR_INVALID;
+                }
             }
+            res = _userVar;
         }
-        return _userVar;
+        return res;
     }
 
     /**
@@ -907,8 +963,10 @@ public class YModule extends YFunction
     public int set_userVar(int  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = Integer.toString(newval);
-        _setAttr("userVar",rest_val);
+        synchronized (this) {
+            rest_val = Integer.toString(newval);
+            _setAttr("userVar",rest_val);
+        }
         return YAPI.SUCCESS;
     }
 
@@ -947,10 +1005,12 @@ public class YModule extends YFunction
     public static YModule FindModule(String func)
     {
         YModule obj;
-        obj = (YModule) YFunction._FindFromCache("Module", func);
-        if (obj == null) {
-            obj = new YModule(func);
-            YFunction._AddToCache("Module", func, obj);
+        synchronized (YAPI.class) {
+            obj = (YModule) YFunction._FindFromCache("Module", func);
+            if (obj == null) {
+                obj = new YModule(func);
+                YFunction._AddToCache("Module", func, obj);
+            }
         }
         return obj;
     }
@@ -982,10 +1042,12 @@ public class YModule extends YFunction
     public static YModule FindModuleInContext(YAPIContext yctx,String func)
     {
         YModule obj;
-        obj = (YModule) YFunction._FindFromCacheInContext(yctx, "Module", func);
-        if (obj == null) {
-            obj = new YModule(yctx, func);
-            YFunction._AddToCache("Module", func, obj);
+        synchronized (yctx) {
+            obj = (YModule) YFunction._FindFromCacheInContext(yctx, "Module", func);
+            if (obj == null) {
+                obj = new YModule(yctx, func);
+                YFunction._AddToCache("Module", func, obj);
+            }
         }
         return obj;
     }

@@ -1,1 +1,1 @@
-- Fix IO errors on extremely fragmented packet (very rare)
+- Add YRangeFinder class

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDaisyChain.java 26552 2017-02-03 15:32:18Z seb $
+ * $Id: YDaisyChain.java 26666 2017-02-28 13:34:50Z seb $
  *
  * Implements FindDaisyChain(), the high-level API for DaisyChain functions
  *
@@ -155,12 +155,16 @@ public class YDaisyChain extends YFunction
      */
     public int get_daisyState() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return DAISYSTATE_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return DAISYSTATE_INVALID;
+                }
             }
+            res = _daisyState;
         }
-        return _daisyState;
+        return res;
     }
 
     /**
@@ -186,12 +190,16 @@ public class YDaisyChain extends YFunction
      */
     public int get_childCount() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return CHILDCOUNT_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return CHILDCOUNT_INVALID;
+                }
             }
+            res = _childCount;
         }
-        return _childCount;
+        return res;
     }
 
     /**
@@ -215,12 +223,16 @@ public class YDaisyChain extends YFunction
      */
     public int get_requiredChildCount() throws YAPI_Exception
     {
-        if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-            if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
-                return REQUIREDCHILDCOUNT_INVALID;
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                    return REQUIREDCHILDCOUNT_INVALID;
+                }
             }
+            res = _requiredChildCount;
         }
-        return _requiredChildCount;
+        return res;
     }
 
     /**
@@ -250,8 +262,10 @@ public class YDaisyChain extends YFunction
     public int set_requiredChildCount(int  newval)  throws YAPI_Exception
     {
         String rest_val;
-        rest_val = Integer.toString(newval);
-        _setAttr("requiredChildCount",rest_val);
+        synchronized (this) {
+            rest_val = Integer.toString(newval);
+            _setAttr("requiredChildCount",rest_val);
+        }
         return YAPI.SUCCESS;
     }
 
@@ -298,10 +312,12 @@ public class YDaisyChain extends YFunction
     public static YDaisyChain FindDaisyChain(String func)
     {
         YDaisyChain obj;
-        obj = (YDaisyChain) YFunction._FindFromCache("DaisyChain", func);
-        if (obj == null) {
-            obj = new YDaisyChain(func);
-            YFunction._AddToCache("DaisyChain", func, obj);
+        synchronized (YAPI.class) {
+            obj = (YDaisyChain) YFunction._FindFromCache("DaisyChain", func);
+            if (obj == null) {
+                obj = new YDaisyChain(func);
+                YFunction._AddToCache("DaisyChain", func, obj);
+            }
         }
         return obj;
     }
@@ -333,10 +349,12 @@ public class YDaisyChain extends YFunction
     public static YDaisyChain FindDaisyChainInContext(YAPIContext yctx,String func)
     {
         YDaisyChain obj;
-        obj = (YDaisyChain) YFunction._FindFromCacheInContext(yctx, "DaisyChain", func);
-        if (obj == null) {
-            obj = new YDaisyChain(yctx, func);
-            YFunction._AddToCache("DaisyChain", func, obj);
+        synchronized (yctx) {
+            obj = (YDaisyChain) YFunction._FindFromCacheInContext(yctx, "DaisyChain", func);
+            if (obj == null) {
+                obj = new YDaisyChain(yctx, func);
+                YFunction._AddToCache("DaisyChain", func, obj);
+            }
         }
         return obj;
     }
