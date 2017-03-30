@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWakeUpSchedule.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YWakeUpSchedule.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindWakeUpSchedule(), the high-level API for WakeUpSchedule functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YWakeUpSchedule return codes)
 //--- (end of YWakeUpSchedule return codes)
@@ -145,7 +143,7 @@ public class YWakeUpSchedule extends YFunction
     //--- (YWakeUpSchedule implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("minutesA")) {
             _minutesA = json_val.getInt("minutesA");

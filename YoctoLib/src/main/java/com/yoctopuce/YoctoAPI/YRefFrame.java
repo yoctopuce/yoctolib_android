@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRefFrame.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YRefFrame.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindRefFrame(), the high-level API for RefFrame functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -214,7 +212,7 @@ public class YRefFrame extends YFunction
     //--- (YRefFrame implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("mountPos")) {
             _mountPos = json_val.getInt("mountPos");

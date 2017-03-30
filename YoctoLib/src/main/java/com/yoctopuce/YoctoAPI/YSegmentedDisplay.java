@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSegmentedDisplay.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YSegmentedDisplay.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindSegmentedDisplay(), the high-level API for SegmentedDisplay functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YSegmentedDisplay return codes)
 //--- (end of YSegmentedDisplay return codes)
@@ -122,7 +120,7 @@ public class YSegmentedDisplay extends YFunction
     //--- (YSegmentedDisplay implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("displayedText")) {
             _displayedText = json_val.getString("displayedText");

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YMotor.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YMotor.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindMotor(), the high-level API for Motor functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.util.Locale;
 
 //--- (YMotor return codes)
@@ -166,7 +164,7 @@ public class YMotor extends YFunction
     //--- (YMotor implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("motorStatus")) {
             _motorStatus = json_val.getInt("motorStatus");

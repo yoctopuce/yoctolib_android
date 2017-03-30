@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDualPower.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YDualPower.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindDualPower(), the high-level API for DualPower functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YDualPower return codes)
 //--- (end of YDualPower return codes)
@@ -134,7 +132,7 @@ public class YDualPower extends YFunction
     //--- (YDualPower implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("powerState")) {
             _powerState = json_val.getInt("powerState");

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPwmPowerSource.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YPwmPowerSource.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindPwmPowerSource(), the high-level API for PwmPowerSource functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YPwmPowerSource return codes)
 //--- (end of YPwmPowerSource return codes)
@@ -118,7 +116,7 @@ public class YPwmPowerSource extends YFunction
     //--- (YPwmPowerSource implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("powerMode")) {
             _powerMode = json_val.getInt("powerMode");

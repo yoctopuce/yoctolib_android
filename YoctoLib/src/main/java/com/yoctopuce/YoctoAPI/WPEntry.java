@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: WPEntry.java 21750 2015-10-13 15:14:31Z seb $
+ * $Id: WPEntry.java 26937 2017-03-28 08:12:51Z seb $
  *
  * White page implementation
  *
@@ -36,8 +36,6 @@
  *********************************************************************/
 package com.yoctopuce.YoctoAPI;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 class WPEntry
 {
@@ -49,7 +47,7 @@ class WPEntry
     private int _beacon;
     private final String _serialNumber;
 
-    public WPEntry(JSONObject json) throws JSONException
+    public WPEntry(YJSONObject json) throws Exception
     {
         super();
         _serialNumber = json.getString("serialNumber");

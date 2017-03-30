@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YLatitude.java 26826 2017-03-17 11:20:57Z mvuilleu $
+ * $Id: YLatitude.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindLatitude(), the high-level API for Latitude functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YLatitude return codes)
 //--- (end of YLatitude return codes)
@@ -112,7 +110,7 @@ public class YLatitude extends YSensor
     //--- (YLatitude implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         super._parseAttr(json_val);
     }

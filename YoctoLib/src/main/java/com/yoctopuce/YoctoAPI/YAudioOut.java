@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAudioOut.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YAudioOut.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindAudioOut(), the high-level API for AudioOut functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YAudioOut return codes)
 //--- (end of YAudioOut return codes)
@@ -135,7 +133,7 @@ public class YAudioOut extends YFunction
     //--- (YAudioOut implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("volume")) {
             _volume = json_val.getInt("volume");

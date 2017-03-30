@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YStepperMotor.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YStepperMotor.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindStepperMotor(), the high-level API for StepperMotor functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.util.Locale;
 
 //--- (YStepperMotor return codes)
@@ -195,7 +193,7 @@ public class YStepperMotor extends YFunction
     //--- (YStepperMotor implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("motorState")) {
             _motorState = json_val.getInt("motorState");

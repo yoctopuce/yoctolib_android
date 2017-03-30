@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFirmwareUpdate.java 25357 2016-09-16 07:22:41Z seb $
+ * $Id: YFirmwareUpdate.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements yFindFirmwareUpdate(), the high-level API for FirmwareUpdate functions
  *
@@ -39,8 +39,6 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
@@ -328,20 +326,20 @@ public class YFirmwareUpdate
 
         if (path.startsWith("www.yoctopuce.com") || path.startsWith("http://www.yoctopuce.com")) {
             byte[] json = YFirmwareUpdate._downloadfile("http://www.yoctopuce.com//FR/common/getLastFirmwareLink.php?serial=" + serial);
-            JSONObject obj;
+            YJSONObject obj;
             try {
-                obj = new JSONObject(new String(json, Charset.forName("ISO_8859_1")));
-            } catch (JSONException ex) {
+                obj = new YJSONObject(new String(json, Charset.forName("ISO_8859_1")));
+                obj.parse();
+            } catch (Exception ex) {
                 throw new YAPI_Exception(YAPI.IO_ERROR, ex.getLocalizedMessage());
             }
             try {
                 link = obj.getString("link");
                 best_rev = obj.getInt("version");
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 throw new YAPI_Exception(YAPI.IO_ERROR, "invalid respond form www.yoctopuce.com" + e.getLocalizedMessage());
             }
         } else {
-
             File folder = new File(path);
             YFirmwareFile firmware = YFirmwareUpdate.checkFirmware_r(folder, serial.substring(0, YAPI.YOCTO_BASE_SERIAL_LEN));
             if (firmware != null) {

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPower.java 26826 2017-03-17 11:20:57Z mvuilleu $
+ * $Id: YPower.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindPower(), the high-level API for Power functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YPower return codes)
 //--- (end of YPower return codes)
@@ -127,7 +125,7 @@ public class YPower extends YSensor
     //--- (YPower implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("cosPhi")) {
             _cosPhi = Math.round(json_val.getDouble("cosPhi") * 1000.0 / 65536.0) / 1000.0;

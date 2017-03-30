@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCarbonDioxide.java 26826 2017-03-17 11:20:57Z mvuilleu $
+ * $Id: YCarbonDioxide.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindCarbonDioxide(), the high-level API for CarbonDioxide functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YCarbonDioxide return codes)
 //--- (end of YCarbonDioxide return codes)
@@ -122,7 +120,7 @@ public class YCarbonDioxide extends YSensor
     //--- (YCarbonDioxide implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("abcPeriod")) {
             _abcPeriod = json_val.getInt("abcPeriod");

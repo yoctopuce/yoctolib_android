@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YTilt.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YTilt.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindTilt(), the high-level API for Tilt functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YTilt return codes)
 //--- (end of YTilt return codes)
@@ -130,7 +128,7 @@ public class YTilt extends YSensor
     //--- (YTilt implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("bandwidth")) {
             _bandwidth = json_val.getInt("bandwidth");

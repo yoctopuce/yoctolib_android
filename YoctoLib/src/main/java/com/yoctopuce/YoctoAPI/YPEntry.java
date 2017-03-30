@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YPEntry.java 25339 2016-09-15 07:43:00Z seb $
+ * $Id: YPEntry.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Yellow page implementation
  *
@@ -36,9 +36,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 class YPEntry
@@ -79,7 +76,7 @@ class YPEntry
     private int _index = -1;
     private final BaseClass _baseclass;
 
-    public YPEntry(JSONObject json) throws JSONException
+    public YPEntry(YJSONObject json) throws Exception
     {
         String hardwareId = json.getString("hardwareId");
         int pos = hardwareId.indexOf('.');
@@ -90,7 +87,7 @@ class YPEntry
         _advertisedValue = json.getString("advertisedValue");
         try {
             _index = json.getInt("index");
-        } catch (JSONException ex) {
+        } catch (Exception ex) {
             _index = 0;
         }
 

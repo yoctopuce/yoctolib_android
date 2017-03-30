@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YServo.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YServo.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindServo(), the high-level API for Servo functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 import java.util.Locale;
 
 //--- (YServo return codes)
@@ -156,7 +154,7 @@ public class YServo extends YFunction
     //--- (YServo implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("position")) {
             _position = json_val.getInt("position");
@@ -171,7 +169,7 @@ public class YServo extends YFunction
             _neutral = json_val.getInt("neutral");
         }
         if (json_val.has("move")) {
-            JSONObject subjson = json_val.getJSONObject("move");
+            YJSONObject subjson = json_val.getYJSONObject("move");
             if (subjson.has("moving")) {
                 _move.moving = subjson.getInt("moving");
             }

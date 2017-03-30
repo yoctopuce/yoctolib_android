@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGps.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YGps.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindGps(), the high-level API for Gps functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YGps return codes)
 //--- (end of YGps return codes)
@@ -182,7 +180,7 @@ public class YGps extends YFunction
     //--- (YGps implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("isFixed")) {
             _isFixed = json_val.getInt("isFixed") > 0 ? 1 : 0;

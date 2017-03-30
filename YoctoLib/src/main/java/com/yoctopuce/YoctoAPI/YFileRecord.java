@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFileRecord.java 25357 2016-09-16 07:22:41Z seb $
+ * $Id: YFileRecord.java 26937 2017-03-28 08:12:51Z seb $
  *
  * YFileRecord Class: Description of a file on the device filesystem
  *
@@ -39,8 +39,6 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (generated code: YFileRecord class start)
 /**
@@ -62,13 +60,13 @@ public class YFileRecord
 
     public YFileRecord(String json_str) throws YAPI_Exception
     {
-        JSONObject json;
         try {
-            json = new JSONObject(json_str);
+            YJSONObject json = new YJSONObject(json_str);
+            json.parse();
             _name = json.getString("name");
             _crc = json.getInt("crc");
             _size = json.getInt("size");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             throw new YAPI_Exception(YAPI.IO_ERROR, "invalid json struct for YFileRecord");
         }
     }

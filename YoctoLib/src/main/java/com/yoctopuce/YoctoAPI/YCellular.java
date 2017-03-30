@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCellular.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YCellular.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindCellular(), the high-level API for Cellular functions
  *
@@ -39,8 +39,6 @@
 
 package com.yoctopuce.YoctoAPI;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,7 +201,7 @@ public class YCellular extends YFunction
     //--- (generated code: YCellular implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("linkQuality")) {
             _linkQuality = json_val.getInt("linkQuality");

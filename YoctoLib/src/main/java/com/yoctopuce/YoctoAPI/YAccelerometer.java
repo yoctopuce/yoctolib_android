@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAccelerometer.java 26666 2017-02-28 13:34:50Z seb $
+ * $Id: YAccelerometer.java 26937 2017-03-28 08:12:51Z seb $
  *
  * Implements FindAccelerometer(), the high-level API for Accelerometer functions
  *
@@ -38,8 +38,6 @@
  *********************************************************************/
 
 package com.yoctopuce.YoctoAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 //--- (YAccelerometer return codes)
 //--- (end of YAccelerometer return codes)
@@ -144,7 +142,7 @@ public class YAccelerometer extends YSensor
     //--- (YAccelerometer implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
-    protected void  _parseAttr(JSONObject json_val) throws JSONException
+    protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
         if (json_val.has("bandwidth")) {
             _bandwidth = json_val.getInt("bandwidth");
