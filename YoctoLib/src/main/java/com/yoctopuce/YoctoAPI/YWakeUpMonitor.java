@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWakeUpMonitor.java 26937 2017-03-28 08:12:51Z seb $
+ * $Id: YWakeUpMonitor.java 27052 2017-04-04 16:00:45Z seb $
  *
  * Implements FindWakeUpMonitor(), the high-level API for WakeUpMonitor functions
  *
@@ -451,14 +451,7 @@ public class YWakeUpMonitor extends YFunction
         return YAPI.SUCCESS;
     }
 
-    public int setWakeUpState(int newval)  throws YAPI_Exception
-    {
-        return set_wakeUpState(newval);
-    }
 
-    /**
-     * @throws YAPI_Exception on error
-     */
     public long get_rtcTime() throws YAPI_Exception
     {
         long res;
@@ -471,14 +464,6 @@ public class YWakeUpMonitor extends YFunction
             res = _rtcTime;
         }
         return res;
-    }
-
-    /**
-     * @throws YAPI_Exception on error
-     */
-    public long getRtcTime() throws YAPI_Exception
-    {
-        return get_rtcTime();
     }
 
     /**

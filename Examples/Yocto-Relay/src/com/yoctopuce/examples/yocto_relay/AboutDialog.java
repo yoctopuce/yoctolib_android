@@ -16,6 +16,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class AboutDialog extends DialogFragment {
     public AboutDialog() {
     }
 
+    @SuppressLint("deprecation")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get app version
@@ -58,8 +60,15 @@ public class AboutDialog extends DialogFragment {
         String app_name = resources.getString(R.string.app_name);
         // Build the about body view and append the link to see OSS licenses
         SpannableStringBuilder aboutBody = new SpannableStringBuilder();
-        aboutBody.append(Html.fromHtml(getString(R.string.about_text, app_name,versionName, YAPI.GetAPIVersion())));
-
+        String text = getString(R.string.about_text, app_name, versionName, YAPI.GetAPIVersion());
+        Spanned html;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            html = Html.fromHtml(text,Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            //noinspection deprecation
+            html = Html.fromHtml(text);
+        }
+        aboutBody.append(html);
         LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams") TextView aboutBodyView = (TextView) layoutInflater.inflate(R.layout.about, null);

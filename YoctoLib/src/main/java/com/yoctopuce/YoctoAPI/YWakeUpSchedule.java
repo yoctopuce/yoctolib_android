@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWakeUpSchedule.java 26937 2017-03-28 08:12:51Z seb $
+ * $Id: YWakeUpSchedule.java 27110 2017-04-06 22:19:03Z seb $
  *
  * Implements FindWakeUpSchedule(), the high-level API for WakeUpSchedule functions
  *
@@ -718,7 +718,7 @@ public class YWakeUpSchedule extends YFunction
     public long get_minutes() throws YAPI_Exception
     {
         long res;
-        // may throw an exception
+        
         res = get_minutesB();
         res = ((res) << (30));
         res = res + get_minutesA();

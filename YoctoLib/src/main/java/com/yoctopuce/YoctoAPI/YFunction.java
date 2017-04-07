@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YFunction.java 26955 2017-03-28 15:55:19Z seb $
+ * $Id: YFunction.java 27052 2017-04-04 16:00:45Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -310,10 +310,6 @@ public class YFunction
         return YAPI.SUCCESS;
     }
 
-    public int setAdvertisedValue(String newval)  throws YAPI_Exception
-    {
-        return set_advertisedValue(newval);
-    }
 
     /**
      * Retrieves a function for a given identifier.

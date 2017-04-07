@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPwmInput.java 26937 2017-03-28 08:12:51Z seb $
+ * $Id: YPwmInput.java 27052 2017-04-04 16:00:45Z seb $
  *
  * Implements FindPwmInput(), the high-level API for PwmInput functions
  *
@@ -357,10 +357,6 @@ public class YPwmInput extends YSensor
         return YAPI.SUCCESS;
     }
 
-    public int setPulseCounter(long newval)  throws YAPI_Exception
-    {
-        return set_pulseCounter(newval);
-    }
 
     /**
      * Returns the timer of the pulses counter (ms).

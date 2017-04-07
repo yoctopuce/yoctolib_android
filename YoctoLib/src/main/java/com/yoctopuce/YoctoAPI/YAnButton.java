@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YAnButton.java 26937 2017-03-28 08:12:51Z seb $
+ * $Id: YAnButton.java 27052 2017-04-04 16:00:45Z seb $
  *
  * Implements FindAnButton(), the high-level API for AnButton functions
  *
@@ -734,10 +734,6 @@ public class YAnButton extends YFunction
         return YAPI.SUCCESS;
     }
 
-    public int setPulseCounter(long newval)  throws YAPI_Exception
-    {
-        return set_pulseCounter(newval);
-    }
 
     /**
      * Returns the timer of the pulses counter (ms).

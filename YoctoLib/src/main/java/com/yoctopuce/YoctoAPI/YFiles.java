@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFiles.java 26937 2017-03-28 08:12:51Z seb $
+ * $Id: YFiles.java 27110 2017-04-06 22:19:03Z seb $
  *
  * Implements yFindFiles(), the high-level API for Files functions
  *
@@ -312,7 +312,7 @@ public class YFiles extends YFunction
     {
         String url;
         url = String.format(Locale.US, "files.json?a=%s",command);
-        // may throw an exception
+        
         return _download(url);
     }
 

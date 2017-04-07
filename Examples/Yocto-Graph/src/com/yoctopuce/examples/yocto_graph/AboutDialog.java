@@ -41,6 +41,7 @@ public class AboutDialog extends DialogFragment {
     public AboutDialog() {
     }
 
+    @SuppressLint("deprecation")
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Get app version
@@ -59,7 +60,6 @@ public class AboutDialog extends DialogFragment {
         // Build the about body view and append the link to see OSS licenses
         SpannableStringBuilder aboutBody = new SpannableStringBuilder();
         aboutBody.append(Html.fromHtml(getString(R.string.about_text, app_name,versionName, YAPI.GetAPIVersion())));
-
         LayoutInflater layoutInflater = (LayoutInflater) activity.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         @SuppressLint("InflateParams") TextView aboutBodyView = (TextView) layoutInflater.inflate(R.layout.about, null);

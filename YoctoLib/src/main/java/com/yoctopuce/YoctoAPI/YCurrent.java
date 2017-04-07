@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCurrent.java 26937 2017-03-28 08:12:51Z seb $
+ * $Id: YCurrent.java 27052 2017-04-04 16:00:45Z seb $
  *
  * Implements FindCurrent(), the high-level API for Current functions
  *
@@ -124,9 +124,6 @@ public class YCurrent extends YSensor
         super._parseAttr(json_val);
     }
 
-    /**
-     * @throws YAPI_Exception on error
-     */
     public int get_enabled() throws YAPI_Exception
     {
         int res;
@@ -141,14 +138,6 @@ public class YCurrent extends YSensor
         return res;
     }
 
-    /**
-     * @throws YAPI_Exception on error
-     */
-    public int getEnabled() throws YAPI_Exception
-    {
-        return get_enabled();
-    }
-
     public int set_enabled(int  newval)  throws YAPI_Exception
     {
         String rest_val;
@@ -159,10 +148,6 @@ public class YCurrent extends YSensor
         return YAPI.SUCCESS;
     }
 
-    public int setEnabled(int newval)  throws YAPI_Exception
-    {
-        return set_enabled(newval);
-    }
 
     /**
      * Retrieves a current sensor for a given identifier.
