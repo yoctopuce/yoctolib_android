@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YFunction.java 27052 2017-04-04 16:00:45Z seb $
+ * $Id: YFunction.java 27156 2017-04-07 16:25:45Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -555,12 +555,12 @@ public class YFunction
      *
      * @throws YAPI_Exception on error
      */
-    public String get_hardwareId() throws YAPI_Exception
+    public synchronized String get_hardwareId() throws YAPI_Exception
     {
         return _yapi._yHash.resolveHwID(_className, _func);
     }
 
-    public String getHardwareId() throws YAPI_Exception
+    public synchronized String getHardwareId() throws YAPI_Exception
     {
         return _yapi._yHash.resolveHwID(_className, _func);
     }
@@ -574,12 +574,12 @@ public class YFunction
      *
      * @throws YAPI_Exception on error
      */
-    public String get_functionId() throws YAPI_Exception
+    public synchronized String get_functionId() throws YAPI_Exception
     {
         return _yapi._yHash.resolveFuncId(_className, _func);
     }
 
-    public String getFunctionId() throws YAPI_Exception
+    public synchronized String getFunctionId() throws YAPI_Exception
     {
         return _yapi._yHash.resolveFuncId(_className, _func);
     }
@@ -596,7 +596,7 @@ public class YFunction
      *
      * @throws YAPI_Exception on error
      */
-    public String get_friendlyName() throws YAPI_Exception
+    public synchronized String get_friendlyName() throws YAPI_Exception
     {
         YPEntry yp = _yapi._yHash.resolveFunction(_className, _func);
         return yp.getFriendlyName(_yapi);
@@ -891,7 +891,7 @@ public class YFunction
      *
      * @return true if the function can be reached, and false otherwise
      */
-    public boolean isOnline()
+    public synchronized boolean isOnline()
     {
         // A valid value in cache means that the device is online
         if (_cacheExpiration > YAPI.GetTickCount()) {
@@ -969,7 +969,7 @@ public class YFunction
      *
      *
      */
-    public void clearCache()
+    public synchronized void clearCache()
     {
         try {
             YDevice dev = getYDevice();
@@ -996,7 +996,7 @@ public class YFunction
      *
      * @throws YAPI_Exception on error
      */
-    public int load(long msValidity) throws YAPI_Exception
+    public synchronized int load(long msValidity) throws YAPI_Exception
     {
         YJSONObject json_obj = _devRequest("");
         _parse(json_obj, msValidity);
@@ -1011,7 +1011,7 @@ public class YFunction
      *
      * @return an instance of YModule
      */
-    public YModule get_module()
+    public synchronized YModule get_module()
     {
         // try to resolve the function name to a device id without query
         if (_serial != null && !_serial.equals("")) {
@@ -1055,7 +1055,7 @@ public class YFunction
      *
      * If the function has never been contacted, the returned value is YFunction.FUNCTIONDESCRIPTOR_INVALID.
      */
-    public String get_functionDescriptor()
+    public synchronized String get_functionDescriptor()
     {
         // try to resolve the function name to a device id without query
         try {
@@ -1083,7 +1083,7 @@ public class YFunction
      *
      * @return the object stored previously by the caller.
      */
-    public Object get_userData()
+    public synchronized Object get_userData()
     {
         return _userData;
     }
@@ -1105,7 +1105,7 @@ public class YFunction
      * @param data : any kind of object to be stored
      *
      */
-    public void set_userData(Object data)
+    public synchronized void set_userData(Object data)
     {
         _userData = data;
     }
