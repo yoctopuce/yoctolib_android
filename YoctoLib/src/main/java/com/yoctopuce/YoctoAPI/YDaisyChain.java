@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDaisyChain.java 26937 2017-03-28 08:12:51Z seb $
+ * $Id: YDaisyChain.java 27272 2017-04-25 15:37:20Z seb $
  *
  * Implements FindDaisyChain(), the high-level API for DaisyChain functions
  *

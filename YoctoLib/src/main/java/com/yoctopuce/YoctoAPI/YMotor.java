@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YMotor.java 27052 2017-04-04 16:00:45Z seb $
+ * $Id: YMotor.java 27272 2017-04-25 15:37:20Z seb $
  *
  * Implements FindMotor(), the high-level API for Motor functions
  *

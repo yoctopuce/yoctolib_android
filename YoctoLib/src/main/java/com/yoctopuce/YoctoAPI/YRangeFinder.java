@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YRangeFinder.java 27052 2017-04-04 16:00:45Z seb $
+ * $Id: YRangeFinder.java 27272 2017-04-25 15:37:20Z seb $
  *
  * Implements FindRangeFinder(), the high-level API for RangeFinder functions
  *

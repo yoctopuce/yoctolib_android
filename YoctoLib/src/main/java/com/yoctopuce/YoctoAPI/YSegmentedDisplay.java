@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSegmentedDisplay.java 27052 2017-04-04 16:00:45Z seb $
+ * $Id: YSegmentedDisplay.java 27272 2017-04-25 15:37:20Z seb $
  *
  * Implements FindSegmentedDisplay(), the high-level API for SegmentedDisplay functions
  *

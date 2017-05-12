@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YNetwork.java 27110 2017-04-06 22:19:03Z seb $
+ * $Id: YNetwork.java 27415 2017-05-11 09:57:43Z seb $
  *
  * Implements FindNetwork(), the high-level API for Network functions
  *
@@ -2030,6 +2030,21 @@ public class YNetwork extends YFunction
     }
 
     /**
+     * Changes the configuration of the network interface to enable the use of an
+     * IP address received from a DHCP server. Until an address is received from a DHCP
+     * server, the module uses an IP of the network 169.254.0.0/16 (APIPA).
+     * Remember to call the saveToFlash() method and then to reboot the module to apply this setting.
+     *
+     * @return YAPI.SUCCESS when the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int useDHCPauto() throws YAPI_Exception
+    {
+        return set_ipConfig("DHCP:");
+    }
+
+    /**
      * Changes the configuration of the network interface to use a static IP address.
      * Remember to call the saveToFlash() method and then to reboot the module to apply this setting.
      *
@@ -2058,7 +2073,7 @@ public class YNetwork extends YFunction
     public String ping(String host) throws YAPI_Exception
     {
         byte[] content;
-        
+
         content = _download(String.format(Locale.US, "ping.txt?host=%s",host));
         return new String(content);
     }

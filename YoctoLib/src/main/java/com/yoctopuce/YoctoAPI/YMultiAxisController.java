@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YMultiAxisController.java 27159 2017-04-07 21:21:06Z mvuilleu $
+ * $Id: YMultiAxisController.java 27272 2017-04-25 15:37:20Z seb $
  *
  * Implements FindMultiAxisController(), the high-level API for MultiAxisController functions
  *

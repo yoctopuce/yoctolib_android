@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YDataStream.java 27110 2017-04-06 22:19:03Z seb $
+ * $Id: YDataStream.java 27272 2017-04-25 15:37:20Z seb $
  *
  * YDataStream Class: Sequence of measured data, stored by the data logger
  *
@@ -238,7 +238,7 @@ public class YDataStream
             _nRows = 0;
             return YAPI.SUCCESS;
         }
-        
+
         udat = YAPIContext._decodeWords(_parent._json_get_string(sdata));
         _values.clear();
         idx = 0;
@@ -275,7 +275,7 @@ public class YDataStream
                 }
             }
         }
-        
+
         _nRows = _values.size();
         return YAPI.SUCCESS;
     }
