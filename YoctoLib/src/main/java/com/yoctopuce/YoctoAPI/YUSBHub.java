@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 25357 2016-09-16 07:22:41Z seb $
+ * $Id: YUSBHub.java 27803 2017-06-12 16:32:30Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -172,7 +172,7 @@ class YUSBHub extends YGenericHub
 
     private final Queue<YUSBRawDevice> _permissionPending = new LinkedList<>();
 
-    public void requestUSBPermission(YUSBRawDevice device)
+    void requestUSBPermission(YUSBRawDevice device)
     {
         if (_requestPermission) {
             boolean doRequest = false;
@@ -220,29 +220,29 @@ class YUSBHub extends YGenericHub
         // mark all device as to remove
         ArrayList<String> toRemove = new ArrayList<>(_usbDevices.keySet());
         for (Map.Entry<String, UsbDevice> entry : connectedDevices.entrySet()) {
-            String key = entry.getKey();
+            String android_dev_name = entry.getKey();
             UsbDevice usbdevice = entry.getValue();
             if (usbdevice.getInterfaceCount() < 1)
                 continue;
             int deviceid = usbdevice.getProductId();
             if (usbdevice.getVendorId() == YAPI.YOCTO_VENDORID && deviceid != YAPI.YOCTO_DEVID_FACTORYBOOT) {
-                if (_usbDevices.containsKey(key)) {
-                    toRemove.remove(key);
-                    _usbDevices.get(key).ensureIOStarted();
+                if (_usbDevices.containsKey(android_dev_name)) {
+                    toRemove.remove(android_dev_name);
+                    _usbDevices.get(android_dev_name).ensureIOStarted();
                     continue;
                 }
                 YUSBRawDevice rawDevice;
                 if (deviceid == YAPI.YOCTO_DEVID_BOOTLOADER) {
-                    YUSBBootloader bootloader = new YUSBBootloader();
+                    YUSBBootloader bootloader = new YUSBBootloader(android_dev_name);
                     rawDevice = new YUSBRawDevice(this, usbdevice, _manager, bootloader);
-                    _bootloadersFromAndroidRef.put(key, bootloader);
+                    _bootloadersFromAndroidRef.put(android_dev_name, bootloader);
                 } else {
-                    YUSBDevice device = new YUSBDevice(this, _pktAckDelay);
+                    YUSBDevice device = new YUSBDevice(this, _pktAckDelay, android_dev_name);
                     rawDevice = new YUSBRawDevice(this, usbdevice, _manager, device);
-                    _devsFromAndroidRef.put(key, device);
+                    _devsFromAndroidRef.put(android_dev_name, device);
                 }
                 rawDevice.ensureIOStarted();
-                _usbDevices.put(key, rawDevice);
+                _usbDevices.put(android_dev_name, rawDevice);
                 //rawDevice.checkAndroidPermission();
             }
         }
@@ -274,7 +274,6 @@ class YUSBHub extends YGenericHub
             return;
         }
         refreshUsableDeviceList();
-        //todo: we could be more efficient
         HashMap<String, ArrayList<YPEntry>> yellowPages = new HashMap<>();
         ArrayList<WPEntry> whitePages = new ArrayList<>();
         for (YUSBDevice d : _devsFromAndroidRef.values()) {
@@ -411,7 +410,7 @@ class YUSBHub extends YGenericHub
         return url.startsWith("usb");
     }
 
-    public static boolean RegisterLocalhost()
+    static boolean RegisterLocalhost()
     {
         return false;
     }

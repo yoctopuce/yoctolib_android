@@ -1,2 +1,2 @@
-- Add YNetwork.useDHCPauto(), YWireless.startWlanScan() and YWireless.get_wlanState() methods
-- Fix some functions comments
+- Fix race condition in USB stack
+- Fix some functions documentation.

@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 26581 2017-02-08 10:00:26Z seb $
+ * $Id: YUSBRawDevice.java 27832 2017-06-14 14:42:23Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -55,7 +55,6 @@ import java.util.Locale;
 
 class YUSBRawDevice implements Runnable
 {
-    private static final String TAG = "YPKT";
     private State _state;
     private YUSBHub _usbHub;
     private String _serial;
@@ -244,27 +243,30 @@ class YUSBRawDevice implements Runnable
         _intf = null;
     }
 
-    synchronized void sendPkt(byte[] outPkt) throws YAPI_Exception
+    void sendPkt(byte[] outPkt) throws YAPI_Exception
     {
-        if (_intf == null) {
-            throw new YAPI_Exception(YAPI.IO_ERROR, "Device is gone");
-        }
         UsbEndpoint endpointOUT = null;
-        for (int e = 0; e < _intf.getEndpointCount(); e++) {
-            UsbEndpoint endp = _intf.getEndpoint(e);
-            // out and in meaning is a bit strange
-            // USB_DIR_OUT Used to signify direction of data for a UsbEndpoint
-            // is OUT (host to device)
-            // USB_DIR_IN Used to signify direction of data for a UsbEndpoint is
-            // IN (device to host)
-            if (endp.getDirection() == UsbConstants.USB_DIR_OUT) {
-                endpointOUT = endp;
+        final UsbDeviceConnection connection;
+        synchronized (this) {
+            if (_intf == null) {
+                throw new YAPI_Exception(YAPI.IO_ERROR, "Device is gone");
             }
+            for (int e = 0; e < _intf.getEndpointCount(); e++) {
+                UsbEndpoint endp = _intf.getEndpoint(e);
+                // out and in meaning is a bit strange
+                // USB_DIR_OUT Used to signify direction of data for a UsbEndpoint
+                // is OUT (host to device)
+                // USB_DIR_IN Used to signify direction of data for a UsbEndpoint is
+                // IN (device to host)
+                if (endp.getDirection() == UsbConstants.USB_DIR_OUT) {
+                    endpointOUT = endp;
+                }
+            }
+            if (endpointOUT == null) {
+                throw new YAPI_Exception(YAPI.IO_ERROR, "Unable to get USB Out endpoint");
+            }
+            connection = _connection;
         }
-        if (endpointOUT == null) {
-            throw new YAPI_Exception(YAPI.IO_ERROR, "Unable to get USB Out endpoint");
-        }
-
         int result = 0;
         int attempt = 0;
         do {
@@ -275,7 +277,7 @@ class YUSBRawDevice implements Runnable
                     throw new YAPI_Exception(YAPI.IO_ERROR, "InterruptedException ont pkt sent");
                 }
             }
-            result = _connection.bulkTransfer(endpointOUT, outPkt,
+            result = connection.bulkTransfer(endpointOUT, outPkt,
                     outPkt.length, 1000);
             attempt++;
         } while (result < 0 && attempt < 15);
@@ -285,6 +287,7 @@ class YUSBRawDevice implements Runnable
                             attempt, result));
 
         }
+
     }
 
     public void run()

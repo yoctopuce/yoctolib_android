@@ -4,7 +4,7 @@ package com.yoctopuce.YoctoAPI;
 import java.nio.ByteBuffer;
 import java.util.Locale;
 
-public class YUSBBootloader implements YUSBRawDevice.IOHandler
+class YUSBBootloader implements YUSBRawDevice.IOHandler
 {
 
     private static final long ERASE_TIMEOUT = 10000;
@@ -32,6 +32,8 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
     private int _addr_page;
     private int _last_percent;
     private String _last_msg;
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
+    private final String _android_dev_name;
 
 
     private enum FLASH_STATE
@@ -89,9 +91,10 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
     private int _first_yfs3_page;
 
 
-    public YUSBBootloader()
+    YUSBBootloader(String android_dev_name)
     {
         _flash_state = FLASH_STATE.DONE;
+        _android_dev_name = android_dev_name;
     }
 
     private void setNewState(FLASH_STATE new_state)
@@ -320,7 +323,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
     }
 
 
-    public void firmwareUpdate(YFirmwareFile firmware, YGenericHub.UpdateProgress progress) throws YAPI_Exception
+    void firmwareUpdate(YFirmwareFile firmware, YGenericHub.UpdateProgress progress) throws YAPI_Exception
     {
         _firmware = firmware;
         _progress = progress;
@@ -371,7 +374,6 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
             uSendCmd(YUSBProgPkt.PROG_INFO);
         }
         waitForState(FLASH_STATE.ERASE_CONFIRMED, FLASH_STATE.FLASH, ERASE_TIMEOUT + (_last_addr >> 6), "Timeout blanking flash");
-        _zst = FLASH_ZONE_STATE.FLASH_ZONE_START;
         if (_ext_total_pages > 0) {
             uFlashFlash();
         } else {
@@ -395,15 +397,6 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
             //device reboot so fast that usually tablet report an error
         }
     }
-
-    enum FLASH_ZONE_STATE
-    {
-        FLASH_ZONE_START,
-        FLASH_ZONE_PROG,
-        FLASH_ZONE_RECV_OK
-    }
-
-    FLASH_ZONE_STATE _zst;
 
     //progress 10 ->90
     private void uFlashZone() throws YAPI_Exception
@@ -435,7 +428,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
                     file_ofs += nb_instructions * 3;
                 }
                 waitForState(FLASH_STATE.FLASH_CONFIRMED, FLASH_STATE.FLASH, BLOCK_FLASH_TIMEOUT,
-                        String.format("Bootlaoder did not send confirmation for Zone %x Block %x", cur_zone, _bz.addr_page));
+                        String.format("Bootloader did not send confirmation for Zone %x Block %x", cur_zone, _bz.addr_page));
                 inst_in_block -= _pr_blk_size;
                 block_addr += _pr_blk_size * 2;
             }
@@ -514,7 +507,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
                 YUSBProgPkt pkt = new YUSBProgPkt(YUSBProgPkt.PROG_VERIF, page, pos);
                 _rawdev.sendPkt(pkt.getRawPkt());
                 waitForState(FLASH_STATE.FLASH_CONFIRMED, FLASH_STATE.FLASH, ZONE_VERIF_TIMEOUT,
-                        String.format("Bootlaoder did not send confirmation for Zone %x Block %x", curzone, _bz.addr_page));
+                        String.format("Bootloader did not send confirmation for Zone %x Block %x", curzone, _bz.addr_page));
                 // go to next page
                 _file_ofs += _flash_page_ofs;
                 _addr_page += _flash_page_ofs;
@@ -535,7 +528,7 @@ public class YUSBBootloader implements YUSBRawDevice.IOHandler
         _rawdev.sendPkt(pkt.getRawPkt());
     }
 
-    public boolean isReady()
+    boolean isReady()
     {
         return _rawdev != null && _rawdev.isUsable();
     }

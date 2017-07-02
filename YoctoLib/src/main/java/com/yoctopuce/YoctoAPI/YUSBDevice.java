@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 26610 2017-02-09 14:06:06Z seb $
+ * $Id: YUSBDevice.java 27832 2017-06-14 14:42:23Z seb $
  *
  * YUSBDevice Class:
  *
@@ -48,12 +48,14 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 
 
 class YUSBDevice implements YUSBRawDevice.IOHandler
 {
 
     private static final long META_UTC_DELAY = 60000;
+    private final String _android_dev_name;
     private int _pktAckDelay;
     private int _devVersion;
     private int _retry = 0;
@@ -135,7 +137,7 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
         while (!ready && _retry < 5) {
 
             try {
-                waitForTcpState(PKT_State.StreamReadyReceived, null, 500, "Device not ready");
+                waitForTcpState(PKT_State.StreamReadyReceived, null, 1000, "Device not ready");
                 _retry = 0;
                 ready = true;
             } catch (YAPI_Exception e) {
@@ -148,10 +150,12 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    YUSBDevice(YUSBHub yusbHub, int pktAckDelay)
+    YUSBDevice(YUSBHub yusbHub, int pktAckDelay, String android_dev_name)
     {
         _usbHub = yusbHub;
         _pktAckDelay = pktAckDelay;
+        _android_dev_name = android_dev_name;
+
     }
 
 
@@ -297,7 +301,9 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
             pkt.pushPktAck(pktno);
             byte[] data = pkt.close();
             try {
-                _rawDev.sendPkt(data);
+                if (_rawDev != null) {
+                    _rawDev.sendPkt(data);
+                }
             } catch (YAPI_Exception e) {
                 ioError("Unable to send start pkt:" + e.getLocalizedMessage());
             }
