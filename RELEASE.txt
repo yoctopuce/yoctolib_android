@@ -1,2 +1,1 @@
-- Fix race condition in USB stack
-- Fix some functions documentation.
+- Improve datalogger summary load performance when using limited time range
