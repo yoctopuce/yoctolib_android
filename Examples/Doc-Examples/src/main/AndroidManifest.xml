@@ -62,6 +62,24 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_0_10V_Tx start -->
+        <activity
+            android:name=".GettingStarted_Yocto_0_10V_Tx"
+            android:label="Yocto-0-10V-Tx">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+        </activity>
+        <!-- generated GettingStarted_Yocto_0_10V_Tx stop -->   
+        <!-- generated GettingStarted_Yocto_IO start -->
+        <activity
+            android:name=".GettingStarted_Yocto_IO"
+            android:label="Yocto-IO">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+        </activity>
+        <!-- generated GettingStarted_Yocto_IO stop -->   
         <!-- generated GettingStarted_Yocto_RangeFinder start -->
         <activity
             android:name=".GettingStarted_Yocto_RangeFinder"

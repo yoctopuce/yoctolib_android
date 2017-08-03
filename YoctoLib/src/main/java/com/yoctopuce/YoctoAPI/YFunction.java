@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YFunction.java 27711 2017-06-01 12:42:19Z seb $
+ * $Id: YFunction.java 28090 2017-07-18 12:20:00Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -559,12 +559,12 @@ public class YFunction
      *
      * @throws YAPI_Exception on error
      */
-    public synchronized String get_hardwareId() throws YAPI_Exception
+    public String get_hardwareId() throws YAPI_Exception
     {
         return _yapi._yHash.resolveHwID(_className, _func);
     }
 
-    public synchronized String getHardwareId() throws YAPI_Exception
+    public String getHardwareId() throws YAPI_Exception
     {
         return _yapi._yHash.resolveHwID(_className, _func);
     }

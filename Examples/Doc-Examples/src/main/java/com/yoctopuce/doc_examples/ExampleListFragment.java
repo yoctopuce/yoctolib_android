@@ -20,6 +20,12 @@ public class ExampleListFragment extends ListFragment {
         mExampleList.add(new Example("Prog-EventBased", ProgEventBasedActivity.class, false));
         mExampleList.add(new Example("Prog-MODBUS", ProgModbus.class, false));
         /** generated start */
+        /** generated GettingStarted_Yocto_0_10V_Tx start */
+        mExampleList.add(new Example("Yocto-0-10V-Tx", GettingStarted_Yocto_0_10V_Tx.class, false));
+        /** generated GettingStarted_Yocto_0_10V_Tx stop */   
+        /** generated GettingStarted_Yocto_IO start */
+        mExampleList.add(new Example("Yocto-IO", GettingStarted_Yocto_IO.class, false));
+        /** generated GettingStarted_Yocto_IO stop */   
         /** generated GettingStarted_Yocto_RangeFinder start */
         mExampleList.add(new Example("Yocto-RangeFinder", GettingStarted_Yocto_RangeFinder.class, false));
         /** generated GettingStarted_Yocto_RangeFinder stop */   

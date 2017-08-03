@@ -96,8 +96,6 @@ class YPktStreamHead
     }
 
 
-
-
     NotificationStreams decodeAsNotification(String serial, boolean isV2) throws YAPI_Exception
     {
         try {
@@ -117,16 +115,15 @@ class YPktStreamHead
         _contentSize = dataLen;
     }
 
-    public void writeTo(ByteArrayOutputStream outputStream)
+    void writeTo(ByteArrayOutputStream outputStream)
     {
         outputStream.write(_content, _contentOfs, _contentSize);
     }
 
-    public byte getByte(int i)
+    byte getByte(int i)
     {
         return _content[_contentOfs + i];
     }
-
 
 
     /**
@@ -156,7 +153,7 @@ class YPktStreamHead
         static final int NOTIFY_PKT_FUNCNAMEYDX = 8;
 
 
-        public enum NotType
+        enum NotType
         {
             NAME, PRODNAME, CHILD, FIRMWARE, FUNCNAME, FUNCVAL, FUNCVAL_TINY, FUNCVALFLUSH, STREAMREADY, LOG, FUNCNAMEYDX
         }
@@ -169,11 +166,6 @@ class YPktStreamHead
         private String _logicalname;
         private byte _beacon;
         private String _product;
-        private String _childserial;
-        private String _firmware;
-        private byte _onOff;
-        private byte _devydy;
-        private int _vendorid;
         private int _deviceid;
         private String _funcname;
         private int _funydx;
@@ -193,7 +185,7 @@ class YPktStreamHead
             return new String(data, ofs, len);
         }
 
-        public YPEntry.BaseClass getFunclass()
+        YPEntry.BaseClass getFunclass()
         {
             if (_funclass >= YPEntry.BaseClass.values().length) {
                 // Unknown subclass, use YFunction instead
@@ -203,7 +195,7 @@ class YPktStreamHead
 
         }
 
-        public NotificationStreams(String serial, byte[] data, int ofs, int size, boolean isV2) throws YAPI_Exception
+        NotificationStreams(String serial, byte[] data, int ofs, int size, boolean isV2) throws YAPI_Exception
         {
             int firstByte = data[ofs];
             if (isV2 || firstByte <= NOTIFY_1STBYTE_MAXTINY || firstByte >= NOTIFY_1STBYTE_MINSMALL) {
@@ -236,17 +228,10 @@ class YPktStreamHead
                         break;
                     case NOTIFY_PKT_CHILD:
                         _notType = NotType.CHILD;
-                        _childserial = arrayToString(data, p, YAPI.YOCTO_SERIAL_LEN);
-                        p += YAPI.YOCTO_SERIAL_LEN;
-                        _onOff = data[p++];
-                        _devydy = data[p];
                         break;
                     case NOTIFY_PKT_FIRMWARE:
                         _notType = NotType.FIRMWARE;
-                        _firmware = arrayToString(data, p, YAPI.YOCTO_FIRMWARE_LEN);
-                        p += YAPI.YOCTO_FIRMWARE_LEN;
-                        _vendorid = data[p] + (data[p + 1] << 8);
-                        p += 2;
+                        p += YAPI.YOCTO_FIRMWARE_LEN + 2;
                         _deviceid = data[p] + (data[p + 1] << 8);
                         break;
                     case NOTIFY_PKT_FUNCNAME:
@@ -282,7 +267,7 @@ class YPktStreamHead
             }
         }
 
-        public NotType getNotType()
+        NotType getNotType()
         {
             return _notType;
         }
@@ -292,54 +277,45 @@ class YPktStreamHead
             return _serial;
         }
 
-        public String getFuncval()
+        String getFuncval()
         {
             return _funcval;
         }
 
-        public String getLogicalname()
+        String getLogicalname()
         {
             return _logicalname;
         }
 
-        public byte getBeacon()
+        byte getBeacon()
         {
             return _beacon;
         }
 
-        public String getProduct()
+        String getProduct()
         {
             return _product;
         }
 
-        public byte getDevydy()
-        {
-            return _devydy;
-        }
 
-        public int getDeviceid()
+        int getDeviceid()
         {
             return _deviceid;
         }
 
-        public String getFuncname()
+        String getFuncname()
         {
             return _funcname;
         }
 
-        public int getFunydx()
+        int getFunydx()
         {
             return _funydx;
         }
 
-        public String getFunctionId()
+        String getFunctionId()
         {
             return _functionId;
-        }
-
-        public String getHardwareId()
-        {
-            return _serial + "." + _functionId;
         }
 
     }

@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 27803 2017-06-12 16:32:30Z seb $
+ * $Id: YUSBHub.java 28090 2017-07-18 12:20:00Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -101,7 +101,7 @@ class YUSBHub extends YGenericHub
                     }
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                _yctx._Log("HUB_USB: uplug of device " + deviceName + "\n");
+                _yctx._Log("HUB_USB: unplug of device " + deviceName + "\n");
                 if (yusbRawDevice != null) {
                     yusbRawDevice.unplug();
                 }
@@ -386,7 +386,7 @@ class YUSBHub extends YGenericHub
         }
         Context app_ctx = ((Context) ctx).getApplicationContext();
         if (sAppContext != null && app_ctx != sAppContext) {
-            throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Android Application Context allready set");
+            throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Android Application Context already set");
         }
         sAppContext = app_ctx;
     }

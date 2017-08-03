@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 27832 2017-06-14 14:42:23Z seb $
+ * $Id: YUSBDevice.java 28106 2017-07-24 13:10:56Z seb $
  *
  * YUSBDevice Class:
  *
@@ -194,7 +194,6 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
                     break;
                 case Close_by_dev:
                 case Closed:
-
                     _usbHub._yctx._Log("Drop unexpected close from device\n");
                     break;
                 case Opened:
@@ -482,7 +481,7 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
     }
 
 
-    /**
+    /*
      * methods related incoming data handler
      */
 
