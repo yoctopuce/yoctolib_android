@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 28090 2017-07-18 12:20:00Z seb $
+ * $Id: YUSBHub.java 28322 2017-08-08 07:45:31Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -92,6 +92,9 @@ class YUSBHub extends YGenericHub
                 }
                 synchronized (_permissionPending) {
                     YUSBRawDevice current = _permissionPending.poll();
+                    if (current==null){
+                        return;
+                    }
                     if (!current.getUsbDevice().equals(device)) {
                         return;
                     }
