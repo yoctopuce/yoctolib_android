@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 28322 2017-08-08 07:45:31Z seb $
+ * $Id: YUSBHub.java 28365 2017-08-16 09:25:03Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -111,6 +111,12 @@ class YUSBHub extends YGenericHub
             }
         }
     };
+
+    @Override
+    boolean isCallbackMode()
+    {
+        return false;
+    }
 
     @Override
     String getSerialNumber()
