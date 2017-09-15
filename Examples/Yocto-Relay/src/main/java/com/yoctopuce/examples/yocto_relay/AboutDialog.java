@@ -76,7 +76,7 @@ public class AboutDialog extends DialogFragment {
         aboutBodyView.setMovementMethod(new LinkMovementMethod());
 
         return new AlertDialog.Builder(activity)
-                .setIcon(R.drawable.yoctorelay)
+                .setIcon(R.mipmap.ic_launcher)
                 .setTitle(R.string.app_name)
                 .setView(aboutBodyView)
                 .setPositiveButton(android.R.string.ok,
