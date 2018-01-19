@@ -1,2 +1,2 @@
-- Add YMultiCellWeighScale class
-- Fix race condition that could lead to a deadlock
+- Update gradle script to support Android Studio 3.x
+- Fix handling of functionIds of length 19 (Yocto-MaxiBridge & Yocto-Stepper)
