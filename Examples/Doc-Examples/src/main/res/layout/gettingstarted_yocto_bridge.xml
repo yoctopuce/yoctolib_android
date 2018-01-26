@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="5"
-        android:text="Select a Yocto-MaxiBridge output:"
+        android:text="Select a Yocto-Bridge output:"
         tools:ignore="HardcodedText"/>
 
     <Spinner
