@@ -61,13 +61,13 @@ public class YAPIContext
             PLUG, UNPLUG, CHANGE
         }
 
-        public Event ev;
-        public YModule module;
+        Event ev;
+        public String serial;
 
-        public PlugEvent(YAPIContext yctx, Event ev, String serial)
+        PlugEvent(YAPIContext yctx, Event ev, String serial)
         {
             this.ev = ev;
-            this.module = YModule.FindModuleInContext(yctx, serial + ".module");
+            this.serial = serial;
         }
     }
 
@@ -646,19 +646,22 @@ public class YAPIContext
                 switch (evt.ev) {
                     case PLUG:
                         if (_arrivalCallback != null) {
-                            _arrivalCallback.yDeviceArrival(evt.module);
+                            YModule module = YModule.FindModuleInContext(this, evt.serial + ".module");
+                            _arrivalCallback.yDeviceArrival(module);
                         }
                         break;
                     case CHANGE:
                         if (_namechgCallback != null) {
-                            _namechgCallback.yDeviceChange(evt.module);
+                            YModule module = YModule.FindModuleInContext(this, evt.serial + ".module");
+                            _namechgCallback.yDeviceChange(module);
                         }
                         break;
                     case UNPLUG:
                         if (_removalCallback != null) {
-                            _removalCallback.yDeviceRemoval(evt.module);
+                            YModule module = YModule.FindModuleInContext(this, evt.serial + ".module");
+                            _removalCallback.yDeviceRemoval(module);
                         }
-                        _yHash.forgetDevice(evt.module.get_serialNumber());
+                        _yHash.forgetDevice(evt.serial);
                         break;
                 }
             }
