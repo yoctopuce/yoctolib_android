@@ -3,6 +3,7 @@ package com.yoctopuce.doc_examples;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.yoctopuce.YoctoAPI.YAPI;
@@ -14,26 +15,32 @@ import com.yoctopuce.YoctoAPI.YSensor;
 
 import java.util.Date;
 
-public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceArrivalCallback, YAnButton.UpdateCallback,YSensor.TimedReportCallback,YSensor.UpdateCallback,YAPI.DeviceRemovalCallback {
+public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceArrivalCallback, YAnButton.UpdateCallback, YSensor.TimedReportCallback, YSensor.UpdateCallback, YAPI.DeviceRemovalCallback, YModule.ConfigChangeCallback
+{
 
     private static final String TAG = "Prog-EventBased";
 
-    private class Events {
-		private Date mDate;
-		private String mLastNotifications;
 
-		public Events(Date date, String msg) {
+    private class Events
+    {
+        private Date mDate;
+        private String mLastNotifications;
+
+        public Events(Date date, String msg)
+        {
             mDate = date;
             mLastNotifications = msg;
         }
 
-		@Override
-		public String toString() {
+        @Override
+        public String toString()
+        {
             return mDate.toString() + ": " + mLastNotifications;
         }
-	}
+    }
 
-    private void pushEvent(String message) {
+    private void pushEvent(String message)
+    {
         mAdapter.add(new Events(new Date(), message));
     }
 
@@ -41,52 +48,51 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
     private ArrayAdapter<Events> mAdapter;
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         mAdapter = new ArrayAdapter<Events>(getActivity(),
-		        android.R.layout.simple_list_item_1);
+                android.R.layout.simple_list_item_1);
         setListAdapter(mAdapter);
     }
 
 
     @Override
-	public void onResume()
+    public void onResume()
     {
         super.onResume();
-            try {
-                YAPI.RegisterDeviceArrivalCallback(this);
-                YAPI.RegisterDeviceRemovalCallback(this);
-                YAPI.EnableUSBHost(getActivity());
-                YAPI.RegisterHub("usb");
-                mRunnable.run();
-            } catch (YAPI_Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            YAPI.RegisterDeviceArrivalCallback(this);
+            YAPI.RegisterDeviceRemovalCallback(this);
+            YAPI.EnableUSBHost(getActivity());
+            YAPI.RegisterHub("usb");
+            mHandler.postDelayed(mRunnable, 300);
+        } catch (YAPI_Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
     private Handler mHandler = new Handler();
-    private Runnable mRunnable = new Runnable(){
+    private Runnable mRunnable = new Runnable()
+    {
         @Override
-        public void run() {
+        public void run()
+        {
             try {
                 YAPI.UpdateDeviceList();
                 YAPI.HandleEvents();
             } catch (YAPI_Exception e) {
                 e.printStackTrace();
             }
-            mHandler.postDelayed(mRunnable, 500);
+            mHandler.postDelayed(mRunnable, 300);
         }
     };
 
 
-
-
     @Override
-	public void onPause()
+    public void onPause()
     {
         super.onPause();
         YAPI.FreeAPI();
@@ -94,7 +100,8 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
 
 
     @Override
-    public void yNewValue(YAnButton fct, String value) {
+    public void yNewValue(YAnButton fct, String value)
+    {
         try {
             pushEvent(fct.get_hardwareId() + ": " + value + " (new value)");
         } catch (YAPI_Exception e) {
@@ -103,7 +110,8 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
     }
 
     @Override
-    public void yNewValue(YSensor fct, String value) {
+    public void yNewValue(YSensor fct, String value)
+    {
         try {
             pushEvent(fct.get_hardwareId() + ": " + value + " (new value)");
         } catch (YAPI_Exception e) {
@@ -112,7 +120,8 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
     }
 
     @Override
-    public void timedReportCallback(YSensor fct, YMeasure measure) {
+    public void timedReportCallback(YSensor fct, YMeasure measure)
+    {
         try {
             pushEvent(fct.get_hardwareId() + ": " + measure.get_averageValue() + " " + fct.get_unit() + " (timed report)" + measure.get_minValue() + "/" + measure.get_maxValue());
         } catch (YAPI_Exception e) {
@@ -121,10 +130,12 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
     }
 
     @Override
-    public void yDeviceArrival(YModule module) {
+    public void yDeviceArrival(YModule module)
+    {
         try {
             String serial = module.get_serialNumber();
             pushEvent("Device arrival : " + serial);
+            module.registerConfigChangeCallback(this);
 
             // First solution: look for a specific type of function (eg. anButton)
             int fctcount = module.functionCount();
@@ -154,8 +165,15 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
     }
 
     @Override
-    public void yDeviceRemoval(YModule module) {
+    public void yDeviceRemoval(YModule module)
+    {
         pushEvent("Device removal : " + module);
+    }
+
+    @Override
+    public void configChangeCallback(YModule module)
+    {
+        pushEvent("Config change : " + module);
     }
 
 

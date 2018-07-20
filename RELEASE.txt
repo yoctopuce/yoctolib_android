@@ -1,3 +1,7 @@
-- Add new PWMOutput methods
-- Improve function documentation in French for PWM-Tx
-- Fix Modbus ASCII message handling
+Android v1.10.31315
+
+- Update gradle script to support Android Studio 3.1.2
+- Add support for WebSocket connection
+- Add support for phaseMove in PWMOutput class
+- Add support for config change notifications
+- Fix race condition that can lead to a dead lock during user callback

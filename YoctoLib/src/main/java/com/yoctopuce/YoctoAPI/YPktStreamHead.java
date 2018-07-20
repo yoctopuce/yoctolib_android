@@ -151,11 +151,12 @@ class YPktStreamHead
         static final int NOTIFY_PKT_STREAMREADY = 6;
         static final int NOTIFY_PKT_LOG = 7;
         static final int NOTIFY_PKT_FUNCNAMEYDX = 8;
+        static final int NOTIFY_PKT_CONFCHANGE = 10;
 
 
         enum NotType
         {
-            NAME, PRODNAME, CHILD, FIRMWARE, FUNCNAME, FUNCVAL, FUNCVAL_TINY, FUNCVALFLUSH, STREAMREADY, LOG, FUNCNAMEYDX
+            NAME, PRODNAME, CHILD, FIRMWARE, FUNCNAME, FUNCVAL, FUNCVAL_TINY, FUNCVALFLUSH, STREAMREADY, LOG, FUNCNAMEYDX, CONFCHANGE
         }
 
         private final NotType _notType;
@@ -251,6 +252,9 @@ class YPktStreamHead
                         break;
                     case NOTIFY_PKT_LOG:
                         _notType = NotType.LOG;
+                        break;
+                    case NOTIFY_PKT_CONFCHANGE:
+                        _notType = NotType.CONFCHANGE;
                         break;
                     case NOTIFY_PKT_FUNCNAMEYDX:
                         _notType = NotType.FUNCNAMEYDX;

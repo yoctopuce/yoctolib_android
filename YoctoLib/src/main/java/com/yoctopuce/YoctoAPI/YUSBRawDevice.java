@@ -1,7 +1,7 @@
-/**
+/*
  * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 27832 2017-06-14 14:42:23Z seb $
+ * $Id: YUSBRawDevice.java 31284 2018-07-19 10:38:39Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -56,7 +56,7 @@ import java.util.Locale;
 class YUSBRawDevice implements Runnable
 {
     private State _state;
-    private YUSBHub _usbHub;
+    private final YUSBHub _usbHub;
     private String _serial;
 
     public String getSerial()
@@ -89,6 +89,7 @@ class YUSBRawDevice implements Runnable
     private boolean _ioStarted;
 
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean mustBgThreadStop()
     {
         boolean b;
@@ -151,28 +152,28 @@ class YUSBRawDevice implements Runnable
         }
     }
 
-    boolean permissionAccepted()
+    void permissionAccepted()
     {
         /* Open a connection to the USB device */
         _connection = _manager.openDevice(_device);
         if (_connection == null) {
             _usbHub._yctx._Log("unable to open connection to device " + _device.getDeviceName());
             release();
-            return false;
+            return;
         }
 
 		/* Claim the required interface to gain access to it */
         if (!_connection.claimInterface(_intf, true)) {
             _usbHub._yctx._Log("unable to claim interface 0 for device " + _device.getDeviceName());
             release();
-            return false;
+            return;
         }
         String serial = _connection.getSerial();
         if (serial == null) {
             if (_serial == null) {
                 _usbHub._yctx._Log("unable to get serial for device " + _device.getDeviceName());
                 release();
-                return false;
+                return;
             }
             _usbHub._yctx._Log("unable to get serial for device " + _device.getDeviceName() + " reuse old one (" + _serial + ")");
         } else {
@@ -191,17 +192,16 @@ class YUSBRawDevice implements Runnable
                 } catch (InterruptedException e) {
                     _usbHub._yctx._Log("unable to start IOThread: " + e.getLocalizedMessage());
                     release();
-                    return false;
+                    return;
                 }
             }
             if (!_ioStarted) {
                 _usbHub._yctx._Log("unable to start IOThread ");
                 release();
-                return false;
+                return;
             }
         }
         _ioHandler.rawDeviceUpdateState(this);
-        return true;
     }
 
     void permissionRejected()

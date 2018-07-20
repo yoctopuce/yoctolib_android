@@ -1,7 +1,7 @@
 /**
  * ******************************************************************
  *
- * $Id: YUSBPkt.java 26580 2017-02-08 09:59:57Z seb $
+ * $Id: YUSBPkt.java 31315 2018-07-20 07:20:53Z seb $
  *
  * YUSBPkt Class: USB packet definitions
  *
@@ -48,7 +48,10 @@ abstract class YUSBPkt
 {
     // generic pkt definitions
     protected static final int YPKT_USB_LEGACY_VERSION_BCD = 0x0207;
-    static final int YPKT_USB_VERSION_BCD = 0x0208;
+    static final int YPKT_USB_VERSION_NO_CONFCHG_BCD = 0x0208;
+    static final int YPKT_USB_VERSION_BCD = 0x0209;
+
+
     public static final int USB_PKT_SIZE = 64;
 
 
