@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YMagnetometer.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YMagnetometer.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindMagnetometer(), the high-level API for Magnetometer functions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 //--- (YMagnetometer return codes)
 //--- (end of YMagnetometer return codes)
+//--- (YMagnetometer yapiwrapper)
+//--- (end of YMagnetometer yapiwrapper)
 //--- (YMagnetometer class start)
 /**
  * YMagnetometer Class: Magnetometer function interface
@@ -164,7 +166,7 @@ public class YMagnetometer extends YSensor
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return BANDWIDTH_INVALID;
                 }
             }
@@ -233,7 +235,7 @@ public class YMagnetometer extends YSensor
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return XVALUE_INVALID;
                 }
             }
@@ -268,7 +270,7 @@ public class YMagnetometer extends YSensor
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return YVALUE_INVALID;
                 }
             }
@@ -303,7 +305,7 @@ public class YMagnetometer extends YSensor
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return ZVALUE_INVALID;
                 }
             }

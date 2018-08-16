@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YVoc.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YVoc.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindVoc(), the high-level API for Voc functions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 //--- (YVoc return codes)
 //--- (end of YVoc return codes)
+//--- (YVoc yapiwrapper)
+//--- (end of YVoc yapiwrapper)
 //--- (YVoc class start)
 /**
  * YVoc Class: Voc function interface

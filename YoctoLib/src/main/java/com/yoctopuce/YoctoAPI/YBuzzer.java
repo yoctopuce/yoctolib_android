@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YBuzzer.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YBuzzer.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindBuzzer(), the high-level API for Buzzer functions
  *
@@ -42,6 +42,8 @@ import java.util.Locale;
 
 //--- (YBuzzer return codes)
 //--- (end of YBuzzer return codes)
+//--- (YBuzzer yapiwrapper)
+//--- (end of YBuzzer yapiwrapper)
 //--- (YBuzzer class start)
 /**
  * YBuzzer Class: Buzzer function interface
@@ -207,7 +209,7 @@ public class YBuzzer extends YFunction
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return FREQUENCY_INVALID;
                 }
             }
@@ -240,7 +242,7 @@ public class YBuzzer extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return VOLUME_INVALID;
                 }
             }
@@ -306,7 +308,7 @@ public class YBuzzer extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return PLAYSEQSIZE_INVALID;
                 }
             }
@@ -339,7 +341,7 @@ public class YBuzzer extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration == 0) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return PLAYSEQMAXSIZE_INVALID;
                 }
             }
@@ -375,7 +377,7 @@ public class YBuzzer extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return PLAYSEQSIGNATURE_INVALID;
                 }
             }
@@ -404,7 +406,7 @@ public class YBuzzer extends YFunction
         String res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return COMMAND_INVALID;
                 }
             }

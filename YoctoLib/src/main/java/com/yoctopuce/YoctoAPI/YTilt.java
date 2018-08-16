@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YTilt.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YTilt.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindTilt(), the high-level API for Tilt functions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 //--- (YTilt return codes)
 //--- (end of YTilt return codes)
+//--- (YTilt yapiwrapper)
+//--- (end of YTilt yapiwrapper)
 //--- (YTilt class start)
 /**
  * YTilt Class: Tilt function interface
@@ -151,7 +153,7 @@ public class YTilt extends YSensor
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return BANDWIDTH_INVALID;
                 }
             }
@@ -212,7 +214,7 @@ public class YTilt extends YSensor
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return AXIS_INVALID;
                 }
             }

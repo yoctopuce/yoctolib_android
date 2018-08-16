@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YDataLogger.java 27711 2017-06-01 12:42:19Z seb $
+ * $Id: YDataLogger.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements yFindDataLogger(), the high-level API for DataLogger functions
  *
@@ -270,7 +270,7 @@ public class YDataLogger extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return CURRENTRUNINDEX_INVALID;
                 }
             }
@@ -305,7 +305,7 @@ public class YDataLogger extends YFunction
         long res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return TIMEUTC_INVALID;
                 }
             }
@@ -372,7 +372,7 @@ public class YDataLogger extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return RECORDING_INVALID;
                 }
             }
@@ -443,7 +443,7 @@ public class YDataLogger extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return AUTOSTART_INVALID;
                 }
             }
@@ -517,7 +517,7 @@ public class YDataLogger extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return BEACONDRIVEN_INVALID;
                 }
             }
@@ -583,7 +583,7 @@ public class YDataLogger extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return CLEARHISTORY_INVALID;
                 }
             }

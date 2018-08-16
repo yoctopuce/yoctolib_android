@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YGenericHub.java 31295 2018-07-19 10:52:02Z seb $
+ * $Id: YGenericHub.java 31422 2018-08-07 11:48:32Z seb $
  *
  * Internal YGenericHub object
  *
@@ -110,7 +110,7 @@ abstract class YGenericHub
     int _hubidx;
     protected long _notifyTrigger = 0;
     protected Object _notifyHandle = null;
-    volatile long _devListValidity = 500;
+    volatile boolean _isNotifWorking = false;
     long _devListExpires = 0;
     final ConcurrentHashMap<Integer, String> _serialByYdx = new ConcurrentHashMap<>();
     private HashMap<String, YDevice> _devices = new HashMap<>();
@@ -311,7 +311,7 @@ abstract class YGenericHub
 
     void handleConfigChangeNotification(String serial)
     {
-        YModule module = YModule.FindModuleInContext(_yctx,serial+".module");
+        YModule module = YModule.FindModuleInContext(_yctx, serial + ".module");
         _yctx._PushDataEvent(new YAPIContext.DataEvent(module));
     }
 
@@ -513,7 +513,7 @@ abstract class YGenericHub
         @Override
         public String toString()
         {
-            return _proto + "/" + _host + ':' + _port +_subDomain;
+            return _proto + "/" + _host + ':' + _port + _subDomain;
         }
     }
 }

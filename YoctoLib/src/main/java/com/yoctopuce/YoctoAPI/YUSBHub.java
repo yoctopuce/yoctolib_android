@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 28365 2017-08-16 09:25:03Z seb $
+ * $Id: YUSBHub.java 31422 2018-08-07 11:48:32Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -56,6 +56,7 @@ class YUSBHub extends YGenericHub
 {
     private static final String ACTION_USB_PERMISSION = "com.yoctopuce.YoctoAPI.USB_PERMISSION";
     private static final long YPROG_BOOTLOADER_TIMEOUT = 3600000;// 1 hour
+    private static final int USB_ENUMERATION_DELAY = 1000;
     private static Context sAppContext = null;
     private final HashMap<String, YUSBRawDevice> _usbDevices = new HashMap<>(1);
     private final HashMap<String, YUSBDevice> _devsFromAndroidRef = new HashMap<>(2);
@@ -294,7 +295,7 @@ class YUSBHub extends YGenericHub
         updateFromWpAndYp(whitePages, yellowPages);
         // reset device list cache timeout for this hub
         now = YAPI.GetTickCount();
-        _devListExpires = now + _devListValidity;
+        _devListExpires = now + USB_ENUMERATION_DELAY;
     }
 
     @Override

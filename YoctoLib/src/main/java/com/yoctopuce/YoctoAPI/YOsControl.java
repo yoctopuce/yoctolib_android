@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YOsControl.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YOsControl.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindOsControl(), the high-level API for OsControl functions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 //--- (YOsControl return codes)
 //--- (end of YOsControl return codes)
+//--- (YOsControl yapiwrapper)
+//--- (end of YOsControl yapiwrapper)
 //--- (YOsControl class start)
 /**
  * YOsControl Class: OS control
@@ -135,7 +137,7 @@ public class YOsControl extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return SHUTDOWNCOUNTDOWN_INVALID;
                 }
             }

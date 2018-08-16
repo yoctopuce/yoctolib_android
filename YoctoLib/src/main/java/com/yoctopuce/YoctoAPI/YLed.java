@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YLed.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YLed.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindLed(), the high-level API for Led functions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 //--- (YLed return codes)
 //--- (end of YLed return codes)
+//--- (YLed yapiwrapper)
+//--- (end of YLed yapiwrapper)
 //--- (YLed class start)
 /**
  * YLed Class: Led function interface
@@ -157,7 +159,7 @@ public class YLed extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return POWER_INVALID;
                 }
             }
@@ -223,7 +225,7 @@ public class YLed extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return LUMINOSITY_INVALID;
                 }
             }
@@ -290,7 +292,7 @@ public class YLed extends YFunction
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return BLINKING_INVALID;
                 }
             }

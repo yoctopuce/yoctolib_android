@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YPower.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YPower.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindPower(), the high-level API for Power functions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 //--- (YPower return codes)
 //--- (end of YPower return codes)
+//--- (YPower yapiwrapper)
+//--- (end of YPower yapiwrapper)
 //--- (YPower class start)
 /**
  * YPower Class: Power function interface
@@ -153,7 +155,7 @@ public class YPower extends YSensor
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return COSPHI_INVALID;
                 }
             }
@@ -201,7 +203,7 @@ public class YPower extends YSensor
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return METER_INVALID;
                 }
             }
@@ -236,7 +238,7 @@ public class YPower extends YSensor
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return METERTIMER_INVALID;
                 }
             }

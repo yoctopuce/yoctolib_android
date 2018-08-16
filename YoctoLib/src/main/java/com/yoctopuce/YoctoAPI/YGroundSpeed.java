@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YGroundSpeed.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YGroundSpeed.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindGroundSpeed(), the high-level API for GroundSpeed functions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 //--- (YGroundSpeed return codes)
 //--- (end of YGroundSpeed return codes)
+//--- (YGroundSpeed yapiwrapper)
+//--- (end of YGroundSpeed yapiwrapper)
 //--- (YGroundSpeed class start)
 /**
  * YGroundSpeed Class: GroundSpeed function interface

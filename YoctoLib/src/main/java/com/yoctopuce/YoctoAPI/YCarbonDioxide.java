@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCarbonDioxide.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YCarbonDioxide.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindCarbonDioxide(), the high-level API for CarbonDioxide functions
  *
@@ -41,6 +41,8 @@ package com.yoctopuce.YoctoAPI;
 
 //--- (YCarbonDioxide return codes)
 //--- (end of YCarbonDioxide return codes)
+//--- (YCarbonDioxide yapiwrapper)
+//--- (end of YCarbonDioxide yapiwrapper)
 //--- (YCarbonDioxide class start)
 /**
  * YCarbonDioxide Class: CarbonDioxide function interface
@@ -144,7 +146,7 @@ public class YCarbonDioxide extends YSensor
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return ABCPERIOD_INVALID;
                 }
             }
@@ -212,7 +214,7 @@ public class YCarbonDioxide extends YSensor
         String res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return COMMAND_INVALID;
                 }
             }

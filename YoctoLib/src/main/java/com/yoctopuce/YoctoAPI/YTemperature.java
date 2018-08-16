@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YTemperature.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YTemperature.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindTemperature(), the high-level API for Temperature functions
  *
@@ -43,6 +43,8 @@ import java.util.Locale;
 
 //--- (YTemperature return codes)
 //--- (end of YTemperature return codes)
+//--- (YTemperature yapiwrapper)
+//--- (end of YTemperature yapiwrapper)
 //--- (YTemperature class start)
 /**
  * YTemperature Class: Temperature function interface
@@ -232,7 +234,7 @@ public class YTemperature extends YSensor
         int res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return SENSORTYPE_INVALID;
                 }
             }
@@ -321,7 +323,7 @@ public class YTemperature extends YSensor
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return SIGNALVALUE_INVALID;
                 }
             }
@@ -355,7 +357,7 @@ public class YTemperature extends YSensor
         String res;
         synchronized (this) {
             if (_cacheExpiration == 0) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return SIGNALUNIT_INVALID;
                 }
             }
@@ -381,7 +383,7 @@ public class YTemperature extends YSensor
         String res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return COMMAND_INVALID;
                 }
             }

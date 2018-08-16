@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YVoltageOutput.java 28737 2017-10-03 08:05:36Z seb $
+ * $Id: YVoltageOutput.java 31380 2018-07-27 12:37:43Z seb $
  *
  * Implements FindVoltageOutput(), the high-level API for VoltageOutput functions
  *
@@ -42,6 +42,8 @@ import java.util.Locale;
 
 //--- (YVoltageOutput return codes)
 //--- (end of YVoltageOutput return codes)
+//--- (YVoltageOutput yapiwrapper)
+//--- (end of YVoltageOutput yapiwrapper)
 //--- (YVoltageOutput class start)
 /**
  * YVoltageOutput Class: VoltageOutput function interface
@@ -181,7 +183,7 @@ public class YVoltageOutput extends YFunction
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return CURRENTVOLTAGE_INVALID;
                 }
             }
@@ -207,7 +209,7 @@ public class YVoltageOutput extends YFunction
         String res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return VOLTAGETRANSITION_INVALID;
                 }
             }
@@ -274,7 +276,7 @@ public class YVoltageOutput extends YFunction
         double res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(YAPI.DefaultCacheValidity) != YAPI.SUCCESS) {
+                if (load(_yapi._cacheValidity) != YAPI.SUCCESS) {
                     return VOLTAGEATSTARTUP_INVALID;
                 }
             }

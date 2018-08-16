@@ -51,18 +51,16 @@ public class Updatable
             } catch (NumberFormatException ignore) {
                 minrelease = 0;
             }
-            try {
-                _latestFirmwarePath = YFirmwareUpdate.CheckFirmware(_serial, "www.yoctopuce.com", minrelease);
-                _latestFirmwareRev = "";
-                if (_latestFirmwarePath.length()>0) {
-                    String[] parts = _latestFirmwarePath.split("\\.");
-                    if (parts.length > 3) {
-                        _latestFirmwareRev = parts[parts.length - 2];
-                    }
-                }
-            } catch (YAPI_Exception e) {
-                e.printStackTrace();
+            _latestFirmwarePath = YFirmwareUpdate.CheckFirmware(_serial, "www.yoctopuce.com", minrelease);
+            _latestFirmwareRev = "";
+            if (_latestFirmwarePath.startsWith("error:")) {
                 return "";
+            }
+            if (_latestFirmwarePath.length()>0) {
+                String[] parts = _latestFirmwarePath.split("\\.");
+                if (parts.length > 3) {
+                    _latestFirmwareRev = parts[parts.length - 2];
+                }
             }
         }
         return _latestFirmwarePath;
