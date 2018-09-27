@@ -2,7 +2,6 @@ package com.yoctopuce.examples.yocto_graph;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.yoctopuce.YoctoAPI.YAPI;
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
@@ -31,7 +30,7 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
     private final Context _appcontext;
     private long _lastUpdate;
 
-    synchronized public static YoctopuceBgThread Start(Context context)
+    public static YoctopuceBgThread Start(Context context)
     {
         if (sInstance == null) {
             sInstance = new YoctopuceBgThread(context.getApplicationContext());
@@ -41,7 +40,7 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
         return sInstance;
     }
 
-    synchronized public static void Stop()
+    public static void Stop()
     {
         sRefCounter--;
         sLastStop = System.currentTimeMillis();
@@ -104,9 +103,16 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
                     String functionId = ysensor.get_functionId();
                     //Log.d(TAG, "- " + functionId);
                     ThreadSafeSensor sens = new ThreadSafeSensor(serial, functionId);
-                    sens.updateFromYSensor(ysensor);
+
+                    String displayName = ysensor.getFriendlyName();
+                    String unit = ysensor.getUnit();
+                    double lastValue = ysensor.get_currentValue();
+                    double resolution = ysensor.get_resolution();
+                    sens.updateValues(displayName, unit, lastValue, resolution);
+
                     SensorStorage.get().add(sens);
                     _appcontext.sendBroadcast(new Intent(ACTION_SENSOR_LIST_CHANGED));
+
                     //data loading
                     long unixTime = System.currentTimeMillis() / 1000;
                     long startTime = unixTime - 3600;
@@ -120,6 +126,7 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
                             progress = newProgress;
                         }
                     }
+
                     ArrayList<YMeasure> measures = data.get_measures();
                     sens.setMeasures(measures);
                     ysensor.set_reportFrequency("60/m");

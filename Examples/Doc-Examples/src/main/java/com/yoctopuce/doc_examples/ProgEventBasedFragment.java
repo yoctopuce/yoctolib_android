@@ -3,7 +3,6 @@ package com.yoctopuce.doc_examples;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.ArrayAdapter;
 
 import com.yoctopuce.YoctoAPI.YAPI;
@@ -14,8 +13,9 @@ import com.yoctopuce.YoctoAPI.YModule;
 import com.yoctopuce.YoctoAPI.YSensor;
 
 import java.util.Date;
+import java.util.Locale;
 
-public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceArrivalCallback, YAnButton.UpdateCallback, YSensor.TimedReportCallback, YSensor.UpdateCallback, YAPI.DeviceRemovalCallback, YModule.ConfigChangeCallback
+public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceArrivalCallback, YAnButton.UpdateCallback, YSensor.TimedReportCallback, YSensor.UpdateCallback, YAPI.DeviceRemovalCallback, YModule.ConfigChangeCallback, YModule.BeaconCallback
 {
 
     private static final String TAG = "Prog-EventBased";
@@ -136,6 +136,7 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
             String serial = module.get_serialNumber();
             pushEvent("Device arrival : " + serial);
             module.registerConfigChangeCallback(this);
+            module.registerBeaconCallback(this);
 
             // First solution: look for a specific type of function (eg. anButton)
             int fctcount = module.functionCount();
@@ -174,6 +175,12 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
     public void configChangeCallback(YModule module)
     {
         pushEvent("Config change : " + module);
+    }
+
+    @Override
+    public void beaconCallback(YModule module, int beacon)
+    {
+        pushEvent(String.format(Locale.US, "Beacon changed to %d : %s", beacon, module.toString()));
     }
 
 

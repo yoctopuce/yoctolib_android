@@ -1,27 +1,77 @@
 package com.yoctopuce.examples.yocto_graph;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 
-public abstract class SingleFragmentActivity extends FragmentActivity {
+public class SingleFragmentActivity extends FragmentActivity {
 
-	protected abstract Fragment createFragment();
-	
+    private Fragment _fragment;
+
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_fragment);
+
+        final ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            // set up list nav
+            ArrayAdapter<CharSequence> graphDurationAdapter = ArrayAdapter.createFromResource(this, R.array.graph_duration,
+                    android.R.layout.simple_spinner_dropdown_item);
+
+            actionBar.setListNavigationCallbacks(graphDurationAdapter,
+                    new ActionBar.OnNavigationListener()
+                    {
+                        public boolean onNavigationItemSelected(int itemPosition,
+                                                                long itemId)
+                        {
+                            int graphRange;
+                            switch (itemPosition) {
+                                case 0:
+                                    graphRange = 60000;
+                                    break;
+                                case 1:
+                                    graphRange = 5 * 60000;
+                                    break;
+                                case 2:
+                                    graphRange = 15 * 60000;
+                                    break;
+                                case 3:
+                                    graphRange = 30 * 60000;
+                                    break;
+                                case 4:
+                                    graphRange = 60 * 60000;
+                                    break;
+                                default:
+                                    return false;
+                            }
+                            ((GraphListFragment)_fragment).onRangeChange(graphRange);
+
+                            return false;
+                        }
+                    });
+            actionBar.setSelectedNavigationItem(0);
+        }
+
+
+
 		FragmentManager fm = getSupportFragmentManager();
-		Fragment fragment = fm.findFragmentById(R.id.fragmentContainter);
-		if (fragment == null) {
-			fragment = createFragment();
-			fm.beginTransaction().add(R.id.fragmentContainter, fragment)
+        _fragment = fm.findFragmentById(R.id.fragmentContainter);
+		if (_fragment == null) {
+			_fragment =  new GraphListFragment();
+			fm.beginTransaction().add(R.id.fragmentContainter, _fragment)
 					.commit();
 		}
+
+
+
 	}
 
 
@@ -47,6 +97,24 @@ public abstract class SingleFragmentActivity extends FragmentActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+
+
+    @Override
+    public void onStart()
+    {
+        super.onStart();
+        YoctopuceBgThread.Start(this);
+    }
+
+
+    @Override
+    public void onStop()
+    {
+        YoctopuceBgThread.Stop();
+        super.onStop();
     }
 
 }

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSensor.java 31728 2018-08-17 08:23:25Z seb $
+ * $Id: YSensor.java 32324 2018-09-24 19:15:52Z seb $
  *
  * Implements yFindSensor(), the high-level API for Sensor functions
  *
@@ -1247,7 +1247,7 @@ public class YSensor extends YFunction
             return null;
         }
         hwid = serial + ".dataLogger";
-        logger  = YDataLogger.FindDataLogger(hwid);
+        logger = YDataLogger.FindDataLogger(hwid);
         return logger;
     }
 

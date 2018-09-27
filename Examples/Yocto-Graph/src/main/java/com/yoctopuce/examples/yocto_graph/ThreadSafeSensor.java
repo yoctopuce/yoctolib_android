@@ -1,6 +1,5 @@
 package com.yoctopuce.examples.yocto_graph;
 
-import com.yoctopuce.YoctoAPI.YAPI_Exception;
 import com.yoctopuce.YoctoAPI.YMeasure;
 import com.yoctopuce.YoctoAPI.YSensor;
 
@@ -33,23 +32,20 @@ public class ThreadSafeSensor
     }
 
 
-    void updateFromYSensor(YSensor sensor) throws YAPI_Exception
+    public void updateValues(String displayName, String unit, double lastValue, double resolution)
     {
-        _displayName = sensor.getFriendlyName();
-        _unit = sensor.getUnit();
-        _lastValue = sensor.get_currentValue();
-        _resolution = sensor.get_resolution();
+        _displayName = displayName;
+        _unit = unit;
+        _lastValue = lastValue;
+        _resolution = resolution;
         _iresol = Math.round(1.0 / _resolution);
+
     }
+
 
     synchronized void setMeasures(ArrayList<YMeasure> measures)
     {
-        _measures = new LinkedList<YMeasure>(measures);
-    }
-
-    public String getFuctionId()
-    {
-        return _fuctionId;
+        _measures = new LinkedList<>(measures);
     }
 
     String getSerial()
@@ -70,14 +66,6 @@ public class ThreadSafeSensor
     String getUnit()
     {
         return _unit;
-    }
-
-    public synchronized ArrayList<YMeasure> getMeasures()
-    {
-        if (_measures != null) {
-            return new ArrayList<YMeasure>(_measures);
-        }
-        return null;
     }
 
 
@@ -133,7 +121,7 @@ public class ThreadSafeSensor
     synchronized void addMeasure(YMeasure measure)
     {
         if (_measures == null) {
-            _measures = new LinkedList<YMeasure>();
+            _measures = new LinkedList<>();
         }
         _measures.add(measure);
         double roundvalue = measure.get_averageValue() * _iresol;
@@ -166,4 +154,5 @@ public class ThreadSafeSensor
     {
         return _loadingProgress;
     }
+
 }

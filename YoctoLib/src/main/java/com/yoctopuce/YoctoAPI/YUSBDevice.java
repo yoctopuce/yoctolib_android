@@ -1,7 +1,7 @@
 /*
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 31315 2018-07-20 07:20:53Z seb $
+ * $Id: YUSBDevice.java 32330 2018-09-25 08:57:05Z seb $
  *
  * YUSBDevice Class:
  *
@@ -545,7 +545,11 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
                 break;
             case NAME:
                 _logicalname = not.getLogicalname();
+                if (_beacon != not.getBeacon()) {
+                    _usbHub.handleBeaconNotification(_serial,_logicalname,not.getBeacon());
+                }
                 _beacon = not.getBeacon();
+
                 break;
             case PRODNAME:
                 _productName = not.getProduct();

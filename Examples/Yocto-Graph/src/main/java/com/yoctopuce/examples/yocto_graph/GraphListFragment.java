@@ -1,6 +1,5 @@
 package com.yoctopuce.examples.yocto_graph;
 
-import android.app.ActionBar;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +7,10 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,46 +36,6 @@ public class GraphListFragment extends ListFragment
         getActivity().setTitle(R.string.title_activity_main);
         _Adapter = new GraphAdapter(SensorStorage.get().getSensorList());
         setListAdapter(_Adapter);
-        setHasOptionsMenu(true);
-
-        final ActionBar actionBar = getActivity().getActionBar();
-        if (actionBar != null) {
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            // set up list nav
-            ArrayAdapter<CharSequence> graphDurationAdapter = ArrayAdapter.createFromResource(getActivity(), R.array.graph_duration,
-                    android.R.layout.simple_spinner_dropdown_item);
-
-            actionBar.setListNavigationCallbacks(graphDurationAdapter,
-                    new ActionBar.OnNavigationListener()
-                    {
-                        public boolean onNavigationItemSelected(int itemPosition,
-                                                                long itemId)
-                        {
-                            switch (itemPosition) {
-                                case 0:
-                                    _graphRange = 60000;
-                                    break;
-                                case 1:
-                                    _graphRange = 5 * 60000;
-                                    break;
-                                case 2:
-                                    _graphRange = 15 * 60000;
-                                    break;
-                                case 3:
-                                    _graphRange = 30 * 60000;
-                                    break;
-                                case 4:
-                                    _graphRange = 60 * 60000;
-                                    break;
-                                default:
-                                    return false;
-                            }
-                            _Adapter.notifyDataSetChanged();
-                            return false;
-                        }
-                    });
-            actionBar.setSelectedNavigationItem(0);
-        }
 
     }
 
@@ -97,22 +54,6 @@ public class GraphListFragment extends ListFragment
         }
 
         return inflater.inflate(R.layout.graph_list_fragment, container, false);
-    }
-
-
-    @Override
-    public void onStart()
-    {
-        super.onStop();
-        YoctopuceBgThread.Start(getActivity());
-    }
-
-
-    @Override
-    public void onStop()
-    {
-        YoctopuceBgThread.Stop();
-        super.onStop();
     }
 
 
@@ -155,13 +96,19 @@ public class GraphListFragment extends ListFragment
         super.onPause();
     }
 
+    public void onRangeChange(int graphRange)
+    {
+        _graphRange = graphRange;
+        _Adapter.notifyDataSetChanged();
+    }
+
 
     private class GraphAdapter extends BaseAdapter
     {
 
         final Handler mHandler = new Handler();
         private ArrayList<ThreadSafeSensor> _sensors;
-        private final SparseArray<SimpleLiveGraph> _liveGraphs = new SparseArray<SimpleLiveGraph>();
+        private final SparseArray<SimpleLiveGraph> _liveGraphs = new SparseArray<>();
 
         GraphAdapter(ArrayList<ThreadSafeSensor> sensorList)
         {
@@ -199,21 +146,21 @@ public class GraphListFragment extends ListFragment
             }
             ThreadSafeSensor sensor = (ThreadSafeSensor) getItem(position);
             // add the graphical view to the LinearLayout
-            LinearLayout layout = (LinearLayout) convertView.findViewById(R.id.graph_list_item_graph);
+            LinearLayout layout = convertView.findViewById(R.id.graph_list_item_graph);
             layout.removeAllViews();
 
-            TextView nameView = (TextView) convertView.findViewById(R.id.graph_list_item_friendlyname);
+            TextView nameView = convertView.findViewById(R.id.graph_list_item_friendlyname);
 
             if (nameView != null) {
                 nameView.setText(sensor.getDisplayName());
             }
 
             if (sensor.isLoading()) {
-                TextView currentValueView = (TextView) convertView.findViewById(R.id.graph_list_item_currentvalue);
+                TextView currentValueView = convertView.findViewById(R.id.graph_list_item_currentvalue);
                 String string = String.format(Locale.US, getString(R.string.loading_val), sensor.getLoading());
                 currentValueView.setText(string);
             } else {
-                TextView currentValueView = (TextView) convertView.findViewById(R.id.graph_list_item_currentvalue);
+                TextView currentValueView = convertView.findViewById(R.id.graph_list_item_currentvalue);
                 String value = Double.toString(sensor.getLastValue());
                 currentValueView.setText(value + " " + sensor.getUnit());
 
