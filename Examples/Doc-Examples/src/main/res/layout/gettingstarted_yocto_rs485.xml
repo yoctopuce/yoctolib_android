@@ -46,7 +46,6 @@
         android:id="@+id/registerfield"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint=""
         android:inputType="number"
         tools:ignore="HardcodedText" />
 

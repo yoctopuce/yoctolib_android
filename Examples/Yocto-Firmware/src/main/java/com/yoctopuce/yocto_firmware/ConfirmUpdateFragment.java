@@ -38,8 +38,8 @@ public class ConfirmUpdateFragment extends DialogFragment {
             * implement this interface in order to receive event callbacks.
             * Each method passes the DialogFragment in case the host needs to query it. */
     public interface ConfirmUpdateListener {
-        public void onDialogPositiveClick(ConfirmUpdateFragment dialog);
-        public void onDialogNegativeClick(ConfirmUpdateFragment dialog);
+        void onDialogPositiveClick(ConfirmUpdateFragment dialog);
+        void onDialogNegativeClick(ConfirmUpdateFragment dialog);
     }
 
 
@@ -91,19 +91,19 @@ public class ConfirmUpdateFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
         View view = inflater.inflate(R.layout.dialog_confirm_update, null);
-        TextView paragraph = (TextView) view.findViewById(R.id.paragraph1);
+        TextView paragraph = view.findViewById(R.id.paragraph1);
         format = resources.getString(R.string.dialog_confirm_update_text);
         paragraph.setText(String.format(format, _product,_firmwareRev));
 
-        paragraph = (TextView) view.findViewById(R.id.paragraph2);
+        paragraph = view.findViewById(R.id.paragraph2);
         format = resources.getString(R.string.dialog_confirm_update_text2);
         paragraph.setText(String.format(format, resources.getString(R.string.app_name)));
 
-        paragraph = (TextView) view.findViewById(R.id.paragraph3);
+        paragraph = view.findViewById(R.id.paragraph3);
         format = resources.getString(R.string.dialog_confirm_update_text3);
         paragraph.setText(String.format(format, resources.getString(R.string.app_name)));
 
-        paragraph = (TextView) view.findViewById(R.id.paragraph4);
+        paragraph = view.findViewById(R.id.paragraph4);
         format = resources.getString(R.string.dialog_confirm_update_text4);
         paragraph.setText(String.format(format, resources.getString(R.string.app_name)));
 

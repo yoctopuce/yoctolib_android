@@ -46,14 +46,14 @@ public class DoUpdateActivity extends Activity {
         _firmware = intent.getStringExtra(ARG_FIRMWARE);
 
         // get widget references
-        TextView serialTextView = (TextView) findViewById(R.id.serial);
+        TextView serialTextView = findViewById(R.id.serial);
         serialTextView.setText(_serial);
-        TextView productTextView = (TextView) findViewById(R.id.product);
+        TextView productTextView = findViewById(R.id.product);
         productTextView.setText(_product);
-        _warningTextView = (TextView) findViewById(R.id.progress_headline);
-        _progressBar = (ProgressBar) findViewById(R.id.progress_bar);
-        _messageTextView = (TextView) findViewById(R.id.progress_msg);
-        _continueButton = (Button) findViewById(R.id.continue_button);
+        _warningTextView = findViewById(R.id.progress_headline);
+        _progressBar = findViewById(R.id.progress_bar);
+        _messageTextView = findViewById(R.id.progress_msg);
+        _continueButton = findViewById(R.id.continue_button);
         _yoctolibManager = YoctolibManager.Get(this);
 
     }

@@ -1,31 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest
-    package="com.yoctopuce.doc_examples"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="8"
-    android:versionName="1.0.8">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.yoctopuce.doc_examples">
 
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="21"/>
 
-    <uses-feature android:name="android.hardware.usb.host"/>
+    <uses-feature android:name="android.hardware.usb.host" />
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:allowBackup="true">
+        android:theme="@style/AppTheme">
         <activity
             android:name=".Doc_Examples"
             android:label="@string/title_activity_doc_examples">
             <!--android:clearTaskOnLaunch="true"-->
             <!--android:launchMode="singleInstance"-->
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
@@ -33,33 +27,33 @@
             android:label="@string/title_activity_doc_examples">
             android:noHistory="true">
             <intent-filter>
-                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"/>
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
 
             <meta-data
                 android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
-                android:resource="@xml/device_filter"/>
+                android:resource="@xml/device_filter" />
         </activity>
         <activity
             android:name=".HubListActivity"
             android:label="Hub list">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <activity
             android:name=".ProgEventBasedActivity"
             android:label="Prog-EventBased">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <activity
             android:name=".ProgModbus"
             android:label="Prog-MODBUS">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated start -->
         <!-- generated GettingStarted_Yocto_Color_V2 start -->
@@ -68,169 +62,169 @@
             android:label="Yocto-Color-V2">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_Color_V2 stop -->   
+        <!-- generated GettingStarted_Yocto_Color_V2 stop -->
         <!-- generated GettingStarted_Yocto_Bridge start -->
         <activity
             android:name=".GettingStarted_Yocto_Bridge"
             android:label="Yocto-Bridge">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_Bridge stop -->   
+        <!-- generated GettingStarted_Yocto_Bridge stop -->
         <!-- generated GettingStarted_Yocto_MaxiBridge start -->
         <activity
             android:name=".GettingStarted_Yocto_MaxiBridge"
             android:label="Yocto-MaxiBridge">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_MaxiBridge stop -->   
+        <!-- generated GettingStarted_Yocto_MaxiBridge stop -->
         <!-- generated GettingStarted_Yocto_0_10V_Tx start -->
         <activity
             android:name=".GettingStarted_Yocto_0_10V_Tx"
             android:label="Yocto-0-10V-Tx">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_0_10V_Tx stop -->   
+        <!-- generated GettingStarted_Yocto_0_10V_Tx stop -->
         <!-- generated GettingStarted_Yocto_IO start -->
         <activity
             android:name=".GettingStarted_Yocto_IO"
             android:label="Yocto-IO">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_IO stop -->   
+        <!-- generated GettingStarted_Yocto_IO stop -->
         <!-- generated GettingStarted_Yocto_RangeFinder start -->
         <activity
             android:name=".GettingStarted_Yocto_RangeFinder"
             android:label="Yocto-RangeFinder">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_RangeFinder stop -->   
+        <!-- generated GettingStarted_Yocto_RangeFinder stop -->
         <!-- generated GettingStarted_Yocto_Proximity start -->
         <activity
             android:name=".GettingStarted_Yocto_Proximity"
             android:label="Yocto-Proximity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_Proximity stop -->   
+        <!-- generated GettingStarted_Yocto_Proximity stop -->
         <!-- generated GettingStarted_Yocto_3D_V2 start -->
         <activity
             android:name=".GettingStarted_Yocto_3D_V2"
             android:label="Yocto-3D-V2">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_3D_V2 stop -->   
+        <!-- generated GettingStarted_Yocto_3D_V2 stop -->
         <!-- generated GettingStarted_Yocto_SPI start -->
         <activity
             android:name=".GettingStarted_Yocto_SPI"
             android:label="Yocto-SPI">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_SPI stop -->   
+        <!-- generated GettingStarted_Yocto_SPI stop -->
         <!-- generated GettingStarted_Yocto_MaxiThermistor start -->
         <activity
             android:name=".GettingStarted_Yocto_MaxiThermistor"
             android:label="Yocto-MaxiThermistor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_MaxiThermistor stop -->   
+        <!-- generated GettingStarted_Yocto_MaxiThermistor stop -->
         <!-- generated GettingStarted_Yocto_4_20mA_Tx start -->
         <activity
             android:name=".GettingStarted_Yocto_4_20mA_Tx"
             android:label="Yocto-4-20mA-Tx">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_4_20mA_Tx stop -->   
+        <!-- generated GettingStarted_Yocto_4_20mA_Tx stop -->
         <!-- generated GettingStarted_Yocto_Light_V3 start -->
         <activity
             android:name=".GettingStarted_Yocto_Light_V3"
             android:label="Yocto-Light-V3">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_Light_V3 stop -->   
+        <!-- generated GettingStarted_Yocto_Light_V3 stop -->
         <!-- generated GettingStarted_Yocto_Thermistor_C start -->
         <activity
             android:name=".GettingStarted_Yocto_Thermistor_C"
             android:label="Yocto-Thermistor-C">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_Thermistor_C stop -->   
+        <!-- generated GettingStarted_Yocto_Thermistor_C stop -->
         <!-- generated GettingStarted_Yocto_RS485 start -->
         <activity
             android:name=".GettingStarted_Yocto_RS485"
             android:label="Yocto-RS485">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_RS485 stop -->   
+        <!-- generated GettingStarted_Yocto_RS485 stop -->
         <!-- generated GettingStarted_Yocto_Serial start -->
         <activity
             android:name=".GettingStarted_Yocto_Serial"
             android:label="Yocto-Serial">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_Serial stop -->   
+        <!-- generated GettingStarted_Yocto_Serial stop -->
         <!-- generated GettingStarted_Yocto_GPS start -->
         <activity
             android:name=".GettingStarted_Yocto_GPS"
             android:label="Yocto-GPS">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_GPS stop -->   
+        <!-- generated GettingStarted_Yocto_GPS stop -->
         <!-- generated GettingStarted_Yocto_RS232 start -->
         <activity
             android:name=".GettingStarted_Yocto_RS232"
             android:label="Yocto-RS232">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_RS232 stop -->   
+        <!-- generated GettingStarted_Yocto_RS232 stop -->
         <!-- generated GettingStarted_Yocto_Buzzer start -->
         <activity
             android:name=".GettingStarted_Yocto_Buzzer"
             android:label="Yocto-Buzzer">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
-        <!-- generated GettingStarted_Yocto_Buzzer stop -->   
+        <!-- generated GettingStarted_Yocto_Buzzer stop -->
         <!-- generated GettingStarted_Yocto_MaxiPowerRelay start -->
         <activity
             android:name=".GettingStarted_Yocto_MaxiPowerRelay"
             android:label="Yocto-MaxiPowerRelay">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_MaxiPowerRelay stop -->
         <!-- generated GettingStarted_Yocto_WatchdogDC start -->
@@ -239,7 +233,7 @@
             android:label="Yocto-WatchdogDC">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_WatchdogDC stop -->
         <!-- generated GettingStarted_Yocto_PWM_Rx start -->
@@ -248,7 +242,7 @@
             android:label="Yocto-PWM-Rx">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_PWM_Rx stop -->
         <!-- generated GettingStarted_Yocto_milliVolt_Rx_BNC start -->
@@ -257,7 +251,7 @@
             android:label="Yocto-milliVolt-Rx-BNC">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_milliVolt_Rx_BNC stop -->
         <!-- generated GettingStarted_Yocto_milliVolt_Rx start -->
@@ -266,7 +260,7 @@
             android:label="Yocto-milliVolt-Rx">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_milliVolt_Rx stop -->
         <!-- generated GettingStarted_Yocto_Motor_DC start -->
@@ -275,7 +269,7 @@
             android:label="Yocto-Motor-DC">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Motor_DC stop -->
         <!-- generated GettingStarted_Yocto_Altimeter start -->
@@ -284,7 +278,7 @@
             android:label="Yocto-Altimeter">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Altimeter stop -->
         <!-- generated GettingStarted_Yocto_PWM_Tx start -->
@@ -293,7 +287,7 @@
             android:label="Yocto-PWM-Tx">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_PWM_Tx stop -->
         <!-- generated GettingStarted_Yocto_3D start -->
@@ -302,7 +296,7 @@
             android:label="Yocto-3D">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_3D stop -->
         <!-- generated GettingStarted_Yocto_0_10V_Rx start -->
@@ -311,7 +305,7 @@
             android:label="Yocto-0-10V-Rx">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_0_10V_Rx stop -->
         <!-- generated GettingStarted_Yocto_4_20mA_Rx start -->
@@ -320,7 +314,7 @@
             android:label="Yocto-4-20mA-Rx">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_4_20mA_Rx stop -->
         <!-- generated GettingStarted_Yocto_PT100 start -->
@@ -329,7 +323,7 @@
             android:label="Yocto-PT100">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_PT100 stop -->
         <!-- generated GettingStarted_Yocto_Maxi_IO start -->
@@ -338,7 +332,7 @@
             android:label="Yocto-Maxi-IO">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Maxi_IO stop -->
         <!-- generated GettingStarted_Yocto_LatchedRelay start -->
@@ -347,7 +341,7 @@
             android:label="Yocto-LatchedRelay">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_LatchedRelay stop -->
         <!-- generated GettingStarted_Yocto_MaxiCoupler start -->
@@ -356,7 +350,7 @@
             android:label="Yocto-MaxiCoupler">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_MaxiCoupler stop -->
         <!-- generated GettingStarted_Yocto_MaxiDisplay start -->
@@ -365,7 +359,7 @@
             android:label="Yocto-MaxiDisplay">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_MaxiDisplay stop -->
         <!-- generated GettingStarted_Yocto_MiniDisplay start -->
@@ -374,7 +368,7 @@
             android:label="Yocto-MiniDisplay">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_MiniDisplay stop -->
         <!-- generated GettingStarted_Yocto_Display start -->
@@ -383,7 +377,7 @@
             android:label="Yocto-Display">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Display stop -->
         <!-- generated GettingStarted_Yocto_Watt start -->
@@ -392,7 +386,7 @@
             android:label="Yocto-Watt">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Watt stop -->
         <!-- generated GettingStarted_Yocto_Amp start -->
@@ -401,7 +395,7 @@
             android:label="Yocto-Amp">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Amp stop -->
         <!-- generated GettingStarted_Yocto_CO2 start -->
@@ -410,7 +404,7 @@
             android:label="Yocto-CO2">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_CO2 stop -->
         <!-- generated GettingStarted_Yocto_Knob start -->
@@ -419,7 +413,7 @@
             android:label="Yocto-Knob">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Knob stop -->
         <!-- generated GettingStarted_Yocto_Color start -->
@@ -428,7 +422,7 @@
             android:label="Yocto-Color">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Color stop -->
         <!-- generated GettingStarted_Yocto_PowerColor start -->
@@ -437,7 +431,7 @@
             android:label="Yocto-PowerColor">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_PowerColor stop -->
         <!-- generated GettingStarted_Yocto_Light start -->
@@ -446,7 +440,7 @@
             android:label="Yocto-Light">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Light stop -->
         <!-- generated GettingStarted_Yocto_Meteo start -->
@@ -455,7 +449,7 @@
             android:label="Yocto-Meteo">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Meteo stop -->
         <!-- generated GettingStarted_Yocto_Relay start -->
@@ -464,7 +458,7 @@
             android:label="Yocto-Relay">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Relay stop -->
         <!-- generated GettingStarted_Yocto_MaxiRelay start -->
@@ -473,7 +467,7 @@
             android:label="Yocto-MaxiRelay">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_MaxiRelay stop -->
         <!-- generated GettingStarted_Yocto_PowerRelay start -->
@@ -482,7 +476,7 @@
             android:label="Yocto-PowerRelay">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_PowerRelay stop -->
         <!-- generated GettingStarted_Yocto_Servo start -->
@@ -491,7 +485,7 @@
             android:label="Yocto-Servo">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Servo stop -->
         <!-- generated GettingStarted_Yocto_Temperature start -->
@@ -500,7 +494,7 @@
             android:label="Yocto-Temperature">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Temperature stop -->
         <!-- generated GettingStarted_Yocto_Thermocouple start -->
@@ -509,7 +503,7 @@
             android:label="Yocto-Thermocouple">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Thermocouple stop -->
         <!-- generated GettingStarted_Yocto_VOC start -->
@@ -518,7 +512,7 @@
             android:label="Yocto-VOC">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_VOC stop -->
         <!-- generated GettingStarted_Yocto_Volt start -->
@@ -527,7 +521,7 @@
             android:label="Yocto-Volt">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Volt stop -->
         <!-- generated GettingStarted_Yocto_Demo start -->
@@ -536,7 +530,7 @@
             android:label="Yocto-Demo">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated GettingStarted_Yocto_Demo stop -->
         <!-- generated SaveSettings start -->
@@ -545,7 +539,7 @@
             android:label="SaveSettings">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated SaveSettings stop -->
         <!-- generated ModuleControl start -->
@@ -554,7 +548,7 @@
             android:label="ModuleControl">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated ModuleControl stop -->
         <!-- generated Inventory start -->
@@ -563,7 +557,7 @@
             android:label="Inventory">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.yoctopuce.doc_examples.Doc_Examples"/>
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated Inventory stop -->
         <!-- generated stop -->

@@ -1,3 +1,17 @@
+/*
+ *
+ *  $Id: GettingStarted_Yocto_LatchedRelay.java 32625 2018-10-10 13:27:32Z seb $
+ *
+ *  An example that show how to use a  Yocto-LatchedRelay
+ *
+ *  You can find more information on our web site:
+ *   Yocto-LatchedRelay documentation:
+ *      https://www.yoctopuce.com/EN/products/yocto-latchedrelay/doc.html
+ *   Android API Reference:
+ *      https://www.yoctopuce.com/EN/doc/reference/yoctolib-android-EN.html
+ *
+ */
+
 package com.yoctopuce.doc_examples;
 
 import android.app.Activity;

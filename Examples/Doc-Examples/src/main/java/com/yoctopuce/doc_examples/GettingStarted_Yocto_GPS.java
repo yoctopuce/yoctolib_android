@@ -1,3 +1,17 @@
+/*
+ *
+ *  $Id: GettingStarted_Yocto_GPS.java 32625 2018-10-10 13:27:32Z seb $
+ *
+ *  An example that show how to use a  Yocto-GPS
+ *
+ *  You can find more information on our web site:
+ *   Yocto-GPS documentation:
+ *      https://www.yoctopuce.com/EN/products/yocto-gps/doc.html
+ *   Android API Reference:
+ *      https://www.yoctopuce.com/EN/doc/reference/yoctolib-android-EN.html
+ *
+ */
+
 package com.yoctopuce.doc_examples;
 
 import android.app.Activity;

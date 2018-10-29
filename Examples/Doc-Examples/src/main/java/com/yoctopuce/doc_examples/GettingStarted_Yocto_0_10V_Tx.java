@@ -1,3 +1,17 @@
+/*
+ *
+ *  $Id: GettingStarted_Yocto_0_10V_Tx.java 32625 2018-10-10 13:27:32Z seb $
+ *
+ *  An example that show how to use a  Yocto-0-10V-Tx
+ *
+ *  You can find more information on our web site:
+ *   Yocto-0-10V-Tx documentation:
+ *      https://www.yoctopuce.com/EN/products/yocto-0-10v-tx/doc.html
+ *   Android API Reference:
+ *      https://www.yoctopuce.com/EN/doc/reference/yoctolib-android-EN.html
+ *
+ */
+
 package com.yoctopuce.doc_examples;
 
 import android.app.Activity;

@@ -1,13 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.yoctopuce.examples.yocto_meteo"
-    android:versionCode="5"
-    android:versionName="1.0.5" >
+  >
 
     <uses-feature android:name="android.hardware.usb.host" />
 
-    <uses-sdk
-        android:minSdkVersion="14"
-        android:targetSdkVersion="15" />
 
     <application
         android:icon="@mipmap/ic_launcher"

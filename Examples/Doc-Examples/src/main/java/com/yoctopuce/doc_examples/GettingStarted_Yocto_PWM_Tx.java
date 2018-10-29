@@ -1,3 +1,17 @@
+/*
+ *
+ *  $Id: GettingStarted_Yocto_PWM_Tx.java 32625 2018-10-10 13:27:32Z seb $
+ *
+ *  An example that show how to use a  Yocto-PWM-Tx
+ *
+ *  You can find more information on our web site:
+ *   Yocto-PWM-Tx documentation:
+ *      https://www.yoctopuce.com/EN/products/yocto-pwm-tx/doc.html
+ *   Android API Reference:
+ *      https://www.yoctopuce.com/EN/doc/reference/yoctolib-android-EN.html
+ *
+ */
+
 package com.yoctopuce.doc_examples;
 
 import android.app.Activity;

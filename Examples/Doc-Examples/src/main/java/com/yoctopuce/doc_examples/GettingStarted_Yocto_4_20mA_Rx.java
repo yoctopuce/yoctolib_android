@@ -1,3 +1,17 @@
+/*
+ *
+ *  $Id: GettingStarted_Yocto_4_20mA_Rx.java 32625 2018-10-10 13:27:32Z seb $
+ *
+ *  An example that show how to use a  Yocto-4-20mA-Rx
+ *
+ *  You can find more information on our web site:
+ *   Yocto-4-20mA-Rx documentation:
+ *      https://www.yoctopuce.com/EN/products/yocto-4-20ma-rx/doc.html
+ *   Android API Reference:
+ *      https://www.yoctopuce.com/EN/doc/reference/yoctolib-android-EN.html
+ *
+ */
+
 package com.yoctopuce.doc_examples;
 
 import android.app.Activity;

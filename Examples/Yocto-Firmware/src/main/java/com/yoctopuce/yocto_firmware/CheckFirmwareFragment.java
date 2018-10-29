@@ -35,7 +35,7 @@ import java.util.ArrayList;
 public class CheckFirmwareFragment extends ListFragment implements CheckFirmwareOnlineThread.Listener<TextView>
 {
 
-    private static final String TAG = "FirmwareUpdateListFragment";
+    private static final String TAG = "CheckFirmwareFrag";
     private OnFragmentInteractionListener mListener;
     private UpdatableAdapter _adapter;
     private CheckFirmwareOnlineThread<TextView> _checkFirmwareOnlineThread;
@@ -74,7 +74,7 @@ public class CheckFirmwareFragment extends ListFragment implements CheckFirmware
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list,parent,false);
-        ListView listView = (ListView)root.findViewById(android.R.id.list);
+        ListView listView = root.findViewById(android.R.id.list);
         registerForContextMenu(listView);
         return root;
     }
@@ -192,14 +192,14 @@ public class CheckFirmwareFragment extends ListFragment implements CheckFirmware
             }
             // Configure the view for this Crime
             Updatable u = getItem(position);
-            TextView serialTextView = (TextView) convertView.findViewById(R.id.serial);
+            TextView serialTextView = convertView.findViewById(R.id.serial);
             Resources res = getResources();
             String text = String.format(res.getString(R.string.module_description), u.getProduct(), u.getSerial());
             serialTextView.setText(text);
-            TextView firmwareTextView = (TextView) convertView.findViewById(R.id.firmware);
+            TextView firmwareTextView = convertView.findViewById(R.id.firmware);
             firmwareTextView.setText(res.getString(R.string.checking));
             _checkFirmwareOnlineThread.queueThumbnail(firmwareTextView, u);
-            ImageView icon2dImageView = (ImageView) convertView.findViewById(R.id.icon2d);
+            ImageView icon2dImageView = convertView.findViewById(R.id.icon2d);
             byte[] icon2d = u.getIcon2d();
             if (icon2d != null) {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(icon2d, 0, icon2d.length);
@@ -229,7 +229,7 @@ public class CheckFirmwareFragment extends ListFragment implements CheckFirmware
 
     public interface OnFragmentInteractionListener
     {
-        public ArrayList<Updatable> getUpdateableList();
+        ArrayList<Updatable> getUpdateableList();
     }
 
 

@@ -31,7 +31,7 @@ import com.yoctopuce.YoctoAPI.YAPI;
 
 public class RelayListFragment extends ListFragment
 {
-    private static final String TAG = "com.yoctopuce.examples.yocto_relay.RelayListFragment";
+    private static final String TAG = "RelayListFragment";
     //private ArrayList<Relay> mRelays;
     private RelayAdapter mAdapter;
     private RelayListStorage mYoctoSingleton;
@@ -132,13 +132,13 @@ public class RelayListFragment extends ListFragment
             }
             Relay r = mYoctoSingleton.getRelay(position);
             if(r!=null){
-                TextView name = (TextView) convertView.findViewById(R.id.name);
+                TextView name = convertView.findViewById(R.id.name);
                 if(name!=null)
                     name.setText(r.getRelayInfo());
-                TextView serial = (TextView) convertView.findViewById(R.id.serial);
+                TextView serial = convertView.findViewById(R.id.serial);
                 if(serial!=null)
                     serial.setText(r.getModuleName());
-                CheckBox onoff = (CheckBox) convertView.findViewById(R.id.onoff_checkbox);
+                CheckBox onoff = convertView.findViewById(R.id.onoff_checkbox);
                 if(onoff!=null)
                     onoff.setChecked(r.isOn());
             }
