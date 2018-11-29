@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 31422 2018-08-07 11:48:32Z seb $
+ * $Id: YUSBHub.java 33411 2018-11-28 14:54:05Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -295,7 +295,7 @@ class YUSBHub extends YGenericHub
         updateFromWpAndYp(whitePages, yellowPages);
         // reset device list cache timeout for this hub
         now = YAPI.GetTickCount();
-        _devListExpires = now + USB_ENUMERATION_DELAY;
+        _devListExpires = now + _yctx._deviceListValidityMs;
     }
 
     @Override

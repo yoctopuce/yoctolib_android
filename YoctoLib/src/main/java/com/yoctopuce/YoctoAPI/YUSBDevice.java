@@ -1,7 +1,7 @@
 /*
  * ******************************************************************
  *
- * $Id: YUSBDevice.java 32330 2018-09-25 08:57:05Z seb $
+ * $Id: YUSBDevice.java 33410 2018-11-28 14:52:33Z seb $
  *
  * YUSBDevice Class:
  *
@@ -310,7 +310,7 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
     {
         if (testState(PKT_State.StartSend)) {
             YUSBPkt.ConfPktStart pktStart = newpkt.asConfPktStart();
-            if (_devVersion >= YUSBPkt.YPKT_USB_VERSION_BCD) {
+            if (_devVersion >= YUSBPkt.YPKT_USB_VERSION_NO_CONFCHG_BCD) {
                 _pktAckDelay = pktStart.getAckDelay();
             } else {
                 _pktAckDelay = 0;
@@ -582,7 +582,7 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
                 for (int i = 0; i < len; i++) {
                     intData[i] = data.getByte(pos + i) & 0xff;
                 }
-                ydev.setDeviceTime(intData);
+                ydev.setLastTimeRef(intData);
             } else {
                 YPEntry yp = getYPEntryFromYdx(funYdx);
                 if (yp != null) {
@@ -592,7 +592,7 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
                         int b = data.getByte(pos + i) & 0xff;
                         report.add(b);
                     }
-                    _usbHub.handleTimedNotification(yp.getSerial(), yp.getFuncId(), ydev.getDeviceTime(), report);
+                    _usbHub.handleTimedNotification(yp.getSerial(), yp.getFuncId(), ydev.getLastTimeRef(), 0,report);
                 }
             }
             pos += len;
@@ -618,7 +618,7 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
                 for (int i = 0; i < len; i++) {
                     intData[i] = data.getByte(pos + i) & 0xff;
                 }
-                ydev.setDeviceTime(intData);
+                ydev.setLastTimeRef(intData);
             } else {
                 YPEntry yp = getYPEntryFromYdx(funYdx);
                 if (yp != null) {
@@ -628,7 +628,7 @@ class YUSBDevice implements YUSBRawDevice.IOHandler
                         int b = data.getByte(pos + i) & 0xff;
                         report.add(b);
                     }
-                    _usbHub.handleTimedNotification(yp.getSerial(), yp.getFuncId(), ydev.getDeviceTime(), report);
+                    _usbHub.handleTimedNotification(yp.getSerial(), yp.getFuncId(), ydev.getLastTimeRef(), ydev.getLastDuration(), report);
                 }
             }
             pos += len;

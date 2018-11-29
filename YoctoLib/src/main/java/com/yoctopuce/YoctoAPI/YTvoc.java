@@ -1,8 +1,8 @@
 /*
  *
- *  $Id: YCurrent.java 32898 2018-11-02 10:11:21Z seb $
+ *  $Id: YTvoc.java 33270 2018-11-22 08:41:15Z seb $
  *
- *  Implements FindCurrent(), the high-level API for Current functions
+ *  Implements FindTvoc(), the high-level API for Tvoc functions
  *
  *  - - - - - - - - - License information: - - - - - - - - -
  *
@@ -39,35 +39,28 @@
 
 package com.yoctopuce.YoctoAPI;
 
-//--- (YCurrent return codes)
-//--- (end of YCurrent return codes)
-//--- (YCurrent yapiwrapper)
-//--- (end of YCurrent yapiwrapper)
-//--- (YCurrent class start)
+//--- (YTvoc return codes)
+//--- (end of YTvoc return codes)
+//--- (YTvoc yapiwrapper)
+//--- (end of YTvoc yapiwrapper)
+//--- (YTvoc class start)
 /**
- * YCurrent Class: Current function interface
+ * YTvoc Class: Tvoc function interface
  *
- * The Yoctopuce class YCurrent allows you to read and configure Yoctopuce current
- * sensors. It inherits from YSensor class the core functions to read measurements,
+ * The Yoctopuce class YTvoc allows you to read and configure Yoctopuce Total Volatile Organic
+ * Compound sensors. It inherits from YSensor class the core functions to read measurements,
  * to register callback functions, to access the autonomous datalogger.
  */
 @SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
-public class YCurrent extends YSensor
+public class YTvoc extends YSensor
 {
-//--- (end of YCurrent class start)
-//--- (YCurrent definitions)
-    /**
-     * invalid enabled value
-     */
-    public static final int ENABLED_FALSE = 0;
-    public static final int ENABLED_TRUE = 1;
-    public static final int ENABLED_INVALID = -1;
-    protected int _enabled = ENABLED_INVALID;
-    protected UpdateCallback _valueCallbackCurrent = null;
-    protected TimedReportCallback _timedReportCallbackCurrent = null;
+//--- (end of YTvoc class start)
+//--- (YTvoc definitions)
+    protected UpdateCallback _valueCallbackTvoc = null;
+    protected TimedReportCallback _timedReportCallbackTvoc = null;
 
     /**
-     * Deprecated UpdateCallback for Current
+     * Deprecated UpdateCallback for Tvoc
      */
     public interface UpdateCallback
     {
@@ -76,11 +69,11 @@ public class YCurrent extends YSensor
          * @param function      : the function object of which the value has changed
          * @param functionValue : the character string describing the new advertised value
          */
-        void yNewValue(YCurrent function, String functionValue);
+        void yNewValue(YTvoc function, String functionValue);
     }
 
     /**
-     * TimedReportCallback for Current
+     * TimedReportCallback for Tvoc
      */
     public interface TimedReportCallback
     {
@@ -89,70 +82,42 @@ public class YCurrent extends YSensor
          * @param function : the function object of which the value has changed
          * @param measure  : measure
          */
-        void timedReportCallback(YCurrent  function, YMeasure measure);
+        void timedReportCallback(YTvoc  function, YMeasure measure);
     }
-    //--- (end of YCurrent definitions)
+    //--- (end of YTvoc definitions)
 
 
     /**
      *
      * @param func : functionid
      */
-    protected YCurrent(YAPIContext ctx, String func)
+    protected YTvoc(YAPIContext ctx, String func)
     {
         super(ctx, func);
-        _className = "Current";
-        //--- (YCurrent attributes initialization)
-        //--- (end of YCurrent attributes initialization)
+        _className = "Tvoc";
+        //--- (YTvoc attributes initialization)
+        //--- (end of YTvoc attributes initialization)
     }
 
     /**
      *
      * @param func : functionid
      */
-    protected YCurrent(String func)
+    protected YTvoc(String func)
     {
         this(YAPI.GetYCtx(true), func);
     }
 
-    //--- (YCurrent implementation)
+    //--- (YTvoc implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(YJSONObject json_val) throws Exception
     {
-        if (json_val.has("enabled")) {
-            _enabled = json_val.getInt("enabled") > 0 ? 1 : 0;
-        }
         super._parseAttr(json_val);
     }
 
-    public int get_enabled() throws YAPI_Exception
-    {
-        int res;
-        synchronized (this) {
-            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(_yapi._defaultCacheValidity) != YAPI.SUCCESS) {
-                    return ENABLED_INVALID;
-                }
-            }
-            res = _enabled;
-        }
-        return res;
-    }
-
-    public int set_enabled(int  newval)  throws YAPI_Exception
-    {
-        String rest_val;
-        synchronized (this) {
-            rest_val = (newval > 0 ? "1" : "0");
-            _setAttr("enabled",rest_val);
-        }
-        return YAPI.SUCCESS;
-    }
-
-
     /**
-     * Retrieves a current sensor for a given identifier.
+     * Retrieves a Total  Volatile Organic Compound sensor for a given identifier.
      * The identifier can be specified using several formats:
      * <ul>
      * <li>FunctionLogicalName</li>
@@ -162,11 +127,11 @@ public class YCurrent extends YSensor
      * <li>ModuleLogicalName.FunctionLogicalName</li>
      * </ul>
      *
-     * This function does not require that the current sensor is online at the time
+     * This function does not require that the Total  Volatile Organic Compound sensor is online at the time
      * it is invoked. The returned object is nevertheless valid.
-     * Use the method YCurrent.isOnline() to test if the current sensor is
+     * Use the method YTvoc.isOnline() to test if the Total  Volatile Organic Compound sensor is
      * indeed online at a given time. In case of ambiguity when looking for
-     * a current sensor by logical name, no error is notified: the first instance
+     * a Total  Volatile Organic Compound sensor by logical name, no error is notified: the first instance
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
@@ -174,25 +139,25 @@ public class YCurrent extends YSensor
      * you are certain that the matching device is plugged, make sure that you did
      * call registerHub() at application initialization time.
      *
-     * @param func : a string that uniquely characterizes the current sensor
+     * @param func : a string that uniquely characterizes the Total  Volatile Organic Compound sensor
      *
-     * @return a YCurrent object allowing you to drive the current sensor.
+     * @return a YTvoc object allowing you to drive the Total  Volatile Organic Compound sensor.
      */
-    public static YCurrent FindCurrent(String func)
+    public static YTvoc FindTvoc(String func)
     {
-        YCurrent obj;
+        YTvoc obj;
         synchronized (YAPI.class) {
-            obj = (YCurrent) YFunction._FindFromCache("Current", func);
+            obj = (YTvoc) YFunction._FindFromCache("Tvoc", func);
             if (obj == null) {
-                obj = new YCurrent(func);
-                YFunction._AddToCache("Current", func, obj);
+                obj = new YTvoc(func);
+                YFunction._AddToCache("Tvoc", func, obj);
             }
         }
         return obj;
     }
 
     /**
-     * Retrieves a current sensor for a given identifier in a YAPI context.
+     * Retrieves a Total  Volatile Organic Compound sensor for a given identifier in a YAPI context.
      * The identifier can be specified using several formats:
      * <ul>
      * <li>FunctionLogicalName</li>
@@ -202,27 +167,27 @@ public class YCurrent extends YSensor
      * <li>ModuleLogicalName.FunctionLogicalName</li>
      * </ul>
      *
-     * This function does not require that the current sensor is online at the time
+     * This function does not require that the Total  Volatile Organic Compound sensor is online at the time
      * it is invoked. The returned object is nevertheless valid.
-     * Use the method YCurrent.isOnline() to test if the current sensor is
+     * Use the method YTvoc.isOnline() to test if the Total  Volatile Organic Compound sensor is
      * indeed online at a given time. In case of ambiguity when looking for
-     * a current sensor by logical name, no error is notified: the first instance
+     * a Total  Volatile Organic Compound sensor by logical name, no error is notified: the first instance
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
      * @param yctx : a YAPI context
-     * @param func : a string that uniquely characterizes the current sensor
+     * @param func : a string that uniquely characterizes the Total  Volatile Organic Compound sensor
      *
-     * @return a YCurrent object allowing you to drive the current sensor.
+     * @return a YTvoc object allowing you to drive the Total  Volatile Organic Compound sensor.
      */
-    public static YCurrent FindCurrentInContext(YAPIContext yctx,String func)
+    public static YTvoc FindTvocInContext(YAPIContext yctx,String func)
     {
-        YCurrent obj;
+        YTvoc obj;
         synchronized (yctx) {
-            obj = (YCurrent) YFunction._FindFromCacheInContext(yctx, "Current", func);
+            obj = (YTvoc) YFunction._FindFromCacheInContext(yctx, "Tvoc", func);
             if (obj == null) {
-                obj = new YCurrent(yctx, func);
-                YFunction._AddToCache("Current", func, obj);
+                obj = new YTvoc(yctx, func);
+                YFunction._AddToCache("Tvoc", func, obj);
             }
         }
         return obj;
@@ -247,7 +212,7 @@ public class YCurrent extends YSensor
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
-        _valueCallbackCurrent = callback;
+        _valueCallbackTvoc = callback;
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -261,8 +226,8 @@ public class YCurrent extends YSensor
     @Override
     public int _invokeValueCallback(String value)
     {
-        if (_valueCallbackCurrent != null) {
-            _valueCallbackCurrent.yNewValue(this, value);
+        if (_valueCallbackTvoc != null) {
+            _valueCallbackTvoc.yNewValue(this, value);
         } else {
             super._invokeValueCallback(value);
         }
@@ -289,15 +254,15 @@ public class YCurrent extends YSensor
         } else {
             YFunction._UpdateTimedReportCallbackList(sensor, false);
         }
-        _timedReportCallbackCurrent = callback;
+        _timedReportCallbackTvoc = callback;
         return 0;
     }
 
     @Override
     public int _invokeTimedReportCallback(YMeasure value)
     {
-        if (_timedReportCallbackCurrent != null) {
-            _timedReportCallbackCurrent.timedReportCallback(this, value);
+        if (_timedReportCallbackTvoc != null) {
+            _timedReportCallbackTvoc.timedReportCallback(this, value);
         } else {
             super._invokeTimedReportCallback(value);
         }
@@ -305,16 +270,16 @@ public class YCurrent extends YSensor
     }
 
     /**
-     * Continues the enumeration of current sensors started using yFirstCurrent().
-     * Caution: You can't make any assumption about the returned current sensors order.
-     * If you want to find a specific a current sensor, use Current.findCurrent()
+     * Continues the enumeration of Total Volatile Organic Compound sensors started using yFirstTvoc().
+     * Caution: You can't make any assumption about the returned Total Volatile Organic Compound sensors order.
+     * If you want to find a specific a Total  Volatile Organic Compound sensor, use Tvoc.findTvoc()
      * and a hardwareID or a logical name.
      *
-     * @return a pointer to a YCurrent object, corresponding to
-     *         a current sensor currently online, or a null pointer
-     *         if there are no more current sensors to enumerate.
+     * @return a pointer to a YTvoc object, corresponding to
+     *         a Total  Volatile Organic Compound sensor currently online, or a null pointer
+     *         if there are no more Total Volatile Organic Compound sensors to enumerate.
      */
-    public YCurrent nextCurrent()
+    public YTvoc nextTvoc()
     {
         String next_hwid;
         try {
@@ -324,45 +289,45 @@ public class YCurrent extends YSensor
             next_hwid = null;
         }
         if(next_hwid == null) return null;
-        return FindCurrentInContext(_yapi, next_hwid);
+        return FindTvocInContext(_yapi, next_hwid);
     }
 
     /**
-     * Starts the enumeration of current sensors currently accessible.
-     * Use the method YCurrent.nextCurrent() to iterate on
-     * next current sensors.
+     * Starts the enumeration of Total Volatile Organic Compound sensors currently accessible.
+     * Use the method YTvoc.nextTvoc() to iterate on
+     * next Total Volatile Organic Compound sensors.
      *
-     * @return a pointer to a YCurrent object, corresponding to
-     *         the first current sensor currently online, or a null pointer
+     * @return a pointer to a YTvoc object, corresponding to
+     *         the first Total Volatile Organic Compound sensor currently online, or a null pointer
      *         if there are none.
      */
-    public static YCurrent FirstCurrent()
+    public static YTvoc FirstTvoc()
     {
         YAPIContext yctx = YAPI.GetYCtx(false);
         if (yctx == null)  return null;
-        String next_hwid = yctx._yHash.getFirstHardwareId("Current");
+        String next_hwid = yctx._yHash.getFirstHardwareId("Tvoc");
         if (next_hwid == null)  return null;
-        return FindCurrentInContext(yctx, next_hwid);
+        return FindTvocInContext(yctx, next_hwid);
     }
 
     /**
-     * Starts the enumeration of current sensors currently accessible.
-     * Use the method YCurrent.nextCurrent() to iterate on
-     * next current sensors.
+     * Starts the enumeration of Total Volatile Organic Compound sensors currently accessible.
+     * Use the method YTvoc.nextTvoc() to iterate on
+     * next Total Volatile Organic Compound sensors.
      *
      * @param yctx : a YAPI context.
      *
-     * @return a pointer to a YCurrent object, corresponding to
-     *         the first current sensor currently online, or a null pointer
+     * @return a pointer to a YTvoc object, corresponding to
+     *         the first Total Volatile Organic Compound sensor currently online, or a null pointer
      *         if there are none.
      */
-    public static YCurrent FirstCurrentInContext(YAPIContext yctx)
+    public static YTvoc FirstTvocInContext(YAPIContext yctx)
     {
-        String next_hwid = yctx._yHash.getFirstHardwareId("Current");
+        String next_hwid = yctx._yHash.getFirstHardwareId("Tvoc");
         if (next_hwid == null)  return null;
-        return FindCurrentInContext(yctx, next_hwid);
+        return FindTvocInContext(yctx, next_hwid);
     }
 
-    //--- (end of YCurrent implementation)
+    //--- (end of YTvoc implementation)
 }
 

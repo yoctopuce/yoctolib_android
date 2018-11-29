@@ -56,6 +56,15 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_Temperature_IR start -->
+        <activity
+            android:name=".GettingStarted_Yocto_Temperature_IR"
+            android:label="Yocto-Temperature-IR">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_Temperature_IR stop -->   
         <!-- generated GettingStarted_Yocto_Color_V2 start -->
         <activity
             android:name=".GettingStarted_Yocto_Color_V2"

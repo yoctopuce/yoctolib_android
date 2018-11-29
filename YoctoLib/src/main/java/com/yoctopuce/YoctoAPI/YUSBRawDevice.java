@@ -1,7 +1,7 @@
 /*
  * ******************************************************************
  *
- * $Id: YUSBRawDevice.java 31284 2018-07-19 10:38:39Z seb $
+ * $Id: YUSBRawDevice.java 33412 2018-11-28 14:54:46Z seb $
  *
  * YUSBRawDevice Class: low level USB code
  *
@@ -48,6 +48,7 @@ import android.hardware.usb.UsbEndpoint;
 import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.hardware.usb.UsbRequest;
+import android.os.Build;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -85,7 +86,7 @@ class YUSBRawDevice implements Runnable
     private volatile UsbInterface _intf;
     private boolean _muststop = false;
     private final Object _threadLock = new Object();
-    private Thread thread;
+    private Thread _thread;
     private boolean _ioStarted;
 
 
@@ -140,7 +141,9 @@ class YUSBRawDevice implements Runnable
         if (!_manager.hasPermission(_device)) {
             if (_state == State.REJECTED && _device.getProductId() != YAPI.YOCTO_DEVID_BOOTLOADER) {
                 // if the user has rejected the authorisation we do not ask it again
-                _usbHub._yctx._Log(String.format(Locale.getDefault(), "OS Plug: user has rejected the authorisation of %s -> devid: 0x%x (%d)", _device.getDeviceName(), _device.getDeviceId(), _device.getProductId()));
+                _usbHub._yctx._Log(String.format(Locale.getDefault(),
+                        "OS Plug: user has rejected the authorisation of %s -> devid: 0x%x (%d)",
+                        _device.getDeviceName(), _device.getDeviceId(), _device.getProductId()));
                 // (except for bootloader)
                 return;
             }
@@ -181,9 +184,9 @@ class YUSBRawDevice implements Runnable
         }
 
         _state = State.ACCEPTED;
-        thread = new Thread(this);
-        thread.setName("IOUsb_" + _serial);
-        thread.start();
+        _thread = new Thread(this);
+        _thread.setName("IOUsb_" + _serial);
+        _thread.start();
 
         synchronized (this) {
             if (!_ioStarted) {
@@ -229,14 +232,14 @@ class YUSBRawDevice implements Runnable
             _connection.releaseInterface(_intf);
             _connection.close();
         }
-        if (thread != null) {
+        if (_thread != null) {
             try {
-                thread.join(20);
+                _thread.join(20);
             } catch (InterruptedException e) {
                 // Restore the interrupted status
                 Thread.currentThread().interrupt();
             }
-            thread = null;
+            _thread = null;
         }
         /* Clear up all of the locals */
         _connection = null;
@@ -321,7 +324,14 @@ class YUSBRawDevice implements Runnable
         // init the packet with some garbage to detect errors
         ByteBuffer d2h_pkt = ByteBuffer.allocateDirect(YUSBPkt.USB_PKT_SIZE);
         d2h_pkt.order(ByteOrder.LITTLE_ENDIAN);
-        boolean d2h_request_queued = d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
+        boolean d2h_request_queued;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            d2h_request_queued = d2h_r.queue(d2h_pkt);
+        }else {
+            d2h_request_queued = d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
+        }
+
+
         synchronized (YUSBRawDevice.this) {
             _ioStarted = true;
             YUSBRawDevice.this.notifyAll();
@@ -329,7 +339,7 @@ class YUSBRawDevice implements Runnable
 
         while (!mustBgThreadStop()) {
             //If the connection was closed, destroy the connections and
-            //variables and exit this thread.
+            //variables and exit this _thread.
             if (_connection == null) {
                 break;
             }
@@ -353,8 +363,11 @@ class YUSBRawDevice implements Runnable
                         }
                     }
                     d2h_pkt.clear();
-                    d2h_request_queued = d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
-
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        d2h_request_queued = d2h_r.queue(d2h_pkt);
+                    }else {
+                        d2h_request_queued = d2h_r.queue(d2h_pkt, YUSBPkt.USB_PKT_SIZE);
+                    }
                 }
             } else {
                 if (nbSuccessiveError > 5) {
