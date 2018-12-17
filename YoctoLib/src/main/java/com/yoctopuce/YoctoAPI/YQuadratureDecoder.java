@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YQuadratureDecoder.java 32898 2018-11-02 10:11:21Z seb $
+ *  $Id: YQuadratureDecoder.java 33707 2018-12-14 14:16:41Z seb $
  *
  *  Implements FindQuadratureDecoder(), the high-level API for QuadratureDecoder functions
  *
@@ -136,7 +136,7 @@ public class YQuadratureDecoder extends YSensor
 
     /**
      * Changes the current expected position of the quadrature decoder.
-     * Invoking this function implicitely activates the quadrature decoder.
+     * Invoking this function implicitly activates the quadrature decoder.
      *
      * @param newval : a floating point number corresponding to the current expected position of the quadrature decoder
      *
@@ -156,7 +156,7 @@ public class YQuadratureDecoder extends YSensor
 
     /**
      * Changes the current expected position of the quadrature decoder.
-     * Invoking this function implicitely activates the quadrature decoder.
+     * Invoking this function implicitly activates the quadrature decoder.
      *
      * @param newval : a floating point number corresponding to the current expected position of the quadrature decoder
      *

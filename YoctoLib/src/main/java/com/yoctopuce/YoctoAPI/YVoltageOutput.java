@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YVoltageOutput.java 32898 2018-11-02 10:11:21Z seb $
+ *  $Id: YVoltageOutput.java 33707 2018-12-14 14:16:41Z seb $
  *
  *  Implements FindVoltageOutput(), the high-level API for VoltageOutput functions
  *
@@ -416,7 +416,7 @@ public class YVoltageOutput extends YFunction
     }
 
     /**
-     * Performs a smooth transistion of output voltage. Any explicit voltage
+     * Performs a smooth transition of output voltage. Any explicit voltage
      * change cancels any ongoing transition process.
      *
      * @param V_target   : new output voltage value at the end of the transition
