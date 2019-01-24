@@ -1,3 +1,5 @@
-Android v1.10.33736
+Android v1.10.34131
 
-- Fix some typos in error messages
+- Improve error recovery (Request API implicitly do an updateDeviceList when device does not respond)
+- Add get_serialNumber() method to YFunction class
+- Fixed some typos
