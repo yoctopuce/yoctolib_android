@@ -65,14 +65,16 @@ class YUSBPktOut extends YUSBPkt
 
     public void pushMetaUTC()
     {
-        writeStreamHead(0, YPKT_STREAM, YGenericHub.YSTREAM_META, 5);
+        writeStreamHead(0, YPKT_STREAM, YGenericHub.YSTREAM_META, YGenericHub.USB_META_UTCTIME_SIZE);
         // Meta UTC packet are hand forged
         _raw[_writeOfs++] = USB_META_UTCTIME;
-        long currUtcTime = System.currentTimeMillis() / 1000;
+        long now = System.currentTimeMillis();
+        long currUtcTime = now / 1000;
         _raw[_writeOfs++] = (byte) (currUtcTime & 0xff);
         _raw[_writeOfs++] = (byte) ((currUtcTime >> 8) & 0xff);
         _raw[_writeOfs++] = (byte) ((currUtcTime >> 16) & 0xff);
         _raw[_writeOfs++] = (byte) ((currUtcTime >> 24) & 0xff);
+        _raw[_writeOfs++] = (byte) (((now % 1000) / 4) & 0xff);// 1/250 seconds
     }
 
     public void pushPktAck(int pktno)
