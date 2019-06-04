@@ -1,4 +1,4 @@
-package com.yoctopuce.examples.yocto_graph;
+package com.yoctopuce.examples.helpers;
 
 import java.util.ArrayList;
 import java.util.Iterator;

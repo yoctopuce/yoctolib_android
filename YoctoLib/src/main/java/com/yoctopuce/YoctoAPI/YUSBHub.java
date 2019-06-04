@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 33411 2018-11-28 14:54:05Z seb $
+ * $Id: YUSBHub.java 35436 2019-05-14 15:00:48Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -115,6 +115,12 @@ class YUSBHub extends YGenericHub
 
     @Override
     boolean isCallbackMode()
+    {
+        return false;
+    }
+
+    @Override
+    boolean isReadOnly()
     {
         return false;
     }

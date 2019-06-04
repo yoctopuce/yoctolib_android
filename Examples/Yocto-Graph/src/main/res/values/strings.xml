@@ -18,5 +18,10 @@
         <a href="http://www.yoctopuce.com">www.yoctopuce.com</a>
     ]]></string>
     <string name="loading_val">Loading %d%%</string>
+    <string name="Configuration">Configuration</string>
+    <string name="new_hub">New hub</string>
+    <string name="_192_168_1_12">192.168.1.12</string>
+    <string name="_4444">4444</string>
+    <string name="delete">Delete</string>
 
 </resources>

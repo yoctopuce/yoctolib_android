@@ -1,7 +1,8 @@
-package com.yoctopuce.examples.yocto_graph;
+package com.yoctopuce.examples.helpers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.yoctopuce.YoctoAPI.YAPI;
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
@@ -21,7 +22,7 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
     private static final String TAG = "YoctpuceBgThread";
     public static final String ACTION_SENSOR_LIST_CHANGED = "ACTION_SENSOR_LIST_CHANGED";
     public static final String ACTION_SENSOR_NEW_VALUE = "ACTION_SENSOR_NEW_VALUE";
-    public static final String EXTRA_HWID = "HWID";
+    private static final String EXTRA_HWID = "HWID";
     // Static variable to handle reference counting
     private static YoctopuceBgThread sInstance;
     private static int sRefCounter = 0;
@@ -29,6 +30,8 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
     // application context used for Yoctopuce API and messaging
     private final Context _appcontext;
     private long _lastUpdate;
+    private final ArrayList<String> _registerdHubs = new ArrayList<>();
+    private boolean _started = false;
 
     public static YoctopuceBgThread Start(Context context)
     {
@@ -53,9 +56,11 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
     }
 
 
-    public YoctopuceBgThread(Context applicationContext)
+    private YoctopuceBgThread(Context applicationContext)
     {
         _appcontext = applicationContext;
+
+
         Thread thread = new Thread(this, "YoctopuceBgThread");
         thread.start();
     }
@@ -69,7 +74,13 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
             YAPI.InitAPI(0);
             YAPI.RegisterDeviceArrivalCallback(this);
             YAPI.RegisterDeviceRemovalCallback(this);
-            YAPI.RegisterHub("usb");
+            synchronized (_registerdHubs) {
+                _started = true;
+                for (String url : _registerdHubs) {
+                    Log.d("YHUB", "register " + url);
+                    YAPI.RegisterHub(url);
+                }
+            }
         } catch (YAPI_Exception e) {
             e.printStackTrace();
             YAPI.FreeAPI();
@@ -86,6 +97,31 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
         }
         YAPI.FreeAPI();
         SensorStorage.get().clearAll();
+    }
+
+    public void UpdateHubList(ArrayList<String> hubs) throws YAPI_Exception
+    {
+        synchronized (_registerdHubs) {
+            ArrayList<String> common = new ArrayList<>(_registerdHubs);
+            common.retainAll(hubs);
+            _registerdHubs.removeAll(common);
+            if (_started) {
+                for (String url : _registerdHubs) {
+                    Log.d("YHUB", "unregister " + url);
+                    YAPI.UnregisterHub(url);
+                }
+            }
+            _registerdHubs.clear();
+            _registerdHubs.addAll(common);
+            hubs.removeAll(common);
+            for (String url : hubs) {
+                _registerdHubs.add(url);
+                if (_started) {
+                    Log.d("YHUB", "register " + url);
+                    YAPI.RegisterHub(url);
+                }
+            }
+        }
     }
 
     @Override

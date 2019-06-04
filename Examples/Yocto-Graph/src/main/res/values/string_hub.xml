@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="usb_port">usb port</string>
+    <string name="VirtualHub_s">VirtualHub %1$s</string>
+    <string name="YoctoHub_s">YoctoHub %1$s</string>
+    <string name="test_connection">Test connection</string>
+    <string name="hostname_ip">Hostname / IP</string>
+    <string name="port_number">Port number</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="success">Success</string>
+    <string name="save">Save</string>
+
+</resources>

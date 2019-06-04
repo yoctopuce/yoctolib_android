@@ -15,6 +15,10 @@ import android.widget.BaseAdapter;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.yoctopuce.examples.helpers.SensorStorage;
+import com.yoctopuce.examples.helpers.ThreadSafeSensor;
+import com.yoctopuce.examples.helpers.YoctopuceBgThread;
+
 import org.achartengine.GraphicalView;
 
 import java.util.ArrayList;

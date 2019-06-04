@@ -4,17 +4,20 @@ dependencies {
     implementation fileTree(dir: 'libs', include: '*.jar')
     implementation project(':YoctoLib')
 
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:design:28.0.0'
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        versionCode 35153
-        versionName "1.11.35153"
+        versionCode 35622
+        versionName "1.11.35622"
         minSdkVersion 14
-        targetSdkVersion 27
+        targetSdkVersion 28
     }
 
     signingConfigs {
@@ -22,7 +25,7 @@ android {
             storeFile file("../../../AndroidKeyStore")
             storePassword System.getenv("ANDROID_KSTORE_PWD")
             keyPassword System.getenv("ANDROID_KEY_PWD")
-            keyAlias  System.getenv("ANDROID_KEY_NAME")
+            keyAlias System.getenv("ANDROID_KEY_NAME")
         }
     }
     buildTypes {

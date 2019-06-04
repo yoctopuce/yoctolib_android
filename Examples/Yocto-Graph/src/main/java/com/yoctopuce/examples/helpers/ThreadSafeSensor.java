@@ -1,4 +1,4 @@
-package com.yoctopuce.examples.yocto_graph;
+package com.yoctopuce.examples.helpers;
 
 import com.yoctopuce.YoctoAPI.YMeasure;
 import com.yoctopuce.YoctoAPI.YSensor;
@@ -53,23 +53,23 @@ public class ThreadSafeSensor
         return _serial;
     }
 
-    String getHwId()
+    public String getHwId()
     {
         return _serial + "." + _fuctionId;
     }
 
-    String getDisplayName()
+    public String getDisplayName()
     {
         return _displayName;
     }
 
-    String getUnit()
+    public String getUnit()
     {
         return _unit;
     }
 
 
-    int fillGraphSerie(XYSeries serie, double timestart, double timestop)
+    public int fillGraphSerie(XYSeries serie, double timestart, double timestop)
     {
         List<YMeasure> myCopy;
         synchronized (this) {
@@ -93,7 +93,7 @@ public class ThreadSafeSensor
         return count;
     }
 
-    int fillGraphSerie(XYSeries serie, double timestart)
+    public int fillGraphSerie(XYSeries serie, double timestart)
     {
         int count = 0;
         synchronized (this) {
@@ -134,13 +134,13 @@ public class ThreadSafeSensor
         return _displayName + " =  " + Double.toString(_lastValue);
     }
 
-    double getLastValue()
+    public double getLastValue()
     {
         return _lastValue;
     }
 
 
-    boolean isLoading()
+    public boolean isLoading()
     {
         return _loadingProgress != 100;
     }
@@ -150,7 +150,7 @@ public class ThreadSafeSensor
         _loadingProgress = loading;
     }
 
-    int getLoading()
+    public int getLoading()
     {
         return _loadingProgress;
     }
