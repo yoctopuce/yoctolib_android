@@ -1,4 +1,4 @@
-Android v1.10.35871
+Android v1.10.35889
 
 (Android)- Add Yocto-Pressure example
 (Android)- Update Gradle script to use gradle 5.1
