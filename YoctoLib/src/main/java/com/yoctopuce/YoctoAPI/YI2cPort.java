@@ -1,8 +1,8 @@
 /*
  *
- *  $Id: YSpiPort.java 36047 2019-06-28 17:42:49Z mvuilleu $
+ *  $Id: YI2cPort.java 36207 2019-07-10 20:46:18Z mvuilleu $
  *
- *  Implements FindSpiPort(), the high-level API for SpiPort functions
+ *  Implements FindI2cPort(), the high-level API for I2cPort functions
  *
  *  - - - - - - - - - License information: - - - - - - - - -
  *
@@ -41,25 +41,25 @@ package com.yoctopuce.YoctoAPI;
 import java.util.ArrayList;
 import java.util.Locale;
 
-//--- (YSpiPort return codes)
-//--- (end of YSpiPort return codes)
-//--- (YSpiPort yapiwrapper)
-//--- (end of YSpiPort yapiwrapper)
-//--- (YSpiPort class start)
+//--- (YI2cPort return codes)
+//--- (end of YI2cPort return codes)
+//--- (YI2cPort yapiwrapper)
+//--- (end of YI2cPort yapiwrapper)
+//--- (YI2cPort class start)
 /**
- * YSpiPort Class: SPI Port function interface
+ * YI2cPort Class: I2C Port function interface
  *
- * The SpiPort function interface allows you to fully drive a Yoctopuce
- * SPI port, to send and receive data, and to configure communication
- * parameters (baud rate, bit count, parity, flow control and protocol).
- * Note that Yoctopuce SPI ports are not exposed as virtual COM ports.
+ * The I2cPort function interface allows you to fully drive a Yoctopuce
+ * I2C port, to send and receive data, and to configure communication
+ * parameters (baud rate, etc).
+ * Note that Yoctopuce I2C ports are not exposed as virtual COM ports.
  * They are meant to be used in the same way as all Yoctopuce devices.
  */
 @SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
-public class YSpiPort extends YFunction
+public class YI2cPort extends YFunction
 {
-//--- (end of YSpiPort class start)
-//--- (YSpiPort definitions)
+//--- (end of YI2cPort class start)
+//--- (YI2cPort definitions)
     /**
      * invalid rxCount value
      */
@@ -113,21 +113,9 @@ public class YSpiPort extends YFunction
      */
     public static final String PROTOCOL_INVALID = YAPI.INVALID_STRING;
     /**
-     * invalid spiMode value
+     * invalid i2cMode value
      */
-    public static final String SPIMODE_INVALID = YAPI.INVALID_STRING;
-    /**
-     * invalid ssPolarity value
-     */
-    public static final int SSPOLARITY_ACTIVE_LOW = 0;
-    public static final int SSPOLARITY_ACTIVE_HIGH = 1;
-    public static final int SSPOLARITY_INVALID = -1;
-    /**
-     * invalid shiftSampling value
-     */
-    public static final int SHIFTSAMPLING_OFF = 0;
-    public static final int SHIFTSAMPLING_ON = 1;
-    public static final int SHIFTSAMPLING_INVALID = -1;
+    public static final String I2CMODE_INVALID = YAPI.INVALID_STRING;
     protected int _rxCount = RXCOUNT_INVALID;
     protected int _txCount = TXCOUNT_INVALID;
     protected int _errCount = ERRCOUNT_INVALID;
@@ -139,16 +127,14 @@ public class YSpiPort extends YFunction
     protected String _command = COMMAND_INVALID;
     protected int _voltageLevel = VOLTAGELEVEL_INVALID;
     protected String _protocol = PROTOCOL_INVALID;
-    protected String _spiMode = SPIMODE_INVALID;
-    protected int _ssPolarity = SSPOLARITY_INVALID;
-    protected int _shiftSampling = SHIFTSAMPLING_INVALID;
-    protected UpdateCallback _valueCallbackSpiPort = null;
+    protected String _i2cMode = I2CMODE_INVALID;
+    protected UpdateCallback _valueCallbackI2cPort = null;
     protected int _rxptr = 0;
     protected byte[] _rxbuff;
     protected int _rxbuffptr = 0;
 
     /**
-     * Deprecated UpdateCallback for SpiPort
+     * Deprecated UpdateCallback for I2cPort
      */
     public interface UpdateCallback
     {
@@ -157,11 +143,11 @@ public class YSpiPort extends YFunction
          * @param function      : the function object of which the value has changed
          * @param functionValue : the character string describing the new advertised value
          */
-        void yNewValue(YSpiPort function, String functionValue);
+        void yNewValue(YI2cPort function, String functionValue);
     }
 
     /**
-     * TimedReportCallback for SpiPort
+     * TimedReportCallback for I2cPort
      */
     public interface TimedReportCallback
     {
@@ -170,33 +156,33 @@ public class YSpiPort extends YFunction
          * @param function : the function object of which the value has changed
          * @param measure  : measure
          */
-        void timedReportCallback(YSpiPort  function, YMeasure measure);
+        void timedReportCallback(YI2cPort  function, YMeasure measure);
     }
-    //--- (end of YSpiPort definitions)
+    //--- (end of YI2cPort definitions)
 
 
     /**
      *
      * @param func : functionid
      */
-    protected YSpiPort(YAPIContext ctx, String func)
+    protected YI2cPort(YAPIContext ctx, String func)
     {
         super(ctx, func);
-        _className = "SpiPort";
-        //--- (YSpiPort attributes initialization)
-        //--- (end of YSpiPort attributes initialization)
+        _className = "I2cPort";
+        //--- (YI2cPort attributes initialization)
+        //--- (end of YI2cPort attributes initialization)
     }
 
     /**
      *
      * @param func : functionid
      */
-    protected YSpiPort(String func)
+    protected YI2cPort(String func)
     {
         this(YAPI.GetYCtx(true), func);
     }
 
-    //--- (YSpiPort implementation)
+    //--- (YI2cPort implementation)
     @SuppressWarnings("EmptyMethod")
     @Override
     protected void  _parseAttr(YJSONObject json_val) throws Exception
@@ -234,14 +220,8 @@ public class YSpiPort extends YFunction
         if (json_val.has("protocol")) {
             _protocol = json_val.getString("protocol");
         }
-        if (json_val.has("spiMode")) {
-            _spiMode = json_val.getString("spiMode");
-        }
-        if (json_val.has("ssPolarity")) {
-            _ssPolarity = json_val.getInt("ssPolarity") > 0 ? 1 : 0;
-        }
-        if (json_val.has("shiftSampling")) {
-            _shiftSampling = json_val.getInt("shiftSampling") > 0 ? 1 : 0;
+        if (json_val.has("i2cMode")) {
+            _i2cMode = json_val.getString("i2cMode");
         }
         super._parseAttr(json_val);
     }
@@ -612,9 +592,9 @@ public class YSpiPort extends YFunction
     /**
      * Returns the voltage level used on the serial line.
      *
-     *  @return a value among YSpiPort.VOLTAGELEVEL_OFF, YSpiPort.VOLTAGELEVEL_TTL3V,
-     *  YSpiPort.VOLTAGELEVEL_TTL3VR, YSpiPort.VOLTAGELEVEL_TTL5V, YSpiPort.VOLTAGELEVEL_TTL5VR,
-     *  YSpiPort.VOLTAGELEVEL_RS232, YSpiPort.VOLTAGELEVEL_RS485 and YSpiPort.VOLTAGELEVEL_TTL1V8
+     *  @return a value among YI2cPort.VOLTAGELEVEL_OFF, YI2cPort.VOLTAGELEVEL_TTL3V,
+     *  YI2cPort.VOLTAGELEVEL_TTL3VR, YI2cPort.VOLTAGELEVEL_TTL5V, YI2cPort.VOLTAGELEVEL_TTL5VR,
+     *  YI2cPort.VOLTAGELEVEL_RS232, YI2cPort.VOLTAGELEVEL_RS485 and YI2cPort.VOLTAGELEVEL_TTL1V8
      * corresponding to the voltage level used on the serial line
      *
      * @throws YAPI_Exception on error
@@ -654,9 +634,9 @@ public class YSpiPort extends YFunction
      * to find out which values are valid for that specific model.
      * Trying to set an invalid value will have no effect.
      *
-     *  @param newval : a value among YSpiPort.VOLTAGELEVEL_OFF, YSpiPort.VOLTAGELEVEL_TTL3V,
-     *  YSpiPort.VOLTAGELEVEL_TTL3VR, YSpiPort.VOLTAGELEVEL_TTL5V, YSpiPort.VOLTAGELEVEL_TTL5VR,
-     *  YSpiPort.VOLTAGELEVEL_RS232, YSpiPort.VOLTAGELEVEL_RS485 and YSpiPort.VOLTAGELEVEL_TTL1V8
+     *  @param newval : a value among YI2cPort.VOLTAGELEVEL_OFF, YI2cPort.VOLTAGELEVEL_TTL3V,
+     *  YI2cPort.VOLTAGELEVEL_TTL3VR, YI2cPort.VOLTAGELEVEL_TTL5V, YI2cPort.VOLTAGELEVEL_TTL5VR,
+     *  YI2cPort.VOLTAGELEVEL_RS232, YI2cPort.VOLTAGELEVEL_RS485 and YI2cPort.VOLTAGELEVEL_TTL1V8
      * corresponding to the voltage type used on the serial line
      *
      * @return YAPI.SUCCESS if the call succeeds.
@@ -695,10 +675,9 @@ public class YSpiPort extends YFunction
 
     /**
      * Returns the type of protocol used over the serial line, as a string.
-     * Possible values are "Line" for ASCII messages separated by CR and/or LF,
-     * "Frame:[timeout]ms" for binary messages separated by a delay time,
-     * "Char" for a continuous ASCII stream or
-     * "Byte" for a continuous binary stream.
+     * Possible values are
+     * "Line" for messages separated by LF or
+     * "Char" for continuous stream of codes.
      *
      * @return a string corresponding to the type of protocol used over the serial line, as a string
      *
@@ -720,10 +699,9 @@ public class YSpiPort extends YFunction
 
     /**
      * Returns the type of protocol used over the serial line, as a string.
-     * Possible values are "Line" for ASCII messages separated by CR and/or LF,
-     * "Frame:[timeout]ms" for binary messages separated by a delay time,
-     * "Char" for a continuous ASCII stream or
-     * "Byte" for a continuous binary stream.
+     * Possible values are
+     * "Line" for messages separated by LF or
+     * "Char" for continuous stream of codes.
      *
      * @return a string corresponding to the type of protocol used over the serial line, as a string
      *
@@ -736,12 +714,11 @@ public class YSpiPort extends YFunction
 
     /**
      * Changes the type of protocol used over the serial line.
-     * Possible values are "Line" for ASCII messages separated by CR and/or LF,
-     * "Frame:[timeout]ms" for binary messages separated by a delay time,
-     * "Char" for a continuous ASCII stream or
-     * "Byte" for a continuous binary stream.
+     * Possible values are
+     * "Line" for messages separated by LF or
+     * "Char" for continuous stream of codes.
      * The suffix "/[wait]ms" can be added to reduce the transmit rate so that there
-     * is always at lest the specified number of milliseconds between each bytes sent.
+     * is always at lest the specified number of milliseconds between each message sent.
      *
      * @param newval : a string corresponding to the type of protocol used over the serial line
      *
@@ -761,12 +738,11 @@ public class YSpiPort extends YFunction
 
     /**
      * Changes the type of protocol used over the serial line.
-     * Possible values are "Line" for ASCII messages separated by CR and/or LF,
-     * "Frame:[timeout]ms" for binary messages separated by a delay time,
-     * "Char" for a continuous ASCII stream or
-     * "Byte" for a continuous binary stream.
+     * Possible values are
+     * "Line" for messages separated by LF or
+     * "Char" for continuous stream of codes.
      * The suffix "/[wait]ms" can be added to reduce the transmit rate so that there
-     * is always at lest the specified number of milliseconds between each bytes sent.
+     * is always at lest the specified number of milliseconds between each message sent.
      *
      * @param newval : a string corresponding to the type of protocol used over the serial line
      *
@@ -781,225 +757,84 @@ public class YSpiPort extends YFunction
 
     /**
      * Returns the SPI port communication parameters, as a string such as
-     * "125000,0,msb". The string includes the baud rate, the SPI mode (between
-     * 0 and 3) and the bit order.
+     * "400kbps,2000ms". The string includes the baud rate and  th  e recovery delay
+     * after communications errors.
      *
      * @return a string corresponding to the SPI port communication parameters, as a string such as
-     *         "125000,0,msb"
+     *         "400kbps,2000ms"
      *
      * @throws YAPI_Exception on error
      */
-    public String get_spiMode() throws YAPI_Exception
+    public String get_i2cMode() throws YAPI_Exception
     {
         String res;
         synchronized (this) {
             if (_cacheExpiration <= YAPIContext.GetTickCount()) {
                 if (load(_yapi._defaultCacheValidity) != YAPI.SUCCESS) {
-                    return SPIMODE_INVALID;
+                    return I2CMODE_INVALID;
                 }
             }
-            res = _spiMode;
+            res = _i2cMode;
         }
         return res;
     }
 
     /**
      * Returns the SPI port communication parameters, as a string such as
-     * "125000,0,msb". The string includes the baud rate, the SPI mode (between
-     * 0 and 3) and the bit order.
+     * "400kbps,2000ms". The string includes the baud rate and  th  e recovery delay
+     * after communications errors.
      *
      * @return a string corresponding to the SPI port communication parameters, as a string such as
-     *         "125000,0,msb"
+     *         "400kbps,2000ms"
      *
      * @throws YAPI_Exception on error
      */
-    public String getSpiMode() throws YAPI_Exception
+    public String getI2cMode() throws YAPI_Exception
     {
-        return get_spiMode();
+        return get_i2cMode();
     }
 
     /**
      * Changes the SPI port communication parameters, with a string such as
-     * "125000,0,msb". The string includes the baud rate, the SPI mode (between
-     * 0 and 3) and the bit order.
+     * "400kbps,2000ms". The string includes the baud rate and the recovery delay
+     * after communications errors.
      *
      * @param newval : a string corresponding to the SPI port communication parameters, with a string such as
-     *         "125000,0,msb"
+     *         "400kbps,2000ms"
      *
      * @return YAPI.SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
-    public int set_spiMode(String  newval)  throws YAPI_Exception
+    public int set_i2cMode(String  newval)  throws YAPI_Exception
     {
         String rest_val;
         synchronized (this) {
             rest_val = newval;
-            _setAttr("spiMode",rest_val);
+            _setAttr("i2cMode",rest_val);
         }
         return YAPI.SUCCESS;
     }
 
     /**
      * Changes the SPI port communication parameters, with a string such as
-     * "125000,0,msb". The string includes the baud rate, the SPI mode (between
-     * 0 and 3) and the bit order.
+     * "400kbps,2000ms". The string includes the baud rate and the recovery delay
+     * after communications errors.
      *
      * @param newval : a string corresponding to the SPI port communication parameters, with a string such as
-     *         "125000,0,msb"
+     *         "400kbps,2000ms"
      *
      * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
-    public int setSpiMode(String newval)  throws YAPI_Exception
+    public int setI2cMode(String newval)  throws YAPI_Exception
     {
-        return set_spiMode(newval);
+        return set_i2cMode(newval);
     }
 
     /**
-     * Returns the SS line polarity.
-     *
-     *  @return either YSpiPort.SSPOLARITY_ACTIVE_LOW or YSpiPort.SSPOLARITY_ACTIVE_HIGH, according to the
-     * SS line polarity
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int get_ssPolarity() throws YAPI_Exception
-    {
-        int res;
-        synchronized (this) {
-            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(_yapi._defaultCacheValidity) != YAPI.SUCCESS) {
-                    return SSPOLARITY_INVALID;
-                }
-            }
-            res = _ssPolarity;
-        }
-        return res;
-    }
-
-    /**
-     * Returns the SS line polarity.
-     *
-     * @return either Y_SSPOLARITY_ACTIVE_LOW or Y_SSPOLARITY_ACTIVE_HIGH, according to the SS line polarity
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int getSsPolarity() throws YAPI_Exception
-    {
-        return get_ssPolarity();
-    }
-
-    /**
-     * Changes the SS line polarity.
-     *
-     *  @param newval : either YSpiPort.SSPOLARITY_ACTIVE_LOW or YSpiPort.SSPOLARITY_ACTIVE_HIGH, according
-     * to the SS line polarity
-     *
-     * @return YAPI.SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int set_ssPolarity(int  newval)  throws YAPI_Exception
-    {
-        String rest_val;
-        synchronized (this) {
-            rest_val = (newval > 0 ? "1" : "0");
-            _setAttr("ssPolarity",rest_val);
-        }
-        return YAPI.SUCCESS;
-    }
-
-    /**
-     * Changes the SS line polarity.
-     *
-     * @param newval : either Y_SSPOLARITY_ACTIVE_LOW or Y_SSPOLARITY_ACTIVE_HIGH, according to the SS line polarity
-     *
-     * @return YAPI_SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int setSsPolarity(int newval)  throws YAPI_Exception
-    {
-        return set_ssPolarity(newval);
-    }
-
-    /**
-     * Returns true when the SDI line phase is shifted with regards to the SDO line.
-     *
-     *  @return either YSpiPort.SHIFTSAMPLING_OFF or YSpiPort.SHIFTSAMPLING_ON, according to true when the
-     * SDI line phase is shifted with regards to the SDO line
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int get_shiftSampling() throws YAPI_Exception
-    {
-        int res;
-        synchronized (this) {
-            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
-                if (load(_yapi._defaultCacheValidity) != YAPI.SUCCESS) {
-                    return SHIFTSAMPLING_INVALID;
-                }
-            }
-            res = _shiftSampling;
-        }
-        return res;
-    }
-
-    /**
-     * Returns true when the SDI line phase is shifted with regards to the SDO line.
-     *
-     *  @return either Y_SHIFTSAMPLING_OFF or Y_SHIFTSAMPLING_ON, according to true when the SDI line phase
-     * is shifted with regards to the SDO line
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int getShiftSampling() throws YAPI_Exception
-    {
-        return get_shiftSampling();
-    }
-
-    /**
-     * Changes the SDI line sampling shift. When disabled, SDI line is
-     * sampled in the middle of data output time. When enabled, SDI line is
-     * samples at the end of data output time.
-     *
-     *  @param newval : either YSpiPort.SHIFTSAMPLING_OFF or YSpiPort.SHIFTSAMPLING_ON, according to the
-     * SDI line sampling shift
-     *
-     * @return YAPI.SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int set_shiftSampling(int  newval)  throws YAPI_Exception
-    {
-        String rest_val;
-        synchronized (this) {
-            rest_val = (newval > 0 ? "1" : "0");
-            _setAttr("shiftSampling",rest_val);
-        }
-        return YAPI.SUCCESS;
-    }
-
-    /**
-     * Changes the SDI line sampling shift. When disabled, SDI line is
-     * sampled in the middle of data output time. When enabled, SDI line is
-     * samples at the end of data output time.
-     *
-     * @param newval : either Y_SHIFTSAMPLING_OFF or Y_SHIFTSAMPLING_ON, according to the SDI line sampling shift
-     *
-     * @return YAPI_SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int setShiftSampling(int newval)  throws YAPI_Exception
-    {
-        return set_shiftSampling(newval);
-    }
-
-    /**
-     * Retrieves a SPI port for a given identifier.
+     * Retrieves an I2C port for a given identifier.
      * The identifier can be specified using several formats:
      * <ul>
      * <li>FunctionLogicalName</li>
@@ -1009,11 +844,11 @@ public class YSpiPort extends YFunction
      * <li>ModuleLogicalName.FunctionLogicalName</li>
      * </ul>
      *
-     * This function does not require that the SPI port is online at the time
+     * This function does not require that the I2C port is online at the time
      * it is invoked. The returned object is nevertheless valid.
-     * Use the method YSpiPort.isOnline() to test if the SPI port is
+     * Use the method YI2cPort.isOnline() to test if the I2C port is
      * indeed online at a given time. In case of ambiguity when looking for
-     * a SPI port by logical name, no error is notified: the first instance
+     * an I2C port by logical name, no error is notified: the first instance
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
@@ -1021,25 +856,25 @@ public class YSpiPort extends YFunction
      * you are certain that the matching device is plugged, make sure that you did
      * call registerHub() at application initialization time.
      *
-     * @param func : a string that uniquely characterizes the SPI port
+     * @param func : a string that uniquely characterizes the I2C port
      *
-     * @return a YSpiPort object allowing you to drive the SPI port.
+     * @return a YI2cPort object allowing you to drive the I2C port.
      */
-    public static YSpiPort FindSpiPort(String func)
+    public static YI2cPort FindI2cPort(String func)
     {
-        YSpiPort obj;
+        YI2cPort obj;
         synchronized (YAPI.class) {
-            obj = (YSpiPort) YFunction._FindFromCache("SpiPort", func);
+            obj = (YI2cPort) YFunction._FindFromCache("I2cPort", func);
             if (obj == null) {
-                obj = new YSpiPort(func);
-                YFunction._AddToCache("SpiPort", func, obj);
+                obj = new YI2cPort(func);
+                YFunction._AddToCache("I2cPort", func, obj);
             }
         }
         return obj;
     }
 
     /**
-     * Retrieves a SPI port for a given identifier in a YAPI context.
+     * Retrieves an I2C port for a given identifier in a YAPI context.
      * The identifier can be specified using several formats:
      * <ul>
      * <li>FunctionLogicalName</li>
@@ -1049,27 +884,27 @@ public class YSpiPort extends YFunction
      * <li>ModuleLogicalName.FunctionLogicalName</li>
      * </ul>
      *
-     * This function does not require that the SPI port is online at the time
+     * This function does not require that the I2C port is online at the time
      * it is invoked. The returned object is nevertheless valid.
-     * Use the method YSpiPort.isOnline() to test if the SPI port is
+     * Use the method YI2cPort.isOnline() to test if the I2C port is
      * indeed online at a given time. In case of ambiguity when looking for
-     * a SPI port by logical name, no error is notified: the first instance
+     * an I2C port by logical name, no error is notified: the first instance
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
      * @param yctx : a YAPI context
-     * @param func : a string that uniquely characterizes the SPI port
+     * @param func : a string that uniquely characterizes the I2C port
      *
-     * @return a YSpiPort object allowing you to drive the SPI port.
+     * @return a YI2cPort object allowing you to drive the I2C port.
      */
-    public static YSpiPort FindSpiPortInContext(YAPIContext yctx,String func)
+    public static YI2cPort FindI2cPortInContext(YAPIContext yctx,String func)
     {
-        YSpiPort obj;
+        YI2cPort obj;
         synchronized (yctx) {
-            obj = (YSpiPort) YFunction._FindFromCacheInContext(yctx, "SpiPort", func);
+            obj = (YI2cPort) YFunction._FindFromCacheInContext(yctx, "I2cPort", func);
             if (obj == null) {
-                obj = new YSpiPort(yctx, func);
-                YFunction._AddToCache("SpiPort", func, obj);
+                obj = new YI2cPort(yctx, func);
+                YFunction._AddToCache("I2cPort", func, obj);
             }
         }
         return obj;
@@ -1094,7 +929,7 @@ public class YSpiPort extends YFunction
         } else {
             YFunction._UpdateValueCallbackList(this, false);
         }
-        _valueCallbackSpiPort = callback;
+        _valueCallbackI2cPort = callback;
         // Immediately invoke value callback with current value
         if (callback != null && isOnline()) {
             val = _advertisedValue;
@@ -1108,8 +943,8 @@ public class YSpiPort extends YFunction
     @Override
     public int _invokeValueCallback(String value)
     {
-        if (_valueCallbackSpiPort != null) {
-            _valueCallbackSpiPort.yNewValue(this, value);
+        if (_valueCallbackI2cPort != null) {
+            _valueCallbackI2cPort.yNewValue(this, value);
         } else {
             super._invokeValueCallback(value);
         }
@@ -1297,7 +1132,7 @@ public class YSpiPort extends YFunction
      * @param jobfile : name of the job file to save on the device filesystem
      * @param jsonDef : a string containing a JSON definition of the job
      *
-     * @return YAPI.SUCCESS if the call succeeds.
+     * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
@@ -1314,7 +1149,7 @@ public class YSpiPort extends YFunction
      *
      * @param jobfile : name of the job file (on the device filesystem)
      *
-     * @return YAPI.SUCCESS if the call succeeds.
+     * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
@@ -1326,7 +1161,7 @@ public class YSpiPort extends YFunction
     /**
      * Clears the serial port buffer and resets counters to zero.
      *
-     * @return YAPI.SUCCESS if the call succeeds.
+     * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
@@ -1340,432 +1175,379 @@ public class YSpiPort extends YFunction
     }
 
     /**
-     * Sends a single byte to the serial port.
+     * Sends a one-way message (provided as a a binary buffer) to a device on the I2C bus.
+     * This function checks and reports communication errors on the I2C bus.
+     *
+     * @param slaveAddr : the 7-bit address of the slave device (without the direction bit)
+     * @param buff : the binary buffer to be sent
+     *
+     * @return YAPI_SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int i2cSendBin(int slaveAddr,byte[] buff) throws YAPI_Exception
+    {
+        int nBytes;
+        int idx;
+        int val;
+        String msg;
+        String reply;
+        msg = String.format(Locale.US, "@%02x:",slaveAddr);
+        nBytes = (buff).length;
+        idx = 0;
+        while (idx < nBytes) {
+            val = (buff[idx] & 0xff);
+            msg = String.format(Locale.US, "%s%02x", msg,val);
+            idx = idx + 1;
+        }
+
+        reply = queryLine(msg,1000);
+        //noinspection DoubleNegation
+        if (!((reply).length() > 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "no response from device");}
+        idx = (reply).indexOf("[N]!");
+        //noinspection DoubleNegation
+        if (!(idx < 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "No ACK received");}
+        idx = (reply).indexOf("!");
+        //noinspection DoubleNegation
+        if (!(idx < 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "Protocol error");}
+        return YAPI.SUCCESS;
+    }
+
+    /**
+     * Sends a one-way message (provided as a list of integer) to a device on the I2C bus.
+     * This function checks and reports communication errors on the I2C bus.
+     *
+     * @param slaveAddr : the 7-bit address of the slave device (without the direction bit)
+     * @param values : a list of data bytes to be sent
+     *
+     * @return YAPI_SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int i2cSendArray(int slaveAddr,ArrayList<Integer> values) throws YAPI_Exception
+    {
+        int nBytes;
+        int idx;
+        int val;
+        String msg;
+        String reply;
+        msg = String.format(Locale.US, "@%02x:",slaveAddr);
+        nBytes = values.size();
+        idx = 0;
+        while (idx < nBytes) {
+            val = values.get(idx).intValue();
+            msg = String.format(Locale.US, "%s%02x", msg,val);
+            idx = idx + 1;
+        }
+
+        reply = queryLine(msg,1000);
+        //noinspection DoubleNegation
+        if (!((reply).length() > 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "no response from device");}
+        idx = (reply).indexOf("[N]!");
+        //noinspection DoubleNegation
+        if (!(idx < 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "No ACK received");}
+        idx = (reply).indexOf("!");
+        //noinspection DoubleNegation
+        if (!(idx < 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "Protocol error");}
+        return YAPI.SUCCESS;
+    }
+
+    /**
+     * Sends a one-way message (provided as a a binary buffer) to a device on the I2C bus,
+     * then read back the specified number of bytes from device.
+     * This function checks and reports communication errors on the I2C bus.
+     *
+     * @param slaveAddr : the 7-bit address of the slave device (without the direction bit)
+     * @param buff : the binary buffer to be sent
+     * @param rcvCount : the number of bytes to receive once the data bytes are sent
+     *
+     * @return a list of bytes with the data received from slave device.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public byte[] i2cSendAndReceiveBin(int slaveAddr,byte[] buff,int rcvCount) throws YAPI_Exception
+    {
+        int nBytes;
+        int idx;
+        int val;
+        String msg;
+        String reply;
+        byte[] rcvbytes;
+        msg = String.format(Locale.US, "@%02x:",slaveAddr);
+        nBytes = (buff).length;
+        idx = 0;
+        while (idx < nBytes) {
+            val = (buff[idx] & 0xff);
+            msg = String.format(Locale.US, "%s%02x", msg,val);
+            idx = idx + 1;
+        }
+        idx = 0;
+        while (idx < rcvCount) {
+            msg = String.format(Locale.US, "%sxx",msg);
+            idx = idx + 1;
+        }
+
+        reply = queryLine(msg,1000);
+        rcvbytes = new byte[0];
+        //noinspection DoubleNegation
+        if (!((reply).length() > 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "no response from device");}
+        idx = (reply).indexOf("[N]!");
+        //noinspection DoubleNegation
+        if (!(idx < 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "No ACK received");}
+        idx = (reply).indexOf("!");
+        //noinspection DoubleNegation
+        if (!(idx < 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "Protocol error");}
+        reply = (reply).substring( (reply).length()-2*rcvCount,  (reply).length()-2*rcvCount + 2*rcvCount);
+        rcvbytes = YAPIContext._hexStrToBin(reply);
+        return rcvbytes;
+    }
+
+    /**
+     * Sends a one-way message (provided as a list of integer) to a device on the I2C bus,
+     * then read back the specified number of bytes from device.
+     * This function checks and reports communication errors on the I2C bus.
+     *
+     * @param slaveAddr : the 7-bit address of the slave device (without the direction bit)
+     * @param values : a list of data bytes to be sent
+     * @param rcvCount : the number of bytes to receive once the data bytes are sent
+     *
+     * @return a list of bytes with the data received from slave device.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public ArrayList<Integer> i2cSendAndReceiveArray(int slaveAddr,ArrayList<Integer> values,int rcvCount) throws YAPI_Exception
+    {
+        int nBytes;
+        int idx;
+        int val;
+        String msg;
+        String reply;
+        byte[] rcvbytes;
+        ArrayList<Integer> res = new ArrayList<>();
+        msg = String.format(Locale.US, "@%02x:",slaveAddr);
+        nBytes = values.size();
+        idx = 0;
+        while (idx < nBytes) {
+            val = values.get(idx).intValue();
+            msg = String.format(Locale.US, "%s%02x", msg,val);
+            idx = idx + 1;
+        }
+        idx = 0;
+        while (idx < rcvCount) {
+            msg = String.format(Locale.US, "%sxx",msg);
+            idx = idx + 1;
+        }
+
+        reply = queryLine(msg,1000);
+        //noinspection DoubleNegation
+        if (!((reply).length() > 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "no response from device");}
+        idx = (reply).indexOf("[N]!");
+        //noinspection DoubleNegation
+        if (!(idx < 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "No ACK received");}
+        idx = (reply).indexOf("!");
+        //noinspection DoubleNegation
+        if (!(idx < 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "Protocol error");}
+        reply = (reply).substring( (reply).length()-2*rcvCount,  (reply).length()-2*rcvCount + 2*rcvCount);
+        rcvbytes = YAPIContext._hexStrToBin(reply);
+        res.clear();
+        idx = 0;
+        while (idx < rcvCount) {
+            val = (rcvbytes[idx] & 0xff);
+            res.add(val);
+            idx = idx + 1;
+        }
+        return res;
+    }
+
+    /**
+     * Sends a text-encoded I2C code stream to the I2C bus, as is.
+     * An I2C code stream is a string made of hexadecimal data bytes,
+     * but that may also include the I2C state transitions code:
+     * "{S}" to emit a start condition,
+     * "{R}" for a repeated start condition,
+     * "{P}" for a stop condition,
+     * "xx" for receiving a data byte,
+     * "{A}" to ack a data byte received and
+     * "{N}" to nack a data byte received.
+     * If a newline ("\n") is included in the stream, the message
+     * will be terminated and a newline will also be added to the
+     * receive stream.
+     *
+     * @param codes : the code stream to send
+     *
+     * @return YAPI_SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int writeStr(String codes) throws YAPI_Exception
+    {
+        int bufflen;
+        byte[] buff;
+        int idx;
+        int ch;
+        buff = (codes).getBytes();
+        bufflen = (buff).length;
+        if (bufflen < 100) {
+            // if string is pure text, we can send it as a simple command (faster)
+            ch = 0x20;
+            idx = 0;
+            while ((idx < bufflen) && (ch != 0)) {
+                ch = (buff[idx] & 0xff);
+                if ((ch >= 0x20) && (ch < 0x7f)) {
+                    idx = idx + 1;
+                } else {
+                    ch = 0;
+                }
+            }
+            if (idx >= bufflen) {
+                return sendCommand(String.format(Locale.US, "+%s",codes));
+            }
+        }
+        // send string using file upload
+        return _upload("txdata", buff);
+    }
+
+    /**
+     * Sends a text-encoded I2C code stream to the I2C bus, and terminate
+     * the message en relâchant le bus.
+     * An I2C code stream is a string made of hexadecimal data bytes,
+     * but that may also include the I2C state transitions code:
+     * "{S}" to emit a start condition,
+     * "{R}" for a repeated start condition,
+     * "{P}" for a stop condition,
+     * "xx" for receiving a data byte,
+     * "{A}" to ack a data byte received and
+     * "{N}" to nack a data byte received.
+     * At the end of the stream, a stop condition is added if missing
+     * and a newline is added to the receive buffer as well.
+     *
+     * @param codes : the code stream to send
+     *
+     * @return YAPI_SUCCESS if the call succeeds.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int writeLine(String codes) throws YAPI_Exception
+    {
+        int bufflen;
+        byte[] buff;
+        bufflen = (codes).length();
+        if (bufflen < 100) {
+            return sendCommand(String.format(Locale.US, "!%s",codes));
+        }
+        // send string using file upload
+        buff = (String.format(Locale.US, "%s\n",codes)).getBytes();
+        return _upload("txdata", buff);
+    }
+
+    /**
+     * Sends a single byte to the I2C bus. Depending on the I2C bus state, the byte
+     * will be interpreted as an address byte or a data byte.
      *
      * @param code : the byte to send
      *
-     * @return YAPI.SUCCESS if the call succeeds.
+     * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
     public int writeByte(int code) throws YAPI_Exception
     {
-        return sendCommand(String.format(Locale.US, "$%02X",code));
+        return sendCommand(String.format(Locale.US, "+%02X",code));
     }
 
     /**
-     * Sends an ASCII string to the serial port, as is.
-     *
-     * @param text : the text string to send
-     *
-     * @return YAPI.SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int writeStr(String text) throws YAPI_Exception
-    {
-        byte[] buff;
-        int bufflen;
-        int idx;
-        int ch;
-        buff = (text).getBytes();
-        bufflen = (buff).length;
-        if (bufflen < 100) {
-            // if string is pure text, we can send it as a simple command (faster)
-            ch = 0x20;
-            idx = 0;
-            while ((idx < bufflen) && (ch != 0)) {
-                ch = (buff[idx] & 0xff);
-                if ((ch >= 0x20) && (ch < 0x7f)) {
-                    idx = idx + 1;
-                } else {
-                    ch = 0;
-                }
-            }
-            if (idx >= bufflen) {
-                return sendCommand(String.format(Locale.US, "+%s",text));
-            }
-        }
-        // send string using file upload
-        return _upload("txdata", buff);
-    }
-
-    /**
-     * Sends a binary buffer to the serial port, as is.
-     *
-     * @param buff : the binary buffer to send
-     *
-     * @return YAPI.SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int writeBin(byte[] buff) throws YAPI_Exception
-    {
-        return _upload("txdata", buff);
-    }
-
-    /**
-     * Sends a byte sequence (provided as a list of bytes) to the serial port.
-     *
-     * @param byteList : a list of byte codes
-     *
-     * @return YAPI.SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int writeArray(ArrayList<Integer> byteList) throws YAPI_Exception
-    {
-        byte[] buff;
-        int bufflen;
-        int idx;
-        int hexb;
-        int res;
-        bufflen = byteList.size();
-        buff = new byte[bufflen];
-        idx = 0;
-        while (idx < bufflen) {
-            hexb = byteList.get(idx).intValue();
-            buff[idx] = (byte)(hexb & 0xff);
-            idx = idx + 1;
-        }
-
-        res = _upload("txdata", buff);
-        return res;
-    }
-
-    /**
-     * Sends a byte sequence (provided as a hexadecimal string) to the serial port.
+     * Sends a byte sequence (provided as a hexadecimal string) to the I2C bus.
+     * Depending on the I2C bus state, the first byte will be interpreted as an
+     * address byte or a data byte.
      *
      * @param hexString : a string of hexadecimal byte codes
      *
-     * @return YAPI.SUCCESS if the call succeeds.
+     * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
     public int writeHex(String hexString) throws YAPI_Exception
     {
-        byte[] buff;
         int bufflen;
-        int idx;
-        int hexb;
-        int res;
+        byte[] buff;
         bufflen = (hexString).length();
         if (bufflen < 100) {
-            return sendCommand(String.format(Locale.US, "$%s",hexString));
+            return sendCommand(String.format(Locale.US, "+%s",hexString));
         }
-        bufflen = ((bufflen) >> (1));
-        buff = new byte[bufflen];
-        idx = 0;
-        while (idx < bufflen) {
-            hexb = Integer.valueOf((hexString).substring( 2 * idx,  2 * idx + 2),16);
-            buff[idx] = (byte)(hexb & 0xff);
-            idx = idx + 1;
-        }
+        buff = (hexString).getBytes();
 
-        res = _upload("txdata", buff);
-        return res;
-    }
-
-    /**
-     * Sends an ASCII string to the serial port, followed by a line break (CR LF).
-     *
-     * @param text : the text string to send
-     *
-     * @return YAPI.SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int writeLine(String text) throws YAPI_Exception
-    {
-        byte[] buff;
-        int bufflen;
-        int idx;
-        int ch;
-        buff = (String.format(Locale.US, "%s\r\n",text)).getBytes();
-        bufflen = (buff).length-2;
-        if (bufflen < 100) {
-            // if string is pure text, we can send it as a simple command (faster)
-            ch = 0x20;
-            idx = 0;
-            while ((idx < bufflen) && (ch != 0)) {
-                ch = (buff[idx] & 0xff);
-                if ((ch >= 0x20) && (ch < 0x7f)) {
-                    idx = idx + 1;
-                } else {
-                    ch = 0;
-                }
-            }
-            if (idx >= bufflen) {
-                return sendCommand(String.format(Locale.US, "!%s",text));
-            }
-        }
-        // send string using file upload
         return _upload("txdata", buff);
     }
 
     /**
-     * Reads one byte from the receive buffer, starting at current stream position.
-     * If data at current stream position is not available anymore in the receive buffer,
-     * or if there is no data available yet, the function returns YAPI.NO_MORE_DATA.
+     * Sends a binary buffer to the I2C bus, as is.
+     * Depending on the I2C bus state, the first byte will be interpreted
+     * as an address byte or a data byte.
      *
-     * @return the next byte
+     * @param buff : the binary buffer to send
      *
-     * @throws YAPI_Exception on error
-     */
-    public int readByte() throws YAPI_Exception
-    {
-        int currpos;
-        int reqlen;
-        byte[] buff;
-        int bufflen;
-        int mult;
-        int endpos;
-        int res;
-        // first check if we have the requested character in the look-ahead buffer
-        bufflen = (_rxbuff).length;
-        if ((_rxptr >= _rxbuffptr) && (_rxptr < _rxbuffptr+bufflen)) {
-            res = (_rxbuff[_rxptr-_rxbuffptr] & 0xff);
-            _rxptr = _rxptr + 1;
-            return res;
-        }
-        // try to preload more than one byte to speed-up byte-per-byte access
-        currpos = _rxptr;
-        reqlen = 1024;
-        buff = readBin(reqlen);
-        bufflen = (buff).length;
-        if (_rxptr == currpos+bufflen) {
-            res = (buff[0] & 0xff);
-            _rxptr = currpos+1;
-            _rxbuffptr = currpos;
-            _rxbuff = buff;
-            return res;
-        }
-        // mixed bidirectional data, retry with a smaller block
-        _rxptr = currpos;
-        reqlen = 16;
-        buff = readBin(reqlen);
-        bufflen = (buff).length;
-        if (_rxptr == currpos+bufflen) {
-            res = (buff[0] & 0xff);
-            _rxptr = currpos+1;
-            _rxbuffptr = currpos;
-            _rxbuff = buff;
-            return res;
-        }
-        // still mixed, need to process character by character
-        _rxptr = currpos;
-
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=1",_rxptr));
-        bufflen = (buff).length - 1;
-        endpos = 0;
-        mult = 1;
-        while ((bufflen > 0) && ((buff[bufflen] & 0xff) != 64)) {
-            endpos = endpos + mult * ((buff[bufflen] & 0xff) - 48);
-            mult = mult * 10;
-            bufflen = bufflen - 1;
-        }
-        _rxptr = endpos;
-        if (bufflen == 0) {
-            return YAPI.NO_MORE_DATA;
-        }
-        res = (buff[0] & 0xff);
-        return res;
-    }
-
-    /**
-     * Reads data from the receive buffer as a string, starting at current stream position.
-     * If data at current stream position is not available anymore in the receive buffer, the
-     * function performs a short read.
-     *
-     * @param nChars : the maximum number of characters to read
-     *
-     * @return a string with receive buffer contents
+     * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
-    public String readStr(int nChars) throws YAPI_Exception
+    public int writeBin(byte[] buff) throws YAPI_Exception
     {
-        byte[] buff;
-        int bufflen;
-        int mult;
-        int endpos;
-        String res;
-        if (nChars > 65535) {
-            nChars = 65535;
-        }
-
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
-        bufflen = (buff).length - 1;
-        endpos = 0;
-        mult = 1;
-        while ((bufflen > 0) && ((buff[bufflen] & 0xff) != 64)) {
-            endpos = endpos + mult * ((buff[bufflen] & 0xff) - 48);
-            mult = mult * 10;
-            bufflen = bufflen - 1;
-        }
-        _rxptr = endpos;
-        res = (new String(buff)).substring(0, bufflen);
-        return res;
-    }
-
-    /**
-     * Reads data from the receive buffer as a binary buffer, starting at current stream position.
-     * If data at current stream position is not available anymore in the receive buffer, the
-     * function performs a short read.
-     *
-     * @param nChars : the maximum number of bytes to read
-     *
-     * @return a binary object with receive buffer contents
-     *
-     * @throws YAPI_Exception on error
-     */
-    public byte[] readBin(int nChars) throws YAPI_Exception
-    {
-        byte[] buff;
-        int bufflen;
-        int mult;
-        int endpos;
+        int nBytes;
         int idx;
-        byte[] res;
-        if (nChars > 65535) {
-            nChars = 65535;
-        }
-
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
-        bufflen = (buff).length - 1;
-        endpos = 0;
-        mult = 1;
-        while ((bufflen > 0) && ((buff[bufflen] & 0xff) != 64)) {
-            endpos = endpos + mult * ((buff[bufflen] & 0xff) - 48);
-            mult = mult * 10;
-            bufflen = bufflen - 1;
-        }
-        _rxptr = endpos;
-        res = new byte[bufflen];
+        int val;
+        String msg;
+        msg = "";
+        nBytes = (buff).length;
         idx = 0;
-        while (idx < bufflen) {
-            res[idx] = (byte)((buff[idx] & 0xff) & 0xff);
+        while (idx < nBytes) {
+            val = (buff[idx] & 0xff);
+            msg = String.format(Locale.US, "%s%02x", msg,val);
             idx = idx + 1;
         }
-        return res;
+
+        return writeHex(msg);
     }
 
     /**
-     * Reads data from the receive buffer as a list of bytes, starting at current stream position.
-     * If data at current stream position is not available anymore in the receive buffer, the
-     * function performs a short read.
+     * Sends a byte sequence (provided as a list of bytes) to the I2C bus.
+     * Depending on the I2C bus state, the first byte will be interpreted as an
+     * address byte or a data byte.
      *
-     * @param nChars : the maximum number of bytes to read
+     * @param byteList : a list of byte codes
      *
-     * @return a sequence of bytes with receive buffer contents
+     * @return YAPI_SUCCESS if the call succeeds.
      *
      * @throws YAPI_Exception on error
      */
-    public ArrayList<Integer> readArray(int nChars) throws YAPI_Exception
+    public int writeArray(ArrayList<Integer> byteList) throws YAPI_Exception
     {
-        byte[] buff;
-        int bufflen;
-        int mult;
-        int endpos;
+        int nBytes;
         int idx;
-        int b;
-        ArrayList<Integer> res = new ArrayList<>();
-        if (nChars > 65535) {
-            nChars = 65535;
-        }
-
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
-        bufflen = (buff).length - 1;
-        endpos = 0;
-        mult = 1;
-        while ((bufflen > 0) && ((buff[bufflen] & 0xff) != 64)) {
-            endpos = endpos + mult * ((buff[bufflen] & 0xff) - 48);
-            mult = mult * 10;
-            bufflen = bufflen - 1;
-        }
-        _rxptr = endpos;
-        res.clear();
+        int val;
+        String msg;
+        msg = "";
+        nBytes = byteList.size();
         idx = 0;
-        while (idx < bufflen) {
-            b = (buff[idx] & 0xff);
-            res.add(b);
+        while (idx < nBytes) {
+            val = byteList.get(idx).intValue();
+            msg = String.format(Locale.US, "%s%02x", msg,val);
             idx = idx + 1;
         }
-        return res;
+
+        return writeHex(msg);
     }
 
     /**
-     * Reads data from the receive buffer as a hexadecimal string, starting at current stream position.
-     * If data at current stream position is not available anymore in the receive buffer, the
-     * function performs a short read.
-     *
-     * @param nBytes : the maximum number of bytes to read
-     *
-     * @return a string with receive buffer contents, encoded in hexadecimal
-     *
-     * @throws YAPI_Exception on error
-     */
-    public String readHex(int nBytes) throws YAPI_Exception
-    {
-        byte[] buff;
-        int bufflen;
-        int mult;
-        int endpos;
-        int ofs;
-        String res;
-        if (nBytes > 65535) {
-            nBytes = 65535;
-        }
-
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nBytes));
-        bufflen = (buff).length - 1;
-        endpos = 0;
-        mult = 1;
-        while ((bufflen > 0) && ((buff[bufflen] & 0xff) != 64)) {
-            endpos = endpos + mult * ((buff[bufflen] & 0xff) - 48);
-            mult = mult * 10;
-            bufflen = bufflen - 1;
-        }
-        _rxptr = endpos;
-        res = "";
-        ofs = 0;
-        while (ofs + 3 < bufflen) {
-            res = String.format(Locale.US, "%s%02X%02X%02X%02X", res, (buff[ofs] & 0xff), (buff[ofs + 1] & 0xff), (buff[ofs + 2] & 0xff),(buff[ofs + 3] & 0xff));
-            ofs = ofs + 4;
-        }
-        while (ofs < bufflen) {
-            res = String.format(Locale.US, "%s%02X", res,(buff[ofs] & 0xff));
-            ofs = ofs + 1;
-        }
-        return res;
-    }
-
-    /**
-     * Manually sets the state of the SS line. This function has no effect when
-     * the SS line is handled automatically.
-     *
-     * @param val : 1 to turn SS active, 0 to release SS.
-     *
-     * @return YAPI.SUCCESS if the call succeeds.
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int set_SS(int val) throws YAPI_Exception
-    {
-        return sendCommand(String.format(Locale.US, "S%d",val));
-    }
-
-    /**
-     * Continues the enumeration of SPI ports started using yFirstSpiPort().
-     * Caution: You can't make any assumption about the returned SPI ports order.
-     * If you want to find a specific a SPI port, use SpiPort.findSpiPort()
+     * Continues the enumeration of I2C ports started using yFirstI2cPort().
+     * Caution: You can't make any assumption about the returned I2C ports order.
+     * If you want to find a specific an I2C port, use I2cPort.findI2cPort()
      * and a hardwareID or a logical name.
      *
-     * @return a pointer to a YSpiPort object, corresponding to
-     *         a SPI port currently online, or a null pointer
-     *         if there are no more SPI ports to enumerate.
+     * @return a pointer to a YI2cPort object, corresponding to
+     *         an I2C port currently online, or a null pointer
+     *         if there are no more I2C ports to enumerate.
      */
-    public YSpiPort nextSpiPort()
+    public YI2cPort nextI2cPort()
     {
         String next_hwid;
         try {
@@ -1775,45 +1557,45 @@ public class YSpiPort extends YFunction
             next_hwid = null;
         }
         if(next_hwid == null) return null;
-        return FindSpiPortInContext(_yapi, next_hwid);
+        return FindI2cPortInContext(_yapi, next_hwid);
     }
 
     /**
-     * Starts the enumeration of SPI ports currently accessible.
-     * Use the method YSpiPort.nextSpiPort() to iterate on
-     * next SPI ports.
+     * Starts the enumeration of I2C ports currently accessible.
+     * Use the method YI2cPort.nextI2cPort() to iterate on
+     * next I2C ports.
      *
-     * @return a pointer to a YSpiPort object, corresponding to
-     *         the first SPI port currently online, or a null pointer
+     * @return a pointer to a YI2cPort object, corresponding to
+     *         the first I2C port currently online, or a null pointer
      *         if there are none.
      */
-    public static YSpiPort FirstSpiPort()
+    public static YI2cPort FirstI2cPort()
     {
         YAPIContext yctx = YAPI.GetYCtx(false);
         if (yctx == null)  return null;
-        String next_hwid = yctx._yHash.getFirstHardwareId("SpiPort");
+        String next_hwid = yctx._yHash.getFirstHardwareId("I2cPort");
         if (next_hwid == null)  return null;
-        return FindSpiPortInContext(yctx, next_hwid);
+        return FindI2cPortInContext(yctx, next_hwid);
     }
 
     /**
-     * Starts the enumeration of SPI ports currently accessible.
-     * Use the method YSpiPort.nextSpiPort() to iterate on
-     * next SPI ports.
+     * Starts the enumeration of I2C ports currently accessible.
+     * Use the method YI2cPort.nextI2cPort() to iterate on
+     * next I2C ports.
      *
      * @param yctx : a YAPI context.
      *
-     * @return a pointer to a YSpiPort object, corresponding to
-     *         the first SPI port currently online, or a null pointer
+     * @return a pointer to a YI2cPort object, corresponding to
+     *         the first I2C port currently online, or a null pointer
      *         if there are none.
      */
-    public static YSpiPort FirstSpiPortInContext(YAPIContext yctx)
+    public static YI2cPort FirstI2cPortInContext(YAPIContext yctx)
     {
-        String next_hwid = yctx._yHash.getFirstHardwareId("SpiPort");
+        String next_hwid = yctx._yHash.getFirstHardwareId("I2cPort");
         if (next_hwid == null)  return null;
-        return FindSpiPortInContext(yctx, next_hwid);
+        return FindI2cPortInContext(yctx, next_hwid);
     }
 
-    //--- (end of YSpiPort implementation)
+    //--- (end of YI2cPort implementation)
 }
 

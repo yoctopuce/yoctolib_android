@@ -1,3 +1,4 @@
-Android v1.10.35983
+Android v1.10.36218
 
-- Add YArithmeticSensor class
+- Add ConsolidatedDataSet class
+- Add support for Yocto-I2c
