@@ -11,6 +11,7 @@ import com.yoctopuce.YoctoAPI.YDataSet;
 import com.yoctopuce.YoctoAPI.YMeasure;
 import com.yoctopuce.YoctoAPI.YModule;
 import com.yoctopuce.YoctoAPI.YSensor;
+import com.yoctopuce.examples.yocto_graph.PreferenceHubStorage;
 
 import java.util.ArrayList;
 
@@ -115,6 +116,7 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
             _registerdHubs.addAll(common);
             hubs.removeAll(common);
             for (String url : hubs) {
+
                 _registerdHubs.add(url);
                 if (_started) {
                     Log.d("YHUB", "register " + url);

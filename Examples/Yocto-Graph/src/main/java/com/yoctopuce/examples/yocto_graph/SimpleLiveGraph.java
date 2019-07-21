@@ -46,6 +46,10 @@ public class SimpleLiveGraph
         _multipleRenderer.setShowGridX(true);
         _multipleRenderer.setAxesColor(Color.TRANSPARENT);
         _multipleRenderer.setGridColor(Color.GRAY);
+        _multipleRenderer.setApplyBackgroundColor(true);
+        //_multipleRenderer.setBackgroundColor(Color.RED);
+        _multipleRenderer.setMarginsColor(Color.WHITE);
+
         _multipleRenderer.setYAxisAlign(Paint.Align.RIGHT, 0);
 
     }
@@ -94,7 +98,8 @@ public class SimpleLiveGraph
         // Convert the dps to pixels, based on density scale
         int textsize = (int) (X_LABEL_SIZE_IN_DP * scale + 0.5f);
         _multipleRenderer.setLabelsTextSize(textsize);
-        return ChartFactory.getTimeChartView(context, _multipleDataset, _multipleRenderer, "k:mm");
+        GraphicalView timeChartView = ChartFactory.getTimeChartView(context, _multipleDataset, _multipleRenderer, "k:mm");
+        return timeChartView;
     }
 
     public void setColor(int color)

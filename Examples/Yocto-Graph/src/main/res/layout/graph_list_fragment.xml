@@ -1,22 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-             android:background="@color/graph_list_background">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SingleFragmentActivity">
 
     <ListView
         android:id="@id/android:list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:drawSelectorOnTop="false"/>
+        android:drawSelectorOnTop="false" />
 
     <TextView
         android:id="@id/android:empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:padding="16dp"
         android:gravity="center"
-        android:textSize="30sp"
+        android:text="@string/plug_a_device"
         android:textAlignment="center"
-        android:text="@string/plug_a_device"/>
+        android:textSize="30sp" />
 
 </FrameLayout>

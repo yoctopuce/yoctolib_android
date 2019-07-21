@@ -8,7 +8,7 @@
     <string name="last_30_minutes">Last 30 minutes</string>
     <string name="last_hour">Last hour</string>
     <string name="graph_duration">Duration</string>
-    <string name="plug_a_device">Plug a Yoctopuce device to the USB port</string>
+    <string name="plug_a_device">Plug a Yoctopuce device to the USB port or add a YoctoHub in the setting menu.</string>
     <string name="loading">Loading…</string>
     <string name="about">About</string>
     <string name="about_text"><![CDATA[
@@ -23,5 +23,17 @@
     <string name="_192_168_1_12">192.168.1.12</string>
     <string name="_4444">4444</string>
     <string name="delete">Delete</string>
+    <string name="delete_hub">Delete hub</string>
+    <string name="edit_hub">Edit hub</string>
+    <string name="yoctohub_and_virtualhub">YoctoHub and VirtualHub</string>
+    <string name="usb">USB</string>
+    <string name="use_usb_port">Use USB port</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="unsaved_change_msg">You have unsaved changes. Are you sure you want leave this page ?</string>
+    <string name="delete_confirm_msg">Are you sure you want to delete this ?</string>
+    <string name="path">Path</string>
+    <string name="proto">Protocol</string>
 
 </resources>

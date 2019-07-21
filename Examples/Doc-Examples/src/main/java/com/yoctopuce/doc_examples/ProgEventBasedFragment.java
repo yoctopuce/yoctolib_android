@@ -15,10 +15,11 @@ import com.yoctopuce.YoctoAPI.YSensor;
 import java.util.Date;
 import java.util.Locale;
 
-public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceArrivalCallback, YAnButton.UpdateCallback, YSensor.TimedReportCallback, YSensor.UpdateCallback, YAPI.DeviceRemovalCallback, YModule.ConfigChangeCallback, YModule.BeaconCallback
+public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceArrivalCallback, YAnButton.UpdateCallback, YSensor.TimedReportCallback, YSensor.UpdateCallback, YAPI.DeviceRemovalCallback, YModule.ConfigChangeCallback, YModule.BeaconCallback, YAPI.LogCallback
 {
 
     private static final String TAG = "Prog-EventBased";
+
 
 
     private class Events
@@ -63,6 +64,7 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
     {
         super.onResume();
         try {
+            YAPI.RegisterLogFunction(this);
             YAPI.RegisterDeviceArrivalCallback(this);
             YAPI.RegisterDeviceRemovalCallback(this);
             YAPI.EnableUSBHost(getActivity());
@@ -100,6 +102,12 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
 
 
     @Override
+    public void yLog(String line)
+    {
+        pushEvent("LOG : " + line.trim());
+    }
+
+    @Override
     public void yNewValue(YAnButton fct, String value)
     {
         try {
@@ -113,7 +121,7 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
     public void yNewValue(YSensor fct, String value)
     {
         try {
-            pushEvent(fct.get_hardwareId() + ": " + value + " (new value)");
+            pushEvent(fct.get_hardwareId() + ": " + value + " "+ fct.get_userData() +" (new value)");
         } catch (YAPI_Exception e) {
             e.printStackTrace();
         }
@@ -155,6 +163,8 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
             YSensor sensor = YSensor.FirstSensor();
             while (sensor != null) {
                 if (sensor.get_module().get_serialNumber().equals(serial)) {
+                    String unit = sensor.get_unit();
+                    sensor.set_userData(unit);
                     sensor.registerValueCallback(this);
                     sensor.registerTimedReportCallback(this);
                 }

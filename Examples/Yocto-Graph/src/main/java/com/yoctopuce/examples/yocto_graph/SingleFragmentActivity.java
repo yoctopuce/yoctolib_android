@@ -6,9 +6,14 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
@@ -21,7 +26,7 @@ import com.yoctopuce.examples.yocto_graph.hubs.HubListActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SingleFragmentActivity extends FragmentActivity implements YoctoAsyncTask.YoctoAsyncErr
+public class SingleFragmentActivity extends AppCompatActivity implements YoctoAsyncTask.YoctoAsyncErr
 {
 
     private Fragment _fragment;
@@ -32,48 +37,49 @@ public class SingleFragmentActivity extends FragmentActivity implements YoctoAsy
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fragment);
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        Spinner spinner = findViewById(R.id.spinner);
 
-        final ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-            // set up list nav
-            ArrayAdapter<CharSequence> graphDurationAdapter = ArrayAdapter.createFromResource(this, R.array.graph_duration,
-                    android.R.layout.simple_spinner_dropdown_item);
+        // set up list nav
+        ArrayAdapter<CharSequence> graphDurationAdapter = ArrayAdapter.createFromResource(this, R.array.graph_duration,
+                android.R.layout.simple_spinner_dropdown_item);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+            {
+                int graphRange;
+                switch (position) {
+                    case 0:
+                        graphRange = 60000;
+                        break;
+                    case 1:
+                        graphRange = 5 * 60000;
+                        break;
+                    case 2:
+                        graphRange = 15 * 60000;
+                        break;
+                    case 3:
+                        graphRange = 30 * 60000;
+                        break;
+                    case 4:
+                        graphRange = 60 * 60000;
+                        break;
+                    default:
+                        return;
+                }
+                ((GraphListFragment) _fragment).onRangeChange(graphRange);
+            }
 
-            actionBar.setListNavigationCallbacks(graphDurationAdapter,
-                    new ActionBar.OnNavigationListener()
-                    {
-                        public boolean onNavigationItemSelected(int itemPosition,
-                                                                long itemId)
-                        {
-                            int graphRange;
-                            switch (itemPosition) {
-                                case 0:
-                                    graphRange = 60000;
-                                    break;
-                                case 1:
-                                    graphRange = 5 * 60000;
-                                    break;
-                                case 2:
-                                    graphRange = 15 * 60000;
-                                    break;
-                                case 3:
-                                    graphRange = 30 * 60000;
-                                    break;
-                                case 4:
-                                    graphRange = 60 * 60000;
-                                    break;
-                                default:
-                                    return false;
-                            }
-                            ((GraphListFragment) _fragment).onRangeChange(graphRange);
+            @Override
+            public void onNothingSelected(AdapterView<?> parent)
+            {
 
-                            return false;
-                        }
-                    });
-            actionBar.setSelectedNavigationItem(0);
-        }
+            }
+        });
+
+        setSupportActionBar(toolbar);
 
 
         _hubStorage = PreferenceHubStorage.Get(this);
@@ -123,10 +129,13 @@ public class SingleFragmentActivity extends FragmentActivity implements YoctoAsy
 
     private void SetHubList()
     {
-        List<Hub> hubs = _hubStorage.getHubs();
         final ArrayList<String> urls = new ArrayList<>();
+        if (_hubStorage.useUSB()) {
+            urls.add("usb");
+        }
+        List<Hub> hubs = _hubStorage.getHubs();
         for (Hub hub : hubs) {
-            urls.add(hub.getUrl(true));
+            urls.add(hub.getUrl(true,true));
         }
         new YoctoAsyncTask(this).execute(new YoctoAsyncTask.YoctoAsyncCode()
         {

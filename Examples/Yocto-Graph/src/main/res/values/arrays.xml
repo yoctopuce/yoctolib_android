@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="protocol_list">
+        <item>WS</item>
+        <item>WSS</item>
+        <item>HTTP</item>
+    </string-array>
     <string-array name="graph_duration">
         <item>Last minute</item>
         <item>Last 5 minutes</item>

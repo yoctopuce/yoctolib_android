@@ -17,6 +17,7 @@ public class PreferenceHubStorage implements HubStorage
 {
 
     private static final String HUB_LIST = "HUB_LIST";
+    private static final String USB_USB_PORT = "USE_USB_PORT";
     private static PreferenceHubStorage __instance = null;
     private final SharedPreferences _sharedPreferences;
 
@@ -34,6 +35,7 @@ public class PreferenceHubStorage implements HubStorage
 
     }
 
+
     @Override
     public Hub getUsbPseudoHub()
     {
@@ -44,12 +46,11 @@ public class PreferenceHubStorage implements HubStorage
     public List<Hub> getHubs()
     {
         HashSet<String> defValues = new HashSet<>();
-        defValues.add("usb");
         Set<String> hub_urls = _sharedPreferences.getStringSet(HUB_LIST, defValues);
         ArrayList<Hub> hubs = new ArrayList<>();
         if (hub_urls != null) {
-            for (String url : hub_urls) {
-                hubs.add(new Hub(url));
+            for (String uuid_url : hub_urls) {
+                hubs.add(new Hub(uuid_url));
             }
         }
         return hubs;
@@ -58,19 +59,81 @@ public class PreferenceHubStorage implements HubStorage
     @Override
     public void addNewHub(Hub hub)
     {
-
+        HashSet<String> defValues = new HashSet<>();
+        Set<String> hub_urls = _sharedPreferences.getStringSet(HUB_LIST, defValues);
+        hub_urls.add(hub.toString());
+        _sharedPreferences.edit()
+                .clear()
+                .putStringSet(HUB_LIST, hub_urls)
+                .apply();
     }
 
     @Override
-    public int updateHub(Hub hub)
+    public boolean updateHub(Hub hub)
     {
-        return 0;
+        String uuid_str = hub.getUuid().toString();
+        HashSet<String> defValues = new HashSet<>();
+        Set<String> hub_urls = _sharedPreferences.getStringSet(HUB_LIST, defValues);
+        if (hub_urls != null) {
+            for (String uuid_url : hub_urls) {
+                if (uuid_url.startsWith(uuid_str)){
+                    hub_urls.remove(uuid_url);
+                    hub_urls.add(hub.toString());
+                    _sharedPreferences.edit()
+                            .clear()
+                            .putStringSet(HUB_LIST, hub_urls)
+                            .apply();
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
     public Hub getHub(UUID uuid)
     {
-        //fixme: impremetn uuid setup
+        List<Hub> hubs = getHubs();
+        for (Hub hub : hubs) {
+            if (hub.getUuid().equals(uuid)) {
+                return hub;
+            }
+        }
         return null;
+    }
+
+    @Override
+    public boolean remove(UUID uuid)
+    {
+        String uuid_str = uuid.toString();
+        HashSet<String> defValues = new HashSet<>();
+        Set<String> hub_urls = _sharedPreferences.getStringSet(HUB_LIST, defValues);
+        if (hub_urls != null) {
+            for (String uuid_url : hub_urls) {
+                if (uuid_url.startsWith(uuid_str)){
+                    hub_urls.remove(uuid_url);
+                    _sharedPreferences.edit()
+                            .clear()
+                            .putStringSet(HUB_LIST, hub_urls)
+                            .apply();
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public boolean useUSB()
+    {
+        return _sharedPreferences.getBoolean(USB_USB_PORT,true);
+    }
+
+    @Override
+    public void setUseUSB(boolean use)
+    {
+        _sharedPreferences.edit()
+                .putBoolean(USB_USB_PORT, use)
+                .apply();
     }
 }

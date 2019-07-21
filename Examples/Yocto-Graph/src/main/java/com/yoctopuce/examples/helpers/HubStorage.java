@@ -11,7 +11,13 @@ public interface HubStorage
 
     void addNewHub(Hub hub);
 
-    int updateHub(Hub hub);
+    boolean updateHub(Hub hub);
 
     Hub getHub(UUID uuid);
+
+    boolean remove(UUID uuid);
+
+    boolean useUSB();
+
+    void setUseUSB(boolean use);
 }

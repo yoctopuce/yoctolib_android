@@ -20,6 +20,12 @@ public class ExampleListFragment extends ListFragment {
         mExampleList.add(new Example("Prog-EventBased", ProgEventBasedActivity.class, false));
         mExampleList.add(new Example("Prog-MODBUS", ProgModbus.class, false));
         /** generated start */
+        /** generated GettingStarted_Yocto_MaxiMicroVolt_Rx start */
+        mExampleList.add(new Example("Yocto-MaxiMicroVolt-Rx", GettingStarted_Yocto_MaxiMicroVolt_Rx.class, false));
+        /** generated GettingStarted_Yocto_MaxiMicroVolt_Rx stop */   
+        /** generated GettingStarted_Yocto_I2C start */
+        mExampleList.add(new Example("Yocto-I2C", GettingStarted_Yocto_I2C.class, false));
+        /** generated GettingStarted_Yocto_I2C stop */   
         /** generated GettingStarted_Yocto_Pressure start */
         mExampleList.add(new Example("Yocto-Pressure", GettingStarted_Yocto_Pressure.class, false));
         /** generated GettingStarted_Yocto_Pressure stop */   

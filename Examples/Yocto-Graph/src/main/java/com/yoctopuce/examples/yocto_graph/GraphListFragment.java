@@ -1,5 +1,6 @@
 package com.yoctopuce.examples.yocto_graph;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,10 +38,13 @@ public class GraphListFragment extends ListFragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        getActivity().setTitle(R.string.title_activity_main);
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.setTitle(R.string.title_activity_main);
+        }
+
         _Adapter = new GraphAdapter(SensorStorage.get().getSensorList());
         setListAdapter(_Adapter);
-
     }
 
     @Override
@@ -57,7 +61,8 @@ public class GraphListFragment extends ListFragment
             return null;
         }
 
-        return inflater.inflate(R.layout.graph_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.graph_list_fragment, container, false);
+        return view;
     }
 
 
@@ -66,7 +71,8 @@ public class GraphListFragment extends ListFragment
         @Override
         public void onReceive(Context context, Intent intent)
         {
-            _Adapter.setDataFromAnyThread(SensorStorage.get().getSensorList());
+            ArrayList<ThreadSafeSensor> sensorList = SensorStorage.get().getSensorList();
+            _Adapter.setDataFromAnyThread(sensorList);
         }
     };
 
@@ -85,18 +91,24 @@ public class GraphListFragment extends ListFragment
     {
         super.onResume();
         // register refresh
-        IntentFilter filter = new IntentFilter(YoctopuceBgThread.ACTION_SENSOR_LIST_CHANGED);
-        getActivity().registerReceiver(mNeedUpdateScreen, filter);
-        filter = new IntentFilter(YoctopuceBgThread.ACTION_SENSOR_NEW_VALUE);
-        getActivity().registerReceiver(mNeedUpdateOneGraph, filter);
+        Activity activity = getActivity();
+        if (activity != null) {
+            IntentFilter filter = new IntentFilter(YoctopuceBgThread.ACTION_SENSOR_LIST_CHANGED);
+            activity.registerReceiver(mNeedUpdateScreen, filter);
+            filter = new IntentFilter(YoctopuceBgThread.ACTION_SENSOR_NEW_VALUE);
+            activity.registerReceiver(mNeedUpdateOneGraph, filter);
+        }
         _Adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onPause()
     {
-        getActivity().unregisterReceiver(mNeedUpdateScreen);
-        getActivity().unregisterReceiver(mNeedUpdateOneGraph);
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.unregisterReceiver(mNeedUpdateScreen);
+            activity.unregisterReceiver(mNeedUpdateOneGraph);
+        }
         super.onPause();
     }
 
@@ -123,6 +135,7 @@ public class GraphListFragment extends ListFragment
         @Override
         public int getCount()
         {
+
             return _sensors.size();
         }
 
@@ -137,6 +150,7 @@ public class GraphListFragment extends ListFragment
         {
             return position;
         }
+
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
@@ -181,10 +195,10 @@ public class GraphListFragment extends ListFragment
                 int color;
                 if ((position & 1) == 0) {
                     color = getActivity().getResources().
-                            getColor(R.color.graph_item_serie_even);
+                            getColor(R.color.colorPrimary);
                 } else {
                     color = getActivity().getResources().
-                            getColor(R.color.graph_item_serie_odd);
+                            getColor(R.color.colorAccent);
                 }
                 liveGraph.setColor(color);
                 // get graphical view

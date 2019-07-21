@@ -6,25 +6,30 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.yoctopuce.examples.helpers.Hub;
 import com.yoctopuce.examples.helpers.YoctopuceBgThread;
 import com.yoctopuce.examples.yocto_graph.R;
 
 import java.util.UUID;
 
-public class EditHubActivity extends FragmentActivity
+public class EditHubActivity extends AppCompatActivity
 {
 
 
     private static final String ARG_HUB_UUID = "HUB_UUID";
     private UUID _hubUUID;
+    private EditHubFragment _fragment;
 
-    public static Intent intentWithParams(Context context, UUID hubUUID)
+    public static Intent intentWithParams(Context context, Hub hub)
     {
         Intent intent = new Intent(context, EditHubActivity.class);
-        intent.putExtra(ARG_HUB_UUID, hubUUID.toString());
+        intent.putExtra(ARG_HUB_UUID, hub.getUuid().toString());
         return intent;
     }
 
@@ -34,17 +39,48 @@ public class EditHubActivity extends FragmentActivity
     }
 
 
+    @Override
+    public void onBackPressed()
+    {
+        if (_fragment.checkBackAllowed()) {
+            super.onBackPressed();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
+        //Toolbar toolbar = findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
+        // Show the Up button in the action bar.
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            //actionBar.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        }
+
         FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentById(R.id.fragmentContainter);
-        if (fragment == null) {
-            fragment = EditHubFragment.getFragment();
-            fm.beginTransaction().add(R.id.fragmentContainter, fragment)
+        _fragment = (EditHubFragment) fm.findFragmentById(R.id.fragmentContainter);
+        if (_fragment == null) {
+
+            Intent intent = getIntent();
+            String uuid_str = intent.getStringExtra(ARG_HUB_UUID);
+
+            if (uuid_str != null) {
+                _hubUUID = UUID.fromString(uuid_str);
+                if (actionBar != null) {
+                    actionBar.setTitle(R.string.edit_hub);
+                }
+                _fragment = EditHubFragment.getFragment(_hubUUID);
+            } else {
+                if (actionBar != null) {
+                    actionBar.setTitle(R.string.new_hub);
+                }
+                _fragment = EditHubFragment.getFragment();
+            }
+            fm.beginTransaction().add(R.id.fragmentContainter, _fragment)
                     .commit();
         }
 
@@ -56,7 +92,6 @@ public class EditHubActivity extends FragmentActivity
     public void onStart()
     {
         super.onStart();
-        YoctopuceBgThread.Start(this);
 
     }
 
@@ -64,37 +99,10 @@ public class EditHubActivity extends FragmentActivity
     @Override
     public void onStop()
     {
-        YoctopuceBgThread.Stop();
         super.onStop();
     }
 
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_hub_list_menu, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        if (id == R.id.new_hub) {
-            Intent detailIntent = new Intent(this, EditHubActivity.class);
-            startActivity(detailIntent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
 
 }

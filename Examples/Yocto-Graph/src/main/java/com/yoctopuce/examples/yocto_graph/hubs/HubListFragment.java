@@ -1,22 +1,25 @@
 package com.yoctopuce.examples.yocto_graph.hubs;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import com.yoctopuce.examples.helpers.Hub;
 import com.yoctopuce.examples.helpers.HubStorage;
 import com.yoctopuce.examples.yocto_graph.PreferenceHubStorage;
 import com.yoctopuce.examples.yocto_graph.R;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -28,6 +31,8 @@ public class HubListFragment extends Fragment
     private HubStorage _hubStorage;
     private List<Hub> _hubList;
     private Map<UUID, Hub> _hubMap;
+    private Switch _useUSBSwitch;
+    private View _addButton;
 
     public HubListFragment()
     {
@@ -43,8 +48,29 @@ public class HubListFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_hub_list, container, false);
+        FloatingActionButton addButton = view.findViewById(R.id.fab);
+        addButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent detailIntent = EditHubActivity.intentWithParams(getActivity());
+                startActivity(detailIntent);
+            }
+        });
+        _useUSBSwitch = view.findViewById(R.id.use_usb_switch);
+        _useUSBSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+
+                _hubStorage.setUseUSB(isChecked);
+            }
+        });
         _hubRecyclerView = view.findViewById(R.id.hub_list_recycler_view);
         _hubRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         /*
         RecyclerView.ItemDecoration itemDecoration = new
                 DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST);
@@ -72,13 +98,14 @@ public class HubListFragment extends Fragment
     {
         _hubStorage = PreferenceHubStorage.Get(getActivity());
         _hubList = _hubStorage.getHubs();
+        _useUSBSwitch.setChecked(_hubStorage.useUSB());
         _adapter = new HubAdapter(_hubList);
         _hubRecyclerView.setAdapter(_adapter);
         _adapter.notifyDataSetChanged();
     }
 
 
-    private class HubAdapter extends RecyclerView.Adapter<HubViewHolder> implements HubViewHolder.OnSelectListener
+    private class HubAdapter extends RecyclerView.Adapter<HubViewHolder> implements HubViewHolder.HubHolderListener
     {
 
         private List<Hub> _hubs;
@@ -109,14 +136,45 @@ public class HubListFragment extends Fragment
             return _hubs.size();
         }
 
+
         @Override
-        public void onSelect(Hub hub)
+        public void onEdit(Hub hub)
         {
-            /*
-            Intent intent = HubDetailActivity.intentWithParams(getContext(), hub.getUuid());
-            getActivity().startActivity(intent);
-            */
+            Intent detailIntent = EditHubActivity.intentWithParams(getContext(), hub);
+            startActivity(detailIntent);
         }
 
+        @Override
+        public void onDelete(final Hub hub)
+        {
+            final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    switch (which) {
+                        case DialogInterface.BUTTON_POSITIVE:
+                            //Yes button clicked
+                            _hubStorage.remove(hub.getUuid());
+                            setupUI();
+                            break;
+
+                        case DialogInterface.BUTTON_NEGATIVE:
+                            //No button clicked
+                            break;
+                    }
+                }
+            };
+            FragmentActivity activity = getActivity();
+            if (activity != null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setTitle(R.string.confirmation);
+                builder.setMessage(R.string.delete_confirm_msg);
+                builder.setCancelable(false);
+                builder.setPositiveButton(R.string.yes, dialogClickListener);
+                builder.setNegativeButton(R.string.cancel, dialogClickListener);
+                builder.show();
+            }
+        }
     }
 }

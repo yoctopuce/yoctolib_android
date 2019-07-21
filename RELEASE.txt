@@ -1,4 +1,5 @@
-Android v1.10.36218
+Android v1.10.36380
 
-- Add ConsolidatedDataSet class
-- Add support for Yocto-I2c
+- Add network support to Yocto-Graph
+- Fix Yocto-I2C example
+- Fix DeviceRemovalCallback that was not called on YAPI.UnregisterHub
