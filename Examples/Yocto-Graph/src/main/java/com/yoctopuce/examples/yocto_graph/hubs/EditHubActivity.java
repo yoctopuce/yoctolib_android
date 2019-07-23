@@ -92,6 +92,7 @@ public class EditHubActivity extends AppCompatActivity
     public void onStart()
     {
         super.onStart();
+        YoctopuceBgThread.Start(this);
 
     }
 
@@ -99,6 +100,8 @@ public class EditHubActivity extends AppCompatActivity
     @Override
     public void onStop()
     {
+
+        YoctopuceBgThread.Stop();
         super.onStop();
     }
 

@@ -1113,9 +1113,6 @@ public class YAPIContext
         for (YGenericHub h : _hubs) {
             if (h.isSameHub(url, request, response, session)) {
                 h.stopNotifications();
-                for (String serial : h._serialByYdx.values()) {
-                    _yHash.forgetDevice(serial);
-                }
                 h.release();
                 _hubs.remove(h);
                 return;

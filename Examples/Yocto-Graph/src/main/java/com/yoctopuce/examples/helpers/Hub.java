@@ -176,7 +176,7 @@ public class Hub
 
     public void setProto(String proto)
     {
-        _proto = proto;
+        _proto = proto.toLowerCase();
     }
 
     public String getSubDomain()

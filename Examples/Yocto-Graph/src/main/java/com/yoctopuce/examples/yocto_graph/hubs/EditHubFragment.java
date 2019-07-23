@@ -13,9 +13,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.yoctopuce.YoctoAPI.YAPIContext;
@@ -49,6 +51,7 @@ public class EditHubFragment extends Fragment
     private EditText _subDomainEditText;
     private String _originalProto;
     private String _originalSubDomain;
+    private Spinner _protoSpinner;
 
 
     public static EditHubFragment getFragment(UUID hubUUID)
@@ -99,6 +102,7 @@ public class EditHubFragment extends Fragment
                              Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.fragment_edit_hub, container, false);
+        _protoSpinner = view.findViewById(R.id.proto);
         _hostnameEditText = view.findViewById(R.id.hostname);
         _portEditText = view.findViewById(R.id.port);
         _subDomainEditText = view.findViewById(R.id.subdomain);
@@ -123,6 +127,14 @@ public class EditHubFragment extends Fragment
             }
         });
 
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.protocol_list, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        _protoSpinner.setAdapter(adapter);
+
+        int spinnerPosition = adapter.getPosition(_hub.getProto().toUpperCase());
+        _protoSpinner.setSelection(spinnerPosition);
+
         _hostnameEditText.setText(_hub.getHost());
         _portEditText.setText(String.format(Locale.US, "%d", _hub.getPort()));
         _subDomainEditText.setText(_hub.getSubDomain());
@@ -134,7 +146,9 @@ public class EditHubFragment extends Fragment
 
     private boolean validateHubData()
     {
-        _hub.setProto("ws");
+        Object selectedItem = _protoSpinner.getSelectedItem();
+        String proto = selectedItem.toString();
+        _hub.setProto(proto);
         _hub.setHost(_hostnameEditText.getText().toString());
         final String port_str = _portEditText.getText().toString();
         try {

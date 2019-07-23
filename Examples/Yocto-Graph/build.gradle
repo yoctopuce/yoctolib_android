@@ -14,11 +14,12 @@ android {
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        versionCode 36380
-        versionName "1.11.36380"
+        versionCode 36414
+        versionName "1.11.36414"
         minSdkVersion 14
         targetSdkVersion 28
         vectorDrawables.useSupportLibrary = true
+        multiDexEnabled false
     }
 
     signingConfigs {

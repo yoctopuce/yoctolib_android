@@ -1,5 +1,4 @@
-Android v1.10.36380
+Android v1.10.36414
 
-- Add network support to Yocto-Graph
-- Fix Yocto-I2C example
-- Fix DeviceRemovalCallback that was not called on YAPI.UnregisterHub
+- Fix main page of Yocto-Graph that was not refreshed after a configuration change
+- Fix invalid YModule object passed  to device removal callback during YAPI.UnregisterHub

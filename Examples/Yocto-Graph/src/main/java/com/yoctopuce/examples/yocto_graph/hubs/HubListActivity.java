@@ -47,6 +47,7 @@ public class HubListActivity extends AppCompatActivity
     public void onStart()
     {
         super.onStart();
+        YoctopuceBgThread.Start(this);
 
     }
 
@@ -54,6 +55,7 @@ public class HubListActivity extends AppCompatActivity
     @Override
     public void onStop()
     {
+        YoctopuceBgThread.Stop();
         super.onStop();
     }
 

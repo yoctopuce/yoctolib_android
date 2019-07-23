@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
-            android:entries="@array/protocol_list"
             tools:listitem="@layout/support_simple_spinner_dropdown_item"/>
 
         <TextView

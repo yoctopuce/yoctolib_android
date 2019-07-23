@@ -11,7 +11,6 @@ import com.yoctopuce.YoctoAPI.YDataSet;
 import com.yoctopuce.YoctoAPI.YMeasure;
 import com.yoctopuce.YoctoAPI.YModule;
 import com.yoctopuce.YoctoAPI.YSensor;
-import com.yoctopuce.examples.yocto_graph.PreferenceHubStorage;
 
 import java.util.ArrayList;
 
@@ -51,7 +50,7 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
     }
 
 
-    synchronized static boolean stillRunInBG()
+    private synchronized static boolean stillRunInBG()
     {
         return sRefCounter > 0 || (System.currentTimeMillis() - sLastStop) < 5000;
     }
@@ -78,14 +77,12 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
             synchronized (_registerdHubs) {
                 _started = true;
                 for (String url : _registerdHubs) {
-                    Log.d("YHUB", "register " + url);
+                    Log.d(TAG, "register" + url);
                     YAPI.RegisterHub(url);
                 }
             }
         } catch (YAPI_Exception e) {
             e.printStackTrace();
-            YAPI.FreeAPI();
-            return;
         }
 
         while (YoctopuceBgThread.stillRunInBG()) {
@@ -108,7 +105,7 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
             _registerdHubs.removeAll(common);
             if (_started) {
                 for (String url : _registerdHubs) {
-                    Log.d("YHUB", "unregister " + url);
+                    Log.d(TAG, "unregister " + url);
                     YAPI.UnregisterHub(url);
                 }
             }
@@ -116,10 +113,9 @@ public class YoctopuceBgThread implements Runnable, YAPI.DeviceArrivalCallback, 
             _registerdHubs.addAll(common);
             hubs.removeAll(common);
             for (String url : hubs) {
-
                 _registerdHubs.add(url);
                 if (_started) {
-                    Log.d("YHUB", "register " + url);
+                    Log.d(TAG, "register " + url);
                     YAPI.RegisterHub(url);
                 }
             }
