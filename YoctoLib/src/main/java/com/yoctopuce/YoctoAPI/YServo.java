@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YServo.java 32898 2018-11-02 10:11:21Z seb $
+ *  $Id: YServo.java 37234 2019-09-20 09:26:55Z seb $
  *
  *  Implements FindServo(), the high-level API for Servo functions
  *
@@ -693,7 +693,8 @@ public class YServo extends YFunction
     public static YServo FindServo(String func)
     {
         YServo obj;
-        synchronized (YAPI.class) {
+        YAPIContext ctx = YAPI.GetYCtx(true);
+        synchronized (ctx._functionCacheLock) {
             obj = (YServo) YFunction._FindFromCache("Servo", func);
             if (obj == null) {
                 obj = new YServo(func);
@@ -730,7 +731,7 @@ public class YServo extends YFunction
     public static YServo FindServoInContext(YAPIContext yctx,String func)
     {
         YServo obj;
-        synchronized (yctx) {
+        synchronized (yctx._functionCacheLock) {
             obj = (YServo) YFunction._FindFromCacheInContext(yctx, "Servo", func);
             if (obj == null) {
                 obj = new YServo(yctx, func);

@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YPressure.java 32898 2018-11-02 10:11:21Z seb $
+ *  $Id: YPressure.java 37234 2019-09-20 09:26:55Z seb $
  *
  *  Implements FindPressure(), the high-level API for Pressure functions
  *
@@ -146,7 +146,8 @@ public class YPressure extends YSensor
     public static YPressure FindPressure(String func)
     {
         YPressure obj;
-        synchronized (YAPI.class) {
+        YAPIContext ctx = YAPI.GetYCtx(true);
+        synchronized (ctx._functionCacheLock) {
             obj = (YPressure) YFunction._FindFromCache("Pressure", func);
             if (obj == null) {
                 obj = new YPressure(func);
@@ -183,7 +184,7 @@ public class YPressure extends YSensor
     public static YPressure FindPressureInContext(YAPIContext yctx,String func)
     {
         YPressure obj;
-        synchronized (yctx) {
+        synchronized (yctx._functionCacheLock) {
             obj = (YPressure) YFunction._FindFromCacheInContext(yctx, "Pressure", func);
             if (obj == null) {
                 obj = new YPressure(yctx, func);

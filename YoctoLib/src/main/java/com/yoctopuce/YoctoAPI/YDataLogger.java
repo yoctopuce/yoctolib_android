@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YDataLogger.java 33795 2018-12-20 15:52:19Z seb $
+ * $Id: YDataLogger.java 37234 2019-09-20 09:26:55Z seb $
  *
  * Implements yFindDataLogger(), the high-level API for DataLogger functions
  *
@@ -612,7 +612,8 @@ public class YDataLogger extends YFunction
     public static YDataLogger FindDataLogger(String func)
     {
         YDataLogger obj;
-        synchronized (YAPI.class) {
+        YAPIContext ctx = YAPI.GetYCtx(true);
+        synchronized (ctx._functionCacheLock) {
             obj = (YDataLogger) YFunction._FindFromCache("DataLogger", func);
             if (obj == null) {
                 obj = new YDataLogger(func);
@@ -649,7 +650,7 @@ public class YDataLogger extends YFunction
     public static YDataLogger FindDataLoggerInContext(YAPIContext yctx,String func)
     {
         YDataLogger obj;
-        synchronized (yctx) {
+        synchronized (yctx._functionCacheLock) {
             obj = (YDataLogger) YFunction._FindFromCacheInContext(yctx, "DataLogger", func);
             if (obj == null) {
                 obj = new YDataLogger(yctx, func);

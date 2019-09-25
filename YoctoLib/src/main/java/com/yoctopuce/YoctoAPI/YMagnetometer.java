@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YMagnetometer.java 32898 2018-11-02 10:11:21Z seb $
+ *  $Id: YMagnetometer.java 37234 2019-09-20 09:26:55Z seb $
  *
  *  Implements FindMagnetometer(), the high-level API for Magnetometer functions
  *
@@ -357,7 +357,8 @@ public class YMagnetometer extends YSensor
     public static YMagnetometer FindMagnetometer(String func)
     {
         YMagnetometer obj;
-        synchronized (YAPI.class) {
+        YAPIContext ctx = YAPI.GetYCtx(true);
+        synchronized (ctx._functionCacheLock) {
             obj = (YMagnetometer) YFunction._FindFromCache("Magnetometer", func);
             if (obj == null) {
                 obj = new YMagnetometer(func);
@@ -394,7 +395,7 @@ public class YMagnetometer extends YSensor
     public static YMagnetometer FindMagnetometerInContext(YAPIContext yctx,String func)
     {
         YMagnetometer obj;
-        synchronized (yctx) {
+        synchronized (yctx._functionCacheLock) {
             obj = (YMagnetometer) YFunction._FindFromCacheInContext(yctx, "Magnetometer", func);
             if (obj == null) {
                 obj = new YMagnetometer(yctx, func);

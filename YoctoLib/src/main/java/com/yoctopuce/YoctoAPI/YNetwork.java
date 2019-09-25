@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YNetwork.java 34604 2019-03-11 14:49:45Z seb $
+ *  $Id: YNetwork.java 37234 2019-09-20 09:26:55Z seb $
  *
  *  Implements FindNetwork(), the high-level API for Network functions
  *
@@ -1937,7 +1937,8 @@ public class YNetwork extends YFunction
     public static YNetwork FindNetwork(String func)
     {
         YNetwork obj;
-        synchronized (YAPI.class) {
+        YAPIContext ctx = YAPI.GetYCtx(true);
+        synchronized (ctx._functionCacheLock) {
             obj = (YNetwork) YFunction._FindFromCache("Network", func);
             if (obj == null) {
                 obj = new YNetwork(func);
@@ -1974,7 +1975,7 @@ public class YNetwork extends YFunction
     public static YNetwork FindNetworkInContext(YAPIContext yctx,String func)
     {
         YNetwork obj;
-        synchronized (yctx) {
+        synchronized (yctx._functionCacheLock) {
             obj = (YNetwork) YFunction._FindFromCacheInContext(yctx, "Network", func);
             if (obj == null) {
                 obj = new YNetwork(yctx, func);
