@@ -1,3 +1,5 @@
-Android v1.10.37690
+Android v1.10.37780
 
-- Recompile applications with new Android SDK 29
+- Add missing "saveToFlash" hints
+- Fix Yocto-3D-V2 mount position handling
+- Use new Android SDK 29
