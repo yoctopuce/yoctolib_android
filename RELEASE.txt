@@ -1,5 +1,5 @@
-Android v1.10.37780
+Android v1.10.37913
 
-- Add missing "saveToFlash" hints
-- Fix Yocto-3D-V2 mount position handling
-- Use new Android SDK 29
+- Improve every class description (add sample product name)
+- Fix invalid YModule in arrival Callback if multiples YContext are used
+- Minor Fix in Doc-Examples

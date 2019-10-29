@@ -102,9 +102,17 @@ public class ProgEventBasedFragment extends ListFragment implements YAPI.DeviceA
 
 
     @Override
-    public void yLog(String line)
+    public void yLog(final String line)
     {
-        pushEvent("LOG : " + line.trim());
+        mHandler.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                pushEvent("LOG : " + line.trim());
+            }
+        });
+
     }
 
     @Override
