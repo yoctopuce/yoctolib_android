@@ -1,10 +1,3 @@
-Android v1.10.38155
+Android v1.10.38168
 
-(Android)- Fix invalid YModule in arrival Callback if multiples YContext are used
-(Android)- Minor Fix in Doc-Examples
-(Libs)- Improve every class description (add sample product name)
-(Libs)- Generate new classes using u31 for unsigned ints
-(Misc)- Fix Application that was not started correctly
-(Misc)- Set AssemblyFileVersion to all CS.Net assembly
-(Misc)- labview/cs:fix few details
-(Misc)- dot net proxy:added ref keeper class
+- Improve every class description (add sample product name)
