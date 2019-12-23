@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YDataLogger.java 37827 2019-10-25 13:07:48Z mvuilleu $
+ * $Id: YDataLogger.java 38899 2019-12-20 17:21:03Z mvuilleu $
  *
  * Implements yFindDataLogger(), the high-level API for DataLogger functions
  *
@@ -44,11 +44,10 @@ import java.util.Locale;
 
 //--- (generated code: YDataLogger class start)
 /**
- * YDataLogger Class: DataLogger function interface
+ * YDataLogger Class: DataLogger control interface, available on most Yoctopuce sensors.
  *
  * A non-volatile memory for storing ongoing measured data is available on most Yoctopuce
- *  sensors, for instance using a Yocto-Light-V3, a Yocto-Meteo-V2, a Yocto-Watt or a Yocto-3D-V2.
- * Recording can happen automatically, without requiring a permanent
+ * sensors. Recording can happen automatically, without requiring a permanent
  * connection to a computer.
  * The YDataLogger class controls the global parameters of the internal data
  * logger. Recording control (start/stop) as well as data retreival is done at
@@ -608,7 +607,7 @@ public class YDataLogger extends YFunction
      * call registerHub() at application initialization time.
      *
      * @param func : a string that uniquely characterizes the data logger, for instance
-     *         LIGHTMK3.dataLogger.
+     *         Y3DMK002.dataLogger.
      *
      * @return a YDataLogger object allowing you to drive the data logger.
      */
@@ -647,7 +646,7 @@ public class YDataLogger extends YFunction
      *
      * @param yctx : a YAPI context
      * @param func : a string that uniquely characterizes the data logger, for instance
-     *         LIGHTMK3.dataLogger.
+     *         Y3DMK002.dataLogger.
      *
      * @return a YDataLogger object allowing you to drive the data logger.
      */

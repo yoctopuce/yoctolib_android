@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSnoopingRecord.java 28654 2017-09-26 15:29:31Z seb $
+ * $Id: YSnoopingRecord.java 38899 2019-12-20 17:21:03Z mvuilleu $
  *
  * Implements FindSnoopingRecord(), the high-level API for SnoopingRecord functions
  *
@@ -43,7 +43,7 @@ package com.yoctopuce.YoctoAPI;
 //--- (end of generated code: YSnoopingRecord return codes)
 //--- (generated code: YSnoopingRecord class start)
 /**
- * YSnoopingRecord Class: Description of a message intercepted
+ * YSnoopingRecord Class: Intercepted message description, returned by serialPort.snoopMessages method
  *
  *
  */
@@ -77,16 +77,31 @@ public class YSnoopingRecord
 
     //--- (generated code: YSnoopingRecord implementation)
 
+    /**
+     * Returns the elapsed time, in ms, since the beginning of the preceding message.
+     *
+     * @return the elapsed time, in ms, since the beginning of the preceding message.
+     */
     public int get_time()
     {
         return _tim;
     }
 
+    /**
+     * Returns the message direction (RX=0 , TX=1) .
+     *
+     * @return the message direction (RX=0 , TX=1) .
+     */
     public int get_direction()
     {
         return _dir;
     }
 
+    /**
+     * Returns the message content.
+     *
+     * @return the message content.
+     */
     public String get_message()
     {
         return _msg;

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCellRecord.java 25357 2016-09-16 07:22:41Z seb $
+ * $Id: YCellRecord.java 38899 2019-12-20 17:21:03Z mvuilleu $
  *
  * Implements FindCellRecord(), the high-level API for CellRecord functions
  *
@@ -42,9 +42,11 @@ package com.yoctopuce.YoctoAPI;
 //--- (end of generated code: YCellRecord return codes)
 //--- (generated code: YCellRecord class start)
 /**
- * YCellRecord Class: Description of a cellular antenna
+ * YCellRecord Class: Cellular antenna description, returned by cellular.quickCellSurvey method
  *
- *
+ * YCellRecord objects are used to describe a wireless network.
+ * These objects are used in particular in conjunction with the
+ * YCellular class.
  */
 @SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YCellRecord
@@ -76,36 +78,76 @@ public class YCellRecord
 
     //--- (generated code: YCellRecord implementation)
 
+    /**
+     * Returns the name of the the cell operator, as received from the network.
+     *
+     * @return a string with the name of the the cell operator.
+     */
     public String get_cellOperator()
     {
         return _oper;
     }
 
+    /**
+     * Returns the Mobile Country Code (MCC). The MCC is a unique identifier for each country.
+     *
+     * @return an integer corresponding to the Mobile Country Code (MCC).
+     */
     public int get_mobileCountryCode()
     {
         return _mcc;
     }
 
+    /**
+     * Returns the Mobile Network Code (MNC). The MNC is a unique identifier for each phone
+     * operator within a country.
+     *
+     * @return an integer corresponding to the Mobile Network Code (MNC).
+     */
     public int get_mobileNetworkCode()
     {
         return _mnc;
     }
 
+    /**
+     * Returns the Location Area Code (LAC). The LAC is a unique identifier for each
+     * place within a country.
+     *
+     * @return an integer corresponding to the Location Area Code (LAC).
+     */
     public int get_locationAreaCode()
     {
         return _lac;
     }
 
+    /**
+     * Returns the Cell ID. The Cell ID is a unique identifier for each
+     * base transmission station within a LAC.
+     *
+     * @return an integer corresponding to the Cell Id.
+     */
     public int get_cellId()
     {
         return _cid;
     }
 
+    /**
+     * Returns the signal strength, measured in dBm.
+     *
+     * @return an integer corresponding to the signal strength.
+     */
     public int get_signalStrength()
     {
         return _dbm;
     }
 
+    /**
+     * Returns the Timing Advance (TA). The TA corresponds to the time necessary
+     * for the signal to reach the base station from the device.
+     * Each increment corresponds about to 550m of distance.
+     *
+     * @return an integer corresponding to the Timing Advance (TA).
+     */
     public int get_timingAdvance()
     {
         return _tad;

@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YAltitude.java 37827 2019-10-25 13:07:48Z mvuilleu $
+ *  $Id: YAltitude.java 38899 2019-12-20 17:21:03Z mvuilleu $
  *
  *  Implements FindAltitude(), the high-level API for Altitude functions
  *
@@ -45,12 +45,11 @@ package com.yoctopuce.YoctoAPI;
 //--- (end of YAltitude yapiwrapper)
 //--- (YAltitude class start)
 /**
- * YAltitude Class: Altitude function interface
+ * YAltitude Class: altimeter control interface, available for instance in the Yocto-Altimeter-V2 or the Yocto-GPS
  *
- * The YAltitude class allows you to read and configure Yoctopuce altitude
- *  sensors, for instance using a Yocto-GPS or a Yocto-Altimeter-V2. It inherits from the YSensor class
- * the core functions to read measurements,
- * to register callback functions, to access the autonomous datalogger.
+ * The YAltitude class allows you to read and configure Yoctopuce altimeters.
+ * It inherits from YSensor class the core functions to read measurements,
+ * to register callback functions, and to access the autonomous datalogger.
  * This class adds the ability to configure the barometric pressure adjusted to
  * sea level (QNH) for barometric sensors.
  */
@@ -317,7 +316,7 @@ public class YAltitude extends YSensor
      * call registerHub() at application initialization time.
      *
      * @param func : a string that uniquely characterizes the altimeter, for instance
-     *         YGNSSMK1.altitude.
+     *         YALTIMK2.altitude.
      *
      * @return a YAltitude object allowing you to drive the altimeter.
      */
@@ -356,7 +355,7 @@ public class YAltitude extends YSensor
      *
      * @param yctx : a YAPI context
      * @param func : a string that uniquely characterizes the altimeter, for instance
-     *         YGNSSMK1.altitude.
+     *         YALTIMK2.altitude.
      *
      * @return a YAltitude object allowing you to drive the altimeter.
      */

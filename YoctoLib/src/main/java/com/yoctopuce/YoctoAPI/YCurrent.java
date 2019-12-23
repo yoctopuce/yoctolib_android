@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YCurrent.java 37827 2019-10-25 13:07:48Z mvuilleu $
+ *  $Id: YCurrent.java 38899 2019-12-20 17:21:03Z mvuilleu $
  *
  *  Implements FindCurrent(), the high-level API for Current functions
  *
@@ -45,12 +45,12 @@ package com.yoctopuce.YoctoAPI;
 //--- (end of YCurrent yapiwrapper)
 //--- (YCurrent class start)
 /**
- * YCurrent Class: Current function interface
+ *  YCurrent Class: current sensor control interface, available for instance in the Yocto-Amp, the
+ * Yocto-Motor-DC or the Yocto-Watt
  *
- * The YCurrent class allows you to read and configure Yoctopuce current
- *  sensors, for instance using a Yocto-Watt, a Yocto-Amp or a Yocto-Motor-DC. It inherits from YSensor
- * class the core functions to read measurements,
- * to register callback functions, to access the autonomous datalogger.
+ * The YCurrent class allows you to read and configure Yoctopuce current sensors.
+ * It inherits from YSensor class the core functions to read measurements,
+ * to register callback functions, and to access the autonomous datalogger.
  */
 @SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YCurrent extends YSensor
@@ -229,7 +229,7 @@ public class YCurrent extends YSensor
      * call registerHub() at application initialization time.
      *
      * @param func : a string that uniquely characterizes the current sensor, for instance
-     *         YWATTMK1.current1.
+     *         YAMPMK01.current1.
      *
      * @return a YCurrent object allowing you to drive the current sensor.
      */
@@ -268,7 +268,7 @@ public class YCurrent extends YSensor
      *
      * @param yctx : a YAPI context
      * @param func : a string that uniquely characterizes the current sensor, for instance
-     *         YWATTMK1.current1.
+     *         YAMPMK01.current1.
      *
      * @return a YCurrent object allowing you to drive the current sensor.
      */

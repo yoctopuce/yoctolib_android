@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFiles.java 37827 2019-10-25 13:07:48Z mvuilleu $
+ * $Id: YFiles.java 38913 2019-12-20 18:59:49Z mvuilleu $
  *
  * Implements yFindFiles(), the high-level API for Files functions
  *
@@ -45,11 +45,11 @@ import java.util.Locale;
 
 //--- (generated code: YFiles class start)
 /**
- * YFiles Class: Files function interface
+ *  YFiles Class: filesystem control interface, available for instance in the Yocto-Color-V2, the
+ * Yocto-RS232, the YoctoHub-Ethernet or the YoctoHub-Wireless-g
  *
  * The YFiles class is used to access the filesystem embedded on
- *  some Yoctopuce devices, for instance using a YoctoHub-Ethernet, a Yocto-Color-V2, a
- * YoctoHub-Wireless-g or a Yocto-RS232. This filesystem makes it
+ * some Yoctopuce devices. This filesystem makes it
  * possible for instance to design a custom web UI
  * (for networked devices) or to add fonts (on display devices).
  */
@@ -219,7 +219,7 @@ public class YFiles extends YFunction
      * call registerHub() at application initialization time.
      *
      * @param func : a string that uniquely characterizes the filesystem, for instance
-     *         YHUBETH1.files.
+     *         YRGBLED2.files.
      *
      * @return a YFiles object allowing you to drive the filesystem.
      */
@@ -258,7 +258,7 @@ public class YFiles extends YFunction
      *
      * @param yctx : a YAPI context
      * @param func : a string that uniquely characterizes the filesystem, for instance
-     *         YHUBETH1.files.
+     *         YRGBLED2.files.
      *
      * @return a YFiles object allowing you to drive the filesystem.
      */

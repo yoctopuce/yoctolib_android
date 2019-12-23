@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWireless.java 37827 2019-10-25 13:07:48Z mvuilleu $
+ * $Id: YWireless.java 38899 2019-12-20 17:21:03Z mvuilleu $
  *
  * Implements yFindWireless(), the high-level API for Wireless functions
  *
@@ -45,11 +45,12 @@ import java.util.Locale;
 
 //--- (generated code: YWireless class start)
 /**
- * YWireless Class: Wireless function interface
+ *  YWireless Class: wireless LAN interface control interface, available for instance in the
+ * YoctoHub-Wireless, the YoctoHub-Wireless-SR, the YoctoHub-Wireless-g or the YoctoHub-Wireless-n
  *
  * The YWireless class provides control over wireless network parameters
- *  and status for devices that are wireless-enabled, for instance using a YoctoHub-Wireless-g, a
- * YoctoHub-Wireless-SR or a YoctoHub-Wireless.
+ * and status for devices that are wireless-enabled.
+ * Note that TCP/IP parameters are configured separately, using class YNetwork.
  */
 @SuppressWarnings({"UnusedDeclaration", "UnusedAssignment"})
 public class YWireless extends YFunction
@@ -435,7 +436,7 @@ public class YWireless extends YFunction
     }
 
     /**
-     * Retrieves a wireless lan interface for a given identifier.
+     * Retrieves a wireless LAN interface for a given identifier.
      * The identifier can be specified using several formats:
      * <ul>
      * <li>FunctionLogicalName</li>
@@ -445,11 +446,11 @@ public class YWireless extends YFunction
      * <li>ModuleLogicalName.FunctionLogicalName</li>
      * </ul>
      *
-     * This function does not require that the wireless lan interface is online at the time
+     * This function does not require that the wireless LAN interface is online at the time
      * it is invoked. The returned object is nevertheless valid.
-     * Use the method YWireless.isOnline() to test if the wireless lan interface is
+     * Use the method YWireless.isOnline() to test if the wireless LAN interface is
      * indeed online at a given time. In case of ambiguity when looking for
-     * a wireless lan interface by logical name, no error is notified: the first instance
+     * a wireless LAN interface by logical name, no error is notified: the first instance
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
@@ -457,10 +458,10 @@ public class YWireless extends YFunction
      * you are certain that the matching device is plugged, make sure that you did
      * call registerHub() at application initialization time.
      *
-     * @param func : a string that uniquely characterizes the wireless lan interface, for instance
-     *         YHUBWLN3.wireless.
+     * @param func : a string that uniquely characterizes the wireless LAN interface, for instance
+     *         YHUBWLN1.wireless.
      *
-     * @return a YWireless object allowing you to drive the wireless lan interface.
+     * @return a YWireless object allowing you to drive the wireless LAN interface.
      */
     public static YWireless FindWireless(String func)
     {
@@ -477,7 +478,7 @@ public class YWireless extends YFunction
     }
 
     /**
-     * Retrieves a wireless lan interface for a given identifier in a YAPI context.
+     * Retrieves a wireless LAN interface for a given identifier in a YAPI context.
      * The identifier can be specified using several formats:
      * <ul>
      * <li>FunctionLogicalName</li>
@@ -487,19 +488,19 @@ public class YWireless extends YFunction
      * <li>ModuleLogicalName.FunctionLogicalName</li>
      * </ul>
      *
-     * This function does not require that the wireless lan interface is online at the time
+     * This function does not require that the wireless LAN interface is online at the time
      * it is invoked. The returned object is nevertheless valid.
-     * Use the method YWireless.isOnline() to test if the wireless lan interface is
+     * Use the method YWireless.isOnline() to test if the wireless LAN interface is
      * indeed online at a given time. In case of ambiguity when looking for
-     * a wireless lan interface by logical name, no error is notified: the first instance
+     * a wireless LAN interface by logical name, no error is notified: the first instance
      * found is returned. The search is performed first by hardware name,
      * then by logical name.
      *
      * @param yctx : a YAPI context
-     * @param func : a string that uniquely characterizes the wireless lan interface, for instance
-     *         YHUBWLN3.wireless.
+     * @param func : a string that uniquely characterizes the wireless LAN interface, for instance
+     *         YHUBWLN1.wireless.
      *
-     * @return a YWireless object allowing you to drive the wireless lan interface.
+     * @return a YWireless object allowing you to drive the wireless LAN interface.
      */
     public static YWireless FindWirelessInContext(YAPIContext yctx,String func)
     {
@@ -592,8 +593,9 @@ public class YWireless extends YFunction
 
     /**
      * Changes the configuration of the wireless lan interface to create an ad-hoc
-     * wireless network, without using an access point. On the YoctoHub-Wireless-g,
-     * it is best to use softAPNetworkInstead(), which emulates an access point
+     * wireless network, without using an access point. On the YoctoHub-Wireless-g
+     * and YoctoHub-Wireless-n,
+     * you should use softAPNetwork() instead, which emulates an access point
      * (Soft AP) which is more efficient and more widely supported than ad-hoc networks.
      *
      * When a security key is specified for an ad-hoc network, the network is protected
@@ -618,12 +620,16 @@ public class YWireless extends YFunction
     /**
      * Changes the configuration of the wireless lan interface to create a new wireless
      * network by emulating a WiFi access point (Soft AP). This function can only be
-     * used with the YoctoHub-Wireless-g.
+     * used with the YoctoHub-Wireless-g and the YoctoHub-Wireless-n.
      *
-     * When a security key is specified for a SoftAP network, the network is protected
-     * by a WEP40 key (5 characters or 10 hexadecimal digits) or WEP128 key (13 characters
-     * or 26 hexadecimal digits). It is recommended to use a well-randomized WEP128 key
-     * using 26 hexadecimal digits to maximize security.
+     * On the YoctoHub-Wireless-g, when a security key is specified for a SoftAP network,
+     * the network is protected by a WEP40 key (5 characters or 10 hexadecimal digits) or
+     * WEP128 key (13 characters or 26 hexadecimal digits). It is recommended to use a
+     * well-randomized WEP128 key using 26 hexadecimal digits to maximize security.
+     *
+     * On the YoctoHub-Wireless-n, when a security key is specified for a SoftAP network,
+     * the network will be protected by WPA2.
+     *
      * Remember to call the saveToFlash() method and then to reboot the module to apply this setting.
      *
      * @param ssid : the name of the network to connect to
@@ -665,14 +671,14 @@ public class YWireless extends YFunction
     }
 
     /**
-     * Continues the enumeration of wireless lan interfaces started using yFirstWireless().
-     * Caution: You can't make any assumption about the returned wireless lan interfaces order.
-     * If you want to find a specific a wireless lan interface, use Wireless.findWireless()
+     * Continues the enumeration of wireless LAN interfaces started using yFirstWireless().
+     * Caution: You can't make any assumption about the returned wireless LAN interfaces order.
+     * If you want to find a specific a wireless LAN interface, use Wireless.findWireless()
      * and a hardwareID or a logical name.
      *
      * @return a pointer to a YWireless object, corresponding to
-     *         a wireless lan interface currently online, or a null pointer
-     *         if there are no more wireless lan interfaces to enumerate.
+     *         a wireless LAN interface currently online, or a null pointer
+     *         if there are no more wireless LAN interfaces to enumerate.
      */
     public YWireless nextWireless()
     {
@@ -688,12 +694,12 @@ public class YWireless extends YFunction
     }
 
     /**
-     * Starts the enumeration of wireless lan interfaces currently accessible.
+     * Starts the enumeration of wireless LAN interfaces currently accessible.
      * Use the method YWireless.nextWireless() to iterate on
-     * next wireless lan interfaces.
+     * next wireless LAN interfaces.
      *
      * @return a pointer to a YWireless object, corresponding to
-     *         the first wireless lan interface currently online, or a null pointer
+     *         the first wireless LAN interface currently online, or a null pointer
      *         if there are none.
      */
     public static YWireless FirstWireless()
@@ -706,14 +712,14 @@ public class YWireless extends YFunction
     }
 
     /**
-     * Starts the enumeration of wireless lan interfaces currently accessible.
+     * Starts the enumeration of wireless LAN interfaces currently accessible.
      * Use the method YWireless.nextWireless() to iterate on
-     * next wireless lan interfaces.
+     * next wireless LAN interfaces.
      *
      * @param yctx : a YAPI context.
      *
      * @return a pointer to a YWireless object, corresponding to
-     *         the first wireless lan interface currently online, or a null pointer
+     *         the first wireless LAN interface currently online, or a null pointer
      *         if there are none.
      */
     public static YWireless FirstWirelessInContext(YAPIContext yctx)
