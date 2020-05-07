@@ -56,6 +56,15 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_MaxiBuzzer start -->
+        <activity
+            android:name=".GettingStarted_Yocto_MaxiBuzzer"
+            android:label="Yocto-MaxiBuzzer">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_MaxiBuzzer stop -->   
         <!-- generated GettingStarted_Yocto_MaxiMicroVolt_Rx start -->
         <activity
             android:name=".GettingStarted_Yocto_MaxiMicroVolt_Rx"

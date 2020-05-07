@@ -1,3 +1,5 @@
-Android v1.10.38914
+Android v1.10.40411
 
-- Documentation improvements
+- Add definitions for temperature type "CHANNEL_OFF" and callback encoding "INFLUXDB_V2"
+- Add example for Yocto-MaxiBuzzer
+- Fix doc for queryHex method

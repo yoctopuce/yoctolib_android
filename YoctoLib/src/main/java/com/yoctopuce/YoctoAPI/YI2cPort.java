@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YI2cPort.java 38913 2019-12-20 18:59:49Z mvuilleu $
+ *  $Id: YI2cPort.java 39333 2020-01-30 10:05:40Z mvuilleu $
  *
  *  Implements FindI2cPort(), the high-level API for I2cPort functions
  *
@@ -825,13 +825,13 @@ public class YI2cPort extends YFunction
     }
 
     /**
-     * Returns the SPI port communication parameters, as a string such as
+     * Returns the I2C port communication parameters, as a string such as
      * "400kbps,2000ms,NoRestart". The string includes the baud rate, the
      * recovery delay after communications errors, and if needed the option
      * NoRestart to use a Stop/Start sequence instead of the
      * Restart state when performing read on the I2C bus.
      *
-     * @return a string corresponding to the SPI port communication parameters, as a string such as
+     * @return a string corresponding to the I2C port communication parameters, as a string such as
      *         "400kbps,2000ms,NoRestart"
      *
      * @throws YAPI_Exception on error
@@ -851,13 +851,13 @@ public class YI2cPort extends YFunction
     }
 
     /**
-     * Returns the SPI port communication parameters, as a string such as
+     * Returns the I2C port communication parameters, as a string such as
      * "400kbps,2000ms,NoRestart". The string includes the baud rate, the
      * recovery delay after communications errors, and if needed the option
      * NoRestart to use a Stop/Start sequence instead of the
      * Restart state when performing read on the I2C bus.
      *
-     * @return a string corresponding to the SPI port communication parameters, as a string such as
+     * @return a string corresponding to the I2C port communication parameters, as a string such as
      *         "400kbps,2000ms,NoRestart"
      *
      * @throws YAPI_Exception on error
@@ -868,7 +868,7 @@ public class YI2cPort extends YFunction
     }
 
     /**
-     * Changes the SPI port communication parameters, with a string such as
+     * Changes the I2C port communication parameters, with a string such as
      * "400kbps,2000ms". The string includes the baud rate, the
      * recovery delay after communications errors, and if needed the option
      * NoRestart to use a Stop/Start sequence instead of the
@@ -876,7 +876,7 @@ public class YI2cPort extends YFunction
      * Remember to call the saveToFlash() method of the module if the
      * modification must be kept.
      *
-     * @param newval : a string corresponding to the SPI port communication parameters, with a string such as
+     * @param newval : a string corresponding to the I2C port communication parameters, with a string such as
      *         "400kbps,2000ms"
      *
      * @return YAPI.SUCCESS if the call succeeds.
@@ -894,7 +894,7 @@ public class YI2cPort extends YFunction
     }
 
     /**
-     * Changes the SPI port communication parameters, with a string such as
+     * Changes the I2C port communication parameters, with a string such as
      * "400kbps,2000ms". The string includes the baud rate, the
      * recovery delay after communications errors, and if needed the option
      * NoRestart to use a Stop/Start sequence instead of the
@@ -902,7 +902,7 @@ public class YI2cPort extends YFunction
      * Remember to call the saveToFlash() method of the module if the
      * modification must be kept.
      *
-     * @param newval : a string corresponding to the SPI port communication parameters, with a string such as
+     * @param newval : a string corresponding to the I2C port communication parameters, with a string such as
      *         "400kbps,2000ms"
      *
      * @return YAPI_SUCCESS if the call succeeds.
@@ -1193,6 +1193,44 @@ public class YI2cPort extends YFunction
         String res;
 
         url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=!%s", maxWait,_escapeAttr(query));
+        msgbin = _download(url);
+        msgarr = _json_get_array(msgbin);
+        msglen = msgarr.size();
+        if (msglen == 0) {
+            return "";
+        }
+        // last element of array is the new position
+        msglen = msglen - 1;
+        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        if (msglen == 0) {
+            return "";
+        }
+        res = _json_get_string((msgarr.get(0)).getBytes());
+        return res;
+    }
+
+    /**
+     * Sends a binary message to the serial port, and reads the reply, if any.
+     * This function is intended to be used when the serial port is configured for
+     * Frame-based protocol.
+     *
+     * @param hexString : the message to send, coded in hexadecimal
+     * @param maxWait : the maximum number of milliseconds to wait for a reply.
+     *
+     * @return the next frame received after sending the message, as a hex string.
+     *         Additional frames can be obtained by calling readHex or readMessages.
+     *
+     * @throws YAPI_Exception on error
+     */
+    public String queryHex(String hexString,int maxWait) throws YAPI_Exception
+    {
+        String url;
+        byte[] msgbin;
+        ArrayList<String> msgarr = new ArrayList<>();
+        int msglen;
+        String res;
+
+        url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=$%s", maxWait,hexString);
         msgbin = _download(url);
         msgarr = _json_get_array(msgbin);
         msglen = msgarr.size();
