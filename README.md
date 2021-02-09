@@ -1,5 +1,5 @@
-Yoctopuce library for C++
-=========================
+Yoctopuce library for Android
+=============================
 
 ## License information
 
