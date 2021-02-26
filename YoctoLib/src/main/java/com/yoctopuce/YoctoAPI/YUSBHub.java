@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 36374 2019-07-19 17:30:50Z seb $
+ * $Id: YUSBHub.java 44027 2021-02-25 10:06:43Z web $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -431,4 +431,12 @@ class YUSBHub extends YGenericHub
     {
         return false;
     }
+
+    public static String addUdevRule(boolean force)
+    {
+        return "error: Not supported in Android";
+    }
+
+
+
 }
