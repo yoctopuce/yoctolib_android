@@ -56,6 +56,15 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_MaxiKnob start -->
+        <activity
+            android:name=".GettingStarted_Yocto_MaxiKnob"
+            android:label="Yocto-MaxiKnob">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_MaxiKnob stop -->   
         <!-- generated GettingStarted_Yocto_Inclinometer start -->
         <activity
             android:name=".GettingStarted_Yocto_Inclinometer"
