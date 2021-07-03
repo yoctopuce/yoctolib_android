@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YAPI.java 44024 2021-02-25 09:37:25Z web $
+ * $Id: YAPI.java 45551 2021-06-14 13:51:37Z web $
  *
  * High-level programming interface, common to all modules
  *
@@ -58,7 +58,7 @@ public class YAPI
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "1.10";
-    public static final String YOCTO_API_BUILD_STR = "45343";
+    public static final String YOCTO_API_BUILD_STR = "45704";
     public static final int YOCTO_API_VERSION_BCD = 0x0110;
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
@@ -82,6 +82,7 @@ public class YAPI
     public static final int UNAUTHORIZED = -12;            // unauthorized access to password-protected device
     public static final int RTC_NOT_READY = -13;           // real-time clock has not been initialized (or time was lost)
     public static final int FILE_NOT_FOUND = -14;          // the file is not found
+    public static final int SSL_ERROR = -15;               // Error reported by mbedSSL
 
 //--- (end of generated code: YFunction return codes)
     static final String DefaultEncoding = "ISO-8859-1";
@@ -285,7 +286,7 @@ public class YAPI
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".45343" + YUSBHub.getAPIVersion();
+        return YOCTO_API_VERSION_STR + ".45704" + YUSBHub.getAPIVersion();
     }
 
     /**

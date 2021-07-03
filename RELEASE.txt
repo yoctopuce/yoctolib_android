@@ -1,6 +1,5 @@
-Android v1.10.45343
+Android v1.10.45704
 
-- Add Example for Yocto-MaxiKnob
-- Add edgePerCycle attribute to the QuadratureDecoder
-- Add Example for Yocto-MaxiKnob
-- Fix missing documentation for isReadOnly() method.
+- Pubish lib on mavenCentral
+- Remove reference to Jcenter and bump Android SDK
+- Use Android SDK v30
