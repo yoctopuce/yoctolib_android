@@ -1,5 +1,5 @@
-Android v1.10.45704
+Android v1.10.47582
 
-- Pubish lib on mavenCentral
-- Remove reference to Jcenter and bump Android SDK
-- Use Android SDK v30
+- Add support for missing measures in DataStream (returned as NaN) and skipping them in DataSet
+- Add support for YInputChain class
+- Improve documentation of YAPI.RegisterHub

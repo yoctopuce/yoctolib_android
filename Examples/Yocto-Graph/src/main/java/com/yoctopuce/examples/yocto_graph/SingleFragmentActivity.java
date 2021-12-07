@@ -1,13 +1,7 @@
 package com.yoctopuce.examples.yocto_graph;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +9,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
+import android.widget.Toolbar;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
 import com.yoctopuce.examples.helpers.Hub;
@@ -79,7 +78,7 @@ public class SingleFragmentActivity extends AppCompatActivity implements YoctoAs
             }
         });
 
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
 
 
         _hubStorage = PreferenceHubStorage.Get(this);

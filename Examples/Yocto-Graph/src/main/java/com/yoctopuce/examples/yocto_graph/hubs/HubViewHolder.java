@@ -2,12 +2,13 @@ package com.yoctopuce.examples.yocto_graph.hubs;
 
 
 import android.media.Image;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.yoctopuce.examples.helpers.Hub;
 import com.yoctopuce.examples.yocto_graph.R;

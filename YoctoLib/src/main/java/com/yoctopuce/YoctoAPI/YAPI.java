@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YAPI.java 45551 2021-06-14 13:51:37Z web $
+ * $Id: YAPI.java 46942 2021-10-28 08:51:53Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -58,12 +58,15 @@ public class YAPI
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "1.10";
-    public static final String YOCTO_API_BUILD_STR = "45704";
+    public static final String YOCTO_API_BUILD_STR = "47582";
     public static final int YOCTO_API_VERSION_BCD = 0x0110;
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
     public static final int YOCTO_DEVID_BOOTLOADER = 2;
     static final int HASH_BUF_SIZE = 28;
+
+    public static final int YOCTO_DEFAULT_PORT = 4444;
+    public static final int YOCTO_DEFAULT_HTTPS_PORT = 4443;
 
     // --- (generated code: YFunction return codes)
     // Yoctopuce error codes, used by default as function return value
@@ -286,7 +289,7 @@ public class YAPI
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".45704" + YUSBHub.getAPIVersion();
+        return YOCTO_API_VERSION_STR + ".47582" + YUSBHub.getAPIVersion();
     }
 
     /**
@@ -355,7 +358,8 @@ public class YAPI
 
 
     /**
-     * Setup the Yoctopuce library to use modules connected on a given machine. The
+     * Setup the Yoctopuce library to use modules connected on a given machine. Idealy this
+     * call will be made once at the begining of your application.  The
      * parameter will determine how the API will work. Use the following values:
      *
      * <b>usb</b>: When the usb keyword is used, the API will work with
@@ -388,7 +392,9 @@ public class YAPI
      *
      * http://username:password@address:port
      *
-     * You can call <i>RegisterHub</i> several times to connect to several machines.
+     * You can call <i>RegisterHub</i> several times to connect to several machines. On
+     * the other hand, it is useless and even counterproductive to call <i>RegisterHub</i>
+     * with to same address multiple times during the life of the application.
      *
      * @param url : a string containing either "usb","callback" or the
      *         root URL of the hub to monitor
