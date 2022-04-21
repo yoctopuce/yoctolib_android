@@ -89,7 +89,7 @@ public class GettingStarted_Yocto_I2C extends Activity implements OnItemSelected
         _i2cPort = YI2cPort.FindI2cPort(hwid);
         try {
             // sample code reading MCP9804 temperature sensor
-            _i2cPort.set_i2cMode("400kbps");
+            _i2cPort.set_i2cMode("100kbps");
             _i2cPort.set_i2cVoltageLevel(YI2cPort.I2CVOLTAGELEVEL_3V3);
             _i2cPort.reset();
         } catch (YAPI_Exception e) {
