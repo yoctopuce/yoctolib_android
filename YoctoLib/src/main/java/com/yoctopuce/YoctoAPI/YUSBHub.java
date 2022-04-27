@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 44027 2021-02-25 10:06:43Z web $
+ * $Id: YUSBHub.java 49540 2022-04-26 08:24:43Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -217,7 +217,7 @@ class YUSBHub extends YGenericHub
     {
         Intent intent = new Intent(ACTION_USB_PERMISSION);
         _yctx._Log("HUB_USB: request permission for " + device.getDeviceName() + "\n");
-        PendingIntent askPermissionIntent = PendingIntent.getBroadcast(sAppContext, 0, intent, 0);
+        PendingIntent askPermissionIntent = PendingIntent.getBroadcast(sAppContext, 0, intent, PendingIntent.FLAG_IMMUTABLE);
         _manager.requestPermission(device, askPermissionIntent);
     }
 

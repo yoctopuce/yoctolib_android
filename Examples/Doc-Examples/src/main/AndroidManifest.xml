@@ -14,7 +14,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".Doc_Examples"
-            android:label="@string/title_activity_doc_examples">
+            android:label="@string/title_activity_doc_examples"
+            android:exported="true">
             <!--android:clearTaskOnLaunch="true"-->
             <!--android:launchMode="singleInstance"-->
             <intent-filter>
@@ -25,7 +26,8 @@
         <activity
             android:name=".USBDevicePluggedActivity"
             android:label="@string/title_activity_doc_examples"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
