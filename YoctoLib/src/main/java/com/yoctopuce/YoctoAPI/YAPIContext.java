@@ -1,15 +1,36 @@
 package com.yoctopuce.YoctoAPI;
 
 
-import javax.net.ssl.*;
-import java.io.*;
-import java.net.*;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetAddress;
+import java.net.MalformedURLException;
+import java.net.Socket;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Queue;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 
 //--- (generated code: YAPIContext return codes)
 //--- (end of generated code: YAPIContext return codes)
@@ -125,7 +146,7 @@ public class YAPIContext
     }
 
 
-    private final static double decExp[] = new double[]{
+    private final static double[] decExp = new double[]{
             1.0e-6, 1.0e-5, 1.0e-4, 1.0e-3, 1.0e-2, 1.0e-1, 1.0,
             1.0e1, 1.0e2, 1.0e3, 1.0e4, 1.0e5, 1.0e6, 1.0e7, 1.0e8, 1.0e9};
 
@@ -327,7 +348,7 @@ public class YAPIContext
             return 0;
         }
         str = str.substring(s, i);
-        return Integer.valueOf(str);
+        return Integer.parseInt(str);
     }
 
     private final static char[] _hexArray = "0123456789ABCDEF".toCharArray();
@@ -498,9 +519,13 @@ public class YAPIContext
 
         SSLContext sslContext = null;
         try {
+            TrustManagerFactory tmf = null;
+            tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init((KeyStore) null);
             sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, _trustAllCertificates, new SecureRandom());
-        } catch (NoSuchAlgorithmException | KeyManagementException e) {
+            TrustManager[] trustManagers = tmf.getTrustManagers();
+            sslContext.init(null, trustManagers, new SecureRandom());
+        } catch (NoSuchAlgorithmException | KeyManagementException | KeyStoreException e) {
             sslContext = null;
         }
         _sslContext = sslContext;
@@ -722,7 +747,6 @@ public class YAPIContext
             newhub = new YUSBHub(this, _hubs.size(), false, _pktAckDelay);
         } else if (url.equals("net")) {
             if ((_apiMode & YAPI.DETECT_NET) == 0) {
-                //noinspection ConstantConditions
                 if (YUSBHub.RegisterLocalhost()) {
                     newhub = new YHTTPHub(this, _hubs.size(), new YGenericHub.HTTPParams("localhost"), false, null);
                     _hubs.add(newhub);
@@ -771,23 +795,25 @@ public class YAPIContext
                     evt = _pendingCallbacks.poll();
                 }
                 synchronized (_regCbLock) {
-                    switch (evt.ev) {
-                        case PLUG:
-                            if (_arrivalCallback != null) {
-                                _arrivalCallback.yDeviceArrival(evt.module);
-                            }
+                    if (evt != null) {
+                        switch (evt.ev) {
+                            case PLUG:
+                                if (_arrivalCallback != null) {
+                                    _arrivalCallback.yDeviceArrival(evt.module);
+                                }
 
-                            break;
-                        case CHANGE:
-                            if (_namechgCallback != null) {
-                                _namechgCallback.yDeviceChange(evt.module);
-                            }
-                            break;
-                        case UNPLUG:
-                            if (_removalCallback != null) {
-                                _removalCallback.yDeviceRemoval(evt.module);
-                            }
-                            break;
+                                break;
+                            case CHANGE:
+                                if (_namechgCallback != null) {
+                                    _namechgCallback.yDeviceChange(evt.module);
+                                }
+                                break;
+                            case UNPLUG:
+                                if (_removalCallback != null) {
+                                    _removalCallback.yDeviceRemoval(evt.module);
+                                }
+                                break;
+                        }
                     }
                 }
             }
@@ -820,7 +846,7 @@ public class YAPIContext
             in = new BufferedInputStream(connection.getInputStream());
             byte[] buffer = new byte[1024];
             int readed = 0;
-            while (readed >= 0) {
+            while (true) {
                 readed = in.read(buffer, 0, buffer.length);
                 if (readed < 0) {
                     // end of connection
@@ -844,32 +870,11 @@ public class YAPIContext
         return result.toByteArray();
     }
 
-    private final TrustManager[] _trustAllCertificates = new TrustManager[]{
-            new X509TrustManager()
-            {
-                @Override
-                public X509Certificate[] getAcceptedIssuers()
-                {
-                    return new X509Certificate[0];
-                }
 
-                @Override
-                public void checkClientTrusted(X509Certificate[] certs, String authType)
-                {
-                    // Do nothing. Just allow them all.
-                }
-
-                @Override
-                public void checkServerTrusted(X509Certificate[] certs, String authType)
-                {
-                    // Do nothing. Just allow them all.
-                }
-            }
-    };
-
-
-    private final HostnameVerifier _allHostsValid = new HostnameVerifier() {
-        public boolean verify(String hostname, SSLSession session) {
+    private final HostnameVerifier _allHostsValid = new HostnameVerifier()
+    {
+        public boolean verify(String hostname, SSLSession session)
+        {
             return true;
         }
     };
@@ -1281,6 +1286,7 @@ public class YAPIContext
         unregisterHubEx(url, null, null, null);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private void unregisterHubEx(String url, InputStream request, OutputStream response, Object session)
     {
         for (YGenericHub h : _hubs) {
@@ -1380,7 +1386,9 @@ public class YAPIContext
                 }
                 pv = _data_events.poll();
             }
-            pv.invoke();
+            if (pv != null) {
+                pv.invoke();
+            }
         }
         return YAPI.SUCCESS;
     }
