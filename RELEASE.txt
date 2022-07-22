@@ -1,3 +1,4 @@
-Android v1.10.50431
+Android v1.10.50540
 
 - Fix security warning
+- Remove "SIM ICCID select" profile from list returned by get_communicationProfiles

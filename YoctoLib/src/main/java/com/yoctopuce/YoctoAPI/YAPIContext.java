@@ -531,7 +531,6 @@ public class YAPIContext
         _sslContext = sslContext;
         if (_sslContext != null) {
             HttpsURLConnection.setDefaultSSLSocketFactory(_sslContext.getSocketFactory());
-            HttpsURLConnection.setDefaultHostnameVerifier(_allHostsValid);
         }
 
         //--- (generated code: YAPIContext attributes initialization)
@@ -870,14 +869,6 @@ public class YAPIContext
         return result.toByteArray();
     }
 
-
-    private final HostnameVerifier _allHostsValid = new HostnameVerifier()
-    {
-        public boolean verify(String hostname, SSLSession session)
-        {
-            return true;
-        }
-    };
 
     public void SetNetworkTimeout_internal(int networkMsTimeout)
     {
