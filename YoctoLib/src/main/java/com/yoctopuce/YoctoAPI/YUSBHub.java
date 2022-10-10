@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 49540 2022-04-26 08:24:43Z seb $
+ * $Id: YUSBHub.java 51257 2022-10-07 09:33:39Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -391,6 +391,9 @@ class YUSBHub extends YGenericHub
     @Override
     byte[] devRequestSync(YDevice device, String req_first_line, byte[] req_head_and_body, RequestProgress progress, Object context) throws YAPI_Exception
     {
+        if (req_first_line.contains("/@YCB")) {
+            throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "Preloading of URL is only supported for HTTP callback.");
+        }
         String serial = device.getSerialNumber();
         YUSBDevice d = devFromSerial(serial);
         return d.sendRequestSync(req_first_line, req_head_and_body);
