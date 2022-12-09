@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 // This is the library version used when deploying the artifact
-version = "1.10.52094"
+version = "1.10.52255"
 
 android {
     compileSdkVersion 30
@@ -104,7 +104,7 @@ makeJar.dependsOn(clearJar, build)
 
 ext {
     PUBLISH_GROUP_ID = 'com.yoctopuce.android'
-    PUBLISH_VERSION = '1.10.52094'
+    PUBLISH_VERSION = '1.10.52255'
     PUBLISH_ARTIFACT_ID = 'YoctoLib'
 }
 

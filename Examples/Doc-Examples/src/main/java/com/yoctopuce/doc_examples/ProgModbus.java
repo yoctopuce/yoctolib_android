@@ -86,10 +86,10 @@ public class ProgModbus extends Activity implements OnItemSelectedListener
         try {
             YSerialPort serialPort = YSerialPort.FindSerialPort(hwid);
             // send new value to modbus device
-            if(!cmdfield.equals("") && (reg % 30000) < 10000) {
+            if(!cmdfield.equals("") && (reg % 40000) < 10000) {
                 int cmd = Integer.parseInt(cmdfield);
-                if(reg >= 30001) {
-                    serialPort.modbusWriteRegister(slave, reg-30001, cmd);
+                if(reg >= 40001) {
+                    serialPort.modbusWriteRegister(slave, reg-40001, cmd);
                 } else {
                     serialPort.modbusWriteBit(slave, reg-1, cmd);
                 }
@@ -98,9 +98,9 @@ public class ProgModbus extends Activity implements OnItemSelectedListener
 
             int val;
             if(reg >= 40001) {
-                val = serialPort.modbusReadInputRegisters(slave, reg-40001, 1).get(0);
+                val = serialPort.modbusReadRegisters(slave, reg-40001, 1).get(0);
             } else if(reg >= 30001) {
-                val = serialPort.modbusReadRegisters(slave, reg-30001, 1).get(0);
+                val = serialPort.modbusReadInputRegisters(slave, reg-30001, 1).get(0);
             } else if(reg >= 10001) {
                 val = serialPort.modbusReadInputBits(slave, reg-10001, 1).get(0);
             } else {

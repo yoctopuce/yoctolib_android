@@ -1,3 +1,4 @@
-Android v1.10.52094
+Android v1.10.52255
 
-- Add support for connecting to VirtualHub-4web
+- Fix authentication with VirtualHub-4web
+- Add AddTrustedCertificates method

@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_RS485.java 32625 2018-10-10 13:27:32Z seb $
+ *  $Id: GettingStarted_Yocto_RS485.java 52208 2022-12-07 08:17:21Z mvuilleu $
  *
  *  An example that show how to use a  Yocto-RS485
  *
@@ -102,10 +102,10 @@ public class GettingStarted_Yocto_RS485 extends Activity implements OnItemSelect
         try {
             YSerialPort serialPort = YSerialPort.FindSerialPort(hwid);
             // send new value to modbus device
-            if(!cmdfield.equals("") && (reg % 30000) < 10000) {
+            if(!cmdfield.equals("") && (reg % 40000) < 10000) {
                 int cmd = Integer.parseInt(cmdfield);
-                if(reg >= 30001) {
-                    serialPort.modbusWriteRegister(slave, reg-30001, cmd);
+                if(reg >= 40001) {
+                    serialPort.modbusWriteRegister(slave, reg-40001, cmd);
                 } else {
                     serialPort.modbusWriteBit(slave, reg-1, cmd);
                 }
