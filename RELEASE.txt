@@ -1,4 +1,3 @@
-Android v1.10.52255
+Android v1.10.52382
 
-- Fix authentication with VirtualHub-4web
-- Add AddTrustedCertificates method
+- Fix get_module() method that was not working during removal callbackFix IO error with HTTP protocol

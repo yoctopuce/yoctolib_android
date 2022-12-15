@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YGenericHub.java 52252 2022-12-08 10:38:52Z seb $
+ * $Id: YGenericHub.java 52312 2022-12-12 17:23:10Z seb $
  *
  * Internal YGenericHub object
  *
@@ -245,7 +245,7 @@ abstract class YGenericHub
                 if (!currdev.getLogicalName().equals(wp.getLogicalName())) {
                     // Reindex device from its own data
                     currdev.refresh();
-                    _yctx._pushPlugEvent(YAPIContext.PlugEvent.Event.CHANGE, serial);
+                    _yctx._pushChangeEvent(serial);
                 } else if (currdev.getBeacon() > 0 != wp.getBeacon() > 0) {
                     currdev.refresh();
                 }
@@ -254,14 +254,14 @@ abstract class YGenericHub
                 YDevice dev = new YDevice(this, wp, yellowPages);
                 _yctx._yHash.reindexDevice(dev);
                 _devices.put(serial, dev);
-                _yctx._pushPlugEvent(YAPIContext.PlugEvent.Event.PLUG, serial);
+                _yctx._pushPlugEvent(serial, wp.getProductName(), wp.getProductId());
                 _yctx._Log("HUB: device " + serial + " has been plugged\n");
             }
         }
 
         for (YDevice dev : toRemove) {
             String serial = dev.getSerialNumber();
-            _yctx._pushPlugEvent(YAPIContext.PlugEvent.Event.UNPLUG, serial);
+            _yctx._pushUnPlugEvent(serial);
             _yctx._Log("HUB: device " + serial + " has been unplugged\n");
             _devices.remove(serial);
             _yctx._yHash.forgetDevice(serial);
