@@ -1,3 +1,8 @@
-Android v1.10.52382
+Android v1.10.53532
 
-- Fix get_module() method that was not working during removal callbackFix IO error with HTTP protocol
+- Add support for callbackTemplate and powerFactor
+- Improve YSerialPort, YSpiPort and I2cPort class
+- Update gradle script
+- Fix get_url method of YModule object. Returned URL was missing the last "/"
+- Fix get_subDevices() methods of YModule
+- Fix a few typos in the doc

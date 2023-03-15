@@ -1,16 +1,13 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 
-// This is the library version used when deploying the artifact
-version = "1.10.52382"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 30
+        targetSdkVersion 32
     }
     buildTypes {
         release {
@@ -18,95 +15,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    namespace 'com.yoctopuce.yoctolib'
 }
 
+publishing {
+    publications {
+        release(MavenPublication) {
+            groupId = 'com.my-company'
+            artifactId = 'my-library'
+            version = '1.0'
 
-
-
-def siteUrl = 'http://www.yoctopuce.com'      // Homepage URL of the library
-def gitUrl = 'https://github.com/yoctopuce/yoctolib_android'   // Git repository URL
-group = "com.yoctopuce.android"                                        // Maven Group ID for the artifact
-
-
-install {
-    repositories.mavenInstaller {
-        // This generates POM.xml with proper parameters
-        pom {
-            project {
-                packaging 'aar'
-
-                // Add your description here
-                name 'Yoctopuce Library for Android'
-                description = 'Yoctopuce Library for Android'
-                url siteUrl
-
-                // Set your license
-                licenses {
-                    license {
-                        name 'Yoctopuce License'
-                        url 'http://www.yoctopuce.com/EN/cg.php'
-                    }
-                }
-                developers {
-                    developer {
-                        id 'yoctopuce'
-                        name 'Yoctopuce'
-                        email 'dev@yoctopuce.com'
-                    }
-                }
-                scm {
-                    connection gitUrl
-                    developerConnection gitUrl
-                    url siteUrl
-
-                }
+            afterEvaluate {
+                from components.release
             }
         }
     }
 }
 
 
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadoc(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-artifacts {
-    archives javadocJar
-    archives sourcesJar
-}
-
-
-
-
-task clearJar(type: Delete) {
-    delete 'build/libs/YoctoAPI.jar'
-}
-
-task makeJar(type: Copy) {
-    from('build/intermediates/bundles/release/')
-    into('../Binaries/')
-    include('classes.jar')
-    rename ('classes.jar', 'YoctoAPI.jar')
-}
-
-makeJar.dependsOn(clearJar, build)
-
-
-ext {
-    PUBLISH_GROUP_ID = 'com.yoctopuce.android'
-    PUBLISH_VERSION = '1.10.52382'
-    PUBLISH_ARTIFACT_ID = 'YoctoLib'
-}
-
-
-apply from:"${rootProject.projectDir}/scripts/publish-module.gradle"

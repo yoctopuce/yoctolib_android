@@ -8,13 +8,13 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
 
     defaultConfig {
-        versionCode 52382
-        versionName "1.11.52382"
+        versionCode 53532
+        versionName "1.11.53532"
         minSdkVersion 14
-        targetSdkVersion 30
+        targetSdkVersion 32
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled false
     }
@@ -33,5 +33,6 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    namespace 'com.yoctopuce.examples.yocto_graph'
 
 }
