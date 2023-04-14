@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 51257 2022-10-07 09:33:39Z seb $
+ * $Id: YUSBHub.java 53892 2023-04-05 10:30:55Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -123,6 +123,11 @@ class YUSBHub extends YGenericHub
     boolean isReadOnly()
     {
         return false;
+    }
+
+    @Override
+    public boolean isOnline() {
+        return true;
     }
 
     @Override

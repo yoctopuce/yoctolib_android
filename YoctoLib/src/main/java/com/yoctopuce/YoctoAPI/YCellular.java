@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YCellular.java 50494 2022-07-19 16:08:56Z mvuilleu $
+ * $Id: YCellular.java 53886 2023-04-05 08:06:39Z mvuilleu $
  *
  * Implements FindCellular(), the high-level API for Cellular functions
  *
@@ -1592,24 +1592,24 @@ public class YCellular extends YFunction
         recs = new ArrayList<>(Arrays.asList(moni.split("#")));
         // process each line in turn
         res.clear();
-        for (String ii:recs) {
-            llen = (ii).length() - 2;
+        for (String ii_0:recs) {
+            llen = (ii_0).length() - 2;
             if (llen >= 44) {
-                if ((ii).substring(41, 41 + 3).equals("dbm")) {
-                    lac = Integer.valueOf((ii).substring(16, 16 + 4),16);
-                    cellId = Integer.valueOf((ii).substring(23, 23 + 4),16);
-                    dbms = (ii).substring(37, 37 + 4);
+                if ((ii_0).substring(41, 41 + 3).equals("dbm")) {
+                    lac = Integer.valueOf((ii_0).substring(16, 16 + 4),16);
+                    cellId = Integer.valueOf((ii_0).substring(23, 23 + 4),16);
+                    dbms = (ii_0).substring(37, 37 + 4);
                     if ((dbms).substring(0, 1).equals(" ")) {
                         dbms = (dbms).substring(1, 1 + 3);
                     }
                     dbm = YAPIContext._atoi(dbms);
                     if (llen > 66) {
-                        tads = (ii).substring(54, 54 + 2);
+                        tads = (ii_0).substring(54, 54 + 2);
                         if ((tads).substring(0, 1).equals(" ")) {
                             tads = (tads).substring(1, 1 + 3);
                         }
                         tad = YAPIContext._atoi(tads);
-                        oper = (ii).substring(66, 66 + llen-66);
+                        oper = (ii_0).substring(66, 66 + llen-66);
                     } else {
                         tad = -1;
                         oper = "";
