@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 53892 2023-04-05 10:30:55Z seb $
+ * $Id: YUSBHub.java 54583 2023-05-15 13:25:40Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -148,9 +148,9 @@ class YUSBHub extends YGenericHub
         return new ArrayList<>();
     }
 
-    YUSBHub(YAPIContext yctx, int idx, boolean requestPermission, int pktAckDelay) throws YAPI_Exception
+    YUSBHub(YAPIContext yctx,  boolean requestPermission, int pktAckDelay) throws YAPI_Exception
     {
-        super(yctx, new HTTPParams("usb://"), idx, true);
+        super(yctx, new HTTPParams("usb"), true);
         _pktAckDelay = pktAckDelay;
         _manager = (UsbManager) sAppContext.getSystemService(Context.USB_SERVICE);
         if (_manager == null) {

@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: yHTTPRequest.java 53891 2023-04-05 10:28:06Z mvuilleu $
+ * $Id: yHTTPRequest.java 54109 2023-04-18 08:42:04Z seb $
  *
  * internal yHTTPRequest object
  *
@@ -126,7 +126,7 @@ class yHTTPRequest implements Runnable
         int ofs = firstLine.indexOf(" ");
         header += firstLine.substring(0, ofs + 1);
         cur = ofs + 1;
-        header += _hub._http_params.getSubDomain();
+        header += _hub._runtime_http_params.getSubDomain();
         ofs = firstLine.indexOf(" ", cur);
         if (ofs < 0) {
             ofs = firstLine.indexOf("\r", cur);

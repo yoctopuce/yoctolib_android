@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YGyro.java 50689 2022-08-17 14:37:15Z mvuilleu $
+ * $Id: YGyro.java 54295 2023-05-01 12:37:19Z seb $
  *
  * Implements yFindGyro(), the high-level API for Gyro functions
  *
@@ -795,7 +795,7 @@ public class YGyro extends YSensor
 
     public int _invokeGyroCallbacks(int qtIndex,double qtValue) throws YAPI_Exception
     {
-        switch(qtIndex - 1) {
+        switch (qtIndex - 1) {
         case 0:
             _w = qtValue;
             break;

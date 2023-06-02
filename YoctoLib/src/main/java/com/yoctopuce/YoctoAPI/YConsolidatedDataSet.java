@@ -1,5 +1,5 @@
 /*
- * $Id: YConsolidatedDataSet.java 43337 2021-01-18 10:36:22Z web $
+ * $Id: YConsolidatedDataSet.java 54295 2023-05-01 12:37:19Z seb $
  *
  * Implements yFindDataSet(), the high-level API for DataSet functions
  *
@@ -222,7 +222,7 @@ public class YConsolidatedDataSet
                 newvalue = measures.get(idx).get_averageValue();
                 datarec.add(newvalue);
                 _nexttim.set( s, 0.0);
-                _nextidx.set( s, idx+1);
+                _nextidx.set( s, idx + 1);
             } else {
                 datarec.add(Double.NaN);
             }

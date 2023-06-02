@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YCallbackHub.java 53891 2023-04-05 10:28:06Z mvuilleu $
+ * $Id: YCallbackHub.java 54583 2023-05-15 13:25:40Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -54,9 +54,9 @@ class YCallbackHub extends YGenericHub
     private final OutputStream _out;
     private YJSONObject _callbackCache;
 
-    YCallbackHub(YAPIContext yctx, int idx, HTTPParams httpParams, InputStream request, OutputStream response) throws YAPI_Exception
+    YCallbackHub(YAPIContext yctx, HTTPParams httpParams, InputStream request, OutputStream response) throws YAPI_Exception
     {
-        super(yctx, httpParams, idx, true);
+        super(yctx, httpParams, true);
         _http_params = httpParams;
         _out = response;
         if (request == null || _out == null) {
@@ -69,10 +69,11 @@ class YCallbackHub extends YGenericHub
         }
     }
 
+
     @Override
     void release()
     {
-        getYHub().setInUse(false);
+
     }
 
     @Override
@@ -84,9 +85,9 @@ class YCallbackHub extends YGenericHub
     @Override
     synchronized boolean isSameHub(String url, Object request, Object response, Object session)
     {
-        HTTPParams params = new HTTPParams(url);
+        boolean sameHub = super.isSameHub(url, request, response, session);
         OutputStream tmp = (OutputStream) response;
-        return params.getUrl().equals(_http_params.getUrl()) && tmp == _out;
+        return sameHub && tmp == _out;
     }
 
     @Override
@@ -286,7 +287,7 @@ class YCallbackHub extends YGenericHub
             // Reindex all functions from yellow pages
             //HashMap<String, Boolean> refresh = new HashMap<String, Boolean>();
             Set<String> keys = yellowPages_json.getKeys();
-            for(String classname : keys){
+            for (String classname : keys) {
                 YJSONArray yprecs_json = yellowPages_json.getYJSONArray(classname);
                 ArrayList<YPEntry> yprecs_arr = new ArrayList<>(
                         yprecs_json.length());
