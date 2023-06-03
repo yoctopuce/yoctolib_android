@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YHTTPHub.java 54583 2023-05-15 13:25:40Z seb $
+ * $Id: YHTTPHub.java 54846 2023-06-02 07:46:11Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -366,7 +366,7 @@ class YHTTPHub extends YGenericHub
         } catch (YAPI_Exception ex) {
             this._lastErrorMessage = ex.getLocalizedMessage();
             this._lastErrorType = ex.errorType;
-            if (_reportConnnectionLost) {
+            if (_reportConnnectionLost && isEnabled()) {
                 throw ex;
             }
             removeAllDevices();
