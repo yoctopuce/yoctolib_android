@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YInputCapture.java 52943 2023-01-26 15:46:47Z mvuilleu $
+ *  $Id: YInputCapture.java 55666 2023-07-27 09:30:10Z seb $
  *
  *  Implements FindI2cPort(), the high-level API for I2cPort functions
  *

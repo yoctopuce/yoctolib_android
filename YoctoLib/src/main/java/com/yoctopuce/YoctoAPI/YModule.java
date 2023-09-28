@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YModule.java 54295 2023-05-01 12:37:19Z seb $
+ * $Id: YModule.java 56393 2023-09-05 08:36:51Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -262,12 +262,13 @@ public class YModule extends YFunction
     }
 
     /**
-     * Retrieves the type of the <i>n</i>th function on the module.
+     *  Retrieves the type of the <i>n</i>th function on the module. Yoctopuce functions type names match
+     * their class names without the <i>Y</i> prefix, for instance <i>Relay</i>, <i>Temperature</i> etc..
      *
      *  @param functionIndex : the index of the function for which the information is desired, starting at
      * 0 for the first function.
      *
-     * @return a string corresponding to the type of the function
+     * @return a string corresponding to the type of the function.
      *
      * @throws YAPI_Exception on error
      */
