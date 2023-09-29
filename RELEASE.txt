@@ -1,3 +1,6 @@
-Android v1.10.56784
+Android v1.10.56810
 
-- test build
+- Lib now target latest SDK (v33)
+- Add support for Yocto-SDI12
+- Add support for multiplier in InputCapture
+- Add implicitly call to InitAPI in YAPI.SetDeviceListValidity, YAPI.GetDeviceListValidity, YAPI.AddUdevRule, YAPI.SetNetworkTimeout, YAPI.GetNetworkTimeout,  YAPI.SetCacheValidity and  YAPI.GetCacheValidity methods
