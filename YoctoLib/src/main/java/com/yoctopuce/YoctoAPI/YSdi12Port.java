@@ -1921,11 +1921,11 @@ public class YSdi12Port extends YFunction
         if (split.size() < 2) {
             return res;
         }
-        valdouble = Double.valueOf(split.get(1));
+        valdouble = YAPI.ystr2float(split.get(1));
         res.add(valdouble);
         i = 1;
         while (i < tab.size()) {
-            valdouble = Double.valueOf(tab.get(i));
+            valdouble = YAPI.ystr2float(tab.get(i));
             res.add(valdouble);
             i = i + 1;
         }

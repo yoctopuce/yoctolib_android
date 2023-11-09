@@ -193,9 +193,9 @@ public class YRfidReader extends YFunction
     }
 
     /**
-     * Returns the desired refresh rate, measured in Hz.
+     * Returns the tag list refresh rate, measured in Hz.
      *
-     * @return an integer corresponding to the desired refresh rate, measured in Hz
+     * @return an integer corresponding to the tag list refresh rate, measured in Hz
      *
      * @throws YAPI_Exception on error
      */
@@ -214,9 +214,9 @@ public class YRfidReader extends YFunction
     }
 
     /**
-     * Returns the desired refresh rate, measured in Hz.
+     * Returns the tag list refresh rate, measured in Hz.
      *
-     * @return an integer corresponding to the desired refresh rate, measured in Hz
+     * @return an integer corresponding to the tag list refresh rate, measured in Hz
      *
      * @throws YAPI_Exception on error
      */
@@ -226,11 +226,14 @@ public class YRfidReader extends YFunction
     }
 
     /**
-     * Changes the desired refresh rate, measured in Hz.
+     * Changes the present tag list refresh rate, measured in Hz. The reader will do
+     * its best to respect it. Note that the reader cannot detect tag arrival or removal
+     * while it is  communicating with a tag.  Maximum frequency is limited to 100Hz,
+     * but in real life it will be difficult to do better than 50Hz.
      * Remember to call the saveToFlash() method of the module if the
      * modification must be kept.
      *
-     * @param newval : an integer corresponding to the desired refresh rate, measured in Hz
+     * @param newval : an integer corresponding to the present tag list refresh rate, measured in Hz
      *
      * @return YAPI.SUCCESS if the call succeeds.
      *
@@ -247,11 +250,14 @@ public class YRfidReader extends YFunction
     }
 
     /**
-     * Changes the desired refresh rate, measured in Hz.
+     * Changes the present tag list refresh rate, measured in Hz. The reader will do
+     * its best to respect it. Note that the reader cannot detect tag arrival or removal
+     * while it is  communicating with a tag.  Maximum frequency is limited to 100Hz,
+     * but in real life it will be difficult to do better than 50Hz.
      * Remember to call the saveToFlash() method of the module if the
      * modification must be kept.
      *
-     * @param newval : an integer corresponding to the desired refresh rate, measured in Hz
+     * @param newval : an integer corresponding to the present tag list refresh rate, measured in Hz
      *
      * @return YAPI.SUCCESS if the call succeeds.
      *

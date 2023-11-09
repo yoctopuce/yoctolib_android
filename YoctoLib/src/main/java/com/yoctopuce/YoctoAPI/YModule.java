@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YModule.java 56393 2023-09-05 08:36:51Z seb $
+ * $Id: YModule.java 57651 2023-11-06 07:46:14Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -1750,7 +1750,7 @@ public class YModule extends YFunction
                     }
                 } else {
                     if (paramVer == 0) {
-                        ratio = Double.valueOf(param);
+                        ratio = YAPI.ystr2float(param);
                         if (ratio > 0) {
                             calibData.add(0.0);
                             calibData.add(0.0);

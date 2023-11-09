@@ -426,9 +426,6 @@ public class YRfidStatus
             if (errCode == UNKNOWN_DWARFxx_ERROR_CODE) {
                 errMsg = "Unknown DWARF15 error code";
             }
-            if (errCode == RESPONSE_SHORT) {
-                errMsg = "Response too short";
-            }
             if (errCode == UNEXPECTED_TAG_ID_IN_RESPONSE) {
                 errMsg = "Unexpected Tag id in response";
             }
