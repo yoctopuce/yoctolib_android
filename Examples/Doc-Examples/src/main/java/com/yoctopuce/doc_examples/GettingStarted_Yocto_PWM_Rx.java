@@ -1,8 +1,8 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_PWM_Rx.java 32625 2018-10-10 13:27:32Z seb $
+ *  $Id: GettingStarted_Yocto_PWM_Rx.java 58172 2023-11-30 17:10:23Z martinm $
  *
- *  An example that show how to use a  Yocto-PWM-Rx
+ *  An example that shows how to use a  Yocto-PWM-Rx
  *
  *  You can find more information on our web site:
  *   Yocto-PWM-Rx documentation:

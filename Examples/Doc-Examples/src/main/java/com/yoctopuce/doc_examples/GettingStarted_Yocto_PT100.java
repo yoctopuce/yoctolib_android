@@ -1,8 +1,8 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_PT100.java 32625 2018-10-10 13:27:32Z seb $
+ *  $Id: GettingStarted_Yocto_PT100.java 58172 2023-11-30 17:10:23Z martinm $
  *
- *  An example that show how to use a  Yocto-PT100
+ *  An example that shows how to use a  Yocto-PT100
  *
  *  You can find more information on our web site:
  *   Yocto-PT100 documentation:

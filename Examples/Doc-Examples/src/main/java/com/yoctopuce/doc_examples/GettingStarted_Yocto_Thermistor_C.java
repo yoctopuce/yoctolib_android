@@ -1,8 +1,8 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_Thermistor_C.java 32625 2018-10-10 13:27:32Z seb $
+ *  $Id: GettingStarted_Yocto_Thermistor_C.java 58172 2023-11-30 17:10:23Z martinm $
  *
- *  An example that show how to use a  Yocto-Thermistor-C
+ *  An example that shows how to use a  Yocto-Thermistor-C
  *
  *  You can find more information on our web site:
  *   Yocto-Thermistor-C documentation:

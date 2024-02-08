@@ -1,8 +1,8 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_PowerColor.java 32625 2018-10-10 13:27:32Z seb $
+ *  $Id: GettingStarted_Yocto_PowerColor.java 58172 2023-11-30 17:10:23Z martinm $
  *
- *  An example that show how to use a  Yocto-PowerColor
+ *  An example that shows how to use a  Yocto-PowerColor
  *
  *  You can find more information on our web site:
  *   Yocto-PowerColor documentation:

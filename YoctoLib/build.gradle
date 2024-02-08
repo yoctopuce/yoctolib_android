@@ -1,6 +1,9 @@
-apply plugin: 'com.android.library'
 
-
+plugins {
+    id 'com.android.library'
+    id 'maven-publish'
+    id 'signing'
+}
 android {
     compileSdk 33
     buildToolsVersion '33.0.1'
@@ -16,20 +19,72 @@ android {
         }
     }
     namespace 'com.yoctopuce.yoctolib'
+    publishing {
+        singleVariant("release") {
+            // if you don't want sources/javadoc, remove these lines
+            withSourcesJar()
+        }
+    }
+    signingConfigs {
+        release {
+            storeFile file("~/AndroidKeyStore")
+            storePassword System.getenv("ANDROID_KSTORE_PWD")
+            keyPassword System.getenv("ANDROID_KEY_PWD")
+            keyAlias  System.getenv("ANDROID_KEY_NAME")
+        }
+    }
 }
 
-publishing {
-    publications {
-        release(MavenPublication) {
-            groupId = 'com.my-company'
-            artifactId = 'my-library'
-            version = '1.0'
-
-            afterEvaluate {
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
                 from components.release
+                groupId 'com.yoctopuce.android'
+                artifactId 'YoctoLib'
+                version '1.10.59271'
+                pom {
+                    name = 'YoctoLib'
+                    description = 'Yoctopuce library for Android.'
+                    url = 'https://github.com/yoctopuce/yoctolib_android'
+                    licenses {
+                        license {
+                            name = 'The Apache License, Version 2.0'
+                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        }
+                    }
+                    signing {
+                        sign publishing.publications.release
+                    }
+                    developers {
+                        developer {
+                            id = 'yoctopuce'
+                            name = 'Yoctopuce'
+                            email = 'https://yoctopuce.com'
+                        }
+                    }
+                    scm {
+                        connection = 'scm:git@github.com:yoctopuce/yoctolib_android.git'
+                        developerConnection = 'scm:git@github.com:yoctopuce/yoctolib_android.git'
+                        url = 'https://github.com/yoctopuce/yoctolib_android'
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                name 'nexus'
+                url 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+                credentials {
+                    username System.getenv("OSSRH_USERNAME")
+                    password System.getenv("OSSRH_PASSWORD")
+                }
             }
         }
     }
 }
 
-
+signing {
+    sign configurations.archives
+}
