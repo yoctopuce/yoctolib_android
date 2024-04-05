@@ -2,11 +2,9 @@
  *
  *  $Id: svn_id $
  *
- *  An example that shows how to use a  Yocto-SDI12
+ *  Doc-GettingStarted-Yocto-SDI12 example
  *
  *  You can find more information on our web site:
- *   Yocto-SDI12 documentation:
- *      https://www.yoctopuce.com/EN/products/yocto-sdi12/doc.html
  *   Android API Reference:
  *      https://www.yoctopuce.com/EN/doc/reference/yoctolib-android-EN.html
  *
@@ -26,7 +24,7 @@ import android.widget.TextView;
 import com.yoctopuce.YoctoAPI.YAPI;
 import com.yoctopuce.YoctoAPI.YAPI_Exception;
 import com.yoctopuce.YoctoAPI.YSdi12Port;
-import com.yoctopuce.YoctoAPI.YSdi12Sensor;
+import com.yoctopuce.YoctoAPI.YSdi12SensorInfo;
 
 import java.util.ArrayList;
 
@@ -34,7 +32,7 @@ public class GettingStarted_Yocto_SDI12 extends Activity implements OnItemSelect
 
     private YSdi12Port sdi12Port = null;
     private ArrayAdapter<String> aa;
-    private YSdi12Sensor singleSensor = null;
+    private YSdi12SensorInfo singleSensor = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

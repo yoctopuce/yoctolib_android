@@ -20,6 +20,9 @@ public class ExampleListFragment extends ListFragment {
         mExampleList.add(new Example("Prog-EventBased", ProgEventBasedActivity.class, false));
         mExampleList.add(new Example("Prog-MODBUS", ProgModbus.class, false));
         /** generated start */
+        /** generated GettingStarted_Yocto_RFID start */
+        mExampleList.add(new Example("Yocto-RFID", GettingStarted_Yocto_RFID.class, false));
+        /** generated GettingStarted_Yocto_RFID stop */   
         /** generated GettingStarted_Yocto_SDI12 start */
         mExampleList.add(new Example("Yocto-SDI12", GettingStarted_Yocto_SDI12.class, false));
         /** generated GettingStarted_Yocto_SDI12 stop */   

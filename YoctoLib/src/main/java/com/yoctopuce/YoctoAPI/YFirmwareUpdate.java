@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFirmwareUpdate.java 54583 2023-05-15 13:25:40Z seb $
+ * $Id: YFirmwareUpdate.java 59803 2024-03-13 10:26:55Z seb $
  *
  * Implements yFindFirmwareUpdate(), the high-level API for FirmwareUpdate functions
  *
@@ -279,7 +279,7 @@ public class YFirmwareUpdate
         try {
 
             if (path.startsWith("www.yoctopuce.com") || path.startsWith("http://www.yoctopuce.com")) {
-                byte[] json = YFirmwareUpdate._downloadfile("http://www.yoctopuce.com//FR/common/getLastFirmwareLink.php?serial=" + serial);
+                byte[] json = YFirmwareUpdate._downloadfile("http://www.yoctopuce.com/FR/common/getLastFirmwareLink.php?serial=" + serial);
                 YJSONObject obj;
                 try {
                     obj = new YJSONObject(new String(json, Charset.forName("ISO_8859_1")));

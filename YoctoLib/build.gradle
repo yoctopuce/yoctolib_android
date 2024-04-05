@@ -42,7 +42,7 @@ afterEvaluate {
                 from components.release
                 groupId 'com.yoctopuce.android'
                 artifactId 'YoctoLib'
-                version '1.10.59271'
+                version '1.10.60394'
                 pom {
                     name = 'YoctoLib'
                     description = 'Yoctopuce library for Android.'
