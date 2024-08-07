@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 54583 2023-05-15 13:25:40Z seb $
+ * $Id: YUSBHub.java 61961 2024-07-29 13:52:22Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -128,6 +128,12 @@ class YUSBHub extends YGenericHub
     @Override
     public boolean isOnline() {
         return true;
+    }
+
+    @Override
+    public String getConnectionUrl()
+    {
+        return "usb";
     }
 
     @Override

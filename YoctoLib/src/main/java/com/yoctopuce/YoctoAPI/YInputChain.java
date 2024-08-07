@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YInputChain.java 56082 2023-08-15 14:57:14Z mvuilleu $
+ *  $Id: YInputChain.java 61960 2024-07-29 13:50:07Z seb $
  *
  *  Implements FindInputChain(), the high-level API for InputChain functions
  *
@@ -1023,7 +1023,7 @@ public class YInputChain extends YFunction
 
     /**
      * Resets the application watchdog countdown.
-     * If you have setup a non-zero watchdogPeriod, you should
+     * If you have set up a non-zero watchdogPeriod, you should
      * call this function on a regular basis to prevent the application
      * inactivity error to be triggered.
      *

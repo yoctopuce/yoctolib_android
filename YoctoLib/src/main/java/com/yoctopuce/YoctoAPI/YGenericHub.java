@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YGenericHub.java 58955 2024-01-16 08:39:12Z seb $
+ * $Id: YGenericHub.java 61961 2024-07-29 13:52:22Z seb $
  *
  * Internal YGenericHub object
  *
@@ -465,6 +465,7 @@ abstract class YGenericHub
     {
     }
 
+    public abstract String getConnectionUrl();
 
     interface UpdateProgress
     {
@@ -516,11 +517,11 @@ abstract class YGenericHub
     static class HTTPParams
     {
 
-        private final String _host;
-        private final int _port;
+        private String _host;
+        private int _port;
         private final String _user;
         private final String _pass;
-        private final String _proto;
+        private String _proto;
         private final String _subDomain;
         private final String _originalURL;
 
@@ -560,11 +561,11 @@ abstract class YGenericHub
                 _host = "";
                 _port = -1;
                 return;
-            } else {
-                if (url.startsWith("ws://")) {
-                    pos = 5;
-                }
+            } else if (url.startsWith("ws://")) {
+                pos = 5;
                 _proto = "ws";
+            } else {
+                _proto = "auto";
             }
             if (url.endsWith("/")) {
                 url = url.substring(0, url.length() - 1);
@@ -589,7 +590,13 @@ abstract class YGenericHub
             } else {
                 _subDomain = url.substring(end_host);
             }
+            int endv6 = url.indexOf(']', pos);
             int portpos = url.indexOf(':', pos);
+            if (portpos>0 && endv6 < end_host && portpos < endv6 ) {
+                // ipv6 URL
+                portpos = url.indexOf(':', endv6);
+            }
+
             if (portpos > 0) {
                 if (portpos + 1 < end_host) {
                     _host = url.substring(pos, portpos);
@@ -710,12 +717,23 @@ abstract class YGenericHub
         @Override
         public String toString()
         {
-            return _proto + "/" + _host + ':' + _port + _subDomain;
+            return _proto + "://" + _host + ':' + _port + _subDomain;
         }
 
         public boolean testInfoJson()
         {
             return _proto.equals("auto") || _proto.equals("secure") || _proto.equals("http") || _proto.equals("https");
+        }
+
+        public void updateForRedirect(String host, int port, boolean is_secure)
+        {
+            _host = host;
+            _port = port;
+            if (useWebSocket()) {
+                _proto = is_secure ? "wss" : "ws";
+            } else {
+                _proto = is_secure ? "https" : "http";
+            }
         }
     }
 }

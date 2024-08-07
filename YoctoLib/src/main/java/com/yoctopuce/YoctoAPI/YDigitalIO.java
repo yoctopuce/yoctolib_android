@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YDigitalIO.java 43580 2021-01-26 17:46:01Z mvuilleu $
+ *  $Id: YDigitalIO.java 61960 2024-07-29 13:50:07Z seb $
  *
  *  Implements FindDigitalIO(), the high-level API for DigitalIO functions
  *
@@ -50,7 +50,7 @@ import java.util.Locale;
  * Yocto-Maxi-IO-V2
  *
  * The YDigitalIO class allows you drive a Yoctopuce digital input/output port.
- * It can be used to setup the direction of each channel, to read the state of each channel
+ * It can be used to set up the direction of each channel, to read the state of each channel
  * and to switch the state of each channel configures as an output.
  * You can work on all channels at once, or one by one. Most functions
  * use a binary representation for channels where bit 0 matches channel #0 , bit 1 matches channel
@@ -515,11 +515,11 @@ public class YDigitalIO extends YFunction
     }
 
     /**
-     * Returns the port state diagnostics (Yocto-IO and Yocto-MaxiIO-V2 only). Bit 0 indicates a shortcut on
-     * output 0, etc. Bit 8 indicates a power failure, and bit 9 signals overheating (overcurrent).
+     * Returns the port state diagnostics. Bit 0 indicates a shortcut on output 0, etc.
+     * Bit 8 indicates a power failure, and bit 9 signals overheating (overcurrent).
      * During normal use, all diagnostic bits should stay clear.
      *
-     * @return an integer corresponding to the port state diagnostics (Yocto-IO and Yocto-MaxiIO-V2 only)
+     * @return an integer corresponding to the port state diagnostics
      *
      * @throws YAPI_Exception on error
      */
@@ -538,11 +538,11 @@ public class YDigitalIO extends YFunction
     }
 
     /**
-     * Returns the port state diagnostics (Yocto-IO and Yocto-MaxiIO-V2 only). Bit 0 indicates a shortcut on
-     * output 0, etc. Bit 8 indicates a power failure, and bit 9 signals overheating (overcurrent).
+     * Returns the port state diagnostics. Bit 0 indicates a shortcut on output 0, etc.
+     * Bit 8 indicates a power failure, and bit 9 signals overheating (overcurrent).
      * During normal use, all diagnostic bits should stay clear.
      *
-     * @return an integer corresponding to the port state diagnostics (Yocto-IO and Yocto-MaxiIO-V2 only)
+     * @return an integer corresponding to the port state diagnostics
      *
      * @throws YAPI_Exception on error
      */

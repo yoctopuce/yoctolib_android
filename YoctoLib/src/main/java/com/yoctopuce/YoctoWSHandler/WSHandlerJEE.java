@@ -1,12 +1,17 @@
-package com.yoctopuce.YoctoAPI;
+package com.yoctopuce.YoctoWSHandler;
+
+import com.yoctopuce.YoctoAPI.WSHandlerInterface;
+import com.yoctopuce.YoctoAPI.YAPI;
+import com.yoctopuce.YoctoAPI.YAPI_Exception;
+import com.yoctopuce.YoctoAPI.YHTTPHub;
 
 import java.nio.ByteBuffer;
 
-class WSHandlerJEE implements WSHandlerInterface
+public class WSHandlerJEE implements WSHandlerInterface
 {
 
 
-    WSHandlerJEE(WSHandlerResponseInterface nhandler, Object session)
+    public WSHandlerJEE(WSHandlerInterface.WSHandlerResponseInterface nhandler, Object session)
     {
 
     }

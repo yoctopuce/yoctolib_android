@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YHub.java 55666 2023-07-27 09:30:10Z seb $
+ * $Id: YHub.java 61961 2024-07-29 13:52:22Z seb $
  *
  * Implements yFindDisplay(), the high-level API for Display functions
  *
@@ -79,7 +79,7 @@ public class YHub
             case "registeredUrl":
                 return hub._URL_params.getOriginalURL();
             case "connectionUrl":
-                return hub._URL_params.getUrl(true, false, true);
+                return hub.getConnectionUrl();
             case "serialNumber":
                 return hub.getSerialNumber();
             case "errorMessage":

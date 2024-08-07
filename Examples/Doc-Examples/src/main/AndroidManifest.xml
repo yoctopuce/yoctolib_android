@@ -643,6 +643,13 @@
         </activity>
         <!-- generated Inventory stop -->
         <!-- generated stop -->
+        <activity
+            android:name=".InventoryNetwork"
+            android:label="InventoryNetwork">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
     </application>
 
 </manifest>

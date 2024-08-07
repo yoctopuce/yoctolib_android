@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YRefFrame.java 50689 2022-08-17 14:37:15Z mvuilleu $
+ *  $Id: YRefFrame.java 61960 2024-07-29 13:50:07Z seb $
  *
  *  Implements FindRefFrame(), the high-level API for RefFrame functions
  *
@@ -50,7 +50,7 @@ import java.util.Locale;
  *  YRefFrame Class: 3D reference frame configuration interface, available for instance in the
  * Yocto-3D-V2 or the Yocto-Inclinometer
  *
- * The YRefFrame class is used to setup the base orientation of the Yoctopuce inertial
+ * The YRefFrame class is used to set up the base orientation of the Yoctopuce inertial
  * sensors. Thanks to this, orientation functions relative to the earth surface plane
  * can use the proper reference frame. For some devices, the class also implements a
  * tridimensional sensor calibration process, which can compensate for local variations
@@ -275,7 +275,7 @@ public class YRefFrame extends YFunction
      * indicated by the compass is the difference between the measured magnetic
      * heading and the reference bearing indicated here.
      *
-     * For instance, if you setup as reference bearing the value of the earth
+     * For instance, if you set up as reference bearing the value of the earth
      * magnetic declination, the compass will provide the orientation relative
      * to the geographic North.
      *
@@ -307,7 +307,7 @@ public class YRefFrame extends YFunction
      * indicated by the compass is the difference between the measured magnetic
      * heading and the reference bearing indicated here.
      *
-     * For instance, if you setup as reference bearing the value of the earth
+     * For instance, if you set up as reference bearing the value of the earth
      * magnetic declination, the compass will provide the orientation relative
      * to the geographic North.
      *

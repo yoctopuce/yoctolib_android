@@ -1,11 +1,3 @@
-Android v1.10.60394
+Android v2.0.62071
 
-- Add support for Yocto-RFID
-- Add Support for Yocto-RFID example
-- Add YThreshold class
-- Add position indicator in SnoopingRecords
-- Add snoopMessagesEx function to serial communication classes
-- Work around usesCleartextTraffic limitation
-- Fix warning about malformed XML comment
-- Fix cache latency on method YSensor.loadCalibrationPoints()
-- Fix handling of long strings in many parse situations (including json_get_key)
+- New API 2.0 (backward compatible)

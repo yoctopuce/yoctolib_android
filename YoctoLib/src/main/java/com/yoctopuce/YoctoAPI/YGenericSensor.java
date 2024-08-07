@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YGenericSensor.java 51903 2022-11-29 17:25:59Z mvuilleu $
+ *  $Id: YGenericSensor.java 61960 2024-07-29 13:50:07Z seb $
  *
  *  Implements FindGenericSensor(), the high-level API for GenericSensor functions
  *
@@ -460,7 +460,7 @@ public class YGenericSensor extends YSensor
 
     /**
      * Changes the electric signal bias for zero shift adjustment.
-     * If your electric signal reads positive when it should be zero, setup
+     * If your electric signal reads positive when it should be zero, set up
      * a positive signalBias of the same value to fix the zero shift.
      * Remember to call the saveToFlash()
      * method of the module if the modification must be kept.
@@ -483,7 +483,7 @@ public class YGenericSensor extends YSensor
 
     /**
      * Changes the electric signal bias for zero shift adjustment.
-     * If your electric signal reads positive when it should be zero, setup
+     * If your electric signal reads positive when it should be zero, set up
      * a positive signalBias of the same value to fix the zero shift.
      * Remember to call the saveToFlash()
      * method of the module if the modification must be kept.

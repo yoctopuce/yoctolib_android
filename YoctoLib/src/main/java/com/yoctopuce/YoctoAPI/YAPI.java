@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YAPI.java 57651 2023-11-06 07:46:14Z seb $
+ * $Id: YAPI.java 61964 2024-07-29 15:54:55Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -58,9 +58,9 @@ public class YAPI
     public static final int INVALID_INT = -2147483648;
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
-    public static final String YOCTO_API_VERSION_STR = "1.10";
-    public static final String YOCTO_API_BUILD_STR = "60394";
-    public static final int YOCTO_API_VERSION_BCD = 0x0110;
+    public static final String YOCTO_API_VERSION_STR = "2.0";
+    public static final String YOCTO_API_BUILD_STR = "62071";
+    public static final int YOCTO_API_VERSION_BCD = 0x0200;
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
     public static final int YOCTO_DEVID_BOOTLOADER = 2;
@@ -90,6 +90,14 @@ public class YAPI
     public static final int RFID_SOFT_ERROR = -16;         // Recoverable error with RFID tag (eg. tag out of reach), check YRfidStatus for details
     public static final int RFID_HARD_ERROR = -17;         // Serious RFID error (eg. write-protected, out-of-boundary), check YRfidStatus for details
     public static final int BUFFER_TOO_SMALL = -18;        // The buffer provided is too small
+    public static final int DNS_ERROR = -19;               // Error during name resolutions (invalid hostname or dns communication error)
+    public static final int SSL_UNK_CERT = -20;            // The certificate is not correctly signed by the trusted CA
+
+    // Yoctopuce error codes, used by default as function return value
+    public static final int NO_TRUSTED_CA_CHECK = 1;       // Disables certificate checking
+    public static final int NO_EXPIRATION_CHECK = 2;       // Disables certificate expiration date checking
+    public static final int NO_HOSTNAME_CHECK = 4;         // Disable hostname checking
+    public static final int LEGACY = 8;                    // Allow non secure connection (similar to v1.10)
 
 //--- (end of generated code: YFunction return codes)
     static final String DefaultEncoding = "ISO-8859-1";
@@ -353,7 +361,7 @@ public class YAPI
      */
     public static String GetAPIVersion()
     {
-        return YOCTO_API_VERSION_STR + ".60394" + YUSBHub.getAPIVersion();
+        return YOCTO_API_VERSION_STR + ".62071" + YUSBHub.getAPIVersion();
     }
 
     /**
@@ -388,7 +396,7 @@ public class YAPI
      *
      * From an operating system standpoint, it is generally not required to call
      * this function since the OS will automatically free allocated resources
-     * once your program is completed. However there are two situations when
+     * once your program is completed. However, there are two situations when
      * you may really want to use that function:
      *
      * - Free all dynamically allocated memory blocks in order to
@@ -422,7 +430,7 @@ public class YAPI
 
 
     /**
-     * Setup the Yoctopuce library to use modules connected on a given machine. Idealy this
+     * Set up the Yoctopuce library to use modules connected on a given machine. Idealy this
      * call will be made once at the begining of your application.  The
      * parameter will determine how the API will work. Use the following values:
      *
@@ -439,7 +447,7 @@ public class YAPI
      * computer, use the IP address 127.0.0.1. If the given IP is unresponsive, yRegisterHub
      * will not return until a time-out defined by ySetNetworkTimeout has elapsed.
      * However, it is possible to preventively test a connection  with yTestHub.
-     * If you cannot afford a network time-out, you can use the non blocking yPregisterHub
+     * If you cannot afford a network time-out, you can use the non-blocking yPregisterHub
      * function that will establish the connection as soon as it is available.
      *
      *
@@ -454,7 +462,7 @@ public class YAPI
      * while trying to access the USB modules. In particular, this means
      * that you must stop the VirtualHub software before starting
      * an application that uses direct USB access. The workaround
-     * for this limitation is to setup the library to use the VirtualHub
+     * for this limitation is to set up the library to use the VirtualHub
      * rather than direct USB access.
      *
      * If access control has been activated on the hub, virtual or not, you want to
@@ -482,11 +490,6 @@ public class YAPI
     public static int RegisterHub(String url, InputStream request, OutputStream response) throws YAPI_Exception
     {
         return GetYCtx(true).RegisterHub(url, request, response);
-    }
-
-    public static String AddTrustedCertificates(String pem_cert)
-    {
-        return GetYCtx(true).AddTrustedCertificates(pem_cert);
     }
 
     /**
@@ -553,7 +556,7 @@ public class YAPI
     }
 
     /**
-     * Setup the Yoctopuce library to no more use modules connected on a previously
+     * Set up the Yoctopuce library to no more use modules connected on a previously
      * registered machine with RegisterHub.
      *
      * @param url : a string containing either "usb" or the
@@ -696,7 +699,7 @@ public class YAPI
     /**
      * Checks if a given string is valid as logical name for a module or a function.
      * A valid logical name has a maximum of 19 characters, all among
-     * A..Z, a..z, 0..9, _, and -.
+     * A...Z, a...z, 0...9, _, and -.
      * If you try to configure a logical name with an incorrect string,
      * the invalid characters are ignored.
      *
@@ -844,6 +847,64 @@ public class YAPI
     public static String AddUdevRule(boolean force)
     {
         return GetYCtx(true).AddUdevRule(force);
+    }
+    /**
+     * Download the TLS/SSL certificate from the hub. This function allows to download a TLS/SSL certificate to add it
+     * to the list of trusted certificates using the AddTrustedCertificates method.
+     *
+     * @param url : the root URL of the VirtualHub V2 or HTTP server.
+     * @param mstimeout : the number of milliseconds available to download the certificate.
+     *
+     * @return a string containing the certificate. In case of error, returns a string starting with "error:".
+     */
+    public static String DownloadHostCertificate(String url,long mstimeout)
+    {
+        return GetYCtx(true).DownloadHostCertificate(url, mstimeout);
+    }
+    /**
+     * Adds a TLS/SSL certificate to the list of trusted certificates. By default, the library
+     * library will reject TLS/SSL connections to servers whose certificate is not known. This function
+     * function allows to add a list of known certificates. It is also possible to disable the verification
+     * using the SetNetworkSecurityOptions method.
+     *
+     * @param certificate : a string containing one or more certificates.
+     *
+     * @return an empty string if the certificate has been added correctly.
+     *         In case of error, returns a string starting with "error:".
+     */
+    public static String AddTrustedCertificates(String certificate)
+    {
+        return GetYCtx(true).AddTrustedCertificates(certificate);
+    }
+    /**
+     *  Set the path of Certificate Authority file on local filesystem. This method takes as a parameter
+     * the path of a file containing all certificates in PEM format.
+     *  For technical reasons, only one file can be specified. So if you need to connect to several Hubs
+     * instances with self-signed certificates, you'll need to use
+     *  a single file containing all the certificates end-to-end. Passing a empty string will restore the
+     * default settings. This option is only supported by PHP library.
+     *
+     * @param certificatePath : the path of the file containing all certificates in PEM format.
+     *
+     * @return an empty string if the certificate has been added correctly.
+     *         In case of error, returns a string starting with "error:".
+     */
+    public static String SetTrustedCertificatesList(String certificatePath)
+    {
+        return GetYCtx(true).SetTrustedCertificatesList(certificatePath);
+    }
+    /**
+     * Enables or disables certain TLS/SSL certificate checks.
+     *
+     * @param opts : The options are YAPI.NO_TRUSTED_CA_CHECK,
+     *         YAPI.NO_EXPIRATION_CHECK, YAPI.NO_HOSTNAME_CHECK.
+     *
+     * @return an empty string if the options are taken into account.
+     *         On error, returns a string beginning with "error:".
+     */
+    public static String SetNetworkSecurityOptions(int opts)
+    {
+        return GetYCtx(true).SetNetworkSecurityOptions(opts);
     }
     /**
      * Modifies the network connection delay for yRegisterHub() and yUpdateDeviceList().

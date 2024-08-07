@@ -10,14 +10,8 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
+import java.security.cert.*;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static java.util.regex.Pattern.CASE_INSENSITIVE;
 
 //--- (generated code: YAPIContext return codes)
 //--- (end of generated code: YAPIContext return codes)
@@ -31,6 +25,7 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 public class YAPIContext
 {
 //--- (end of generated code: YAPIContext class start)
+
 
     static class DataEvent
     {
@@ -410,8 +405,9 @@ public class YAPIContext
     private final ArrayList<YFunction> _ValueCallbackList = new ArrayList<>();
     private final ArrayList<YFunction> _TimedReportCallbackList = new ArrayList<>();
     private final Map<YModule, Integer> _moduleCallbackList = new HashMap<>();
-    private final SSLContext _sslContext;
-    private final YTrustManager _yTrustManager;
+    private final KeyStore _keyStore;
+    private int _sslFlags = 0;
+
 
     private int _pktAckDelay = 0;
 
@@ -518,6 +514,7 @@ public class YAPIContext
 
     public YAPIContext()
     {
+        KeyStore keyStore;
         Charset charset;
         try {
             charset = Charset.forName(YAPI.DefaultEncoding);
@@ -530,53 +527,26 @@ public class YAPIContext
         _functionCacheLock = new Object();
         resetContext();
 
-
-        SSLContext sslContext = null;
-        YTrustManager yTrustManager = null;
         try {
-            TrustManagerFactory tmf = null;
-            tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            tmf.init((KeyStore) null);
-
-
-            TrustManager[] trustManagers = tmf.getTrustManagers();
-            for (int i = 0; i < trustManagers.length; i++) {
-                if (trustManagers[i] instanceof X509TrustManager) {
-                    yTrustManager = new YTrustManager((X509TrustManager) trustManagers[i]);
-                    trustManagers[i] = yTrustManager;
-                }
-            }
-            sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustManagers, new SecureRandom());
-        } catch (Exception e) {
-            sslContext = null;
+            keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+            keyStore.load(null, null);
+        } catch (KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException e) {
+            keyStore = null;
         }
-        _sslContext = sslContext;
-        _yTrustManager = yTrustManager;
-        if (_sslContext != null) {
-            HttpsURLConnection.setDefaultSSLSocketFactory(_sslContext.getSocketFactory());
-        }
+        _keyStore = keyStore;
+
 
         //--- (generated code: YAPIContext attributes initialization)
         //--- (end of generated code: YAPIContext attributes initialization)
 
     }
 
-    String AddTrustedCertificates(String pem_cert)
+
+    Socket CreateSSLSocket(int sslFlags) throws IOException
     {
-        if (_yTrustManager != null) {
-            return _yTrustManager.AddTrustedCertificates(pem_cert);
-        } else {
-            return "Error: Not supported";
-        }
+        return this.getSocketFactory(sslFlags).createSocket();
     }
 
-
-    Socket CreateSSLSocket(InetAddress addr, int port) throws IOException
-    {
-        SSLSocketFactory sslsocketFactory = _sslContext.getSocketFactory();
-        return sslsocketFactory.createSocket(addr, port);
-    }
 
     private void resetContext()
     {
@@ -898,7 +868,7 @@ public class YAPIContext
         }
     }
 
-    static byte[] BasicHTTPRequest(String url) throws YAPI_Exception
+    byte[] BasicHTTPRequest(String url, int mstimout, int ssl_flags) throws YAPI_Exception
     {
         ByteArrayOutputStream result = new ByteArrayOutputStream(1024);
         URL u;
@@ -917,11 +887,25 @@ public class YAPIContext
             if (path.isEmpty()) {
                 path = "/";
             }
-            return yHTTPRequest.yTcpDownload(host, port, path);
+            return yHTTPRequest.yTcpDownload(this, host, port, path);
         } else {
             BufferedInputStream in = null;
             try {
                 URLConnection connection = u.openConnection();
+                HttpsURLConnection httpsUrlConnection = (HttpsURLConnection) connection;
+                httpsUrlConnection.setConnectTimeout(mstimout);
+                int flags = ssl_flags | this._sslFlags;
+                httpsUrlConnection.setSSLSocketFactory(this.getSocketFactory(flags));
+                if ((flags & YAPI.NO_HOSTNAME_CHECK )!=0) {
+                    httpsUrlConnection.setHostnameVerifier(new HostnameVerifier()
+                    {
+                        @Override
+                        public boolean verify(String hostname, SSLSession sslSession)
+                        {
+                            return true;
+                        }
+                    });
+                }
                 in = new BufferedInputStream(connection.getInputStream());
                 byte[] buffer = new byte[1024];
                 int readed = 0;
@@ -934,6 +918,8 @@ public class YAPIContext
                         result.write(buffer, 0, readed);
                     }
                 }
+            } catch (SSLHandshakeException e) {
+                throw new YAPI_Exception(YAPI.SSL_UNK_CERT, "unable to contact " + url + " :" + e.getLocalizedMessage(), e);
             } catch (SSLException e) {
                 throw new YAPI_Exception(YAPI.SSL_ERROR, "unable to contact " + url + " :" + e.getLocalizedMessage(), e);
             } catch (IOException e) {
@@ -950,116 +936,18 @@ public class YAPIContext
         }
     }
 
-
-    static class YTrustManager implements X509TrustManager
+    private SSLSocketFactory getSocketFactory(int sslFlags)
     {
-        private final KeyStore _keyStore;
-        private final X509TrustManager _defaultTM;
-        private X509TrustManager _yoctoTM;
-
-        YTrustManager(X509TrustManager trustManager) throws Exception
-        {
-            _keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
-            _keyStore.load(null, null);
-            _defaultTM = trustManager;
-            _yoctoTM = trustManagerFor(_keyStore);
-        }
-
-        private X509TrustManager trustManagerFor(KeyStore keyStore) throws YAPI_Exception
-        {
-            TrustManagerFactory tmf = null;
-            try {
-                tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-            } catch (NoSuchAlgorithmException e) {
-                throw new YAPI_Exception(YAPI.SSL_ERROR, e.getLocalizedMessage(), e);
-            }
-            try {
-                tmf.init(keyStore);
-            } catch (KeyStoreException e) {
-                throw new YAPI_Exception(YAPI.SSL_ERROR, e.getLocalizedMessage(), e);
-            }
-            TrustManager[] trustManagers = tmf.getTrustManagers();
-            if (trustManagers.length != 1) {
-                throw new YAPI_Exception(YAPI.SSL_ERROR, "Unexpected number of trust managers");
-            }
-            TrustManager trustManager = trustManagers[0];
-            if (trustManager instanceof X509TrustManager) {
-                return (X509TrustManager) trustManager;
-            }
-            throw new YAPI_Exception(YAPI.SSL_ERROR, "not a X509TrustManager");
-        }
-
-        String AddTrustedCertificates(String pem_cert)
-        {
-            ArrayList<X509Certificate> certs;
-            try {
-                certs = parsePemCert(pem_cert);
-            } catch (CertificateException e) {
-                return "error:" + e.getLocalizedMessage();
-            }
-            for (X509Certificate c : certs) {
-                try {
-                    _keyStore.setCertificateEntry("cert" + c.toString(), c);
-                } catch (KeyStoreException e) {
-                    return "error:" + e.getLocalizedMessage();
-                }
-            }
-            try {
-                _yoctoTM = trustManagerFor(_keyStore);
-            } catch (YAPI_Exception e) {
-                e.printStackTrace();
-                return "error:" + e.getLocalizedMessage();
-            }
-            return "";
-        }
-
-        private static final Pattern CERT_PATTERN = Pattern.compile(
-                "-+BEGIN\\s+.*CERTIFICATE[^-]*-+(?:\\s|\\r|\\n)+" + // Header
-                        "([a-z0-9+/=\\r\\n]+)" +                    // Base64 text
-                        "-+END\\s+.*CERTIFICATE[^-]*-+",            // Footer
-                CASE_INSENSITIVE);
-
-        private static ArrayList<X509Certificate> parsePemCert(String pem_str) throws CertificateException
-        {
-            Matcher matcher = CERT_PATTERN.matcher(pem_str);
-            CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
-            ArrayList<X509Certificate> certificates = new ArrayList<>();
-            int start = 0;
-            while (matcher.find(start)) {
-                byte[] buffer = YAPI.Base64Decode(matcher.group(1));
-                certificates.add((X509Certificate) certificateFactory.generateCertificate(new ByteArrayInputStream(buffer)));
-                start = matcher.end();
-            }
-            return certificates;
-        }
-
-        public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException
-        {
-            try {
-                _defaultTM.checkClientTrusted(chain, authType);
-            } catch (CertificateException e) {
-                _yoctoTM.checkClientTrusted(chain, authType);
-            }
-            throw new CertificateException("None of the TrustManagers trust this certificate chain");
-        }
-
-        public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException
-        {
-            try {
-                _defaultTM.checkServerTrusted(chain, authType);
-            } catch (CertificateException excep) {
-                _yoctoTM.checkClientTrusted(chain, authType);
-            }
-        }
-
-        public X509Certificate[] getAcceptedIssuers()
-        {
-            X509Certificate[] defaultIssuers = _defaultTM.getAcceptedIssuers();
-            X509Certificate[] yoctoIssuers = _yoctoTM.getAcceptedIssuers();
-            X509Certificate[] res = new X509Certificate[defaultIssuers.length + yoctoIssuers.length];
-            System.arraycopy(defaultIssuers, 0, res, 0, defaultIssuers.length);
-            System.arraycopy(yoctoIssuers, 0, res, defaultIssuers.length, yoctoIssuers.length);
-            return res;
+        SSLContext sslContext = null;
+        YTrustManager yTrustManager = null;
+        try {
+            TrustManager[] trustManagers = new TrustManager[1];
+            trustManagers[0] = new YTrustManager(_keyStore, sslFlags | _sslFlags);
+            sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(null, trustManagers, new SecureRandom());
+            return sslContext.getSocketFactory();
+        } catch (Exception e) {
+            return null;
         }
     }
 
@@ -1072,6 +960,72 @@ public class YAPIContext
     public int GetNetworkTimeout_internal()
     {
         return _networkTimeoutMs;
+    }
+
+    public String DownloadHostCertificate_internal(String url, long mstimeout)
+    {
+        StringBuilder res = new StringBuilder();
+        YGenericHub.HTTPParams parsedurl = new YGenericHub.HTTPParams(url);
+        try {
+            boolean https_req = parsedurl.useSecureSocket();
+            if (parsedurl.getPort() == YAPI.YOCTO_DEFAULT_HTTPS_PORT) {
+                https_req = true;
+            }
+            String clean_url = String.format("%s://%s:%d%s/info.json", parsedurl.useSecureSocket() ? "https" : "http", parsedurl.getHost(), parsedurl.getPort(), parsedurl.getSubDomain());
+            URL destinationURL = new URL(clean_url);
+            HttpsURLConnection conn = (HttpsURLConnection) destinationURL.openConnection();
+            conn.setSSLSocketFactory(getSocketFactory(YAPI.NO_HOSTNAME_CHECK | YAPI.NO_TRUSTED_CA_CHECK |
+                    YAPI.NO_EXPIRATION_CHECK));
+            conn.connect();
+            Certificate[] certs = conn.getServerCertificates();
+            int i = 1;
+            for (Certificate cert : certs) {
+                if (cert instanceof X509Certificate) {
+                    res.append("-----BEGIN CERTIFICATE-----\n");
+                    byte[] encoded = cert.getEncoded();
+                    res.append(YAPI.Base64Encode(encoded, 0, encoded.length));
+                    res.append("-----END CERTIFICATE-----\n");
+                }
+            }
+        } catch (CertificateEncodingException |
+                 IOException e) {
+            return "error:" + e.getLocalizedMessage();
+        }
+        return res.toString();
+    }
+
+    public String AddTrustedCertificates_internal(String certificate)
+    {
+        if (_keyStore != null) {
+            ArrayList<X509Certificate> certs;
+            try {
+                certs = YTrustManager.parsePemCert(certificate);
+            } catch (CertificateException e) {
+                return "error:" + e.getLocalizedMessage();
+            }
+            for (X509Certificate c : certs) {
+                try {
+                    _keyStore.setCertificateEntry("cert" + c.toString(), c);
+                } catch (KeyStoreException e) {
+                    return "error:" + e.getLocalizedMessage();
+                }
+            }
+
+            return "";
+        } else {
+            return "Error: Not supported";
+        }
+    }
+
+    public String SetNetworkSecurityOptions_internal(int options)
+    {
+        this._sslFlags = options;
+        return "";
+    }
+
+    private String SetTrustedCertificatesList_internal(String certificatePath)
+    {
+        return "error: Not supported in Java";
     }
 
     //PUBLIC METHOD:
@@ -1127,6 +1081,76 @@ public class YAPIContext
 
     //cannot be generated for Java:
     //public String AddUdevRule_internal(boolean force)
+    /**
+     * Download the TLS/SSL certificate from the hub. This function allows to download a TLS/SSL certificate to add it
+     * to the list of trusted certificates using the AddTrustedCertificates method.
+     *
+     * @param url : the root URL of the VirtualHub V2 or HTTP server.
+     * @param mstimeout : the number of milliseconds available to download the certificate.
+     *
+     * @return a string containing the certificate. In case of error, returns a string starting with "error:".
+     */
+    public String DownloadHostCertificate(String url,long mstimeout)
+    {
+        return DownloadHostCertificate_internal(url, mstimeout);
+    }
+
+    //cannot be generated for Java:
+    //public String DownloadHostCertificate_internal(String url,long mstimeout)
+    /**
+     * Adds a TLS/SSL certificate to the list of trusted certificates. By default, the library
+     * library will reject TLS/SSL connections to servers whose certificate is not known. This function
+     * function allows to add a list of known certificates. It is also possible to disable the verification
+     * using the SetNetworkSecurityOptions method.
+     *
+     * @param certificate : a string containing one or more certificates.
+     *
+     * @return an empty string if the certificate has been added correctly.
+     *         In case of error, returns a string starting with "error:".
+     */
+    public String AddTrustedCertificates(String certificate)
+    {
+        return AddTrustedCertificates_internal(certificate);
+    }
+
+    //cannot be generated for Java:
+    //public String AddTrustedCertificates_internal(String certificate)
+    /**
+     *  Set the path of Certificate Authority file on local filesystem. This method takes as a parameter
+     * the path of a file containing all certificates in PEM format.
+     *  For technical reasons, only one file can be specified. So if you need to connect to several Hubs
+     * instances with self-signed certificates, you'll need to use
+     *  a single file containing all the certificates end-to-end. Passing a empty string will restore the
+     * default settings. This option is only supported by PHP library.
+     *
+     * @param certificatePath : the path of the file containing all certificates in PEM format.
+     *
+     * @return an empty string if the certificate has been added correctly.
+     *         In case of error, returns a string starting with "error:".
+     */
+    public String SetTrustedCertificatesList(String certificatePath)
+    {
+        return SetTrustedCertificatesList_internal(certificatePath);
+    }
+
+    //cannot be generated for Java:
+    //public String SetTrustedCertificatesList_internal(String certificatePath)
+    /**
+     * Enables or disables certain TLS/SSL certificate checks.
+     *
+     * @param opts : The options are YAPI.NO_TRUSTED_CA_CHECK,
+     *         YAPI.NO_EXPIRATION_CHECK, YAPI.NO_HOSTNAME_CHECK.
+     *
+     * @return an empty string if the options are taken into account.
+     *         On error, returns a string beginning with "error:".
+     */
+    public String SetNetworkSecurityOptions(int opts)
+    {
+        return SetNetworkSecurityOptions_internal(opts);
+    }
+
+    //cannot be generated for Java:
+    //public String SetNetworkSecurityOptions_internal(int opts)
     /**
      * Modifies the network connection delay for yRegisterHub() and yUpdateDeviceList().
      * This delay impacts only the YoctoHubs and VirtualHub
@@ -1370,7 +1394,7 @@ public class YAPIContext
      *
      * From an operating system standpoint, it is generally not required to call
      * this function since the OS will automatically free allocated resources
-     * once your program is completed. However there are two situations when
+     * once your program is completed. However, there are two situations when
      * you may really want to use that function:
      *
      * - Free all dynamically allocated memory blocks in order to
@@ -1397,7 +1421,7 @@ public class YAPIContext
 
 
     /**
-     * Setup the Yoctopuce library to use modules connected on a given machine. Idealy this
+     * Set up the Yoctopuce library to use modules connected on a given machine. Idealy this
      * call will be made once at the begining of your application.  The
      * parameter will determine how the API will work. Use the following values:
      *
@@ -1414,7 +1438,7 @@ public class YAPIContext
      * computer, use the IP address 127.0.0.1. If the given IP is unresponsive, yRegisterHub
      * will not return until a time-out defined by ySetNetworkTimeout has elapsed.
      * However, it is possible to preventively test a connection  with yTestHub.
-     * If you cannot afford a network time-out, you can use the non blocking yPregisterHub
+     * If you cannot afford a network time-out, you can use the non-blocking yPregisterHub
      * function that will establish the connection as soon as it is available.
      *
      *
@@ -1429,7 +1453,7 @@ public class YAPIContext
      * while trying to access the USB modules. In particular, this means
      * that you must stop the VirtualHub software before starting
      * an application that uses direct USB access. The workaround
-     * for this limitation is to setup the library to use the VirtualHub
+     * for this limitation is to set up the library to use the VirtualHub
      * rather than direct USB access.
      *
      * If access control has been activated on the hub, virtual or not, you want to
@@ -1451,8 +1475,14 @@ public class YAPIContext
     public int RegisterHub(String url) throws YAPI_Exception
     {
         _AddNewHub(url, true, null, null, null);
-        // Register device list
-        _updateDeviceList_internal(true, false);
+        try {
+            // Register device list
+            _updateDeviceList_internal(true, false);
+        } catch (YAPI_Exception ex) {
+            // remove hub from registred hub list
+            unregisterHubEx(url, null, null, null);
+            throw ex;
+        }
         return YAPI.SUCCESS;
     }
 
@@ -1460,8 +1490,14 @@ public class YAPIContext
     public int RegisterHub(String url, InputStream request, OutputStream response) throws YAPI_Exception
     {
         _AddNewHub(url, true, request, response, null);
-        // Register device list
-        _updateDeviceList_internal(true, false);
+        try {
+            // Register device list
+            _updateDeviceList_internal(true, false);
+        } catch (YAPI_Exception ex) {
+            // remove hub from registred hub list
+            unregisterHubEx(url, request, response, null);
+            throw ex;
+        }
         return YAPI.SUCCESS;
     }
 
@@ -1548,7 +1584,7 @@ public class YAPIContext
     }
 
     /**
-     * Setup the Yoctopuce library to no more use modules connected on a previously
+     * Set up the Yoctopuce library to no more use modules connected on a previously
      * registered machine with RegisterHub.
      *
      * @param url : a string containing either "usb" or the
@@ -1569,7 +1605,6 @@ public class YAPIContext
         Iterator<YGenericHub> it = _hubs.iterator();
         while (it.hasNext()) {
             YGenericHub h = it.next();
-            ;
             if (h.isSameHub(url, request, response, session)) {
                 h.addKnownURL(url);
                 h.stopNotifications();
@@ -1610,6 +1645,7 @@ public class YAPIContext
         } else {
             newhub = new YHTTPHub(this, parsedurl, true, null);
         }
+        newhub.set_networkTimeout(mstimeout);
         return newhub.ping(mstimeout);
     }
 
@@ -1733,7 +1769,7 @@ public class YAPIContext
     /**
      * Checks if a given string is valid as logical name for a module or a function.
      * A valid logical name has a maximum of 19 characters, all among
-     * A..Z, a..z, 0..9, _, and -.
+     * A...Z, a...z, 0...9, _, and -.
      * If you try to configure a logical name with an incorrect string,
      * the invalid characters are ignored.
      *
