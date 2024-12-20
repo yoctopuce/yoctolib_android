@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YModule.java 59953 2024-03-18 09:15:08Z seb $
+ * $Id: YModule.java 63484 2024-11-26 09:46:00Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -357,7 +357,7 @@ public class YModule extends YFunction
                 }
             }
         }
-        return out.toJSON().getBytes();
+        return out.toJSON();
     }
 
 
@@ -1026,8 +1026,8 @@ public class YModule extends YFunction
         String cleanHwId;
         int modpos;
         cleanHwId = func;
-        modpos = (func).indexOf(".module");
-        if (modpos != ((func).length() - 7)) {
+        modpos = func.indexOf(".module");
+        if (modpos != (func.length() - 7)) {
             cleanHwId = func + ".module";
         }
         YAPIContext ctx = YAPI.GetYCtx(true);
@@ -1073,8 +1073,8 @@ public class YModule extends YFunction
         int modpos;
         synchronized (yctx._functionCacheLock) {
             cleanHwId = func;
-            modpos = (func).indexOf(".module");
-            if (modpos != ((func).length() - 7)) {
+            modpos = func.indexOf(".module");
+            if (modpos != (func.length() - 7)) {
                 cleanHwId = func + ".module";
             }
             obj = (YModule) YFunction._FindFromCacheInContext(yctx, "Module", cleanHwId);
@@ -1136,7 +1136,7 @@ public class YModule extends YFunction
         prodname = get_productName();
         prodrel = get_productRelease();
         if (prodrel > 1) {
-            fullname = String.format(Locale.US, "%s rev. %c", prodname,64 + prodrel);
+            fullname = String.format(Locale.US, "%s rev. %c",prodname,64 + prodrel);
         } else {
             fullname = prodname;
         }
@@ -1323,7 +1323,7 @@ public class YModule extends YFunction
         //may throw an exception
         serial = get_serialNumber();
         tmp_res = YFirmwareUpdate.CheckFirmware(serial, path, release);
-        if ((tmp_res).indexOf("error:") == 0) {
+        if (tmp_res.indexOf("error:") == 0) {
             _throw(YAPI.INVALID_ARGUMENT, tmp_res);
         }
         return tmp_res;
@@ -1382,13 +1382,13 @@ public class YModule extends YFunction
         String name;
         String item;
         String t_type;
-        String id;
+        String pageid;
         String url;
         String file_data;
         byte[] file_data_bin = new byte[0];
         byte[] temp_data_bin = new byte[0];
         String ext_settings;
-        ArrayList<String> filelist = new ArrayList<>();
+        ArrayList<byte[]> filelist = new ArrayList<>();
         ArrayList<String> templist = new ArrayList<>();
 
         settings = _download("api.json");
@@ -1398,18 +1398,18 @@ public class YModule extends YFunction
         ext_settings = ", \"extras\":[";
         templist = get_functionIds("Temperature");
         sep = "";
-        for (String ii_0: templist) {
+        for (String ii_0:templist) {
             if (YAPIContext._atoi(get_firmwareRelease()) > 9000) {
                 url = String.format(Locale.US, "api/%s/sensorType",ii_0);
                 t_type = new String(_download(url));
                 if (t_type.equals("RES_NTC") || t_type.equals("RES_LINEAR")) {
-                    id = (ii_0).substring( 11,  11 + (ii_0).length() - 11);
-                    if (id.equals("")) {
-                        id = "1";
+                    pageid = (ii_0).substring(11, 11 + ii_0.length() - 11);
+                    if (pageid.equals("")) {
+                        pageid = "1";
                     }
-                    temp_data_bin = _download(String.format(Locale.US, "extra.json?page=%s",id));
+                    temp_data_bin = _download(String.format(Locale.US, "extra.json?page=%s",pageid));
                     if ((temp_data_bin).length > 0) {
-                        item = String.format(Locale.US, "%s{\"fid\":\"%s\", \"json\":%s}\n", sep, ii_0,new String(temp_data_bin));
+                        item = String.format(Locale.US, "%s{\"fid\":\"%s\", \"json\":%s}\n",sep,ii_0,new String(temp_data_bin));
                         ext_settings = ext_settings + item;
                         sep = ",";
                     }
@@ -1424,12 +1424,12 @@ public class YModule extends YFunction
             }
             filelist = _json_get_array(json);
             sep = "";
-            for (String ii_1: filelist) {
-                name = _json_get_key((ii_1).getBytes(), "name");
-                if (((name).length() > 0) && !(name.equals("startupConf.json"))) {
+            for (byte[] ii_1:filelist) {
+                name = _json_get_key(ii_1, "name");
+                if ((name.length() > 0) && !(name.equals("startupConf.json"))) {
                     file_data_bin = _download(_escapeAttr(name));
                     file_data = YAPIContext._bytesToHexStr(file_data_bin, 0, file_data_bin.length);
-                    item = String.format(Locale.US, "%s{\"name\":\"%s\", \"data\":\"%s\"}\n", sep, name,file_data);
+                    item = String.format(Locale.US, "%s{\"name\":\"%s\", \"data\":\"%s\"}\n",sep,name,file_data);
                     ext_settings = ext_settings + item;
                     sep = ",";
                 }
@@ -1441,10 +1441,12 @@ public class YModule extends YFunction
 
     public int loadThermistorExtra(String funcId,String jsonExtra) throws YAPI_Exception
     {
-        ArrayList<String> values = new ArrayList<>();
+        ArrayList<byte[]> values = new ArrayList<>();
         String url;
         String curr;
+        byte[] binCurr = new byte[0];
         String currTemp;
+        byte[] binCurrTemp = new byte[0];
         int ofs;
         int size;
         url = "api/" + funcId + ".json?command=Z";
@@ -1455,9 +1457,11 @@ public class YModule extends YFunction
         ofs = 0;
         size = values.size();
         while (ofs + 1 < size) {
-            curr = values.get(ofs);
-            currTemp = values.get(ofs + 1);
-            url = String.format(Locale.US, "api/%s.json?command=m%s:%s", funcId, curr,currTemp);
+            binCurr = values.get(ofs);
+            binCurrTemp = values.get(ofs + 1);
+            curr = _json_get_string(binCurr);
+            currTemp = _json_get_string(binCurrTemp);
+            url = String.format(Locale.US, "api/%s.json?command=m%s:%s",funcId,curr,currTemp);
             _download(url);
             ofs = ofs + 2;
         }
@@ -1466,16 +1470,17 @@ public class YModule extends YFunction
 
     public int set_extraSettings(String jsonExtra) throws YAPI_Exception
     {
-        ArrayList<String> extras = new ArrayList<>();
+        ArrayList<byte[]> extras = new ArrayList<>();
+        byte[] tmp = new byte[0];
         String functionId;
-        String data;
+        byte[] data = new byte[0];
         extras = _json_get_array((jsonExtra).getBytes());
-        for (String ii_0: extras) {
-            functionId = _get_json_path(ii_0, "fid");
-            functionId = _decode_json_string(functionId);
+        for (byte[] ii_0:extras) {
+            tmp = _get_json_path(ii_0, "fid");
+            functionId = _json_get_string(tmp);
             data = _get_json_path(ii_0, "json");
             if (hasFunction(functionId)) {
-                loadThermistorExtra(functionId, data);
+                loadThermistorExtra(functionId, new String(data));
             }
         }
         return YAPI.SUCCESS;
@@ -1497,40 +1502,40 @@ public class YModule extends YFunction
     public int set_allSettingsAndFiles(byte[] settings) throws YAPI_Exception
     {
         byte[] down = new byte[0];
-        String json;
-        String json_api;
-        String json_files;
-        String json_extra;
+        byte[] json_bin = new byte[0];
+        byte[] json_api = new byte[0];
+        byte[] json_files = new byte[0];
+        byte[] json_extra = new byte[0];
         int fuperror;
         int globalres;
         fuperror = 0;
-        json = new String(settings);
-        json_api = _get_json_path(json, "api");
-        if (json_api.equals("")) {
+        json_api = _get_json_path(settings, "api");
+        if ((json_api).length == 0) {
             return set_allSettings(settings);
         }
-        json_extra = _get_json_path(json, "extras");
-        if (!(json_extra.equals(""))) {
-            set_extraSettings(json_extra);
+        json_extra = _get_json_path(settings, "extras");
+        if ((json_extra).length > 0) {
+            set_extraSettings(new String(json_extra));
         }
-        set_allSettings((json_api).getBytes());
+        set_allSettings(json_api);
         if (hasFunction("files")) {
-            ArrayList<String> files = new ArrayList<>();
+            ArrayList<byte[]> files = new ArrayList<>();
             String res;
+            byte[] tmp = new byte[0];
             String name;
             String data;
             down = _download("files.json?a=format");
-            res = _get_json_path(new String(down), "res");
-            res = _decode_json_string(res);
+            down = _get_json_path(down, "res");
+            res = _json_get_string(down);
             //noinspection DoubleNegation
-            if (!(res.equals("ok"))) { throw new YAPI_Exception( YAPI.IO_ERROR,  "format failed");}
-            json_files = _get_json_path(json, "files");
-            files = _json_get_array((json_files).getBytes());
-            for (String ii_0: files) {
-                name = _get_json_path(ii_0, "name");
-                name = _decode_json_string(name);
-                data = _get_json_path(ii_0, "data");
-                data = _decode_json_string(data);
+            if (!(res.equals("ok"))) { throw new YAPI_Exception(YAPI.IO_ERROR, "format failed");}
+            json_files = _get_json_path(settings, "files");
+            files = _json_get_array(json_files);
+            for (byte[] ii_0:files) {
+                tmp = _get_json_path(ii_0, "name");
+                name = _json_get_string(tmp);
+                tmp = _get_json_path(ii_0, "data");
+                data = _json_get_string(tmp);
                 if (name.equals("")) {
                     fuperror = fuperror + 1;
                 } else {
@@ -1539,9 +1544,9 @@ public class YModule extends YFunction
             }
         }
         // Apply settings a second time for file-dependent settings and dynamic sensor nodes
-        globalres = set_allSettings((json_api).getBytes());
+        globalres = set_allSettings(json_api);
         //noinspection DoubleNegation
-        if (!(fuperror == 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "Error during file upload");}
+        if (!(fuperror == 0)) { throw new YAPI_Exception(YAPI.IO_ERROR, "Error during file upload");}
         return globalres;
     }
 
@@ -1614,8 +1619,8 @@ public class YModule extends YFunction
         if (cparams.equals("0,")) {
             return 3;
         }
-        if ((cparams).indexOf(",") >= 0) {
-            if ((cparams).indexOf(" ") > 0) {
+        if (cparams.indexOf(",") >= 0) {
+            if (cparams.indexOf(" ") > 0) {
                 return 3;
             } else {
                 return 1;
@@ -1624,7 +1629,7 @@ public class YModule extends YFunction
         if (cparams.equals("") || cparams.equals("0")) {
             return 1;
         }
-        if (((cparams).length() < 2) || ((cparams).indexOf(".") >= 0)) {
+        if ((cparams.length() < 2) || (cparams.indexOf(".") >= 0)) {
             return 0;
         } else {
             return 2;
@@ -1766,10 +1771,10 @@ public class YModule extends YFunction
             while (i < calibData.size()) {
                 if (paramScale > 0) {
                     // scalar decoding
-                    calibData.set( i, (calibData.get(i).doubleValue() - paramOffset) / paramScale);
+                    calibData.set(i, (calibData.get(i).doubleValue() - paramOffset) / paramScale);
                 } else {
                     // floating-point decoding
-                    calibData.set( i, YAPIContext._decimalToDouble((int) (double)Math.round(calibData.get(i).doubleValue())));
+                    calibData.set(i, YAPIContext._decimalToDouble((int) (double)Math.round(calibData.get(i).doubleValue())));
                 }
                 i = i + 1;
             }
@@ -1794,7 +1799,7 @@ public class YModule extends YFunction
                 param = Integer.toString(30 + calibType);
                 i = 0;
                 while (i < calibData.size()) {
-                    if (((i) & (1)) > 0) {
+                    if ((i & 1) > 0) {
                         param = param + ":";
                     } else {
                         param = param + " ";
@@ -1807,7 +1812,7 @@ public class YModule extends YFunction
         } else {
             if (funVer >= 1) {
                 // Encode parameters for older devices
-                nPoints = ((calibData.size()) / (2));
+                nPoints = ((calibData.size()) / 2);
                 param = Integer.toString(nPoints);
                 i = 0;
                 while (i < 2 * nPoints) {
@@ -1868,12 +1873,12 @@ public class YModule extends YFunction
     {
         ArrayList<String> restoreLast = new ArrayList<>();
         byte[] old_json_flat = new byte[0];
-        ArrayList<String> old_dslist = new ArrayList<>();
+        ArrayList<byte[]> old_dslist = new ArrayList<>();
         ArrayList<String> old_jpath = new ArrayList<>();
         ArrayList<Integer> old_jpath_len = new ArrayList<>();
         ArrayList<String> old_val_arr = new ArrayList<>();
         byte[] actualSettings = new byte[0];
-        ArrayList<String> new_dslist = new ArrayList<>();
+        ArrayList<byte[]> new_dslist = new ArrayList<>();
         ArrayList<String> new_jpath = new ArrayList<>();
         ArrayList<Integer> new_jpath_len = new ArrayList<>();
         ArrayList<String> new_val_arr = new ArrayList<>();
@@ -1891,7 +1896,7 @@ public class YModule extends YFunction
         String value;
         String url;
         String tmp;
-        String new_calib;
+        byte[] binTmp = new byte[0];
         String sensorType;
         String unit_name;
         String newval;
@@ -1901,29 +1906,28 @@ public class YModule extends YFunction
         boolean do_update;
         boolean found;
         res = YAPI.SUCCESS;
-        tmp = new String(settings);
-        tmp = _get_json_path(tmp, "api");
-        if (!(tmp.equals(""))) {
-            settings = (tmp).getBytes();
+        binTmp = _get_json_path(settings, "api");
+        if ((binTmp).length > 0) {
+            settings = binTmp;
         }
         oldval = "";
         newval = "";
         old_json_flat = _flattenJsonStruct(settings);
         old_dslist = _json_get_array(old_json_flat);
-        for (String ii_0:old_dslist) {
-            each_str = _json_get_string((ii_0).getBytes());
+        for (byte[] ii_0:old_dslist) {
+            each_str = _json_get_string(ii_0);
             // split json path and attr
-            leng = (each_str).length();
-            eqpos = (each_str).indexOf("=");
+            leng = each_str.length();
+            eqpos = each_str.indexOf("=");
             if ((eqpos < 0) || (leng == 0)) {
                 _throw(YAPI.INVALID_ARGUMENT, "Invalid settings");
                 return YAPI.INVALID_ARGUMENT;
             }
             jpath = (each_str).substring(0, eqpos);
             eqpos = eqpos + 1;
-            value = (each_str).substring( eqpos,  eqpos + leng - eqpos);
+            value = (each_str).substring(eqpos, eqpos + leng - eqpos);
             old_jpath.add(jpath);
-            old_jpath_len.add((jpath).length());
+            old_jpath_len.add(jpath.length());
             old_val_arr.add(value);
         }
 
@@ -1936,153 +1940,153 @@ public class YModule extends YFunction
         }
         actualSettings = _flattenJsonStruct(actualSettings);
         new_dslist = _json_get_array(actualSettings);
-        for (String ii_1:new_dslist) {
+        for (byte[] ii_1:new_dslist) {
             // remove quotes
-            each_str = _json_get_string((ii_1).getBytes());
+            each_str = _json_get_string(ii_1);
             // split json path and attr
-            leng = (each_str).length();
-            eqpos = (each_str).indexOf("=");
+            leng = each_str.length();
+            eqpos = each_str.indexOf("=");
             if ((eqpos < 0) || (leng == 0)) {
                 _throw(YAPI.INVALID_ARGUMENT, "Invalid settings");
                 return YAPI.INVALID_ARGUMENT;
             }
             jpath = (each_str).substring(0, eqpos);
             eqpos = eqpos + 1;
-            value = (each_str).substring( eqpos,  eqpos + leng - eqpos);
+            value = (each_str).substring(eqpos, eqpos + leng - eqpos);
             new_jpath.add(jpath);
-            new_jpath_len.add((jpath).length());
+            new_jpath_len.add(jpath.length());
             new_val_arr.add(value);
         }
         i = 0;
         while (i < new_jpath.size()) {
             njpath = new_jpath.get(i);
-            leng = (njpath).length();
-            cpos = (njpath).indexOf("/");
+            leng = njpath.length();
+            cpos = njpath.indexOf("/");
             if ((cpos < 0) || (leng == 0)) {
                 continue;
             }
             fun = (njpath).substring(0, cpos);
             cpos = cpos + 1;
-            attr = (njpath).substring( cpos,  cpos + leng - cpos);
+            attr = (njpath).substring(cpos, cpos + leng - cpos);
             do_update = true;
             if (fun.equals("services")) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("firmwareRelease"))) {
+            if (do_update && (attr.equals("firmwareRelease"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("usbCurrent"))) {
+            if (do_update && (attr.equals("usbCurrent"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("upTime"))) {
+            if (do_update && (attr.equals("upTime"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("persistentSettings"))) {
+            if (do_update && (attr.equals("persistentSettings"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("adminPassword"))) {
+            if (do_update && (attr.equals("adminPassword"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("userPassword"))) {
+            if (do_update && (attr.equals("userPassword"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("rebootCountdown"))) {
+            if (do_update && (attr.equals("rebootCountdown"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("advertisedValue"))) {
+            if (do_update && (attr.equals("advertisedValue"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("poeCurrent"))) {
+            if (do_update && (attr.equals("poeCurrent"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("readiness"))) {
+            if (do_update && (attr.equals("readiness"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("ipAddress"))) {
+            if (do_update && (attr.equals("ipAddress"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("subnetMask"))) {
+            if (do_update && (attr.equals("subnetMask"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("router"))) {
+            if (do_update && (attr.equals("router"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("linkQuality"))) {
+            if (do_update && (attr.equals("linkQuality"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("ssid"))) {
+            if (do_update && (attr.equals("ssid"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("channel"))) {
+            if (do_update && (attr.equals("channel"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("security"))) {
+            if (do_update && (attr.equals("security"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("message"))) {
+            if (do_update && (attr.equals("message"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("signalValue"))) {
+            if (do_update && (attr.equals("signalValue"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("currentValue"))) {
+            if (do_update && (attr.equals("currentValue"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("currentRawValue"))) {
+            if (do_update && (attr.equals("currentRawValue"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("currentRunIndex"))) {
+            if (do_update && (attr.equals("currentRunIndex"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("pulseTimer"))) {
+            if (do_update && (attr.equals("pulseTimer"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("lastTimePressed"))) {
+            if (do_update && (attr.equals("lastTimePressed"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("lastTimeReleased"))) {
+            if (do_update && (attr.equals("lastTimeReleased"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("filesCount"))) {
+            if (do_update && (attr.equals("filesCount"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("freeSpace"))) {
+            if (do_update && (attr.equals("freeSpace"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("timeUTC"))) {
+            if (do_update && (attr.equals("timeUTC"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("rtcTime"))) {
+            if (do_update && (attr.equals("rtcTime"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("unixTime"))) {
+            if (do_update && (attr.equals("unixTime"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("dateTime"))) {
+            if (do_update && (attr.equals("dateTime"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("rawValue"))) {
+            if (do_update && (attr.equals("rawValue"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("lastMsg"))) {
+            if (do_update && (attr.equals("lastMsg"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("delayedPulseTimer"))) {
+            if (do_update && (attr.equals("delayedPulseTimer"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("rxCount"))) {
+            if (do_update && (attr.equals("rxCount"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("txCount"))) {
+            if (do_update && (attr.equals("txCount"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("msgCount"))) {
+            if (do_update && (attr.equals("msgCount"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("rxMsgCount"))) {
+            if (do_update && (attr.equals("rxMsgCount"))) {
                 do_update = false;
             }
-            if ((do_update) && (attr.equals("txMsgCount"))) {
+            if (do_update && (attr.equals("txMsgCount"))) {
                 do_update = false;
             }
             if (do_update) {
@@ -2106,7 +2110,6 @@ public class YModule extends YFunction
                     old_calib = "";
                     unit_name = "";
                     sensorType = "";
-                    new_calib = newval;
                     j = 0;
                     found = false;
                     while ((j < old_jpath.size()) && !(found)) {
@@ -2218,7 +2221,7 @@ public class YModule extends YFunction
 
     /**
      * Returns the icon of the module. The icon is a PNG image and does not
-     * exceeds 1536 bytes.
+     * exceed 1536 bytes.
      *
      * @return a binary buffer with module icon, in png format.
      * @throws YAPI_Exception on error

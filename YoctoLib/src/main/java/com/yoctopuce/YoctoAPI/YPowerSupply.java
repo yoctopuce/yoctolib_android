@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YPowerSupply.java 55572 2023-07-25 06:24:53Z mvuilleu $
+ *  $Id: YPowerSupply.java 63323 2024-11-13 09:32:34Z seb $
  *
  *  Implements FindPowerSupply(), the high-level API for PowerSupply functions
  *
@@ -904,7 +904,7 @@ public class YPowerSupply extends YFunction
         if (V_target < 0.0) {
             V_target  = 0.0;
         }
-        newval = String.format(Locale.US, "%d:%d", (int) (double)Math.round(V_target*65536),ms_duration);
+        newval = String.format(Locale.US, "%d:%d",(int) (double)Math.round(V_target*65536),ms_duration);
 
         return set_voltageTransition(newval);
     }

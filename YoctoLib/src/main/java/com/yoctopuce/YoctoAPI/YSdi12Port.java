@@ -1083,7 +1083,7 @@ public class YSdi12Port extends YFunction
     {
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         String res;
 
@@ -1096,11 +1096,11 @@ public class YSdi12Port extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         if (msglen == 0) {
             return "";
         }
-        res = _json_get_string((msgarr.get(0)).getBytes());
+        res = _json_get_string(msgarr.get(0));
         return res;
     }
 
@@ -1129,12 +1129,12 @@ public class YSdi12Port extends YFunction
     {
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         ArrayList<String> res = new ArrayList<>();
         int idx;
 
-        url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=%d&pat=%s", _rxptr, maxWait,pattern);
+        url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=%d&pat=%s",_rxptr,maxWait,pattern);
         msgbin = _download(url);
         msgarr = _json_get_array(msgbin);
         msglen = msgarr.size();
@@ -1143,10 +1143,10 @@ public class YSdi12Port extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         idx = 0;
         while (idx < msglen) {
-            res.add(_json_get_string((msgarr.get(idx)).getBytes()));
+            res.add(_json_get_string(msgarr.get(idx)));
             idx = idx + 1;
         }
         return res;
@@ -1192,7 +1192,7 @@ public class YSdi12Port extends YFunction
 
         databin = _download(String.format(Locale.US, "rxcnt.bin?pos=%d",_rxptr));
         availPosStr = new String(databin);
-        atPos = (availPosStr).indexOf("@");
+        atPos = availPosStr.indexOf("@");
         res = YAPIContext._atoi((availPosStr).substring(0, atPos));
         return res;
     }
@@ -1206,8 +1206,8 @@ public class YSdi12Port extends YFunction
 
         databin = _download(String.format(Locale.US, "rxcnt.bin?pos=%d",_rxptr));
         availPosStr = new String(databin);
-        atPos = (availPosStr).indexOf("@");
-        res = YAPIContext._atoi((availPosStr).substring( atPos+1,  atPos+1 + (availPosStr).length()-atPos-1));
+        atPos = availPosStr.indexOf("@");
+        res = YAPIContext._atoi((availPosStr).substring(atPos+1, atPos+1 + availPosStr.length()-atPos-1));
         return res;
     }
 
@@ -1228,17 +1228,17 @@ public class YSdi12Port extends YFunction
         int prevpos;
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         String res;
-        if ((query).length() <= 80) {
+        if (query.length() <= 80) {
             // fast query
-            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=!%s", maxWait,_escapeAttr(query));
+            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=!%s",maxWait,_escapeAttr(query));
         } else {
             // long query
             prevpos = end_tell();
             _upload("txdata", (query + "\r\n").getBytes());
-            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d", maxWait,prevpos);
+            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d",maxWait,prevpos);
         }
 
         msgbin = _download(url);
@@ -1249,11 +1249,11 @@ public class YSdi12Port extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         if (msglen == 0) {
             return "";
         }
-        res = _json_get_string((msgarr.get(0)).getBytes());
+        res = _json_get_string(msgarr.get(0));
         return res;
     }
 
@@ -1275,17 +1275,17 @@ public class YSdi12Port extends YFunction
         int prevpos;
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         String res;
-        if ((hexString).length() <= 80) {
+        if (hexString.length() <= 80) {
             // fast query
-            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=$%s", maxWait,hexString);
+            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=$%s",maxWait,hexString);
         } else {
             // long query
             prevpos = end_tell();
             _upload("txdata", YAPIContext._hexStrToBin(hexString));
-            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d", maxWait,prevpos);
+            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d",maxWait,prevpos);
         }
 
         msgbin = _download(url);
@@ -1296,11 +1296,11 @@ public class YSdi12Port extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         if (msglen == 0) {
             return "";
         }
-        res = _json_get_string((msgarr.get(0)).getBytes());
+        res = _json_get_string(msgarr.get(0));
         return res;
     }
 
@@ -1464,15 +1464,15 @@ public class YSdi12Port extends YFunction
         int idx;
         int hexb;
         int res;
-        bufflen = (hexString).length();
+        bufflen = hexString.length();
         if (bufflen < 100) {
             return sendCommand(String.format(Locale.US, "$%s",hexString));
         }
-        bufflen = ((bufflen) >> (1));
+        bufflen = (bufflen >> 1);
         buff = new byte[bufflen];
         idx = 0;
         while (idx < bufflen) {
-            hexb = Integer.valueOf((hexString).substring( 2 * idx,  2 * idx + 2),16);
+            hexb = Integer.valueOf((hexString).substring(2 * idx, 2 * idx + 2),16);
             buff[idx] = (byte)(hexb & 0xff);
             idx = idx + 1;
         }
@@ -1609,7 +1609,7 @@ public class YSdi12Port extends YFunction
             nChars = 65535;
         }
 
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
+        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d",_rxptr,nChars));
         bufflen = (buff).length - 1;
         endpos = 0;
         mult = 1;
@@ -1646,7 +1646,7 @@ public class YSdi12Port extends YFunction
             nChars = 65535;
         }
 
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
+        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d",_rxptr,nChars));
         bufflen = (buff).length - 1;
         endpos = 0;
         mult = 1;
@@ -1689,7 +1689,7 @@ public class YSdi12Port extends YFunction
             nChars = 65535;
         }
 
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
+        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d",_rxptr,nChars));
         bufflen = (buff).length - 1;
         endpos = 0;
         mult = 1;
@@ -1732,7 +1732,7 @@ public class YSdi12Port extends YFunction
             nBytes = 65535;
         }
 
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nBytes));
+        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d",_rxptr,nBytes));
         bufflen = (buff).length - 1;
         endpos = 0;
         mult = 1;
@@ -1745,11 +1745,11 @@ public class YSdi12Port extends YFunction
         res = "";
         ofs = 0;
         while (ofs + 3 < bufflen) {
-            res = String.format(Locale.US, "%s%02X%02X%02X%02X", res, (buff[ofs] & 0xff), (buff[ofs + 1] & 0xff), (buff[ofs + 2] & 0xff),(buff[ofs + 3] & 0xff));
+            res = String.format(Locale.US, "%s%02X%02X%02X%02X",res,(buff[ofs] & 0xff),(buff[ofs + 1] & 0xff),(buff[ofs + 2] & 0xff),(buff[ofs + 3] & 0xff));
             ofs = ofs + 4;
         }
         while (ofs < bufflen) {
-            res = String.format(Locale.US, "%s%02X", res,(buff[ofs] & 0xff));
+            res = String.format(Locale.US, "%s%02X",res,(buff[ofs] & 0xff));
             ofs = ofs + 1;
         }
         return res;
@@ -1774,13 +1774,13 @@ public class YSdi12Port extends YFunction
         String pattern;
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         String res;
         cmdChar  = "";
 
         pattern = sensorAddr;
-        if ((cmd).length() > 0) {
+        if (cmd.length() > 0) {
             cmdChar = (cmd).substring(0, 1);
         }
         if (sensorAddr.equals("?")) {
@@ -1793,8 +1793,8 @@ public class YSdi12Port extends YFunction
             }
         }
         pattern = _escapeAttr(pattern);
-        fullCmd = _escapeAttr(String.format(Locale.US, "+%s%s!", sensorAddr,cmd));
-        url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=%s&pat=%s", maxWait, fullCmd,pattern);
+        fullCmd = _escapeAttr(String.format(Locale.US, "+%s%s!",sensorAddr,cmd));
+        url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=%s&pat=%s",maxWait,fullCmd,pattern);
 
         msgbin = _download(url);
         if ((msgbin).length<2) {
@@ -1807,11 +1807,11 @@ public class YSdi12Port extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         if (msglen == 0) {
             return "";
         }
-        res = _json_get_string((msgarr.get(0)).getBytes());
+        res = _json_get_string(msgarr.get(0));
         return res;
     }
 
@@ -1858,7 +1858,7 @@ public class YSdi12Port extends YFunction
         i = 0 ;
         while (i < 10) {
             res = querySdi12(Integer.toString(i),"!",500);
-            if ((res).length() >= 1) {
+            if (res.length() >= 1) {
                 idSens.add(res);
             }
             i = i+1;
@@ -1868,14 +1868,14 @@ public class YSdi12Port extends YFunction
         i = 0;
         while (i<26) {
             res = querySdi12((lettreMin).substring(i, i + 1),"!",500);
-            if ((res).length() >= 1) {
+            if (res.length() >= 1) {
                 idSens.add(res);
             }
             i = i +1;
         }
         while (i<26) {
             res = querySdi12((lettreMaj).substring(i, i + 1),"!",500);
-            if ((res).length() >= 1) {
+            if (res.length() >= 1) {
                 idSens.add(res);
             }
             i = i +1;
@@ -2010,7 +2010,7 @@ public class YSdi12Port extends YFunction
         String wait;
 
         wait = querySdi12(sensorAddr,"C",1000);
-        wait = (wait).substring( 1,  1 + 3);
+        wait = (wait).substring(1, 1 + 3);
         timewait = YAPIContext._atoi(wait) * 1000;
         return timewait;
     }
@@ -2033,12 +2033,12 @@ public class YSdi12Port extends YFunction
     {
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         ArrayList<YSdi12SnoopingRecord> res = new ArrayList<>();
         int idx;
 
-        url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=%d&t=0&len=%d", _rxptr, maxWait,maxMsg);
+        url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=%d&t=0&len=%d",_rxptr,maxWait,maxMsg);
         msgbin = _download(url);
         msgarr = _json_get_array(msgbin);
         msglen = msgarr.size();
@@ -2047,10 +2047,10 @@ public class YSdi12Port extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         idx = 0;
         while (idx < msglen) {
-            res.add(new YSdi12SnoopingRecord(msgarr.get(idx)));
+            res.add(new YSdi12SnoopingRecord(new String(msgarr.get(idx))));
             idx = idx + 1;
         }
         return res;

@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YMessageBox.java 55572 2023-07-25 06:24:53Z mvuilleu $
+ * $Id: YMessageBox.java 63484 2024-11-26 09:46:00Z seb $
  *
  * Implements FindMessageBox(), the high-level API for MessageBox functions
  *
@@ -652,10 +652,10 @@ public class YMessageBox extends YFunction
             clearCache();
             bitmapStr = get_slotsBitmap();
             newBitmap = YAPIContext._hexStrToBin(bitmapStr);
-            idx = ((slot) >> (3));
+            idx = (slot >> 3);
             if (idx < (newBitmap).length) {
-                bitVal = ((1) << ((((slot) & (7)))));
-                if (((((newBitmap[idx] & 0xff)) & (bitVal))) != 0) {
+                bitVal = (1 << ((slot & 7)));
+                if ((((newBitmap[idx] & 0xff) & bitVal)) != 0) {
                     _prevBitmapStr = "";
                     int_res = set_command(String.format(Locale.US, "DS%d",slot));
                     if (int_res < 0) {
@@ -687,24 +687,24 @@ public class YMessageBox extends YFunction
         int suffixlen;
         // copied form the YCellular class
         // quote dangerous characters used in AT commands
-        cmdLen = (cmd).length();
-        chrPos = (cmd).indexOf("#");
+        cmdLen = cmd.length();
+        chrPos = cmd.indexOf("#");
         while (chrPos >= 0) {
-            cmd = String.format(Locale.US, "%s%c23%s", (cmd).substring(0, chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
+            cmd = String.format(Locale.US, "%s%c23%s",(cmd).substring(0, chrPos),37,(cmd).substring(chrPos+1, chrPos+1 + cmdLen-chrPos-1));
             cmdLen = cmdLen + 2;
-            chrPos = (cmd).indexOf("#");
+            chrPos = cmd.indexOf("#");
         }
-        chrPos = (cmd).indexOf("+");
+        chrPos = cmd.indexOf("+");
         while (chrPos >= 0) {
-            cmd = String.format(Locale.US, "%s%c2B%s", (cmd).substring(0, chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
+            cmd = String.format(Locale.US, "%s%c2B%s",(cmd).substring(0, chrPos),37,(cmd).substring(chrPos+1, chrPos+1 + cmdLen-chrPos-1));
             cmdLen = cmdLen + 2;
-            chrPos = (cmd).indexOf("+");
+            chrPos = cmd.indexOf("+");
         }
-        chrPos = (cmd).indexOf("=");
+        chrPos = cmd.indexOf("=");
         while (chrPos >= 0) {
-            cmd = String.format(Locale.US, "%s%c3D%s", (cmd).substring(0, chrPos), 37,(cmd).substring( chrPos+1,  chrPos+1 + cmdLen-chrPos-1));
+            cmd = String.format(Locale.US, "%s%c3D%s",(cmd).substring(0, chrPos),37,(cmd).substring(chrPos+1, chrPos+1 + cmdLen-chrPos-1));
             cmdLen = cmdLen + 2;
-            chrPos = (cmd).indexOf("=");
+            chrPos = cmd.indexOf("=");
         }
         cmd = String.format(Locale.US, "at.txt?cmd=%s",cmd);
         res = "";
@@ -714,7 +714,7 @@ public class YMessageBox extends YFunction
             buff = _download(cmd);
             bufflen = (buff).length;
             buffstr = new String(buff);
-            buffstrlen = (buffstr).length();
+            buffstrlen = buffstr.length();
             idx = bufflen - 1;
             while ((idx > 0) && ((buff[idx] & 0xff) != 64) && ((buff[idx] & 0xff) != 10) && ((buff[idx] & 0xff) != 13)) {
                 idx = idx - 1;
@@ -722,14 +722,14 @@ public class YMessageBox extends YFunction
             if ((buff[idx] & 0xff) == 64) {
                 // continuation detected
                 suffixlen = bufflen - idx;
-                cmd = String.format(Locale.US, "at.txt?cmd=%s",(buffstr).substring( buffstrlen - suffixlen,  buffstrlen - suffixlen + suffixlen));
+                cmd = String.format(Locale.US, "at.txt?cmd=%s",(buffstr).substring(buffstrlen - suffixlen, buffstrlen - suffixlen + suffixlen));
                 buffstr = (buffstr).substring(0, buffstrlen - suffixlen);
                 waitMore = waitMore - 1;
             } else {
                 // request complete
                 waitMore = 0;
             }
-            res = String.format(Locale.US, "%s%s", res,buffstr);
+            res = String.format(Locale.US, "%s%s",res,buffstr);
         }
         return res;
     }
@@ -737,7 +737,7 @@ public class YMessageBox extends YFunction
     public YSms fetchPdu(int slot) throws YAPI_Exception
     {
         byte[] binPdu = new byte[0];
-        ArrayList<String> arrPdu = new ArrayList<>();
+        ArrayList<byte[]> arrPdu = new ArrayList<>();
         String hexPdu;
         YSms sms;
 
@@ -798,14 +798,14 @@ public class YMessageBox extends YFunction
             i = i + 1;
         }
         // exceptions in range 20-7A
-        _gsm2unicode.set( 36, 164);
-        _gsm2unicode.set( 64, 161);
-        _gsm2unicode.set( 91, 196);
-        _gsm2unicode.set( 92, 214);
-        _gsm2unicode.set( 93, 209);
-        _gsm2unicode.set( 94, 220);
-        _gsm2unicode.set( 95, 167);
-        _gsm2unicode.set( 96, 191);
+        _gsm2unicode.set(36, 164);
+        _gsm2unicode.set(64, 161);
+        _gsm2unicode.set(91, 196);
+        _gsm2unicode.set(92, 214);
+        _gsm2unicode.set(93, 209);
+        _gsm2unicode.set(94, 220);
+        _gsm2unicode.set(95, 167);
+        _gsm2unicode.set(96, 191);
         // 7B-7F
         _gsm2unicode.add(228);
         _gsm2unicode.add(246);
@@ -1003,7 +1003,7 @@ public class YMessageBox extends YFunction
             i = i + 1;
         }
         resstr = new String(resbin);
-        if ((resstr).length() > reslen) {
+        if (resstr.length() > reslen) {
             resstr = (resstr).substring(0, reslen);
         }
         return resstr;
@@ -1123,23 +1123,23 @@ public class YMessageBox extends YFunction
         while (pduIdx < _pdus.size()) {
             sms = _pdus.get(pduIdx);
             slot = sms.get_slot();
-            idx = ((slot) >> (3));
+            idx = (slot >> 3);
             if (idx < (newBitmap).length) {
-                bitVal = ((1) << ((((slot) & (7)))));
-                if (((((newBitmap[idx] & 0xff)) & (bitVal))) != 0) {
+                bitVal = (1 << ((slot & 7)));
+                if ((((newBitmap[idx] & 0xff) & bitVal)) != 0) {
                     newArr.add(sms);
                     if (sms.get_concatCount() == 0) {
                         newMsg.add(sms);
                     } else {
                         sig = sms.get_concatSignature();
                         i = 0;
-                        while ((i < nsig) && ((sig).length() > 0)) {
+                        while ((i < nsig) && (sig.length() > 0)) {
                             if (signatures.get(i).equals(sig)) {
                                 sig = "";
                             }
                             i = i + 1;
                         }
-                        if ((sig).length() > 0) {
+                        if (sig.length() > 0) {
                             signatures.add(sig);
                             nsig = nsig + 1;
                         }
@@ -1151,13 +1151,13 @@ public class YMessageBox extends YFunction
         // receive new messages
         slot = 0;
         while (slot < nslots) {
-            idx = ((slot) >> (3));
-            bitVal = ((1) << ((((slot) & (7)))));
+            idx = (slot >> 3);
+            bitVal = (1 << ((slot & 7)));
             prevBit = 0;
             if (idx < (prevBitmap).length) {
-                prevBit = (((prevBitmap[idx] & 0xff)) & (bitVal));
+                prevBit = ((prevBitmap[idx] & 0xff) & bitVal);
             }
-            if (((((newBitmap[idx] & 0xff)) & (bitVal))) != 0) {
+            if ((((newBitmap[idx] & 0xff) & bitVal)) != 0) {
                 if (prevBit == 0) {
                     sms = fetchPdu(slot);
                     newArr.add(sms);
@@ -1166,13 +1166,13 @@ public class YMessageBox extends YFunction
                     } else {
                         sig = sms.get_concatSignature();
                         i = 0;
-                        while ((i < nsig) && ((sig).length() > 0)) {
+                        while ((i < nsig) && (sig.length() > 0)) {
                             if (signatures.get(i).equals(sig)) {
                                 sig = "";
                             }
                             i = i + 1;
                         }
-                        if ((sig).length() > 0) {
+                        if (sig.length() > 0) {
                             signatures.add(sig);
                             nsig = nsig + 1;
                         }

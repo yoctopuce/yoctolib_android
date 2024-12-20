@@ -34,30 +34,35 @@ class YJSONNumber extends YJSONContent
                 _intValue = Long.valueOf(int_part);
                 _isFloat = true;
             } else if (sti < '0' || sti > '9') {
-                String numberpart = _data.substring(start, cur_pos);
-                if (_isFloat) {
-                    _doubleValue = Double.valueOf(numberpart);
-                } else {
-                    _intValue = Long.valueOf(numberpart);
-                }
-                if (neg) {
-                    _doubleValue = 0 - _doubleValue;
-                    _intValue = 0 - _intValue;
-                }
-                return cur_pos - _data_start;
+                return parseNumber(start, cur_pos, neg);
             }
             cur_pos++;
         }
-        throw new Exception(formatError("unexpected end of data", cur_pos));
+        return parseNumber(start, cur_pos, neg);
+    }
+
+    private int parseNumber(int start, int cur_pos, boolean neg)
+    {
+        String numberpart = _data.substring(start, cur_pos);
+        if (_isFloat) {
+            _doubleValue = Double.valueOf(numberpart);
+        } else {
+            _intValue = Long.valueOf(numberpart);
+        }
+        if (neg) {
+            _doubleValue = 0 - _doubleValue;
+            _intValue = 0 - _intValue;
+        }
+        return cur_pos - _data_start;
     }
 
     @Override
-    String toJSON()
+    byte[] toJSON()
     {
         if (_isFloat)
-            return Double.toString(_doubleValue);
+            return Double.toString(_doubleValue).getBytes();
         else
-            return Long.toString(_intValue);
+            return Long.toString(_intValue).getBytes();
     }
 
     long getLong()

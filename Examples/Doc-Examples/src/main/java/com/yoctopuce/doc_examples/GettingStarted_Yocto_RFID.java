@@ -2,9 +2,11 @@
  *
  *  $Id: svn_id $
  *
- *  Doc-GettingStarted-Yocto-RFID example
+ *  An example that shows how to use a  Yocto-RFID-15693
  *
  *  You can find more information on our web site:
+ *   Yocto-RFID-15693 documentation:
+ *      https://www.yoctopuce.com/EN/products/yocto-rfid-15693/doc.html
  *   Android API Reference:
  *      https://www.yoctopuce.com/EN/doc/reference/yoctolib-android-EN.html
  *

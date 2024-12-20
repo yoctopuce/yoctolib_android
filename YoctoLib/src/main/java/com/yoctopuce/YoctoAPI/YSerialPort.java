@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSerialPort.java 59641 2024-03-05 20:50:20Z mvuilleu $
+ * $Id: YSerialPort.java 63484 2024-11-26 09:46:00Z seb $
  *
  * Implements FindSerialPort(), the high-level API for SerialPort functions
  *
@@ -1129,7 +1129,7 @@ public class YSerialPort extends YFunction
     {
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         String res;
 
@@ -1142,11 +1142,11 @@ public class YSerialPort extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         if (msglen == 0) {
             return "";
         }
-        res = _json_get_string((msgarr.get(0)).getBytes());
+        res = _json_get_string(msgarr.get(0));
         return res;
     }
 
@@ -1175,12 +1175,12 @@ public class YSerialPort extends YFunction
     {
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         ArrayList<String> res = new ArrayList<>();
         int idx;
 
-        url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=%d&pat=%s", _rxptr, maxWait,pattern);
+        url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=%d&pat=%s",_rxptr,maxWait,pattern);
         msgbin = _download(url);
         msgarr = _json_get_array(msgbin);
         msglen = msgarr.size();
@@ -1189,10 +1189,10 @@ public class YSerialPort extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         idx = 0;
         while (idx < msglen) {
-            res.add(_json_get_string((msgarr.get(idx)).getBytes()));
+            res.add(_json_get_string(msgarr.get(idx)));
             idx = idx + 1;
         }
         return res;
@@ -1238,7 +1238,7 @@ public class YSerialPort extends YFunction
 
         databin = _download(String.format(Locale.US, "rxcnt.bin?pos=%d",_rxptr));
         availPosStr = new String(databin);
-        atPos = (availPosStr).indexOf("@");
+        atPos = availPosStr.indexOf("@");
         res = YAPIContext._atoi((availPosStr).substring(0, atPos));
         return res;
     }
@@ -1252,8 +1252,8 @@ public class YSerialPort extends YFunction
 
         databin = _download(String.format(Locale.US, "rxcnt.bin?pos=%d",_rxptr));
         availPosStr = new String(databin);
-        atPos = (availPosStr).indexOf("@");
-        res = YAPIContext._atoi((availPosStr).substring( atPos+1,  atPos+1 + (availPosStr).length()-atPos-1));
+        atPos = availPosStr.indexOf("@");
+        res = YAPIContext._atoi((availPosStr).substring(atPos+1, atPos+1 + availPosStr.length()-atPos-1));
         return res;
     }
 
@@ -1274,17 +1274,17 @@ public class YSerialPort extends YFunction
         int prevpos;
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         String res;
-        if ((query).length() <= 80) {
+        if (query.length() <= 80) {
             // fast query
-            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=!%s", maxWait,_escapeAttr(query));
+            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=!%s",maxWait,_escapeAttr(query));
         } else {
             // long query
             prevpos = end_tell();
             _upload("txdata", (query + "\r\n").getBytes());
-            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d", maxWait,prevpos);
+            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d",maxWait,prevpos);
         }
 
         msgbin = _download(url);
@@ -1295,11 +1295,11 @@ public class YSerialPort extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         if (msglen == 0) {
             return "";
         }
-        res = _json_get_string((msgarr.get(0)).getBytes());
+        res = _json_get_string(msgarr.get(0));
         return res;
     }
 
@@ -1321,17 +1321,17 @@ public class YSerialPort extends YFunction
         int prevpos;
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         String res;
-        if ((hexString).length() <= 80) {
+        if (hexString.length() <= 80) {
             // fast query
-            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=$%s", maxWait,hexString);
+            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&cmd=$%s",maxWait,hexString);
         } else {
             // long query
             prevpos = end_tell();
             _upload("txdata", YAPIContext._hexStrToBin(hexString));
-            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d", maxWait,prevpos);
+            url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d",maxWait,prevpos);
         }
 
         msgbin = _download(url);
@@ -1342,11 +1342,11 @@ public class YSerialPort extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         if (msglen == 0) {
             return "";
         }
-        res = _json_get_string((msgarr.get(0)).getBytes());
+        res = _json_get_string(msgarr.get(0));
         return res;
     }
 
@@ -1510,15 +1510,15 @@ public class YSerialPort extends YFunction
         int idx;
         int hexb;
         int res;
-        bufflen = (hexString).length();
+        bufflen = hexString.length();
         if (bufflen < 100) {
             return sendCommand(String.format(Locale.US, "$%s",hexString));
         }
-        bufflen = ((bufflen) >> (1));
+        bufflen = (bufflen >> 1);
         buff = new byte[bufflen];
         idx = 0;
         while (idx < bufflen) {
-            hexb = Integer.valueOf((hexString).substring( 2 * idx,  2 * idx + 2),16);
+            hexb = Integer.valueOf((hexString).substring(2 * idx, 2 * idx + 2),16);
             buff[idx] = (byte)(hexb & 0xff);
             idx = idx + 1;
         }
@@ -1655,7 +1655,7 @@ public class YSerialPort extends YFunction
             nChars = 65535;
         }
 
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
+        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d",_rxptr,nChars));
         bufflen = (buff).length - 1;
         endpos = 0;
         mult = 1;
@@ -1692,7 +1692,7 @@ public class YSerialPort extends YFunction
             nChars = 65535;
         }
 
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
+        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d",_rxptr,nChars));
         bufflen = (buff).length - 1;
         endpos = 0;
         mult = 1;
@@ -1735,7 +1735,7 @@ public class YSerialPort extends YFunction
             nChars = 65535;
         }
 
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nChars));
+        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d",_rxptr,nChars));
         bufflen = (buff).length - 1;
         endpos = 0;
         mult = 1;
@@ -1778,7 +1778,7 @@ public class YSerialPort extends YFunction
             nBytes = 65535;
         }
 
-        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d", _rxptr,nBytes));
+        buff = _download(String.format(Locale.US, "rxdata.bin?pos=%d&len=%d",_rxptr,nBytes));
         bufflen = (buff).length - 1;
         endpos = 0;
         mult = 1;
@@ -1791,11 +1791,11 @@ public class YSerialPort extends YFunction
         res = "";
         ofs = 0;
         while (ofs + 3 < bufflen) {
-            res = String.format(Locale.US, "%s%02X%02X%02X%02X", res, (buff[ofs] & 0xff), (buff[ofs + 1] & 0xff), (buff[ofs + 2] & 0xff),(buff[ofs + 3] & 0xff));
+            res = String.format(Locale.US, "%s%02X%02X%02X%02X",res,(buff[ofs] & 0xff),(buff[ofs + 1] & 0xff),(buff[ofs + 2] & 0xff),(buff[ofs + 3] & 0xff));
             ofs = ofs + 4;
         }
         while (ofs < bufflen) {
-            res = String.format(Locale.US, "%s%02X", res,(buff[ofs] & 0xff));
+            res = String.format(Locale.US, "%s%02X",res,(buff[ofs] & 0xff));
             ofs = ofs + 1;
         }
         return res;
@@ -1848,7 +1848,7 @@ public class YSerialPort extends YFunction
 
         buff = _download("cts.txt");
         //noinspection DoubleNegation
-        if (!((buff).length == 1)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "invalid CTS reply");}
+        if (!((buff).length == 1)) { throw new YAPI_Exception(YAPI.IO_ERROR, "invalid CTS reply");}
         res = (buff[0] & 0xff) - 48;
         return res;
     }
@@ -1874,12 +1874,12 @@ public class YSerialPort extends YFunction
     {
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         ArrayList<YSnoopingRecord> res = new ArrayList<>();
         int idx;
 
-        url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=%d&t=0&len=%d", _rxptr, maxWait,maxMsg);
+        url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=%d&t=0&len=%d",_rxptr,maxWait,maxMsg);
         msgbin = _download(url);
         msgarr = _json_get_array(msgbin);
         msglen = msgarr.size();
@@ -1888,10 +1888,10 @@ public class YSerialPort extends YFunction
         }
         // last element of array is the new position
         msglen = msglen - 1;
-        _rxptr = YAPIContext._atoi(msgarr.get(msglen));
+        _rxptr = _decode_json_int(msgarr.get(msglen));
         idx = 0;
         while (idx < msglen) {
-            res.add(new YSnoopingRecord(msgarr.get(idx)));
+            res.add(new YSnoopingRecord(new String(msgarr.get(idx))));
             idx = idx + 1;
         }
         return res;
@@ -1949,7 +1949,7 @@ public class YSerialPort extends YFunction
     {
         String url;
         byte[] msgbin = new byte[0];
-        ArrayList<String> msgarr = new ArrayList<>();
+        ArrayList<byte[]> msgarr = new ArrayList<>();
         int msglen;
         int idx;
         if (!(_eventCallback != null)) {
@@ -1968,13 +1968,13 @@ public class YSerialPort extends YFunction
         msglen = msglen - 1;
         if (!(_eventCallback != null)) {
             // first simulated event, use it only to initialize reference values
-            _eventPos = YAPIContext._atoi(msgarr.get(msglen));
+            _eventPos = _decode_json_int(msgarr.get(msglen));
             return YAPI.SUCCESS;
         }
-        _eventPos = YAPIContext._atoi(msgarr.get(msglen));
+        _eventPos = _decode_json_int(msgarr.get(msglen));
         idx = 0;
         while (idx < msglen) {
-            _eventCallback.snoopingCallback(this, new YSnoopingRecord(msgarr.get(idx)));
+            _eventCallback.snoopingCallback(this, new YSnoopingRecord(new String(msgarr.get(idx))));
             idx = idx + 1;
         }
         return YAPI.SUCCESS;
@@ -1993,7 +1993,7 @@ public class YSerialPort extends YFunction
     public int writeStxEtx(String text) throws YAPI_Exception
     {
         byte[] buff = new byte[0];
-        buff = (String.format(Locale.US, "%c%s%c", 2, text,3)).getBytes();
+        buff = (String.format(Locale.US, "%c%s%c",2,text,3)).getBytes();
         // send string using file upload
         return _upload("txdata", buff);
     }
@@ -2036,37 +2036,37 @@ public class YSerialPort extends YFunction
         String url;
         String pat;
         byte[] msgs = new byte[0];
-        ArrayList<String> reps = new ArrayList<>();
+        ArrayList<byte[]> reps = new ArrayList<>();
         String rep;
         ArrayList<Integer> res = new ArrayList<>();
         int replen;
         int hexb;
         funCode = pduBytes.get(0).intValue();
-        nib = ((funCode) >> (4));
-        pat = String.format(Locale.US, "%02X[%X%X]%X.*", slaveNo, nib, (nib+8),((funCode) & (15)));
-        cmd = String.format(Locale.US, "%02X%02X", slaveNo,funCode);
+        nib = (funCode >> 4);
+        pat = String.format(Locale.US, "%02X[%X%X]%X.*",slaveNo,nib,(nib+8),(funCode & 15));
+        cmd = String.format(Locale.US, "%02X%02X",slaveNo,funCode);
         i = 1;
         while (i < pduBytes.size()) {
-            cmd = String.format(Locale.US, "%s%02X", cmd,((pduBytes.get(i).intValue()) & (0xff)));
+            cmd = String.format(Locale.US, "%s%02X",cmd,((pduBytes.get(i).intValue()) & 0xff));
             i = i + 1;
         }
-        if ((cmd).length() <= 80) {
+        if (cmd.length() <= 80) {
             // fast query
-            url = String.format(Locale.US, "rxmsg.json?cmd=:%s&pat=:%s", cmd,pat);
+            url = String.format(Locale.US, "rxmsg.json?cmd=:%s&pat=:%s",cmd,pat);
         } else {
             // long query
             prevpos = end_tell();
             _upload("txdata:", YAPIContext._hexStrToBin(cmd));
-            url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=2000&pat=:%s", prevpos,pat);
+            url = String.format(Locale.US, "rxmsg.json?pos=%d&maxw=2000&pat=:%s",prevpos,pat);
         }
 
         msgs = _download(url);
         reps = _json_get_array(msgs);
         //noinspection DoubleNegation
-        if (!(reps.size() > 1)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "no reply from MODBUS slave");}
+        if (!(reps.size() > 1)) { throw new YAPI_Exception(YAPI.IO_ERROR, "no reply from MODBUS slave");}
         if (reps.size() > 1) {
-            rep = _json_get_string((reps.get(0)).getBytes());
-            replen = (((rep).length() - 3) >> (1));
+            rep = _json_get_string(reps.get(0));
+            replen = ((rep.length() - 3) >> 1);
             i = 0;
             while (i < replen) {
                 hexb = Integer.valueOf((rep).substring(2 * i + 3, 2 * i + 3 + 2),16);
@@ -2076,13 +2076,13 @@ public class YSerialPort extends YFunction
             if (res.get(0).intValue() != funCode) {
                 i = res.get(1).intValue();
                 //noinspection DoubleNegation
-                if (!(i > 1)) { throw new YAPI_Exception( YAPI.NOT_SUPPORTED,  "MODBUS error: unsupported function code");}
+                if (!(i > 1)) { throw new YAPI_Exception(YAPI.NOT_SUPPORTED, "MODBUS error: unsupported function code");}
                 //noinspection DoubleNegation
-                if (!(i > 2)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "MODBUS error: illegal data address");}
+                if (!(i > 2)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "MODBUS error: illegal data address");}
                 //noinspection DoubleNegation
-                if (!(i > 3)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "MODBUS error: illegal data value");}
+                if (!(i > 3)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "MODBUS error: illegal data value");}
                 //noinspection DoubleNegation
-                if (!(i > 4)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "MODBUS error: failed to execute function");}
+                if (!(i > 4)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "MODBUS error: failed to execute function");}
             }
         }
         return res;
@@ -2110,10 +2110,10 @@ public class YSerialPort extends YFunction
         int val;
         int mask;
         pdu.add(0x01);
-        pdu.add(((pduAddr) >> (8)));
-        pdu.add(((pduAddr) & (0xff)));
-        pdu.add(((nBits) >> (8)));
-        pdu.add(((nBits) & (0xff)));
+        pdu.add((pduAddr >> 8));
+        pdu.add((pduAddr & 0xff));
+        pdu.add((nBits >> 8));
+        pdu.add((nBits & 0xff));
 
         reply = queryMODBUS(slaveNo, pdu);
         if (reply.size() == 0) {
@@ -2127,7 +2127,7 @@ public class YSerialPort extends YFunction
         val = reply.get(idx).intValue();
         mask = 1;
         while (bitpos < nBits) {
-            if (((val) & (mask)) == 0) {
+            if ((val & mask) == 0) {
                 res.add(0);
             } else {
                 res.add(1);
@@ -2138,7 +2138,7 @@ public class YSerialPort extends YFunction
                 val = reply.get(idx).intValue();
                 mask = 1;
             } else {
-                mask = ((mask) << (1));
+                mask = (mask << 1);
             }
         }
         return res;
@@ -2166,10 +2166,10 @@ public class YSerialPort extends YFunction
         int val;
         int mask;
         pdu.add(0x02);
-        pdu.add(((pduAddr) >> (8)));
-        pdu.add(((pduAddr) & (0xff)));
-        pdu.add(((nBits) >> (8)));
-        pdu.add(((nBits) & (0xff)));
+        pdu.add((pduAddr >> 8));
+        pdu.add((pduAddr & 0xff));
+        pdu.add((nBits >> 8));
+        pdu.add((nBits & 0xff));
 
         reply = queryMODBUS(slaveNo, pdu);
         if (reply.size() == 0) {
@@ -2183,7 +2183,7 @@ public class YSerialPort extends YFunction
         val = reply.get(idx).intValue();
         mask = 1;
         while (bitpos < nBits) {
-            if (((val) & (mask)) == 0) {
+            if ((val & mask) == 0) {
                 res.add(0);
             } else {
                 res.add(1);
@@ -2194,7 +2194,7 @@ public class YSerialPort extends YFunction
                 val = reply.get(idx).intValue();
                 mask = 1;
             } else {
-                mask = ((mask) << (1));
+                mask = (mask << 1);
             }
         }
         return res;
@@ -2221,12 +2221,12 @@ public class YSerialPort extends YFunction
         int idx;
         int val;
         //noinspection DoubleNegation
-        if (!(nWords<=256)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "Cannot read more than 256 words");}
+        if (!(nWords<=256)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Cannot read more than 256 words");}
         pdu.add(0x03);
-        pdu.add(((pduAddr) >> (8)));
-        pdu.add(((pduAddr) & (0xff)));
-        pdu.add(((nWords) >> (8)));
-        pdu.add(((nWords) & (0xff)));
+        pdu.add((pduAddr >> 8));
+        pdu.add((pduAddr & 0xff));
+        pdu.add((nWords >> 8));
+        pdu.add((nWords & 0xff));
 
         reply = queryMODBUS(slaveNo, pdu);
         if (reply.size() == 0) {
@@ -2238,7 +2238,7 @@ public class YSerialPort extends YFunction
         regpos = 0;
         idx = 2;
         while (regpos < nWords) {
-            val = ((reply.get(idx).intValue()) << (8));
+            val = ((reply.get(idx).intValue()) << 8);
             idx = idx + 1;
             val = val + reply.get(idx).intValue();
             idx = idx + 1;
@@ -2269,10 +2269,10 @@ public class YSerialPort extends YFunction
         int idx;
         int val;
         pdu.add(0x04);
-        pdu.add(((pduAddr) >> (8)));
-        pdu.add(((pduAddr) & (0xff)));
-        pdu.add(((nWords) >> (8)));
-        pdu.add(((nWords) & (0xff)));
+        pdu.add((pduAddr >> 8));
+        pdu.add((pduAddr & 0xff));
+        pdu.add((nWords >> 8));
+        pdu.add((nWords & 0xff));
 
         reply = queryMODBUS(slaveNo, pdu);
         if (reply.size() == 0) {
@@ -2284,7 +2284,7 @@ public class YSerialPort extends YFunction
         regpos = 0;
         idx = 2;
         while (regpos < nWords) {
-            val = ((reply.get(idx).intValue()) << (8));
+            val = ((reply.get(idx).intValue()) << 8);
             idx = idx + 1;
             val = val + reply.get(idx).intValue();
             idx = idx + 1;
@@ -2316,8 +2316,8 @@ public class YSerialPort extends YFunction
             value = 0xff;
         }
         pdu.add(0x05);
-        pdu.add(((pduAddr) >> (8)));
-        pdu.add(((pduAddr) & (0xff)));
+        pdu.add((pduAddr >> 8));
+        pdu.add((pduAddr & 0xff));
         pdu.add(value);
         pdu.add(0x00);
 
@@ -2356,19 +2356,19 @@ public class YSerialPort extends YFunction
         int res;
         res = 0;
         nBits = bits.size();
-        nBytes = (((nBits + 7)) >> (3));
+        nBytes = ((nBits + 7) >> 3);
         pdu.add(0x0f);
-        pdu.add(((pduAddr) >> (8)));
-        pdu.add(((pduAddr) & (0xff)));
-        pdu.add(((nBits) >> (8)));
-        pdu.add(((nBits) & (0xff)));
+        pdu.add((pduAddr >> 8));
+        pdu.add((pduAddr & 0xff));
+        pdu.add((nBits >> 8));
+        pdu.add((nBits & 0xff));
         pdu.add(nBytes);
         bitpos = 0;
         val = 0;
         mask = 1;
         while (bitpos < nBits) {
             if (bits.get(bitpos).intValue() != 0) {
-                val = ((val) | (mask));
+                val = (val | mask);
             }
             bitpos = bitpos + 1;
             if (mask == 0x80) {
@@ -2376,7 +2376,7 @@ public class YSerialPort extends YFunction
                 val = 0;
                 mask = 1;
             } else {
-                mask = ((mask) << (1));
+                mask = (mask << 1);
             }
         }
         if (mask != 1) {
@@ -2390,7 +2390,7 @@ public class YSerialPort extends YFunction
         if (reply.get(0).intValue() != pdu.get(0).intValue()) {
             return res;
         }
-        res = ((reply.get(3).intValue()) << (8));
+        res = ((reply.get(3).intValue()) << 8);
         res = res + reply.get(4).intValue();
         return res;
     }
@@ -2414,10 +2414,10 @@ public class YSerialPort extends YFunction
         int res;
         res = 0;
         pdu.add(0x06);
-        pdu.add(((pduAddr) >> (8)));
-        pdu.add(((pduAddr) & (0xff)));
-        pdu.add(((value) >> (8)));
-        pdu.add(((value) & (0xff)));
+        pdu.add((pduAddr >> 8));
+        pdu.add((pduAddr & 0xff));
+        pdu.add((value >> 8));
+        pdu.add((value & 0xff));
 
         reply = queryMODBUS(slaveNo, pdu);
         if (reply.size() == 0) {
@@ -2455,16 +2455,16 @@ public class YSerialPort extends YFunction
         nWords = values.size();
         nBytes = 2 * nWords;
         pdu.add(0x10);
-        pdu.add(((pduAddr) >> (8)));
-        pdu.add(((pduAddr) & (0xff)));
-        pdu.add(((nWords) >> (8)));
-        pdu.add(((nWords) & (0xff)));
+        pdu.add((pduAddr >> 8));
+        pdu.add((pduAddr & 0xff));
+        pdu.add((nWords >> 8));
+        pdu.add((nWords & 0xff));
         pdu.add(nBytes);
         regpos = 0;
         while (regpos < nWords) {
             val = values.get(regpos).intValue();
-            pdu.add(((val) >> (8)));
-            pdu.add(((val) & (0xff)));
+            pdu.add((val >> 8));
+            pdu.add((val & 0xff));
             regpos = regpos + 1;
         }
 
@@ -2475,7 +2475,7 @@ public class YSerialPort extends YFunction
         if (reply.get(0).intValue() != pdu.get(0).intValue()) {
             return res;
         }
-        res = ((reply.get(3).intValue()) << (8));
+        res = ((reply.get(3).intValue()) << 8);
         res = res + reply.get(4).intValue();
         return res;
     }
@@ -2508,20 +2508,20 @@ public class YSerialPort extends YFunction
         nWriteWords = values.size();
         nBytes = 2 * nWriteWords;
         pdu.add(0x17);
-        pdu.add(((pduReadAddr) >> (8)));
-        pdu.add(((pduReadAddr) & (0xff)));
-        pdu.add(((nReadWords) >> (8)));
-        pdu.add(((nReadWords) & (0xff)));
-        pdu.add(((pduWriteAddr) >> (8)));
-        pdu.add(((pduWriteAddr) & (0xff)));
-        pdu.add(((nWriteWords) >> (8)));
-        pdu.add(((nWriteWords) & (0xff)));
+        pdu.add((pduReadAddr >> 8));
+        pdu.add((pduReadAddr & 0xff));
+        pdu.add((nReadWords >> 8));
+        pdu.add((nReadWords & 0xff));
+        pdu.add((pduWriteAddr >> 8));
+        pdu.add((pduWriteAddr & 0xff));
+        pdu.add((nWriteWords >> 8));
+        pdu.add((nWriteWords & 0xff));
         pdu.add(nBytes);
         regpos = 0;
         while (regpos < nWriteWords) {
             val = values.get(regpos).intValue();
-            pdu.add(((val) >> (8)));
-            pdu.add(((val) & (0xff)));
+            pdu.add((val >> 8));
+            pdu.add((val & 0xff));
             regpos = regpos + 1;
         }
 
@@ -2535,7 +2535,7 @@ public class YSerialPort extends YFunction
         regpos = 0;
         idx = 2;
         while (regpos < nReadWords) {
-            val = ((reply.get(idx).intValue()) << (8));
+            val = ((reply.get(idx).intValue()) << 8);
             idx = idx + 1;
             val = val + reply.get(idx).intValue();
             idx = idx + 1;

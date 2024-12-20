@@ -776,13 +776,6 @@ public class YAPIContext
             newhub = new YUSBHub(this, false, _pktAckDelay);
         } else if (url.equals("net")) {
             if ((_apiMode & YAPI.DETECT_NET) == 0) {
-                if (YUSBHub.RegisterLocalhost()) {
-                    newhub = new YHTTPHub(this, new YGenericHub.HTTPParams("localhost"), false, null);
-                    synchronized (_hubs) {
-                        _hubs.add(newhub);
-                    }
-                    newhub.startNotifications();
-                }
                 _apiMode |= YAPI.DETECT_NET;
                 _ssdp.addCallback(_ssdpCallback);
             }
@@ -896,7 +889,7 @@ public class YAPIContext
                 httpsUrlConnection.setConnectTimeout(mstimout);
                 int flags = ssl_flags | this._sslFlags;
                 httpsUrlConnection.setSSLSocketFactory(this.getSocketFactory(flags));
-                if ((flags & YAPI.NO_HOSTNAME_CHECK )!=0) {
+                if ((flags & YAPI.NO_HOSTNAME_CHECK) != 0) {
                     httpsUrlConnection.setHostnameVerifier(new HostnameVerifier()
                     {
                         @Override
@@ -1155,7 +1148,7 @@ public class YAPIContext
      * Modifies the network connection delay for yRegisterHub() and yUpdateDeviceList().
      * This delay impacts only the YoctoHubs and VirtualHub
      * which are accessible through the network. By default, this delay is of 20000 milliseconds,
-     * but depending or you network you may want to change this delay,
+     * but depending on your network you may want to change this delay,
      * gor example if your network infrastructure is based on a GSM connection.
      *
      * @param networkMsTimeout : the network connection delay in milliseconds.
@@ -1172,7 +1165,7 @@ public class YAPIContext
      * Returns the network connection delay for yRegisterHub() and yUpdateDeviceList().
      * This delay impacts only the YoctoHubs and VirtualHub
      * which are accessible through the network. By default, this delay is of 20000 milliseconds,
-     * but depending or you network you may want to change this delay,
+     * but depending on your network you may want to change this delay,
      * for example if your network infrastructure is based on a GSM connection.
      *
      * @return the network connection delay in milliseconds.
@@ -1241,10 +1234,12 @@ public class YAPIContext
 
     public YGenericHub getGenHub(int hubref)
     {
-        if (hubref < 0 || hubref >= _hubs.size()) {
-            return null;
+        for (YGenericHub h : _hubs) {
+            if (h.get_hubid() == hubref) {
+                return h;
+            }
         }
-        return _hubs.get(hubref);
+        return null;
     }
 
 
@@ -1263,13 +1258,27 @@ public class YAPIContext
     {
 
         int nextref = hubref < 0 ? 0 : hubref + 1;
-        while (nextref < _hubs.size() && !_hubs.get(nextref).isEnabled()) {
-            nextref++;
+        int next_avail_ref = Integer.MAX_VALUE;
+
+        for (YGenericHub h : _hubs) {
+            if (!h.isEnabled()) {
+                continue;
+            }
+            int hubid = h.get_hubid();
+            if (hubid == nextref) {
+                return this.getYHubObj(nextref);
+            } else {
+                if (hubid > nextref && hubid < next_avail_ref) {
+                    next_avail_ref = hubid;
+                }
+            }
+
         }
-        if (nextref >= _hubs.size()) {
-            return null;
+        if (next_avail_ref != Integer.MAX_VALUE) {
+            return this.getYHubObj(next_avail_ref);
         }
-        return this.getYHubObj(nextref);
+
+        return null;
     }
 
 
@@ -1631,14 +1640,15 @@ public class YAPIContext
      */
     public int TestHub(String url, int mstimeout) throws YAPI_Exception
     {
+        if (url.equals("net")) {
+            throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Invalid URL");
+        }
         YGenericHub newhub;
         YGenericHub.HTTPParams parsedurl = new YGenericHub.HTTPParams(url);
         // Add hub to known list
         if (url.equals("usb")) {
             YUSBHub.CheckUSBAcces();
             newhub = new YUSBHub(this, true, _pktAckDelay);
-        } else if (url.equals("net")) {
-            return YAPI.SUCCESS;
         } else if (parsedurl.getHost().equals("callback")) {
             // fixme add TestHub function  for callback
             newhub = new YCallbackHub(this, parsedurl, null, null);

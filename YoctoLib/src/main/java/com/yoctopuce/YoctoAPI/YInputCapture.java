@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YInputCapture.java 55666 2023-07-27 09:30:10Z seb $
+ *  $Id: YInputCapture.java 63323 2024-11-13 09:32:34Z seb $
  *
  *  Implements FindI2cPort(), the high-level API for I2cPort functions
  *
@@ -968,8 +968,8 @@ public class YInputCapture extends YFunction
         if (msDuration > 1000) {
             msDuration = 1000;
         }
-        snapStart = ((-msDuration) / (2));
-        snapUrl = String.format(Locale.US, "snap.bin?t=%d&d=%d", snapStart,msDuration);
+        snapStart = ((-msDuration) / 2);
+        snapUrl = String.format(Locale.US, "snap.bin?t=%d&d=%d",snapStart,msDuration);
 
         snapData = _download(snapUrl);
         return new YInputCaptureData(this, snapData);

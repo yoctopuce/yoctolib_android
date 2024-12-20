@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YInputCaptureData.java 59594 2024-03-04 08:23:14Z mvuilleu $
+ * $Id: YInputCaptureData.java 63323 2024-11-13 09:32:34Z seb $
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
@@ -145,19 +145,19 @@ public class YInputCaptureData
 
         buffSize = (sdata).length;
         //noinspection DoubleNegation
-        if (!(buffSize >= 24)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "Invalid snapshot data (too short)");}
+        if (!(buffSize >= 24)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Invalid snapshot data (too short)");}
         _fmt = (sdata[0] & 0xff);
         _var1size = (sdata[1] & 0xff) - 48;
         _var2size = (sdata[2] & 0xff) - 48;
         _var3size = (sdata[3] & 0xff) - 48;
         //noinspection DoubleNegation
-        if (!(_fmt == 83)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "Unsupported snapshot format");}
+        if (!(_fmt == 83)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Unsupported snapshot format");}
         //noinspection DoubleNegation
-        if (!((_var1size >= 2) && (_var1size <= 4))) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "Invalid sample size");}
+        if (!((_var1size >= 2) && (_var1size <= 4))) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Invalid sample size");}
         //noinspection DoubleNegation
-        if (!((_var2size >= 0) && (_var1size <= 4))) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "Invalid sample size");}
+        if (!((_var2size >= 0) && (_var1size <= 4))) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Invalid sample size");}
         //noinspection DoubleNegation
-        if (!((_var3size >= 0) && (_var1size <= 4))) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "Invalid sample size");}
+        if (!((_var3size >= 0) && (_var1size <= 4))) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "Invalid sample size");}
         if (_var2size == 0) {
             _nVars = 1;
         } else {
@@ -179,24 +179,24 @@ public class YInputCaptureData
         _trigUTC = _trigUTC + (ms / 1000.0);
         recOfs = 24;
         while ((sdata[recOfs] & 0xff) >= 32) {
-            _var1unit = String.format(Locale.US, "%s%c", _var1unit,(sdata[recOfs] & 0xff));
+            _var1unit = String.format(Locale.US, "%s%c",_var1unit,(sdata[recOfs] & 0xff));
             recOfs = recOfs + 1;
         }
         if (_var2size > 0) {
             recOfs = recOfs + 1;
             while ((sdata[recOfs] & 0xff) >= 32) {
-                _var2unit = String.format(Locale.US, "%s%c", _var2unit,(sdata[recOfs] & 0xff));
+                _var2unit = String.format(Locale.US, "%s%c",_var2unit,(sdata[recOfs] & 0xff));
                 recOfs = recOfs + 1;
             }
         }
         if (_var3size > 0) {
             recOfs = recOfs + 1;
             while ((sdata[recOfs] & 0xff) >= 32) {
-                _var3unit = String.format(Locale.US, "%s%c", _var3unit,(sdata[recOfs] & 0xff));
+                _var3unit = String.format(Locale.US, "%s%c",_var3unit,(sdata[recOfs] & 0xff));
                 recOfs = recOfs + 1;
             }
         }
-        if (((recOfs) & (1)) == 1) {
+        if ((recOfs & 1) == 1) {
             // align to next word
             recOfs = recOfs + 1;
         }
@@ -357,7 +357,7 @@ public class YInputCaptureData
     public String get_serie2Unit() throws YAPI_Exception
     {
         //noinspection DoubleNegation
-        if (!(_nVars >= 2)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "There is no serie 2 in this capture data");}
+        if (!(_nVars >= 2)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "There is no serie 2 in this capture data");}
         return _var2unit;
     }
 
@@ -371,7 +371,7 @@ public class YInputCaptureData
     public String get_serie3Unit() throws YAPI_Exception
     {
         //noinspection DoubleNegation
-        if (!(_nVars >= 3)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "There is no serie 3 in this capture data");}
+        if (!(_nVars >= 3)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "There is no serie 3 in this capture data");}
         return _var3unit;
     }
 
@@ -403,7 +403,7 @@ public class YInputCaptureData
     public ArrayList<Double> get_serie2Values() throws YAPI_Exception
     {
         //noinspection DoubleNegation
-        if (!(_nVars >= 2)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "There is no serie 2 in this capture data");}
+        if (!(_nVars >= 2)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "There is no serie 2 in this capture data");}
         return _var2samples;
     }
 
@@ -420,7 +420,7 @@ public class YInputCaptureData
     public ArrayList<Double> get_serie3Values() throws YAPI_Exception
     {
         //noinspection DoubleNegation
-        if (!(_nVars >= 3)) { throw new YAPI_Exception( YAPI.INVALID_ARGUMENT,  "There is no serie 3 in this capture data");}
+        if (!(_nVars >= 3)) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, "There is no serie 3 in this capture data");}
         return _var3samples;
     }
 

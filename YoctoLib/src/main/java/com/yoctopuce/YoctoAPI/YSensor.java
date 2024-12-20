@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YSensor.java 61960 2024-07-29 13:50:07Z seb $
+ * $Id: YSensor.java 63323 2024-11-13 09:32:34Z seb $
  *
  * Implements yFindSensor(), the high-level API for Sensor functions
  *
@@ -1127,10 +1127,10 @@ public class YSensor extends YFunction
             _caltyp = 0;
             return 0;
         }
-        if ((_calibrationParam).indexOf(",") >= 0) {
+        if (_calibrationParam.indexOf(",") >= 0) {
             // Plain text format
             iCalib = YAPIContext._decodeFloats(_calibrationParam);
-            _caltyp = ((iCalib.get(0).intValue()) / (1000));
+            _caltyp = ((iCalib.get(0).intValue()) / 1000);
             if (_caltyp > 0) {
                 if (_caltyp < YAPI.YOCTO_CALIB_TYPE_OFS) {
                     // Unknown calibration type: calibrated value will be provided by the device
@@ -1277,7 +1277,7 @@ public class YSensor extends YFunction
 
         res = _download("api/dataLogger/recording?recording=1");
         //noinspection DoubleNegation
-        if (!((res).length > 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "unable to start datalogger");}
+        if (!((res).length > 0)) { throw new YAPI_Exception(YAPI.IO_ERROR, "unable to start datalogger");}
         return YAPI.SUCCESS;
     }
 
@@ -1292,7 +1292,7 @@ public class YSensor extends YFunction
 
         res = _download("api/dataLogger/recording?recording=0");
         //noinspection DoubleNegation
-        if (!((res).length > 0)) { throw new YAPI_Exception( YAPI.IO_ERROR,  "unable to stop datalogger");}
+        if (!((res).length > 0)) { throw new YAPI_Exception(YAPI.IO_ERROR, "unable to stop datalogger");}
         return YAPI.SUCCESS;
     }
 
@@ -1467,7 +1467,7 @@ public class YSensor extends YFunction
         res = String.format(Locale.US, "%d",YAPI.YOCTO_CALIB_TYPE_OFS);
         idx = 0;
         while (idx < npt) {
-            res = String.format(Locale.US, "%s,%f,%f", res, rawValues.get(idx).doubleValue(),refValues.get(idx).doubleValue());
+            res = String.format(Locale.US, "%s,%f,%f",res,rawValues.get(idx).doubleValue(),refValues.get(idx).doubleValue());
             idx = idx + 1;
         }
         return res;
@@ -1528,7 +1528,7 @@ public class YSensor extends YFunction
                 poww = poww * 0x100;
                 i = i + 1;
             }
-            if (((byteVal) & (0x80)) != 0) {
+            if ((byteVal & 0x80) != 0) {
                 avgRaw = avgRaw - poww;
             }
             avgVal = avgRaw / 1000.0;
@@ -1541,7 +1541,7 @@ public class YSensor extends YFunction
             maxVal = avgVal;
         } else {
             // averaged report: avg,avg-min,max-avg
-            sublen = 1 + ((report.get(1).intValue()) & (3));
+            sublen = 1 + ((report.get(1).intValue()) & 3);
             poww = 1;
             avgRaw = 0;
             byteVal = 0;
@@ -1553,10 +1553,10 @@ public class YSensor extends YFunction
                 i = i + 1;
                 sublen = sublen - 1;
             }
-            if (((byteVal) & (0x80)) != 0) {
+            if ((byteVal & 0x80) != 0) {
                 avgRaw = avgRaw - poww;
             }
-            sublen = 1 + ((((report.get(1).intValue()) >> (2))) & (3));
+            sublen = 1 + (((report.get(1).intValue()) >> 2) & 3);
             poww = 1;
             difRaw = 0;
             while ((sublen > 0) && (i < report.size())) {
@@ -1567,7 +1567,7 @@ public class YSensor extends YFunction
                 sublen = sublen - 1;
             }
             minRaw = avgRaw - difRaw;
-            sublen = 1 + ((((report.get(1).intValue()) >> (4))) & (3));
+            sublen = 1 + (((report.get(1).intValue()) >> 4) & 3);
             poww = 1;
             difRaw = 0;
             while ((sublen > 0) && (i < report.size())) {

@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YHTTPHub.java 61961 2024-07-29 13:52:22Z seb $
+ * $Id: YHTTPHub.java 63484 2024-11-26 09:46:00Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -103,6 +103,19 @@ public class YHTTPHub extends YGenericHub
     {
         synchronized (_authLock) {
             _authRetryCount = 0;
+        }
+    }
+
+    @Override
+    public synchronized void addKnownURL(String url)
+    {
+        super.addKnownURL(url);
+        HTTPParams params = new HTTPParams(url);
+        if (params.hasAuthParam() && !this._URL_params.hasAuthParam()) {
+            this._URL_params.updateAuth(params.getUser(), params.getPass());
+            if (this._runtime_http_params != null) {
+                this._runtime_http_params.updateAuth(params.getUser(), params.getPass());
+            }
         }
     }
 
@@ -245,7 +258,7 @@ public class YHTTPHub extends YGenericHub
         _runtime_http_params = null;
         _hubMode = HubMode.SECURE;
         if (this._portInfo.isEmpty()) {
-            _runtime_http_params = _URL_params;
+            _runtime_http_params = new HTTPParams(_URL_params);
         } else {
             if (this._usePureHTTP) {
                 // For VirtualHub-4web we use the first entry available regardless of the protocol and the port set
@@ -297,7 +310,7 @@ public class YHTTPHub extends YGenericHub
                 }
             }
             if (_runtime_http_params == null) {
-                _runtime_http_params = _URL_params;
+                _runtime_http_params = new HTTPParams(_URL_params);
             }
         }
     }
@@ -587,7 +600,7 @@ public class YHTTPHub extends YGenericHub
                 jsonObject.parse();
                 YJSONObject settingsOnly = jsonObject.getYJSONObject("api");
                 settingsOnly.remove("services");
-                String startupConfStr = settingsOnly.toJSON();
+                String startupConfStr = new String(settingsOnly.toJSON());
                 startupConf = startupConfStr.getBytes();
             } catch (Exception ex) {
                 startupConf = new byte[0];

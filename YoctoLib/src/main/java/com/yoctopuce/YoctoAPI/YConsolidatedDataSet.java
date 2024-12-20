@@ -1,5 +1,5 @@
 /*
- * $Id: YConsolidatedDataSet.java 54295 2023-05-01 12:37:19Z seb $
+ * $Id: YConsolidatedDataSet.java 63323 2024-11-13 09:32:34Z seb $
  *
  * Implements yFindDataSet(), the high-level API for DataSet functions
  *
@@ -190,12 +190,12 @@ public class YConsolidatedDataSet
                     if (currprogress < 0) {
                         currprogress = 100;
                     }
-                    _progresss.set( s, currprogress);
+                    _progresss.set(s, currprogress);
                     measures = _datasets.get(s).get_measures();
                 }
                 if (idx < measures.size()) {
                     currnexttim = measures.get(idx).get_endTimeUTC();
-                    _nexttim.set( s, currnexttim);
+                    _nexttim.set(s, currnexttim);
                 }
             }
             if (currnexttim > 0) {
@@ -221,8 +221,8 @@ public class YConsolidatedDataSet
                 measures = _datasets.get(s).get_measures();
                 newvalue = measures.get(idx).get_averageValue();
                 datarec.add(newvalue);
-                _nexttim.set( s, 0.0);
-                _nextidx.set( s, idx + 1);
+                _nexttim.set(s, 0.0);
+                _nextidx.set(s, idx + 1);
             } else {
                 datarec.add(Double.NaN);
             }
@@ -231,7 +231,7 @@ public class YConsolidatedDataSet
             s = s + 1;
         }
         if (globprogress > 0) {
-            globprogress = ((globprogress) / (_nsensors));
+            globprogress = (globprogress / _nsensors);
             if (globprogress > 99) {
                 globprogress = 99;
             }

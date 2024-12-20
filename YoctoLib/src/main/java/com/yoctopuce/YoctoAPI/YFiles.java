@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFiles.java 53886 2023-04-05 08:06:39Z mvuilleu $
+ * $Id: YFiles.java 63484 2024-11-26 09:46:00Z seb $
  *
  * Implements yFindFiles(), the high-level API for Files functions
  *
@@ -339,7 +339,7 @@ public class YFiles extends YFunction
         json = sendCommand("format");
         res = _json_get_key(json, "res");
         //noinspection DoubleNegation
-        if (!(res.equals("ok"))) { throw new YAPI_Exception( YAPI.IO_ERROR,  "format failed");}
+        if (!(res.equals("ok"))) { throw new YAPI_Exception(YAPI.IO_ERROR, "format failed");}
         return YAPI.SUCCESS;
     }
 
@@ -359,13 +359,13 @@ public class YFiles extends YFunction
     public ArrayList<YFileRecord> get_list(String pattern) throws YAPI_Exception
     {
         byte[] json = new byte[0];
-        ArrayList<String> filelist = new ArrayList<>();
+        ArrayList<byte[]> filelist = new ArrayList<>();
         ArrayList<YFileRecord> res = new ArrayList<>();
         json = sendCommand(String.format(Locale.US, "dir&f=%s",pattern));
         filelist = _json_get_array(json);
         res.clear();
-        for (String ii_0:filelist) {
-            res.add(new YFileRecord(ii_0));
+        for (byte[] ii_0:filelist) {
+            res.add(new YFileRecord(new String(ii_0)));
         }
         return res;
     }
@@ -382,8 +382,8 @@ public class YFiles extends YFunction
     public boolean fileExist(String filename) throws YAPI_Exception
     {
         byte[] json = new byte[0];
-        ArrayList<String> filelist = new ArrayList<>();
-        if ((filename).length() == 0) {
+        ArrayList<byte[]> filelist = new ArrayList<>();
+        if (filename.length() == 0) {
             return false;
         }
         json = sendCommand(String.format(Locale.US, "dir&f=%s",filename));
@@ -445,7 +445,7 @@ public class YFiles extends YFunction
         json = sendCommand(String.format(Locale.US, "del&f=%s",pathname));
         res  = _json_get_key(json, "res");
         //noinspection DoubleNegation
-        if (!(res.equals("ok"))) { throw new YAPI_Exception( YAPI.IO_ERROR,  "unable to remove file");}
+        if (!(res.equals("ok"))) { throw new YAPI_Exception(YAPI.IO_ERROR, "unable to remove file");}
         return YAPI.SUCCESS;
     }
 

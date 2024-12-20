@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YGenericHub.java 61961 2024-07-29 13:52:22Z seb $
+ * $Id: YGenericHub.java 63484 2024-11-26 09:46:00Z seb $
  *
  * Internal YGenericHub object
  *
@@ -128,6 +128,8 @@ abstract class YGenericHub
     protected int _networkTimeoutMs;
     private boolean _enabled = true;
     private final long _creation_time;
+    private static int _global_hub_id = 0;
+    private final int _hubid;
 
     YGenericHub(YAPIContext yctx, HTTPParams httpParams, boolean reportConnnectionLost)
     {
@@ -137,6 +139,7 @@ abstract class YGenericHub
         _URL_params = httpParams;
         _knownUrls.add(httpParams._originalURL);
         _creation_time = System.currentTimeMillis();
+        _hubid = _global_hub_id++;
     }
 
     abstract void release();
@@ -467,6 +470,11 @@ abstract class YGenericHub
 
     public abstract String getConnectionUrl();
 
+    public int get_hubid()
+    {
+        return _hubid;
+    }
+
     interface UpdateProgress
     {
         void firmware_progress(int percent, String message);
@@ -519,8 +527,8 @@ abstract class YGenericHub
 
         private String _host;
         private int _port;
-        private final String _user;
-        private final String _pass;
+        private String _user;
+        private String _pass;
         private String _proto;
         private final String _subDomain;
         private final String _originalURL;
@@ -528,6 +536,17 @@ abstract class YGenericHub
         public String getOriginalURL()
         {
             return _originalURL;
+        }
+
+        public HTTPParams(HTTPParams org)
+        {
+            this._host = org._host;
+            this._port = org._port;
+            this._user = org._user;
+            this._pass = org._pass;
+            this._proto = org._proto;
+            this._subDomain = org._subDomain;
+            this._originalURL = org._originalURL;
         }
 
         public HTTPParams(String url)
@@ -735,5 +754,12 @@ abstract class YGenericHub
                 _proto = is_secure ? "https" : "http";
             }
         }
+
+        public void updateAuth(String user, String pass)
+        {
+            _user = user;
+            _pass = pass;
+        }
+
     }
 }
