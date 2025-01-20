@@ -1,5 +1,5 @@
 /*
- * $Id: YDataSet.java 63484 2024-11-26 09:46:00Z seb $
+ * $Id: YDataSet.java 64027 2025-01-06 15:18:30Z seb $
  *
  * Implements yFindDataSet(), the high-level API for DataSet functions
  *
@@ -85,11 +85,13 @@ public class YDataSet
     protected double _summaryTotalTime = 0;
 
     //--- (end of generated code: YDataSet definitions)
+    private final YAPIContext _yapi;
 
     // YDataSet constructor, when instantiated directly by a function
     YDataSet(YFunction parent, String functionId, String unit, double startTime, double endTime)
     {
         _parent = parent;
+        _yapi = parent._yapi;
         _functionId = functionId;
         _unit = unit;
         _startTimeMs = startTime*1000;
@@ -103,6 +105,7 @@ public class YDataSet
     public YDataSet(YFunction parent)
     {
         _parent = parent;
+        _yapi = parent._yapi;
         _startTimeMs = 0;
         _endTimeMs = 0;
         _hardwareId = "";
@@ -200,7 +203,7 @@ public class YDataSet
         ArrayList<Double> measure_data = new ArrayList<>();
 
         if (_progress < 0) {
-            strdata = new String(data);
+            strdata = new String(data, _yapi._deviceCharset);
             if (strdata.equals("{}")) {
                 _parent._throw(YAPI.VERSION_MISMATCH, "device firmware is too old");
                 return YAPI.VERSION_MISMATCH;
@@ -591,7 +594,7 @@ public class YDataSet
                 stream = _streams.get(_progress);
                 if (stream._wasLoaded()) {
                     // Do not reload stream if it was already loaded
-                    return processMore(_progress, ("").getBytes());
+                    return processMore(_progress, ("").getBytes(_yapi._deviceCharset));
                 }
                 url = stream._get_url();
             }

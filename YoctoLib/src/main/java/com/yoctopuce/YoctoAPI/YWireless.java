@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YWireless.java 63484 2024-11-26 09:46:00Z seb $
+ * $Id: YWireless.java 64027 2025-01-06 15:18:30Z seb $
  *
  * Implements yFindWireless(), the high-level API for Wireless functions
  *
@@ -667,7 +667,7 @@ public class YWireless extends YFunction
         wlanlist = _json_get_array(json);
         res.clear();
         for (byte[] ii_0:wlanlist) {
-            res.add(new YWlanRecord(new String(ii_0)));
+            res.add(new YWlanRecord(new String(ii_0, _yapi._deviceCharset)));
         }
         return res;
     }

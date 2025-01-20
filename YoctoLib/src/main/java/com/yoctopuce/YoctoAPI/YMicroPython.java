@@ -693,7 +693,7 @@ public class YMicroPython extends YFunction
         String fullname;
         int res;
         fullname = String.format(Locale.US, "mpy:%s",codeName);
-        res = _upload(fullname, (mpyCode).getBytes());
+        res = _upload(fullname, (mpyCode).getBytes(_yapi._deviceCharset));
         return res;
     }
 
@@ -740,7 +740,7 @@ public class YMicroPython extends YFunction
         while ((bufflen > 0) && ((buff[bufflen] & 0xff) != 64)) {
             bufflen = bufflen - 1;
         }
-        res = (new String(buff)).substring(0, bufflen);
+        res = (new String(buff, _yapi._deviceCharset)).substring(0, bufflen);
         return res;
     }
 
@@ -812,7 +812,7 @@ public class YMicroPython extends YFunction
         }
 
         content = _download(url);
-        contentStr = new String(content);
+        contentStr = new String(content, _yapi._deviceCharset);
         // look for new position indicator at end of logs
         endPos = (content).length - 1;
         while ((endPos >= 0) && ((content[endPos] & 0xff) != 64)) {

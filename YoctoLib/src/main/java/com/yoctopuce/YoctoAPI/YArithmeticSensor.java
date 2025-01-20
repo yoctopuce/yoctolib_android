@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YArithmeticSensor.java 63323 2024-11-13 09:32:34Z seb $
+ *  $Id: YArithmeticSensor.java 64027 2025-01-06 15:18:30Z seb $
  *
  *  Implements FindArithmeticSensor(), the high-level API for ArithmeticSensor functions
  *
@@ -412,8 +412,8 @@ public class YArithmeticSensor extends YSensor
         fname = String.format(Locale.US, "arithmExpr%s.txt",id);
 
         content = String.format(Locale.US, "// %s\n%s",descr,expr);
-        data = _uploadEx(fname, (content).getBytes());
-        diags = new String(data);
+        data = _uploadEx(fname, (content).getBytes(_yapi._deviceCharset));
+        diags = new String(data, _yapi._deviceCharset);
         //noinspection DoubleNegation
         if (!((diags).substring(0, 8).equals("Result: "))) { throw new YAPI_Exception(YAPI.INVALID_ARGUMENT, diags);}
         resval = YAPI.ystr2float((diags).substring(8, 8 + diags.length()-8));
@@ -438,7 +438,7 @@ public class YArithmeticSensor extends YSensor
         id = (id).substring(16, 16 + id.length() - 16);
         fname = String.format(Locale.US, "arithmExpr%s.txt",id);
 
-        content = new String(_download(fname));
+        content = new String(_download(fname), _yapi._deviceCharset);
         idx = content.indexOf("\n");
         if (idx > 0) {
             content = (content).substring(idx+1, idx+1 + content.length()-(idx+1));
@@ -486,7 +486,7 @@ public class YArithmeticSensor extends YSensor
         }
         fname = String.format(Locale.US, "userMap%s.txt",name);
 
-        return _upload(fname, (defstr).getBytes());
+        return _upload(fname, (defstr).getBytes(_yapi._deviceCharset));
     }
 
     /**

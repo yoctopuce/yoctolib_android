@@ -1,5 +1,7 @@
 package com.yoctopuce.YoctoAPI;
 
+import java.io.UnsupportedEncodingException;
+
 class YJSONNumber extends YJSONContent
 {
     private long _intValue = 0;
@@ -59,10 +61,14 @@ class YJSONNumber extends YJSONContent
     @Override
     byte[] toJSON()
     {
-        if (_isFloat)
-            return Double.toString(_doubleValue).getBytes();
-        else
-            return Long.toString(_intValue).getBytes();
+        try {
+            if (_isFloat) {
+                return Double.toString(_doubleValue).getBytes(YAPI.DefaultEncoding);
+            } else
+                return Long.toString(_intValue).getBytes(YAPI.DefaultEncoding);
+        } catch (UnsupportedEncodingException e) {
+            return null;
+        }
     }
 
     long getLong()

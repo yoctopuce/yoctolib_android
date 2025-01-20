@@ -219,10 +219,10 @@ class YJSONObject extends YJSONContent
             for (String key : _parsed.keySet()) {
                 YJSONContent subContent = _parsed.get(key);
                 byte[] subres = subContent.toJSON();
-                res.write(sep.getBytes());
+                res.write(sep.getBytes(YAPI.DefaultEncoding));
                 res.write('"');
-                res.write(key.getBytes());
-                res.write("\":".getBytes());
+                res.write(key.getBytes(YAPI.DefaultEncoding));
+                res.write("\":".getBytes(YAPI.DefaultEncoding));
                 res.write(subres);
                 sep = ",";
             }

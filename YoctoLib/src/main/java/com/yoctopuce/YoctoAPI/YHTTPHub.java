@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YHTTPHub.java 63484 2024-11-26 09:46:00Z seb $
+ * $Id: YHTTPHub.java 64027 2025-01-06 15:18:30Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -124,7 +124,7 @@ public class YHTTPHub extends YGenericHub
     void parseWWWAuthenticate(String header)
     {
         synchronized (_authLock) {
-            int pos = header.indexOf("\r\nWWW-Authenticate:");
+            int pos = header.toLowerCase().indexOf("\r\nwww-authenticate:");
             if (pos == -1) return;
             header = header.substring(pos + 19);
             int eol = header.indexOf('\r');
@@ -168,7 +168,7 @@ public class YHTTPHub extends YGenericHub
 
             String plaintext = _runtime_http_params.getUser() + ":" + _http_realm + ":" + _runtime_http_params.getPass();
             mdigest.reset();
-            mdigest.update(plaintext.getBytes());
+            mdigest.update(plaintext.getBytes(_yctx._deviceCharset));
             byte[] digest = this.mdigest.digest();
             _ha1 = YAPIContext._bytesToHexStr(digest, 0, digest.length).toLowerCase();
         }
@@ -193,7 +193,7 @@ public class YHTTPHub extends YGenericHub
 
             String plaintext = method + ":" + uri;
             mdigest.reset();
-            mdigest.update(plaintext.getBytes());
+            mdigest.update(plaintext.getBytes(_yctx._deviceCharset));
             byte[] digest = this.mdigest.digest();
             String ha2 = YAPIContext._bytesToHexStr(digest, 0, digest.length).toLowerCase();
             plaintext = _ha1 + ":" + _nounce + ":" + nc + ":" + cnonce + ":auth:" + ha2;
@@ -601,7 +601,7 @@ public class YHTTPHub extends YGenericHub
                 YJSONObject settingsOnly = jsonObject.getYJSONObject("api");
                 settingsOnly.remove("services");
                 String startupConfStr = new String(settingsOnly.toJSON());
-                startupConf = startupConfStr.getBytes();
+                startupConf = startupConfStr.getBytes(_yctx._deviceCharset);
             } catch (Exception ex) {
                 startupConf = new byte[0];
             }

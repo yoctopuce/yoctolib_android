@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YTemperature.java 63484 2024-11-26 09:46:00Z seb $
+ *  $Id: YTemperature.java 64027 2025-01-06 15:18:30Z seb $
  *
  *  Implements FindTemperature(), the high-level API for Temperature functions
  *
@@ -713,7 +713,7 @@ public class YTemperature extends YSensor
         templist.clear();
         idx = 0;
         while (idx < siz) {
-            temp = YAPI.ystr2float(new String(paramlist.get(2*idx+1)))/1000.0;
+            temp = YAPI.ystr2float(new String(paramlist.get(2*idx+1), _yapi._deviceCharset))/1000.0;
             templist.add(temp);
             idx = idx + 1;
         }
@@ -731,7 +731,7 @@ public class YTemperature extends YSensor
                 temp = templist.get(idx).doubleValue();
                 if ((temp > prev) && (temp < curr)) {
                     curr = temp;
-                    currRes = YAPI.ystr2float(new String(paramlist.get(2*idx)))/1000.0;
+                    currRes = YAPI.ystr2float(new String(paramlist.get(2*idx), _yapi._deviceCharset))/1000.0;
                     found = 1;
                 }
                 idx = idx + 1;

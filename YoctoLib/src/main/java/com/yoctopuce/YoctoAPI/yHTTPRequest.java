@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: yHTTPRequest.java 61961 2024-07-29 13:52:22Z seb $
+ * $Id: yHTTPRequest.java 64027 2025-01-06 15:18:30Z seb $
  *
  * internal yHTTPRequest object
  *
@@ -232,11 +232,11 @@ class yHTTPRequest implements Runnable
         }
         if (rest_of_request == null) {
             header += "\r\n";
-            full_request = header.getBytes();
+            full_request = header.getBytes(_hub._yctx._deviceCharset);
         } else {
             int len = header.length();
             full_request = new byte[len + rest_of_request.length];
-            System.arraycopy(header.getBytes(), 0, full_request, 0, len);
+            System.arraycopy(header.getBytes(_hub._yctx._deviceCharset), 0, full_request, 0, len);
             System.arraycopy(rest_of_request, 0, full_request, len, rest_of_request.length);
         }
         boolean retry;

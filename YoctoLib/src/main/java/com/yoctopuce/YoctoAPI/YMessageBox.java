@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YMessageBox.java 63484 2024-11-26 09:46:00Z seb $
+ * $Id: YMessageBox.java 64027 2025-01-06 15:18:30Z seb $
  *
  * Implements FindMessageBox(), the high-level API for MessageBox functions
  *
@@ -713,7 +713,7 @@ public class YMessageBox extends YFunction
         while (waitMore > 0) {
             buff = _download(cmd);
             bufflen = (buff).length;
-            buffstr = new String(buff);
+            buffstr = new String(buff, _yapi._deviceCharset);
             buffstrlen = buffstr.length();
             idx = bufflen - 1;
             while ((idx > 0) && ((buff[idx] & 0xff) != 64) && ((buff[idx] & 0xff) != 10) && ((buff[idx] & 0xff) != 13)) {
@@ -1002,7 +1002,7 @@ public class YMessageBox extends YFunction
             }
             i = i + 1;
         }
-        resstr = new String(resbin);
+        resstr = new String(resbin, _yapi._deviceCharset);
         if (resstr.length() > reslen) {
             resstr = (resstr).substring(0, reslen);
         }
@@ -1022,7 +1022,7 @@ public class YMessageBox extends YFunction
         if (!(_gsm2unicodeReady)) {
             initGsm2Unicode();
         }
-        asc = (msg).getBytes();
+        asc = (msg).getBytes(_yapi._deviceCharset);
         asclen = (asc).length;
         extra = 0;
         i = 0;

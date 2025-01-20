@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YModule.java 63484 2024-11-26 09:46:00Z seb $
+ * $Id: YModule.java 64027 2025-01-06 15:18:30Z seb $
  *
  * YModule Class: Module control interface
  *
@@ -1347,7 +1347,7 @@ public class YModule extends YFunction
         settings = get_allSettings();
         if ((settings).length == 0) {
             _throw(YAPI.IO_ERROR, "Unable to get device settings");
-            settings = ("error:Unable to get device settings").getBytes();
+            settings = ("error:Unable to get device settings").getBytes(_yapi._deviceCharset);
         }
         return new YFirmwareUpdate(_yapi, serial, path, settings, force);
     }
@@ -1401,7 +1401,7 @@ public class YModule extends YFunction
         for (String ii_0:templist) {
             if (YAPIContext._atoi(get_firmwareRelease()) > 9000) {
                 url = String.format(Locale.US, "api/%s/sensorType",ii_0);
-                t_type = new String(_download(url));
+                t_type = new String(_download(url), _yapi._deviceCharset);
                 if (t_type.equals("RES_NTC") || t_type.equals("RES_LINEAR")) {
                     pageid = (ii_0).substring(11, 11 + ii_0.length() - 11);
                     if (pageid.equals("")) {
@@ -1409,7 +1409,7 @@ public class YModule extends YFunction
                     }
                     temp_data_bin = _download(String.format(Locale.US, "extra.json?page=%s",pageid));
                     if ((temp_data_bin).length > 0) {
-                        item = String.format(Locale.US, "%s{\"fid\":\"%s\", \"json\":%s}\n",sep,ii_0,new String(temp_data_bin));
+                        item = String.format(Locale.US, "%s{\"fid\":\"%s\", \"json\":%s}\n",sep,ii_0,new String(temp_data_bin, _yapi._deviceCharset));
                         ext_settings = ext_settings + item;
                         sep = ",";
                     }
@@ -1435,7 +1435,7 @@ public class YModule extends YFunction
                 }
             }
         }
-        res = ("{ \"api\":" + new String(settings) + ext_settings + "]}").getBytes();
+        res = ("{ \"api\":" + new String(settings, _yapi._deviceCharset) + ext_settings + "]}").getBytes(_yapi._deviceCharset);
         return res;
     }
 
@@ -1453,7 +1453,7 @@ public class YModule extends YFunction
 
         _download(url);
         // add records in growing resistance value
-        values = _json_get_array((jsonExtra).getBytes());
+        values = _json_get_array((jsonExtra).getBytes(_yapi._deviceCharset));
         ofs = 0;
         size = values.size();
         while (ofs + 1 < size) {
@@ -1474,13 +1474,13 @@ public class YModule extends YFunction
         byte[] tmp = new byte[0];
         String functionId;
         byte[] data = new byte[0];
-        extras = _json_get_array((jsonExtra).getBytes());
+        extras = _json_get_array((jsonExtra).getBytes(_yapi._deviceCharset));
         for (byte[] ii_0:extras) {
             tmp = _get_json_path(ii_0, "fid");
             functionId = _json_get_string(tmp);
             data = _get_json_path(ii_0, "json");
             if (hasFunction(functionId)) {
-                loadThermistorExtra(functionId, new String(data));
+                loadThermistorExtra(functionId, new String(data, _yapi._deviceCharset));
             }
         }
         return YAPI.SUCCESS;
@@ -1515,7 +1515,7 @@ public class YModule extends YFunction
         }
         json_extra = _get_json_path(settings, "extras");
         if ((json_extra).length > 0) {
-            set_extraSettings(new String(json_extra));
+            set_extraSettings(new String(json_extra, _yapi._deviceCharset));
         }
         set_allSettings(json_api);
         if (hasFunction("files")) {
@@ -1894,6 +1894,8 @@ public class YModule extends YFunction
         String fun;
         String attr;
         String value;
+        String old_serial;
+        String new_serial;
         String url;
         String tmp;
         byte[] binTmp = new byte[0];
@@ -1910,6 +1912,7 @@ public class YModule extends YFunction
         if ((binTmp).length > 0) {
             settings = binTmp;
         }
+        old_serial = "";
         oldval = "";
         newval = "";
         old_json_flat = _flattenJsonStruct(settings);
@@ -1929,6 +1932,9 @@ public class YModule extends YFunction
             old_jpath.add(jpath);
             old_jpath_len.add(jpath.length());
             old_val_arr.add(value);
+            if (jpath.equals("module/serialNumber")) {
+                old_serial = value;
+            }
         }
 
         try {
@@ -1937,6 +1943,10 @@ public class YModule extends YFunction
             // retry silently after a short wait
             YAPI.Sleep(500);
             actualSettings = _download("api.json");
+        }
+        new_serial = get_serialNumber();
+        if (old_serial.equals(new_serial) || old_serial.equals("")) {
+            old_serial = "_NO_SERIAL_FILTER_";
         }
         actualSettings = _flattenJsonStruct(actualSettings);
         new_dslist = _json_get_array(actualSettings);
@@ -2091,14 +2101,14 @@ public class YModule extends YFunction
             }
             if (do_update) {
                 do_update = false;
-                newval = new_val_arr.get(i);
                 j = 0;
                 found = false;
+                newval = new_val_arr.get(i);
                 while ((j < old_jpath.size()) && !(found)) {
                     if ((new_jpath_len.get(i).intValue() == old_jpath_len.get(j).intValue()) && (new_jpath.get(i).equals(old_jpath.get(j)))) {
                         found = true;
                         oldval = old_val_arr.get(j);
-                        if (!(newval.equals(oldval))) {
+                        if (!(newval.equals(oldval)) && !(oldval.equals(old_serial))) {
                             do_update = true;
                         }
                     }
@@ -2243,7 +2253,7 @@ public class YModule extends YFunction
         byte[] content = new byte[0];
 
         content = _download("logs.txt");
-        return new String(content);
+        return new String(content, _yapi._deviceCharset);
     }
 
     /**
@@ -2259,7 +2269,7 @@ public class YModule extends YFunction
      */
     public int log(String text) throws YAPI_Exception
     {
-        return _upload("logs.txt", (text).getBytes());
+        return _upload("logs.txt", (text).getBytes(_yapi._deviceCharset));
     }
 
     /**

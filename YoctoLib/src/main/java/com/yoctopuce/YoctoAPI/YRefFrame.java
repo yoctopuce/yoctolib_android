@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YRefFrame.java 63323 2024-11-13 09:32:34Z seb $
+ *  $Id: YRefFrame.java 64027 2025-01-06 15:18:30Z seb $
  *
  *  Implements FindRefFrame(), the high-level API for RefFrame functions
  *
@@ -1062,7 +1062,7 @@ public class YRefFrame extends YFunction
         }
 
         calibParam = _download("api/refFrame/calibrationParam.txt");
-        iCalib = YAPIContext._decodeFloats(new String(calibParam));
+        iCalib = YAPIContext._decodeFloats(new String(calibParam, _yapi._deviceCharset));
         cal3 = ((iCalib.get(1).intValue()) / 1000);
         calAcc = (cal3 / 100);
         calMag = (cal3 / 10) - 10*calAcc;

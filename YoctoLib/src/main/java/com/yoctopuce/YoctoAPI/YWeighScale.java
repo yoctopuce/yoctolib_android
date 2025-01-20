@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YWeighScale.java 63484 2024-11-26 09:46:00Z seb $
+ *  $Id: YWeighScale.java 64027 2025-01-06 15:18:30Z seb $
  *
  *  Implements FindWeighScale(), the high-level API for WeighScale functions
  *
@@ -923,8 +923,8 @@ public class YWeighScale extends YSensor
         compValues.clear();
         idx = 0;
         while (idx < siz) {
-            temp = YAPI.ystr2float(new String(paramlist.get(2*idx)))/1000.0;
-            comp = YAPI.ystr2float(new String(paramlist.get(2*idx+1)))/1000.0;
+            temp = YAPI.ystr2float(new String(paramlist.get(2*idx), _yapi._deviceCharset))/1000.0;
+            comp = YAPI.ystr2float(new String(paramlist.get(2*idx+1), _yapi._deviceCharset))/1000.0;
             tempValues.add(temp);
             compValues.add(comp);
             idx = idx + 1;

@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YNetwork.java 63323 2024-11-13 09:32:34Z seb $
+ *  $Id: YNetwork.java 64027 2025-01-06 15:18:30Z seb $
  *
  *  Implements FindNetwork(), the high-level API for Network functions
  *
@@ -2468,7 +2468,7 @@ public class YNetwork extends YFunction
         byte[] content = new byte[0];
 
         content = _download(String.format(Locale.US, "ping.txt?host=%s",host));
-        return new String(content);
+        return new String(content, _yapi._deviceCharset);
     }
 
     /**

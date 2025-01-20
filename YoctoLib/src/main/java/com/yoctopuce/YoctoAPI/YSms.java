@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YSms.java 63323 2024-11-13 09:32:34Z seb $
+ * $Id: YSms.java 64027 2025-01-06 15:18:30Z seb $
  *
  * Implements FindSms(), the high-level API for Sms functions
  *
@@ -74,6 +74,8 @@ public class YSms
     protected int _aggCnt = 0;
 
     //--- (end of generated code: YSms definitions)
+    private final YAPIContext _yapi;
+
 
 
     /**
@@ -82,6 +84,8 @@ public class YSms
     protected YSms(YMessageBox mbox)
     {
         _mbox = mbox;
+        _yapi = mbox._yapi;
+
         //--- (generated code: YSms attributes initialization)
         //--- (end of generated code: YSms attributes initialization)
     }
@@ -180,10 +184,10 @@ public class YSms
                 isolatin[i] = (byte)((_udata[2*i+1] & 0xff) & 0xff);
                 i = i + 1;
             }
-            return new String(isolatin);
+            return new String(isolatin, _yapi._deviceCharset);
         }
         // default: convert 8 bit to string as-is
-        return new String(_udata);
+        return new String(_udata, _yapi._deviceCharset);
     }
 
     public ArrayList<Integer> get_unicodeData()
@@ -416,11 +420,11 @@ public class YSms
             if (newdatalen == 0) {
                 // 7-bit not possible, switch to unicode
                 convertToUnicode();
-                newdata = (val).getBytes();
+                newdata = (val).getBytes(_yapi._deviceCharset);
                 newdatalen = (newdata).length;
             }
         } else {
-            newdata = (val).getBytes();
+            newdata = (val).getBytes(_yapi._deviceCharset);
             newdatalen = (newdata).length;
         }
         udatalen = (_udata).length;
@@ -597,7 +601,7 @@ public class YSms
         int val;
         int digit;
         byte[] res = new byte[0];
-        bytes = (addr).getBytes();
+        bytes = (addr).getBytes(_yapi._deviceCharset);
         srclen = (bytes).length;
         numlen = 0;
         i = 0;
@@ -741,7 +745,7 @@ public class YSms
             exp = (exp).substring(2, 2 + explen-2);
             explen = exp.length();
         }
-        expasc = (exp).getBytes();
+        expasc = (exp).getBytes(_yapi._deviceCharset);
         res = new byte[7];
         n = 0;
         i = 0;

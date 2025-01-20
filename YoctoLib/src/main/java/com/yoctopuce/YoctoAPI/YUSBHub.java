@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 61961 2024-07-29 13:52:22Z seb $
+ * $Id: YUSBHub.java 64130 2025-01-13 14:09:27Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -112,6 +112,11 @@ class YUSBHub extends YGenericHub
             }
         }
     };
+
+    public static String getYAPISharedLibraryPath()
+    {
+        return "";
+    }
 
     @Override
     boolean isCallbackMode()

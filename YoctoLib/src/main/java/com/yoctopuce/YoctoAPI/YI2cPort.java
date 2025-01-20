@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YI2cPort.java 63484 2024-11-26 09:46:00Z seb $
+ *  $Id: YI2cPort.java 64098 2025-01-08 10:59:39Z seb $
  *
  *  Implements FindI2cPort(), the high-level API for I2cPort functions
  *
@@ -1163,7 +1163,7 @@ public class YI2cPort extends YFunction
         byte[] databin = new byte[0];
 
         databin = _download(String.format(Locale.US, "rxcnt.bin?pos=%d",_rxptr));
-        availPosStr = new String(databin);
+        availPosStr = new String(databin, _yapi._deviceCharset);
         atPos = availPosStr.indexOf("@");
         res = YAPIContext._atoi((availPosStr).substring(0, atPos));
         return res;
@@ -1177,7 +1177,7 @@ public class YI2cPort extends YFunction
         byte[] databin = new byte[0];
 
         databin = _download(String.format(Locale.US, "rxcnt.bin?pos=%d",_rxptr));
-        availPosStr = new String(databin);
+        availPosStr = new String(databin, _yapi._deviceCharset);
         atPos = availPosStr.indexOf("@");
         res = YAPIContext._atoi((availPosStr).substring(atPos+1, atPos+1 + availPosStr.length()-atPos-1));
         return res;
@@ -1209,7 +1209,7 @@ public class YI2cPort extends YFunction
         } else {
             // long query
             prevpos = end_tell();
-            _upload("txdata", (query + "\r\n").getBytes());
+            _upload("txdata", (query + "\r\n").getBytes(_yapi._deviceCharset));
             url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d",maxWait,prevpos);
         }
 
@@ -1289,7 +1289,7 @@ public class YI2cPort extends YFunction
      */
     public int uploadJob(String jobfile,String jsonDef) throws YAPI_Exception
     {
-        _upload(jobfile, (jsonDef).getBytes());
+        _upload(jobfile, (jsonDef).getBytes(_yapi._deviceCharset));
         return YAPI.SUCCESS;
     }
 
@@ -1561,7 +1561,7 @@ public class YI2cPort extends YFunction
         byte[] buff = new byte[0];
         int idx;
         int ch;
-        buff = (codes).getBytes();
+        buff = (codes).getBytes(_yapi._deviceCharset);
         bufflen = (buff).length;
         if (bufflen < 100) {
             // if string is pure text, we can send it as a simple command (faster)
@@ -1584,8 +1584,7 @@ public class YI2cPort extends YFunction
     }
 
     /**
-     * Sends a text-encoded I2C code stream to the I2C bus, and terminate
-     * the message en relâchant le bus.
+     * Sends a text-encoded I2C code stream to the I2C bus, and release the bus.
      * An I2C code stream is a string made of hexadecimal data bytes,
      * but that may also include the I2C state transitions code:
      * "{S}" to emit a start condition,
@@ -1612,7 +1611,7 @@ public class YI2cPort extends YFunction
             return sendCommand(String.format(Locale.US, "!%s",codes));
         }
         // send string using file upload
-        buff = (String.format(Locale.US, "%s\n",codes)).getBytes();
+        buff = (String.format(Locale.US, "%s\n",codes)).getBytes(_yapi._deviceCharset);
         return _upload("txdata", buff);
     }
 
@@ -1650,7 +1649,7 @@ public class YI2cPort extends YFunction
         if (bufflen < 100) {
             return sendCommand(String.format(Locale.US, "+%s",hexString));
         }
-        buff = (hexString).getBytes();
+        buff = (hexString).getBytes(_yapi._deviceCharset);
 
         return _upload("txdata", buff);
     }
@@ -1748,7 +1747,7 @@ public class YI2cPort extends YFunction
         _rxptr = _decode_json_int(msgarr.get(msglen));
         idx = 0;
         while (idx < msglen) {
-            res.add(new YI2cSnoopingRecord(new String(msgarr.get(idx))));
+            res.add(new YI2cSnoopingRecord(new String(msgarr.get(idx), _yapi._deviceCharset)));
             idx = idx + 1;
         }
         return res;

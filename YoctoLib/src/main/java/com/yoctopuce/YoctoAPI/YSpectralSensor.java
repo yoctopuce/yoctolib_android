@@ -111,6 +111,14 @@ public class YSpectralSensor extends YFunction
      */
     public static final String NEARRAL3_INVALID = YAPI.INVALID_STRING;
     /**
+     * invalid nearHTMLColor value
+     */
+    public static final String NEARHTMLCOLOR_INVALID = YAPI.INVALID_STRING;
+    /**
+     * invalid nearSimpleColor value
+     */
+    public static final String NEARSIMPLECOLOR_INVALID = YAPI.INVALID_STRING;
+    /**
      * invalid ledCurrentAtPowerOn value
      */
     public static final int LEDCURRENTATPOWERON_INVALID = YAPI.INVALID_INT;
@@ -135,6 +143,8 @@ public class YSpectralSensor extends YFunction
     protected String _nearRAL1 = NEARRAL1_INVALID;
     protected String _nearRAL2 = NEARRAL2_INVALID;
     protected String _nearRAL3 = NEARRAL3_INVALID;
+    protected String _nearHTMLColor = NEARHTMLCOLOR_INVALID;
+    protected String _nearSimpleColor = NEARSIMPLECOLOR_INVALID;
     protected int _ledCurrentAtPowerOn = LEDCURRENTATPOWERON_INVALID;
     protected int _integrationTimeAtPowerOn = INTEGRATIONTIMEATPOWERON_INVALID;
     protected int _gainAtPowerOn = GAINATPOWERON_INVALID;
@@ -233,6 +243,12 @@ public class YSpectralSensor extends YFunction
         if (json_val.has("nearRAL3")) {
             _nearRAL3 = json_val.getString("nearRAL3");
         }
+        if (json_val.has("nearHTMLColor")) {
+            _nearHTMLColor = json_val.getString("nearHTMLColor");
+        }
+        if (json_val.has("nearSimpleColor")) {
+            _nearSimpleColor = json_val.getString("nearSimpleColor");
+        }
         if (json_val.has("ledCurrentAtPowerOn")) {
             _ledCurrentAtPowerOn = json_val.getInt("ledCurrentAtPowerOn");
         }
@@ -284,9 +300,7 @@ public class YSpectralSensor extends YFunction
 
     /**
      * Changes the luminosity of the module leds. The parameter is a
-     * value between 0 and 100.
-     * Remember to call the saveToFlash() method of the module if the
-     * modification must be kept.
+     * value between 0 and 254.
      *
      * @param newval : an integer corresponding to the luminosity of the module leds
      *
@@ -306,9 +320,7 @@ public class YSpectralSensor extends YFunction
 
     /**
      * Changes the luminosity of the module leds. The parameter is a
-     * value between 0 and 100.
-     * Remember to call the saveToFlash() method of the module if the
-     * modification must be kept.
+     * value between 0 and 254.
      *
      * @param newval : an integer corresponding to the luminosity of the module leds
      *
@@ -361,7 +373,6 @@ public class YSpectralSensor extends YFunction
     /**
      * Returns the resolution of the measured values. The resolution corresponds to the numerical precision
      * of the measures, which is not always the same as the actual precision of the sensor.
-     * Remember to call the saveToFlash() method of the module if the modification must be kept.
      *
      * @return a floating point number corresponding to the resolution of the measured values
      *
@@ -384,7 +395,6 @@ public class YSpectralSensor extends YFunction
     /**
      * Returns the resolution of the measured values. The resolution corresponds to the numerical precision
      * of the measures, which is not always the same as the actual precision of the sensor.
-     * Remember to call the saveToFlash() method of the module if the modification must be kept.
      *
      * @return a floating point number corresponding to the resolution of the measured values
      *
@@ -546,9 +556,10 @@ public class YSpectralSensor extends YFunction
     }
 
     /**
-     * Return the model for the estimation colors.
+     * Returns the model for color estimation.
      *
-     * @return either YSpectralSensor.ESTIMATIONMODEL_REFLECTION or YSpectralSensor.ESTIMATIONMODEL_EMISSION
+     *  @return either YSpectralSensor.ESTIMATIONMODEL_REFLECTION or
+     * YSpectralSensor.ESTIMATIONMODEL_EMISSION, according to the model for color estimation
      *
      * @throws YAPI_Exception on error
      */
@@ -567,9 +578,10 @@ public class YSpectralSensor extends YFunction
     }
 
     /**
-     * Return the model for the estimation colors.
+     * Returns the model for color estimation.
      *
-     * @return either YSpectralSensor.ESTIMATIONMODEL_REFLECTION or YSpectralSensor.ESTIMATIONMODEL_EMISSION
+     *  @return either YSpectralSensor.ESTIMATIONMODEL_REFLECTION or
+     * YSpectralSensor.ESTIMATIONMODEL_EMISSION, according to the model for color estimation
      *
      * @throws YAPI_Exception on error
      */
@@ -579,9 +591,11 @@ public class YSpectralSensor extends YFunction
     }
 
     /**
-     * Change the model for the estimation colors.
+     * Changes the model for color estimation.
+     * Remember to call the saveToFlash() method of the module if the modification must be kept.
      *
-     * @param newval : either YSpectralSensor.ESTIMATIONMODEL_REFLECTION or YSpectralSensor.ESTIMATIONMODEL_EMISSION
+     *  @param newval : either YSpectralSensor.ESTIMATIONMODEL_REFLECTION or
+     * YSpectralSensor.ESTIMATIONMODEL_EMISSION, according to the model for color estimation
      *
      * @return YAPI.SUCCESS if the call succeeds.
      *
@@ -598,9 +612,11 @@ public class YSpectralSensor extends YFunction
     }
 
     /**
-     * Change the model for the estimation colors.
+     * Changes the model for color estimation.
+     * Remember to call the saveToFlash() method of the module if the modification must be kept.
      *
-     * @param newval : either YSpectralSensor.ESTIMATIONMODEL_REFLECTION or YSpectralSensor.ESTIMATIONMODEL_EMISSION
+     *  @param newval : either YSpectralSensor.ESTIMATIONMODEL_REFLECTION or
+     * YSpectralSensor.ESTIMATIONMODEL_EMISSION, according to the model for color estimation
      *
      * @return YAPI.SUCCESS if the call succeeds.
      *
@@ -647,11 +663,11 @@ public class YSpectralSensor extends YFunction
     }
 
     /**
-     * Returns the estimated color in RGB format.
+     * Returns the estimated color in RGB format (0xRRGGBB).
      * This method retrieves the estimated color values
      * and returns them as an RGB object or structure.
      *
-     * @return an integer corresponding to the estimated color in RGB format
+     * @return an integer corresponding to the estimated color in RGB format (0xRRGGBB)
      *
      * @throws YAPI_Exception on error
      */
@@ -670,11 +686,11 @@ public class YSpectralSensor extends YFunction
     }
 
     /**
-     * Returns the estimated color in RGB format.
+     * Returns the estimated color in RGB format (0xRRGGBB).
      * This method retrieves the estimated color values
      * and returns them as an RGB object or structure.
      *
-     * @return an integer corresponding to the estimated color in RGB format
+     * @return an integer corresponding to the estimated color in RGB format (0xRRGGBB)
      *
      * @throws YAPI_Exception on error
      */
@@ -684,11 +700,11 @@ public class YSpectralSensor extends YFunction
     }
 
     /**
-     * Returns the estimated color in HSL format.
+     * Returns the estimated color in HSL (Hue, Saturation, Lightness) format.
      * This method retrieves the estimated color values
      * and returns them as an HSL object or structure.
      *
-     * @return an integer corresponding to the estimated color in HSL format
+     * @return an integer corresponding to the estimated color in HSL (Hue, Saturation, Lightness) format
      *
      * @throws YAPI_Exception on error
      */
@@ -707,11 +723,11 @@ public class YSpectralSensor extends YFunction
     }
 
     /**
-     * Returns the estimated color in HSL format.
+     * Returns the estimated color in HSL (Hue, Saturation, Lightness) format.
      * This method retrieves the estimated color values
      * and returns them as an HSL object or structure.
      *
-     * @return an integer corresponding to the estimated color in HSL format
+     * @return an integer corresponding to the estimated color in HSL (Hue, Saturation, Lightness) format
      *
      * @throws YAPI_Exception on error
      */
@@ -836,6 +852,57 @@ public class YSpectralSensor extends YFunction
         return res;
     }
 
+    public String get_nearHTMLColor() throws YAPI_Exception
+    {
+        String res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(_yapi._defaultCacheValidity) != YAPI.SUCCESS) {
+                    return NEARHTMLCOLOR_INVALID;
+                }
+            }
+            res = _nearHTMLColor;
+        }
+        return res;
+    }
+
+    /**
+     * Returns the estimated color.
+     * This method retrieves the estimated color values
+     * and returns them as the color name.
+     *
+     * @return a string corresponding to the estimated color
+     *
+     * @throws YAPI_Exception on error
+     */
+    public String get_nearSimpleColor() throws YAPI_Exception
+    {
+        String res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(_yapi._defaultCacheValidity) != YAPI.SUCCESS) {
+                    return NEARSIMPLECOLOR_INVALID;
+                }
+            }
+            res = _nearSimpleColor;
+        }
+        return res;
+    }
+
+    /**
+     * Returns the estimated color.
+     * This method retrieves the estimated color values
+     * and returns them as the color name.
+     *
+     * @return a string corresponding to the estimated color
+     *
+     * @throws YAPI_Exception on error
+     */
+    public String getNearSimpleColor() throws YAPI_Exception
+    {
+        return get_nearSimpleColor();
+    }
+
     public int get_ledCurrentAtPowerOn() throws YAPI_Exception
     {
         int res;
@@ -889,14 +956,6 @@ public class YSpectralSensor extends YFunction
         return set_ledCurrentAtPowerOn(newval);
     }
 
-    /**
-     * Retrieves the integration time at power-on.
-     * This method updates the power-on integration time value.
-     *
-     * @return an integer
-     *
-     * @throws YAPI_Exception on error
-     */
     public int get_integrationTimeAtPowerOn() throws YAPI_Exception
     {
         int res;
@@ -909,19 +968,6 @@ public class YSpectralSensor extends YFunction
             res = _integrationTimeAtPowerOn;
         }
         return res;
-    }
-
-    /**
-     * Retrieves the integration time at power-on.
-     * This method updates the power-on integration time value.
-     *
-     * @return an integer
-     *
-     * @throws YAPI_Exception on error
-     */
-    public int getIntegrationTimeAtPowerOn() throws YAPI_Exception
-    {
-        return get_integrationTimeAtPowerOn();
     }
 
     /**

@@ -160,7 +160,7 @@ class YJSONArray extends YJSONContent
             String sep = "";
             for (YJSONContent yjsonContent : _arrayValue) {
                 byte[] subres = yjsonContent.toJSON();
-                res.write(sep.getBytes());
+                res.write(sep.getBytes(YAPI.DefaultEncoding));
                 res.write(subres);
                 sep = ",";
             }

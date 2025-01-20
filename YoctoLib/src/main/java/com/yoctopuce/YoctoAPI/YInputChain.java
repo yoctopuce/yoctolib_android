@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YInputChain.java 63323 2024-11-13 09:32:34Z seb $
+ *  $Id: YInputChain.java 64027 2025-01-06 15:18:30Z seb $
  *
  *  Implements FindInputChain(), the high-level API for InputChain functions
  *
@@ -1049,7 +1049,7 @@ public class YInputChain extends YFunction
         byte[] content = new byte[0];
 
         content = _download("events.txt");
-        return new String(content);
+        return new String(content, _yapi._deviceCharset);
     }
 
     /**
@@ -1123,7 +1123,7 @@ public class YInputChain extends YFunction
         url = String.format(Locale.US, "events.txt?pos=%d",_eventPos);
 
         content = _download(url);
-        contentStr = new String(content);
+        contentStr = new String(content, _yapi._deviceCharset);
         eventArr = new ArrayList<>(Arrays.asList(contentStr.split("\n")));
         arrLen = eventArr.size();
         //noinspection DoubleNegation

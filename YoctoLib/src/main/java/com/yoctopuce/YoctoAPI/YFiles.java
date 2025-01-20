@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFiles.java 63484 2024-11-26 09:46:00Z seb $
+ * $Id: YFiles.java 64027 2025-01-06 15:18:30Z seb $
  *
  * Implements yFindFiles(), the high-level API for Files functions
  *
@@ -365,7 +365,7 @@ public class YFiles extends YFunction
         filelist = _json_get_array(json);
         res.clear();
         for (byte[] ii_0:filelist) {
-            res.add(new YFileRecord(new String(ii_0)));
+            res.add(new YFileRecord(new String(ii_0, _yapi._deviceCharset)));
         }
         return res;
     }

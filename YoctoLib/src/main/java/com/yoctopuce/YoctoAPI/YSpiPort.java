@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YSpiPort.java 63484 2024-11-26 09:46:00Z seb $
+ *  $Id: YSpiPort.java 64027 2025-01-06 15:18:30Z seb $
  *
  *  Implements FindSpiPort(), the high-level API for SpiPort functions
  *
@@ -1354,7 +1354,7 @@ public class YSpiPort extends YFunction
         byte[] databin = new byte[0];
 
         databin = _download(String.format(Locale.US, "rxcnt.bin?pos=%d",_rxptr));
-        availPosStr = new String(databin);
+        availPosStr = new String(databin, _yapi._deviceCharset);
         atPos = availPosStr.indexOf("@");
         res = YAPIContext._atoi((availPosStr).substring(0, atPos));
         return res;
@@ -1368,7 +1368,7 @@ public class YSpiPort extends YFunction
         byte[] databin = new byte[0];
 
         databin = _download(String.format(Locale.US, "rxcnt.bin?pos=%d",_rxptr));
-        availPosStr = new String(databin);
+        availPosStr = new String(databin, _yapi._deviceCharset);
         atPos = availPosStr.indexOf("@");
         res = YAPIContext._atoi((availPosStr).substring(atPos+1, atPos+1 + availPosStr.length()-atPos-1));
         return res;
@@ -1400,7 +1400,7 @@ public class YSpiPort extends YFunction
         } else {
             // long query
             prevpos = end_tell();
-            _upload("txdata", (query + "\r\n").getBytes());
+            _upload("txdata", (query + "\r\n").getBytes(_yapi._deviceCharset));
             url = String.format(Locale.US, "rxmsg.json?len=1&maxw=%d&pos=%d",maxWait,prevpos);
         }
 
@@ -1480,7 +1480,7 @@ public class YSpiPort extends YFunction
      */
     public int uploadJob(String jobfile,String jsonDef) throws YAPI_Exception
     {
-        _upload(jobfile, (jsonDef).getBytes());
+        _upload(jobfile, (jsonDef).getBytes(_yapi._deviceCharset));
         return YAPI.SUCCESS;
     }
 
@@ -1546,7 +1546,7 @@ public class YSpiPort extends YFunction
         int bufflen;
         int idx;
         int ch;
-        buff = (text).getBytes();
+        buff = (text).getBytes(_yapi._deviceCharset);
         bufflen = (buff).length;
         if (bufflen < 100) {
             // if string is pure text, we can send it as a simple command (faster)
@@ -1659,7 +1659,7 @@ public class YSpiPort extends YFunction
         int bufflen;
         int idx;
         int ch;
-        buff = (String.format(Locale.US, "%s\r\n",text)).getBytes();
+        buff = (String.format(Locale.US, "%s\r\n",text)).getBytes(_yapi._deviceCharset);
         bufflen = (buff).length-2;
         if (bufflen < 100) {
             // if string is pure text, we can send it as a simple command (faster)
@@ -1782,7 +1782,7 @@ public class YSpiPort extends YFunction
             bufflen = bufflen - 1;
         }
         _rxptr = endpos;
-        res = (new String(buff)).substring(0, bufflen);
+        res = (new String(buff, _yapi._deviceCharset)).substring(0, bufflen);
         return res;
     }
 
@@ -1968,7 +1968,7 @@ public class YSpiPort extends YFunction
         _rxptr = _decode_json_int(msgarr.get(msglen));
         idx = 0;
         while (idx < msglen) {
-            res.add(new YSpiSnoopingRecord(new String(msgarr.get(idx))));
+            res.add(new YSpiSnoopingRecord(new String(msgarr.get(idx), _yapi._deviceCharset)));
             idx = idx + 1;
         }
         return res;

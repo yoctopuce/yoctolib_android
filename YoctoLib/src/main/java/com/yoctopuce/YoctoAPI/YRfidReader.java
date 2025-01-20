@@ -419,7 +419,7 @@ public class YRfidReader extends YFunction
             fab = -1;
             lab = -1;
         } else {
-            jsonStr = new String(json);
+            jsonStr = new String(json, _yapi._deviceCharset);
             errCode = YAPIContext._atoi(_json_get_key(json, "err"));
             errBlk = YAPIContext._atoi(_json_get_key(json, "errBlk"))-1;
             if (jsonStr.indexOf("\"fab\":") >= 0) {
@@ -773,7 +773,7 @@ public class YRfidReader extends YFunction
      */
     public String tagReadStr(String tagId,int firstBlock,int nChars,YRfidOptions options,YRfidStatus status) throws YAPI_Exception
     {
-        return new String(tagReadBin(tagId, firstBlock, nChars, options, status));
+        return new String(tagReadBin(tagId, firstBlock, nChars, options, status), _yapi._deviceCharset);
     }
 
     /**
@@ -924,7 +924,7 @@ public class YRfidReader extends YFunction
      * Writes data provided as an ASCII string to an RFID tag memory.
      * The write operation may span accross multiple blocks if the
      * number of bytes to write is larger than the RFID tag block size.
-     * Note that only the characters présent  in  the provided string
+     * Note that only the characters present in the provided string
      * will be written, there is no notion of string length. If your
      * string data have variable length, you'll have to encode the
      * string length yourself, with a terminal zero for instannce.
@@ -958,7 +958,7 @@ public class YRfidReader extends YFunction
     public int tagWriteStr(String tagId,int firstBlock,String text,YRfidOptions options,YRfidStatus status) throws YAPI_Exception
     {
         byte[] buff = new byte[0];
-        buff = (text).getBytes();
+        buff = (text).getBytes(_yapi._deviceCharset);
 
         return tagWriteBin(tagId, firstBlock, buff, options, status);
     }
@@ -1156,7 +1156,7 @@ public class YRfidReader extends YFunction
         byte[] content = new byte[0];
 
         content = _download("events.txt?pos=0");
-        return new String(content);
+        return new String(content, _yapi._deviceCharset);
     }
 
     /**
@@ -1225,7 +1225,7 @@ public class YRfidReader extends YFunction
             _isFirstCb = false;
             _eventStamp = 0;
             content = _download("events.txt");
-            contentStr = new String(content);
+            contentStr = new String(content, _yapi._deviceCharset);
             eventArr = new ArrayList<>(Arrays.asList(contentStr.split("\n")));
             arrLen = eventArr.size();
             //noinspection DoubleNegation
@@ -1240,7 +1240,7 @@ public class YRfidReader extends YFunction
             // load all events since previous call
             url = String.format(Locale.US, "events.txt?pos=%d",_eventPos);
             content = _download(url);
-            contentStr = new String(content);
+            contentStr = new String(content, _yapi._deviceCharset);
             eventArr = new ArrayList<>(Arrays.asList(contentStr.split("\n")));
             arrLen = eventArr.size();
             //noinspection DoubleNegation
@@ -1263,7 +1263,7 @@ public class YRfidReader extends YFunction
                 intStamp = Integer.valueOf(hexStamp,16);
                 if (intStamp >= _eventStamp) {
                     _eventStamp = intStamp;
-                    binMStamp = ((eventStr).substring(8, 8 + 2)).getBytes();
+                    binMStamp = ((eventStr).substring(8, 8 + 2)).getBytes(_yapi._deviceCharset);
                     msStamp = ((binMStamp[0] & 0xff)-64) * 32 + (binMStamp[1] & 0xff);
                     evtStamp = intStamp + (0.001 * msStamp);
                     dataPos = eventStr.indexOf("=")+1;

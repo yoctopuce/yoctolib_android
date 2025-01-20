@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YFunction.java 63484 2024-11-26 09:46:00Z seb $
+ * $Id: YFunction.java 64027 2025-01-06 15:18:30Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -488,7 +488,7 @@ public class YFunction
         byte[] attrVal = new byte[0];
         url = String.format(Locale.US, "api/%s/%s",get_functionId(),attrName);
         attrVal = _download(url);
-        return new String(attrVal);
+        return new String(attrVal, _yapi._deviceCharset);
     }
 
     /**
@@ -760,7 +760,7 @@ public class YFunction
     {
         YJSONArray array = null;
         try {
-            String s = new String(json);
+            String s = new String(json,YAPI.DefaultEncoding);
             YJSONString yjsonString = new YJSONString(s, 0, s.length());
             yjsonString.parse();
             return yjsonString.getString();
@@ -861,7 +861,7 @@ public class YFunction
     {
         YJSONObject jsonObject = null;
         try {
-            jsonObject = new YJSONObject(new String(json));
+            jsonObject = new YJSONObject(new String(json,_yapi._deviceCharset));
             jsonObject.parse();
         } catch (Exception ex) {
             return new byte[0];
@@ -870,7 +870,7 @@ public class YFunction
         String[] split = path.split("\\|");
         int ofs = 0;
         String tmp = _get_json_path_struct(jsonObject, split, 0);
-        return tmp.getBytes();
+        return tmp.getBytes(_yapi._deviceCharset);
     }
 
 

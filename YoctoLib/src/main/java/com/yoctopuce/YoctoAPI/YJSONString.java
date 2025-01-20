@@ -80,28 +80,28 @@ class YJSONString extends YJSONContent
                 char c = (char)stringValueBytes[i];
                 switch (c) {
                     case '"':
-                        res.write("\\\"".getBytes());
+                        res.write("\\\"".getBytes(YAPI.DefaultEncoding));
                         break;
                     case '\\':
-                        res.write("\\\\".getBytes());
+                        res.write("\\\\".getBytes(YAPI.DefaultEncoding));
                         break;
                     case '/':
-                        res.write("\\/".getBytes());
+                        res.write("\\/".getBytes(YAPI.DefaultEncoding));
                         break;
                     case '\b':
-                        res.write("\\b".getBytes());
+                        res.write("\\b".getBytes(YAPI.DefaultEncoding));
                         break;
                     case '\f':
-                        res.write("\\f".getBytes());
+                        res.write("\\f".getBytes(YAPI.DefaultEncoding));
                         break;
                     case '\n':
-                        res.write("\\n".getBytes());
+                        res.write("\\n".getBytes(YAPI.DefaultEncoding));
                         break;
                     case '\r':
-                        res.write("\\r".getBytes());
+                        res.write("\\r".getBytes(YAPI.DefaultEncoding));
                         break;
                     case '\t':
-                        res.write("\\t".getBytes());
+                        res.write("\\t".getBytes(YAPI.DefaultEncoding));
                         break;
                     default:
                         res.write(c);
