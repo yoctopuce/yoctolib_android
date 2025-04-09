@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YArithmeticSensor.java 64027 2025-01-06 15:18:30Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindArithmeticSensor(), the high-level API for ArithmeticSensor functions
  *

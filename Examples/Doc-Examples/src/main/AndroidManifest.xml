@@ -57,6 +57,15 @@
                 android:value="com.yoctopuce.doc_examples.Doc_Examples" />
         </activity>
         <!-- generated start -->
+        <!-- generated GettingStarted_Yocto_Spectral start -->
+        <activity
+            android:name=".GettingStarted_Yocto_Spectral"
+            android:label="Yocto-Spectral">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.yoctopuce.doc_examples.Doc_Examples" />
+        </activity>
+        <!-- generated GettingStarted_Yocto_Spectral stop -->   
         <!-- generated GettingStarted_Yocto_RFID start -->
         <activity
             android:name=".GettingStarted_Yocto_RFID"

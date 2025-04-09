@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YGenericSensor.java 61960 2024-07-29 13:50:07Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindGenericSensor(), the high-level API for GenericSensor functions
  *

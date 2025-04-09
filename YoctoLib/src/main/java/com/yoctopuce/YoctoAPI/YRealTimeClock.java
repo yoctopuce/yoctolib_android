@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YRealTimeClock.java 53874 2023-04-04 17:43:00Z mvuilleu $
+ *  $Id: svn_id $
  *
  *  Implements FindRealTimeClock(), the high-level API for RealTimeClock functions
  *

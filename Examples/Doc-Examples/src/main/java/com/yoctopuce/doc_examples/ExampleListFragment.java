@@ -21,6 +21,9 @@ public class ExampleListFragment extends ListFragment {
         mExampleList.add(new Example("Inventory (Network)", InventoryNetwork.class, false));
         mExampleList.add(new Example("Prog-MODBUS", ProgModbus.class, false));
         /** generated start */
+        /** generated GettingStarted_Yocto_Spectral start */
+        mExampleList.add(new Example("Yocto-Spectral", GettingStarted_Yocto_Spectral.class, false));
+        /** generated GettingStarted_Yocto_Spectral stop */   
         /** generated GettingStarted_Yocto_RFID start */
         mExampleList.add(new Example("Yocto-RFID", GettingStarted_Yocto_RFID.class, false));
         /** generated GettingStarted_Yocto_RFID stop */   

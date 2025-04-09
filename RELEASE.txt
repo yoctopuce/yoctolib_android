@@ -1,5 +1,3 @@
-Android v2.0.64286
+Android v2.1.654
 
-- Add YAPI::GetYAPISharedLibraryPath method
-- Fix typos
-- Remove exotic char form YCellular class
+- test build version

@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YWeighScale.java 64027 2025-01-06 15:18:30Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindWeighScale(), the high-level API for WeighScale functions
  *

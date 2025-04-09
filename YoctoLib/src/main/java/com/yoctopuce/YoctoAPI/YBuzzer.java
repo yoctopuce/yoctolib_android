@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YBuzzer.java 64027 2025-01-06 15:18:30Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindBuzzer(), the high-level API for Buzzer functions
  *

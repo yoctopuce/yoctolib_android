@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YRefFrame.java 64027 2025-01-06 15:18:30Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindRefFrame(), the high-level API for RefFrame functions
  *

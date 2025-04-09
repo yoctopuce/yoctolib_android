@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YMultiCellWeighScale.java 63323 2024-11-13 09:32:34Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindMultiCellWeighScale(), the high-level API for MultiCellWeighScale functions
  *

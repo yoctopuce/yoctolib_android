@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YMultiSensController.java 63323 2024-11-13 09:32:34Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindMultiSensController(), the high-level API for MultiSensController functions
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YProximity.java 61960 2024-07-29 13:50:07Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindProximity(), the high-level API for Proximity functions
  *

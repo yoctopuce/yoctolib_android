@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YInputChain.java 64027 2025-01-06 15:18:30Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindInputChain(), the high-level API for InputChain functions
  *

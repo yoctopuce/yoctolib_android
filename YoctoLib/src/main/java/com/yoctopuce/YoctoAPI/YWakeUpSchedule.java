@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YWakeUpSchedule.java 62186 2024-08-19 09:57:44Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindWakeUpSchedule(), the high-level API for WakeUpSchedule functions
  *

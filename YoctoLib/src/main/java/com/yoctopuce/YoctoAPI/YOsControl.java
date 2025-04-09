@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: YOsControl.java 61337 2024-06-10 14:45:06Z seb $
+ *  $Id: svn_id $
  *
  *  Implements FindOsControl(), the high-level API for OsControl functions
  *
