@@ -1,4 +1,4 @@
-include ':Examples:Yocto-Relay', 'Examples:Yocto-Firmware'
+include ':Examples:Yocto-Firmware'
 include ':Examples:Yocto-Meteo-demo'
 include ':Examples:Yocto-Graph'
 include ':YoctoLib'

@@ -5,12 +5,14 @@ plugins {
     id 'signing'
 }
 android {
-    compileSdk 33
-    buildToolsVersion '33.0.1'
+    compileSdk 35
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 33
+        aarMetadata {
+         minCompileSdk = 14
+        }
+        targetSdkVersion 35
     }
     buildTypes {
         release {
@@ -39,39 +41,15 @@ afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
-                from components.release
                 groupId 'com.yoctopuce.android'
                 artifactId 'YoctoLib'
-                version '1.10.65971'
-                pom {
-                    name = 'YoctoLib'
-                    description = 'Yoctopuce library for Android.'
-                    url = 'https://github.com/yoctopuce/yoctolib_android'
-                    licenses {
-                        license {
-                            name = 'The Apache License, Version 2.0'
-                            url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        }
-                    }
-                    signing {
-                        sign publishing.publications.release
-                    }
-                    developers {
-                        developer {
-                            id = 'yoctopuce'
-                            name = 'Yoctopuce'
-                            email = 'https://yoctopuce.com'
-                        }
-                    }
-                    scm {
-                        connection = 'scm:git@github.com:yoctopuce/yoctolib_android.git'
-                        developerConnection = 'scm:git@github.com:yoctopuce/yoctolib_android.git'
-                        url = 'https://github.com/yoctopuce/yoctolib_android'
-                    }
+                version '2.1.6320'
+
+                afterEvaluate {
+                    from components.release
                 }
             }
         }
-
         repositories {
             maven {
                 name 'nexus'
