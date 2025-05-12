@@ -9,8 +9,8 @@ android {
     compileSdk 35
 
     defaultConfig {
-        versionCode 66320
-        versionName "2.0.66320"
+        versionCode 66511
+        versionName "2.0.66511"
         minSdkVersion 14
         targetSdkVersion 33
     }

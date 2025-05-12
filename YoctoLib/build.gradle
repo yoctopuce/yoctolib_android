@@ -43,7 +43,7 @@ afterEvaluate {
             release(MavenPublication) {
                 groupId 'com.yoctopuce.android'
                 artifactId 'YoctoLib'
-                version '2.1.6320'
+                version '2.1.6511'
 
                 afterEvaluate {
                     from components.release
