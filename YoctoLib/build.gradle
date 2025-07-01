@@ -10,7 +10,7 @@ android {
     defaultConfig {
         minSdkVersion 14
         aarMetadata {
-         minCompileSdk = 14
+         minCompileSdk = 21
         }
         targetSdkVersion 35
     }
@@ -43,7 +43,7 @@ afterEvaluate {
             release(MavenPublication) {
                 groupId 'com.yoctopuce.android'
                 artifactId 'YoctoLib'
-                version '2.1.6511'
+                version '2.1.7785'
 
                 afterEvaluate {
                     from components.release
@@ -65,4 +65,7 @@ afterEvaluate {
 
 signing {
     sign configurations.archives
+}
+dependencies {
+    implementation 'androidx.core:core:1.16.0'
 }

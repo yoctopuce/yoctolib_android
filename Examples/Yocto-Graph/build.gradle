@@ -8,12 +8,12 @@ dependencies {
 }
 
 android {
-    compileSdk 33
+    compileSdk 35
 
     defaultConfig {
-        versionCode 66511
-        versionName "1.11.66511"
-        minSdkVersion 14
+        versionCode 67785
+        versionName "1.11.67785"
+        minSdkVersion 21
         targetSdk 33
         vectorDrawables.useSupportLibrary = true
         multiDexEnabled false

@@ -9,10 +9,10 @@ android {
     compileSdk 35
 
     defaultConfig {
-        versionCode 66511
-        versionName "2.0.66511"
-        minSdkVersion 14
-        targetSdkVersion 33
+        versionCode 67785
+        versionName "2.0.67785"
+        minSdkVersion 21
+        targetSdkVersion 34
     }
 
     signingConfigs {

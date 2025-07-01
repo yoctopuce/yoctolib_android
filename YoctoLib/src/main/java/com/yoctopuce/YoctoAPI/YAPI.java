@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YAPI.java 65865 2025-04-15 06:42:38Z seb $
+ * $Id: YAPI.java 67419 2025-06-12 10:17:00Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -42,6 +42,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.zip.CRC32;
 
 /**
  *
@@ -59,7 +60,7 @@ public class YAPI
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "2.1";
-    public static final String YOCTO_API_BUILD_STR = "66511";
+    public static final String YOCTO_API_BUILD_STR = "67785";
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
     public static final int YOCTO_DEVID_BOOTLOADER = 2;
@@ -123,6 +124,18 @@ public class YAPI
     public static final int DETECT_NET = 2;
     public static final int RESEND_MISSING_PKT = 4;
     public static final int DETECT_ALL = DETECT_USB | DETECT_NET;
+
+    public static int _bincrc(byte[] content, int ofs, int len)
+    {
+        CRC32 crc32 = new CRC32();
+        crc32.update(content, ofs, len);
+        long crc = crc32.getValue();
+        if (crc > 0x7fffffff) {
+            return (int) (crc - 0x100000000l);
+        } else {
+            return (int) crc;
+        }
+    }
 
 
     /**
@@ -360,7 +373,7 @@ public class YAPI
      */
     public static String GetAPIVersion()
     {
-        return "2.1.6511" + YUSBHub.getAPIVersion();
+        return "2.1.7785" + YUSBHub.getAPIVersion();
     }
 
     /**

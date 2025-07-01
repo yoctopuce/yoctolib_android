@@ -1,3 +1,4 @@
-Android v2.1.6511
+Android v2.1.7785
 
-- Fix build number on Maven central
+- Fix parsing of URL with user but no password
+- Fix USB access for application that target latest version of android

@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 64130 2025-01-13 14:09:27Z seb $
+ * $Id: YUSBHub.java 67758 2025-06-30 13:02:13Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -44,6 +44,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.os.Build;
+
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,7 +96,7 @@ class YUSBHub extends YGenericHub
                 }
                 synchronized (_permissionPending) {
                     YUSBRawDevice current = _permissionPending.poll();
-                    if (current==null){
+                    if (current == null) {
                         return;
                     }
                     if (!current.getUsbDevice().equals(device)) {
@@ -131,7 +134,8 @@ class YUSBHub extends YGenericHub
     }
 
     @Override
-    public boolean isOnline() {
+    public boolean isOnline()
+    {
         return true;
     }
 
@@ -159,7 +163,7 @@ class YUSBHub extends YGenericHub
         return new ArrayList<>();
     }
 
-    YUSBHub(YAPIContext yctx,  boolean requestPermission, int pktAckDelay) throws YAPI_Exception
+    YUSBHub(YAPIContext yctx, boolean requestPermission, int pktAckDelay) throws YAPI_Exception
     {
         super(yctx, new HTTPParams("usb"), true);
         _pktAckDelay = pktAckDelay;
@@ -175,7 +179,12 @@ class YUSBHub extends YGenericHub
         }
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-        sAppContext.registerReceiver(_usbBroadcastReceiver, filter);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            sAppContext.registerReceiver(_usbBroadcastReceiver, filter, ContextCompat.RECEIVER_EXPORTED);
+        }else {
+            sAppContext.registerReceiver(_usbBroadcastReceiver, filter);
+        }
+
     }
 
     @Override
@@ -455,7 +464,6 @@ class YUSBHub extends YGenericHub
     {
         return "error: Not supported in Android";
     }
-
 
 
 }
