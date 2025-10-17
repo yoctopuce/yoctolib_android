@@ -10,8 +10,8 @@ android {
 
 
     defaultConfig {
-        versionCode 67785
-        versionName "1.0.67785"
+        versionCode 69473
+        versionName "1.0.69473"
         minSdkVersion 21
         targetSdkVersion 33
     }

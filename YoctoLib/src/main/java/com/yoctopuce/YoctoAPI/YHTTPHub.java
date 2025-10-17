@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YHTTPHub.java 64027 2025-01-06 15:18:30Z seb $
+ * $Id: YHTTPHub.java 68279 2025-08-11 15:39:27Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -78,6 +78,7 @@ public class YHTTPHub extends YGenericHub
     boolean _usePureHTTP = false;
     ArrayList<PortInfo> _portInfo = new ArrayList<>();
     private HubMode _hubMode;
+    private int _securityMode = 0;
 
     static class PortInfo
     {
@@ -346,6 +347,12 @@ public class YHTTPHub extends YGenericHub
                 if (json.has("serialNumber")) {
                     this.updateHubSerial(json.getString("serialNumber"));
                 }
+                if (json.has("securityMode")) {
+                    this._securityMode = (json.getInt("securityMode"));
+                    if (this._securityMode == 0) {
+                        throw new YAPI_Exception(YAPI.UNCONFIGURED, "Remote hub is not yet configured");
+                    }
+                }
                 if (json.has("protocol") && json.getString("protocol").equals("HTTP/1.1")) {
                     this._usePureHTTP = true;
                 }
@@ -364,7 +371,7 @@ public class YHTTPHub extends YGenericHub
                     }
                 }
             } catch (YAPI_Exception ex) {
-                if (ex.errorType == YAPI.SSL_ERROR || ex.errorType == YAPI.SSL_UNK_CERT) {
+                if (ex.errorType == YAPI.SSL_ERROR || ex.errorType == YAPI.SSL_UNK_CERT || ex.errorType == YAPI.UNCONFIGURED) {
                     throw ex;
                 }
                 if (_URL_params.useSecureSocket()) {
@@ -379,7 +386,7 @@ public class YHTTPHub extends YGenericHub
         } else {
             _notificationHandler = new TCPNotificationHandler(this);
         }
-
+        _notificationHandler.set_connectionState(YHub.TRYING);
         _thread = new Thread(_notificationHandler, _notificationHandler.getThreadLabel());
         _thread.start();
     }
@@ -755,6 +762,16 @@ public class YHTTPHub extends YGenericHub
     public boolean isOnline()
     {
         return _notificationHandler != null && _notificationHandler.isConnected();
+    }
+
+
+    @Override
+    public int get_connectionState()
+    {
+        if (_notificationHandler == null) {
+            return YHub.UNREGISTERED;
+        }
+        return _notificationHandler.get_connectionState();
     }
 
     public Socket OpenConnectedSocket(InetAddress addr, int port, int mstimeout) throws YAPI_Exception

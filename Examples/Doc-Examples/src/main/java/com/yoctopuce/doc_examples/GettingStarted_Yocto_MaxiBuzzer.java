@@ -56,7 +56,7 @@ public class GettingStarted_Yocto_MaxiBuzzer extends Activity implements OnItemS
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-MaxiBuzzer")) {
+                if (module.get_productName().startsWith("Yocto-MaxiBuzzer")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

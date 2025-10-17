@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YAPI.java 67419 2025-06-12 10:17:00Z seb $
+ * $Id: YAPI.java 68031 2025-07-28 12:29:56Z seb $
  *
  * High-level programming interface, common to all modules
  *
@@ -60,7 +60,7 @@ public class YAPI
     public static final long INVALID_LONG = -9223372036854775807L;
     public static final int INVALID_UINT = -1;
     public static final String YOCTO_API_VERSION_STR = "2.1";
-    public static final String YOCTO_API_BUILD_STR = "67785";
+    public static final String YOCTO_API_BUILD_STR = "69473";
     public static final int YOCTO_VENDORID = 0x24e0;
     public static final int YOCTO_DEVID_FACTORYBOOT = 1;
     public static final int YOCTO_DEVID_BOOTLOADER = 2;
@@ -92,6 +92,7 @@ public class YAPI
     public static final int BUFFER_TOO_SMALL = -18;        // The buffer provided is too small
     public static final int DNS_ERROR = -19;               // Error during name resolutions (invalid hostname or dns communication error)
     public static final int SSL_UNK_CERT = -20;            // The certificate is not correctly signed by the trusted CA
+    public static final int UNCONFIGURED = -21;            // Remote hub is not yet configured
 
     // Yoctopuce error codes, used by default as function return value
     public static final int NO_TRUSTED_CA_CHECK = 1;       // Disables certificate checking
@@ -373,7 +374,7 @@ public class YAPI
      */
     public static String GetAPIVersion()
     {
-        return "2.1.7785" + YUSBHub.getAPIVersion();
+        return "2.1.9473" + YUSBHub.getAPIVersion();
     }
 
     /**
@@ -994,6 +995,10 @@ public class YAPI
     public static YHub getYHubObj(int hubref)
     {
         return GetYCtx(true).getYHubObj(hubref);
+    }
+    public static YHub findYHubFromID(String id)
+    {
+        return GetYCtx(true).findYHubFromID(id);
     }
 //--- (end of generated code: YAPIContext yapiwrapper)
 

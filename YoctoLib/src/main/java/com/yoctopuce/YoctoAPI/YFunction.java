@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YFunction.java 64027 2025-01-06 15:18:30Z seb $
+ * $Id: YFunction.java 69221 2025-09-23 07:20:26Z seb $
  *
  * YFunction Class (virtual class, used internally)
  *
@@ -87,9 +87,9 @@ public class YFunction
     protected String _advertisedValue = ADVERTISEDVALUE_INVALID;
     protected UpdateCallback _valueCallbackFunction = null;
     protected long _cacheExpiration = 0;
-    protected String _serial;
-    protected String _funId;
-    protected String _hwId;
+    protected String _serial = "";
+    protected String _funId = "";
+    protected String _hwId = "";
 
     /**
      * Deprecated UpdateCallback for Function
@@ -485,7 +485,7 @@ public class YFunction
     public String loadAttribute(String attrName) throws YAPI_Exception
     {
         String url;
-        byte[] attrVal = new byte[0];
+        byte[] attrVal;
         url = String.format(Locale.US, "api/%s/%s",get_functionId(),attrName);
         attrVal = _download(url);
         return new String(attrVal, _yapi._deviceCharset);

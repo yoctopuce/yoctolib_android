@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YUSBHub.java 67758 2025-06-30 13:02:13Z seb $
+ * $Id: YUSBHub.java 68280 2025-08-12 07:19:58Z seb $
  *
  * YUSBHub Class: handle native USB acces
  *
@@ -143,6 +143,12 @@ class YUSBHub extends YGenericHub
     public String getConnectionUrl()
     {
         return "usb";
+    }
+
+    @Override
+    public int get_connectionState()
+    {
+        return YHub.CONNECTED;
     }
 
     @Override

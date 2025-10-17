@@ -59,7 +59,7 @@ public class GettingStarted_Yocto_Temperature_IR extends Activity implements OnI
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-Thermocouple")) {
+                if (module.get_productName().startsWith("Yocto-Thermocouple")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

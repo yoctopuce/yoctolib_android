@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_CO2.java 58172 2023-11-30 17:10:23Z martinm $
+ *  $Id: GettingStarted_Yocto_CO2.java 69434 2025-10-16 06:53:42Z seb $
  *
  *  An example that shows how to use a  Yocto-CO2
  *
@@ -59,7 +59,7 @@ public class GettingStarted_Yocto_CO2 extends Activity implements OnItemSelected
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-CO2")) {
+                if (module.get_productName().startsWith("Yocto-CO2")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

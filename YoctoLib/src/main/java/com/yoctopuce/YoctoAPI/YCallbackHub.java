@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YCallbackHub.java 63484 2024-11-26 09:46:00Z seb $
+ * $Id: YCallbackHub.java 68279 2025-08-11 15:39:27Z seb $
  *
  * Internal YHTTPHUB object
  *
@@ -69,6 +69,11 @@ class YCallbackHub extends YGenericHub
         }
     }
 
+    @Override
+    public int get_connectionState()
+    {
+        return YHub.CONNECTED;
+    }
 
     @Override
     void release()

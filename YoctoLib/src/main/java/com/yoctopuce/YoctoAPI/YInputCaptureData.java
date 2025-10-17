@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YInputCaptureData.java 63323 2024-11-13 09:32:34Z seb $
+ * $Id: YInputCaptureData.java 69221 2025-09-23 07:20:26Z seb $
  *
  * - - - - - - - - - License information: - - - - - - - - -
  *
@@ -71,9 +71,9 @@ public class YInputCaptureData
     protected double _trigVal = 0;
     protected int _trigPos = 0;
     protected double _trigUTC = 0;
-    protected String _var1unit;
-    protected String _var2unit;
-    protected String _var3unit;
+    protected String _var1unit = "";
+    protected String _var2unit = "";
+    protected String _var3unit = "";
     protected ArrayList<Double> _var1samples = new ArrayList<>();
     protected ArrayList<Double> _var2samples = new ArrayList<>();
     protected ArrayList<Double> _var3samples = new ArrayList<>();

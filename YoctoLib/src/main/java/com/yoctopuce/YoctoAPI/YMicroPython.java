@@ -67,6 +67,10 @@ public class YMicroPython extends YFunction
      */
     public static final int HEAPUSAGE_INVALID = YAPI.INVALID_UINT;
     /**
+     * invalid heapFrag value
+     */
+    public static final int HEAPFRAG_INVALID = YAPI.INVALID_UINT;
+    /**
      * invalid xheapUsage value
      */
     public static final int XHEAPUSAGE_INVALID = YAPI.INVALID_UINT;
@@ -98,6 +102,7 @@ public class YMicroPython extends YFunction
     public static final String COMMAND_INVALID = YAPI.INVALID_STRING;
     protected String _lastMsg = LASTMSG_INVALID;
     protected int _heapUsage = HEAPUSAGE_INVALID;
+    protected int _heapFrag = HEAPFRAG_INVALID;
     protected int _xheapUsage = XHEAPUSAGE_INVALID;
     protected int _stackUsage = STACKUSAGE_INVALID;
     protected String _currentScript = CURRENTSCRIPT_INVALID;
@@ -110,7 +115,7 @@ public class YMicroPython extends YFunction
     protected boolean _isFirstCb;
     protected int _prevCbPos = 0;
     protected int _logPos = 0;
-    protected String _prevPartialLog;
+    protected String _prevPartialLog = "";
 
     /**
      * Deprecated UpdateCallback for MicroPython
@@ -192,6 +197,9 @@ public class YMicroPython extends YFunction
         }
         if (json_val.has("heapUsage")) {
             _heapUsage = json_val.getInt("heapUsage");
+        }
+        if (json_val.has("heapFrag")) {
+            _heapFrag = json_val.getInt("heapFrag");
         }
         if (json_val.has("xheapUsage")) {
             _xheapUsage = json_val.getInt("xheapUsage");
@@ -285,6 +293,43 @@ public class YMicroPython extends YFunction
     public int getHeapUsage() throws YAPI_Exception
     {
         return get_heapUsage();
+    }
+
+    /**
+     * Returns the fragmentation ratio of MicroPython main memory,
+     * as observed at the end of the last garbage collection.
+     *
+     * @return an integer corresponding to the fragmentation ratio of MicroPython main memory,
+     *         as observed at the end of the last garbage collection
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int get_heapFrag() throws YAPI_Exception
+    {
+        int res;
+        synchronized (this) {
+            if (_cacheExpiration <= YAPIContext.GetTickCount()) {
+                if (load(_yapi._defaultCacheValidity) != YAPI.SUCCESS) {
+                    return HEAPFRAG_INVALID;
+                }
+            }
+            res = _heapFrag;
+        }
+        return res;
+    }
+
+    /**
+     * Returns the fragmentation ratio of MicroPython main memory,
+     * as observed at the end of the last garbage collection.
+     *
+     * @return an integer corresponding to the fragmentation ratio of MicroPython main memory,
+     *         as observed at the end of the last garbage collection
+     *
+     * @throws YAPI_Exception on error
+     */
+    public int getHeapFrag() throws YAPI_Exception
+    {
+        return get_heapFrag();
     }
 
     /**
@@ -546,10 +591,10 @@ public class YMicroPython extends YFunction
 
     /**
      * Returns the wait time before running the startup script on power on,
-     * between 0.1 second and 25 seconds.
+     * measured in seconds.
      *
      * @return a floating point number corresponding to the wait time before running the startup script on power on,
-     *         between 0.1 second and 25 seconds
+     *         measured in seconds
      *
      * @throws YAPI_Exception on error
      */
@@ -569,10 +614,10 @@ public class YMicroPython extends YFunction
 
     /**
      * Returns the wait time before running the startup script on power on,
-     * between 0.1 second and 25 seconds.
+     * measured in seconds.
      *
      * @return a floating point number corresponding to the wait time before running the startup script on power on,
-     *         between 0.1 second and 25 seconds
+     *         measured in seconds
      *
      * @throws YAPI_Exception on error
      */
@@ -877,7 +922,7 @@ public class YMicroPython extends YFunction
      */
     public String get_lastLogs() throws YAPI_Exception
     {
-        byte[] buff = new byte[0];
+        byte[] buff;
         int bufflen;
         String res;
 
@@ -928,7 +973,7 @@ public class YMicroPython extends YFunction
         int cbPos;
         int cbDPos;
         String url;
-        byte[] content = new byte[0];
+        byte[] content;
         int endPos;
         String contentStr;
         ArrayList<String> msgArr = new ArrayList<>();

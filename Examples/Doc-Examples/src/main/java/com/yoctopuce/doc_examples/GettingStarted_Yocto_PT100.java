@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_PT100.java 58172 2023-11-30 17:10:23Z martinm $
+ *  $Id: GettingStarted_Yocto_PT100.java 69434 2025-10-16 06:53:42Z seb $
  *
  *  An example that shows how to use a  Yocto-PT100
  *
@@ -59,7 +59,7 @@ public class GettingStarted_Yocto_PT100 extends Activity implements OnItemSelect
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-PT100")) {
+                if (module.get_productName().startsWith("Yocto-PT100")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

@@ -60,7 +60,7 @@ public class GettingStarted_Yocto_Inclinometer extends Activity implements OnIte
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-Inclinometer")) {
+                if (module.get_productName().startsWith("Yocto-Inclinometer")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

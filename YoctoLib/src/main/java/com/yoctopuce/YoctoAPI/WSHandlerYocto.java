@@ -434,7 +434,6 @@ class WSHandlerYocto implements WSHandlerInterface, Runnable
         return hdrlen + pktlen;
     }
 
-
     private boolean isClosed()
     {
         return _closed;
@@ -444,6 +443,5 @@ class WSHandlerYocto implements WSHandlerInterface, Runnable
     {
         return _closing;
     }
-
 
 }

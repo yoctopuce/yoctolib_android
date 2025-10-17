@@ -1,4 +1,4 @@
-Android v2.1.7785
+Android v2.1.9473
 
-- Fix parsing of URL with user but no password
-- Fix USB access for application that target latest version of android
+- Improve error message when RegisterHub on non configured Hubs
+- Fix example to accept -C an -V2 variants

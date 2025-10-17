@@ -53,7 +53,7 @@ public class YSdi12SnoopingRecord
     protected int _tim = 0;
     protected int _pos = 0;
     protected int _dir = 0;
-    protected String _msg;
+    protected String _msg = "";
 
     //--- (end of generated code: YSdi12SnoopingRecord definitions)
 

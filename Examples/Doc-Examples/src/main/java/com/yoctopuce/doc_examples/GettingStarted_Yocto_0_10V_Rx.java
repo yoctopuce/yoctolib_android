@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_0_10V_Rx.java 58172 2023-11-30 17:10:23Z martinm $
+ *  $Id: GettingStarted_Yocto_0_10V_Rx.java 69434 2025-10-16 06:53:42Z seb $
  *
  *  An example that shows how to use a  Yocto-0-10V-Rx
  *
@@ -63,7 +63,7 @@ public class GettingStarted_Yocto_0_10V_Rx extends Activity implements OnItemSel
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-0-10V-Rx")) {
+                if (module.get_productName().startsWith("Yocto-0-10V-Rx")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

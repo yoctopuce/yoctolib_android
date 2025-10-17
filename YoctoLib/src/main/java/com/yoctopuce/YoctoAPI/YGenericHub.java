@@ -1,5 +1,5 @@
 /*********************************************************************
- * $Id: YGenericHub.java 67272 2025-06-04 10:18:51Z seb $
+ * $Id: YGenericHub.java 68279 2025-08-11 15:39:27Z seb $
  *
  * Internal YGenericHub object
  *
@@ -294,10 +294,8 @@ abstract class YGenericHub
 
         for (YDevice dev : toRemove) {
             String serial = dev.getSerialNumber();
-            _yctx._pushUnPlugEvent(serial);
             _yctx._Log("HUB: device " + serial + " has been unplugged\n");
-            _devices.remove(serial);
-            _yctx._yHash.forgetDevice(serial);
+            UnplugDevice(serial);
         }
         synchronized (this) {
             if (_hubSerialNumber == null) {
@@ -312,8 +310,18 @@ abstract class YGenericHub
 
     }
 
+    void UnplugDevice(String serial)
+    {
+        _yctx._pushUnPlugEvent(serial);
+        _devices.remove(serial);
+        _yctx._yHash.forgetDevice(serial);
+    }
+
     String getSerialNumber()
     {
+        if (_hubSerialNumber == null) {
+            return "";
+        }
         return _hubSerialNumber;
     }
 
@@ -474,6 +482,8 @@ abstract class YGenericHub
     {
         return _hubid;
     }
+
+    abstract public int get_connectionState();
 
     interface UpdateProgress
     {

@@ -63,7 +63,7 @@ public class GettingStarted_Yocto_MaxiMicroVolt_Rx extends Activity implements O
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-0-10V-Rx")) {
+                if (module.get_productName().startsWith("Yocto-0-10V-Rx")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

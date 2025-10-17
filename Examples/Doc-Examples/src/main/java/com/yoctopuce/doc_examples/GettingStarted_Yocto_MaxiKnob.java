@@ -60,7 +60,7 @@ public class GettingStarted_Yocto_MaxiKnob extends Activity implements OnItemSel
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-MaxiKnob")) {
+                if (module.get_productName().startsWith("Yocto-MaxiKnob")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

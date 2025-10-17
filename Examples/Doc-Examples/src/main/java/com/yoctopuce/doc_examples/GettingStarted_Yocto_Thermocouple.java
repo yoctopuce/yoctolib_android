@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_Thermocouple.java 58172 2023-11-30 17:10:23Z martinm $
+ *  $Id: GettingStarted_Yocto_Thermocouple.java 69434 2025-10-16 06:53:42Z seb $
  *
  *  An example that shows how to use a  Yocto-Thermocouple
  *
@@ -59,7 +59,7 @@ public class GettingStarted_Yocto_Thermocouple extends Activity implements OnIte
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-Thermocouple")) {
+                if (module.get_productName().startsWith("Yocto-Thermocouple")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

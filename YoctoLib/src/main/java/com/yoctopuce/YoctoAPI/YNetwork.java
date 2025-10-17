@@ -2465,7 +2465,7 @@ public class YNetwork extends YFunction
      */
     public String ping(String host) throws YAPI_Exception
     {
-        byte[] content = new byte[0];
+        byte[] content;
 
         content = _download(String.format(Locale.US, "ping.txt?host=%s",host));
         return new String(content, _yapi._deviceCharset);

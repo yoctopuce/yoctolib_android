@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFiles.java 67412 2025-06-12 09:01:59Z seb $
+ * $Id: YFiles.java 69221 2025-09-23 07:20:26Z seb $
  *
  * Implements yFindFiles(), the high-level API for Files functions
  *
@@ -327,7 +327,7 @@ public class YFiles extends YFunction
 
     public int _getVersion() throws YAPI_Exception
     {
-        byte[] json = new byte[0];
+        byte[] json;
         if (_ver > 0) {
             return _ver;
         }
@@ -352,7 +352,7 @@ public class YFiles extends YFunction
      */
     public int format_fs() throws YAPI_Exception
     {
-        byte[] json = new byte[0];
+        byte[] json;
         String res;
         json = sendCommand("format");
         res = _json_get_key(json, "res");
@@ -376,7 +376,7 @@ public class YFiles extends YFunction
      */
     public ArrayList<YFileRecord> get_list(String pattern) throws YAPI_Exception
     {
-        byte[] json = new byte[0];
+        byte[] json;
         ArrayList<byte[]> filelist = new ArrayList<>();
         ArrayList<YFileRecord> res = new ArrayList<>();
         json = sendCommand(String.format(Locale.US, "dir&f=%s",pattern));
@@ -399,7 +399,7 @@ public class YFiles extends YFunction
      */
     public boolean fileExist(String filename) throws YAPI_Exception
     {
-        byte[] json = new byte[0];
+        byte[] json;
         ArrayList<byte[]> filelist = new ArrayList<>();
         if (filename.length() == 0) {
             return false;
@@ -458,7 +458,7 @@ public class YFiles extends YFunction
      */
     public int remove(String pathname) throws YAPI_Exception
     {
-        byte[] json = new byte[0];
+        byte[] json;
         String res;
         json = sendCommand(String.format(Locale.US, "del&f=%s",pathname));
         res  = _json_get_key(json, "res");
@@ -484,7 +484,7 @@ public class YFiles extends YFunction
         int fsver;
         int sz;
         int blkcnt;
-        byte[] meta = new byte[0];
+        byte[] meta;
         int blkidx;
         int blksz;
         int part;

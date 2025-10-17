@@ -49,7 +49,7 @@ public class GettingStarted_Yocto_3D_V2 extends Activity implements OnItemSelect
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-3D-V2")) {
+                if (module.get_productName().startsWith("Yocto-3D-V2")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }

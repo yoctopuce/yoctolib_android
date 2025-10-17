@@ -1,6 +1,6 @@
 /*********************************************************************
  *
- * $Id: YFirmwareUpdate.java 64027 2025-01-06 15:18:30Z seb $
+ * $Id: YFirmwareUpdate.java 69221 2025-09-23 07:20:26Z seb $
  *
  * Implements yFindFirmwareUpdate(), the high-level API for FirmwareUpdate functions
  *
@@ -63,10 +63,10 @@ public class YFirmwareUpdate
 {
 //--- (end of generated code: YFirmwareUpdate class start)
 //--- (generated code: YFirmwareUpdate definitions)
-    protected String _serial;
+    protected String _serial = "";
     protected byte[] _settings = new byte[0];
-    protected String _firmwarepath;
-    protected String _progress_msg;
+    protected String _firmwarepath = "";
+    protected String _progress_msg = "";
     protected int _progress_c = 0;
     protected int _progress = 0;
     protected int _restore_step = 0;

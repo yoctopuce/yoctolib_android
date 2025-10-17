@@ -1,5 +1,5 @@
 /*
- * $Id: YDataSet.java 64027 2025-01-06 15:18:30Z seb $
+ * $Id: YDataSet.java 69221 2025-09-23 07:20:26Z seb $
  *
  * Implements yFindDataSet(), the high-level API for DataSet functions
  *
@@ -67,9 +67,9 @@ public class YDataSet
 
     //--- (generated code: YDataSet definitions)
     protected YFunction _parent;
-    protected String _hardwareId;
-    protected String _functionId;
-    protected String _unit;
+    protected String _hardwareId = "";
+    protected String _functionId = "";
+    protected String _unit = "";
     protected int _bulkLoad = 0;
     protected double _startTimeMs = 0;
     protected double _endTimeMs = 0;
@@ -356,7 +356,7 @@ public class YDataSet
         String suffix;
         ArrayList<String> suffixes = new ArrayList<>();
         int idx;
-        byte[] bulkFile = new byte[0];
+        byte[] bulkFile;
         int urlIdx;
         ArrayList<byte[]> streamBin = new ArrayList<>();
 

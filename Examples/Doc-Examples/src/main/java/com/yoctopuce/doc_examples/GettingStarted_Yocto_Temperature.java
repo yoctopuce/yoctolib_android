@@ -1,6 +1,6 @@
 /*
  *
- *  $Id: GettingStarted_Yocto_Temperature.java 58172 2023-11-30 17:10:23Z martinm $
+ *  $Id: GettingStarted_Yocto_Temperature.java 69434 2025-10-16 06:53:42Z seb $
  *
  *  An example that shows how to use a  Yocto-Temperature
  *
@@ -59,7 +59,7 @@ public class GettingStarted_Yocto_Temperature extends Activity implements OnItem
             YAPI.RegisterHub("usb");
             YModule module = YModule.FirstModule();
             while (module != null) {
-                if (module.get_productName().equals("Yocto-Temperature")) {
+                if (module.get_productName().startsWith("Yocto-Temperature")) {
                     String serial = module.get_serialNumber();
                     aa.add(serial);
                 }
